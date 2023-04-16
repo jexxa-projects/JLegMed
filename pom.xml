@@ -4,17 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
 
-  <!-- **************************************************************************** -->
-  <!-- TODO (REQUIRED): Change your project name, groupId, artifactId, ... here.    -->
-  <!-- **************************************************************************** -->
-  <name>MavenTemplate</name>
-  <groupId>io.jexxa.maventemplate</groupId>
-  <artifactId>maventemplate</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <name>JLegMed</name>
+  <groupId>io.jexxa.jlegmed</groupId>
+  <artifactId>jlegmed</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
 
   <url>https://www.jexxa.io</url>
 
-  <description>MavenTemplate - GitHub related maven template </description>
+  <description>JLegMed - GitHub related maven template </description>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -24,42 +21,25 @@
   </licenses>
   <developers>
     <developer>
-      <name>DeveloperName</name>  <!-- TODO (REQUIRED): Change developer name.       -->
+      <name>Michael Repplinger</name>
     </developer>
   </developers>
 
-  <!-- **************************************************************************** -->
-  <!-- TODO (REQUIRED): Change the scm section to include correct repository.       -->
-  <!-- **************************************************************************** -->
   <scm>
-    <connection>scm:git:https://github.com/jexxa-projects/MavenTemplate.git</connection>
-    <url>https://github.com/jexxa-projects/MavenTemplate</url>
-    <developerConnection>scm:git:https://github.com/jexxa-projects/MavenTemplate.git</developerConnection>
+    <connection>scm:git:https://github.com/jexxa-projects/JLegMed.git</connection>
+    <url>https://github.com/jexxa-projects/JLegMed</url>
+    <developerConnection>scm:git:https://github.com/jexxa-projects/JLegMed.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <properties>
-    <!-- **************************************************************************** -->
-    <!-- TODO (REQUIRED): Change the repository to upload your image.                 -->
-    <!-- **************************************************************************** -->
-    <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
     <test.coverage.minimum>0.00</test.coverage.minimum>     <!-- Minimum Test coverage in %-->
 
-    <!-- ************************************************************* -->
-    <!-- TODO (OPTIONAL): Change your project specific settings here   -->
-    <!-- ************************************************************* -->
     <main.class>${project.groupId}.${project.name}</main.class>
-    <docker.http.port>7500</docker.http.port>
-    <docker.https.port>8081</docker.https.port>
-    <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
 
     <!-- target/compiler configuration  -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
-
-    <!-- **************************************************************************** -->
-    <!-- TODO (REQUIRED): Add version of dependencies here                            -->
-    <!-- **************************************************************************** -->
 
     <!-- version of test dependencies -->
     <junit.platform.launcher.version>1.9.2</junit.platform.launcher.version>
@@ -93,7 +73,6 @@
     <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
     <maven.versions.plugin>2.15.0</maven.versions.plugin>
     <maven.build.helper.version>3.3.0</maven.build.helper.version>
-    <maven.jib.plugin>3.3.1</maven.jib.plugin>
     <maven.shade.plugin>3.4.1</maven.shade.plugin>
     <maven.exec.plugin>3.1.0</maven.exec.plugin>
 
@@ -107,14 +86,7 @@
   <dependencies>
     <!-- dependencies for application core -->
 
-    <!-- ********************************************************* -->
-    <!-- TODO (OPTIONAL): Add additional dependencies if required  -->
-    <!-- ********************************************************* -->
-
-
-    <!-- *************************************** -->
-    <!-- TODO (OPTIONAL): dependencies for tests -->
-    <!-- *************************************** -->
+    <!-- dependencies for tests -->
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-launcher</artifactId>
@@ -273,74 +245,6 @@
         </configuration>
       </plugin>
 
-      <!-- Sets all docker tags -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <id>parse-version</id>
-            <goals>
-              <goal>parse-version</goal>
-            </goals>
-            <configuration>
-              <propertyPrefix>parsedVersion</propertyPrefix>
-            </configuration>
-          </execution>
-          <execution>
-            <phase>validate</phase>
-
-            <!-- Sets dockerTag to snapshot or latest -->
-            <id>set-docker-image-tag</id>
-            <goals>
-              <goal>regex-property</goal>
-            </goals>
-            <configuration>
-              <name>dockerTag</name>
-              <value>${project.version} snapshot latest</value>
-              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
-              <replacement>$1$2</replacement>
-              <failIfNoMatch>false</failIfNoMatch>
-            </configuration>
-          </execution>
-          <execution>
-            <phase>validate</phase>
-
-            <!-- Sets dockerTag to snapshot or latest -->
-            <id>set-dockerMajorTag-tag</id>
-            <goals>
-              <goal>regex-property</goal>
-            </goals>
-            <configuration>
-              <name>dockerMajorTag</name>
-              <value>${project.version} snapshot latest</value>
-              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
-              <!--suppress UnresolvedMavenProperty -->
-              <replacement>${parsedVersion.majorVersion}.$1$2</replacement>
-              <failIfNoMatch>false</failIfNoMatch>
-            </configuration>
-          </execution>
-          <execution>
-            <phase>validate</phase>
-
-            <!-- Sets dockerTag to snapshot or latest -->
-            <id>set-dockerMajorMinor-tag</id>
-            <goals>
-              <goal>regex-property</goal>
-            </goals>
-            <configuration>
-              <name>dockerMajorMinorTag</name>
-              <value>${project.version} snapshot latest</value>
-              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
-              <!--suppress UnresolvedMavenProperty -->
-              <replacement>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.$1$2</replacement>
-              <failIfNoMatch>false</failIfNoMatch>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -422,44 +326,6 @@
         </configuration>
       </plugin>
 
-      <plugin> <!-- build a docker image -->
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>${maven.jib.plugin}</version>
-        <executions>
-          <execution>
-            <phase>deploy</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <from>
-            <image>${docker.base.image}</image>
-          </from>
-          <to>
-            <image>${image.repository.root}/${project.artifactId}:${project.version}</image>
-            <tags>
-              <!--suppress UnresolvedMavenProperty -->
-              <tag>${dockerTag}</tag>
-              <!--suppress UnresolvedMavenProperty -->
-              <tag>${dockerMajorTag}</tag>
-              <!--suppress UnresolvedMavenProperty -->
-              <tag>${dockerMajorMinorTag}</tag>
-            </tags>
-          </to>
-          <container>
-            <creationTime>
-              USE_CURRENT_TIMESTAMP
-            </creationTime>
-            <ports>
-              <port>${docker.http.port}</port>
-              <port>${docker.https.port}</port>
-            </ports>
-          </container>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -643,42 +509,6 @@
 
 
         </plugins>
-      </build>
-    </profile>
-
-    <profile>     <!-- add tag developer image -->
-      <id>localDockerImage</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <dockerTag>developerImage</dockerTag>
-        <dockerMajorTag>developerImage</dockerMajorTag>
-        <dockerMajorMinorTag>developerImage</dockerMajorMinorTag>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>dockerDeveloperTags</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-
-      <build>
-        <plugins>
-
-          <!-- When calling maven release:prepare and release:perform execute only install and NOT deploy. Deploy publishes the image
-               which should be bone by build server-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <configuration>
-              <goals>install</goals>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-            </configuration>
-          </plugin>
-        </plugins>
-
       </build>
     </profile>
   </profiles>

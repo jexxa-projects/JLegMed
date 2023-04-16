@@ -1,7 +1,7 @@
-[![Maven Test Build](https://github.com/jexxa-projects/MavenTemplate/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/MavenTemplate/actions/workflows/mavenBuild.yml)
-[![New Release](https://github.com/jexxa-projects/MavenTemplate/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/MavenTemplate/actions/workflows/newRelease.yml)
+[![Maven Test Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
+[![New Release](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml)
 
-# MavenTemplate
+# JLegMed
 This template can be used to start your own Jexxa application 
 
 ## Requirements
@@ -24,7 +24,7 @@ This template can be used to start your own Jexxa application
 *   In GitHub press `Use this template` (requires GitHub account) or fork the project. If you do not have a GitHub account you can just clone the repository. 
 
 *   Enter a `project name` for the repository. This template uses following convention:
-    *   Project name should be written in camel case notation, such as `MavenTemplate`
+    *   Project name should be written in camel case notation, such as `JLegMed`
     *   Project name of the repository is equal to the name of the java application
 
 ## Build the Project
@@ -35,14 +35,14 @@ This template can be used to start your own Jexxa application
     ```shell
     mvn clean install 
 
-    java -jar target/maventemplate-jar-with-dependencies.jar
+    java -jar target/jlegmed-jar-with-dependencies.jar
     ```
 
 ## Start Developing your Project
 
 ### Adjust Project Name
 
-Rename `MavenTemplate` to your own applications name, as described [here](README-ProjectName.md). 
+Rename `JLegMed` to your own applications name, as described [here](README-ProjectName.md). 
 
 ### Set up the CI/CD Pipeline  
 

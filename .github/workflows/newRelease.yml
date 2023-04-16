@@ -1,0 +1,58 @@
+# This workflow creates a new release that can be triggered directly from GitHub.
+name: New Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    # Service containers to run with `runner-job`
+    services: # Start services activeMQ and Postgres-DB
+
+      activemq:
+        image: quay.io/artemiscloud/activemq-artemis-broker:latest
+        ports:
+          - 61616:61616
+        env:
+          AMQ_USER: admin
+          AMQ_PASSWORD: admin
+
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: admin
+          POSTGRES_USER: postgres
+
+    steps:
+      # Login into GHCR
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Checkout repository
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          server-id: github
+          cache: maven
+      # configure git for building a new release
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      # Build the new release
+      - name: Create new release
+        run: mvn -B  -P '!dockerDeveloperTags' -P integrationTests release:prepare release:perform
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

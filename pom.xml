@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+
+  <!-- **************************************************************************** -->
+  <!-- TODO (REQUIRED): Change your project name, groupId, artifactId, ... here.    -->
+  <!-- **************************************************************************** -->
+  <name>MavenTemplate</name>
+  <groupId>io.jexxa.maventemplate</groupId>
+  <artifactId>maventemplate</artifactId>
+  <version>0.0.3-SNAPSHOT</version>
+
+  <url>https://www.jexxa.io</url>
+
+  <description>MavenTemplate - GitHub related maven template </description>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>DeveloperName</name>  <!-- TODO (REQUIRED): Change developer name.       -->
+    </developer>
+  </developers>
+
+  <!-- **************************************************************************** -->
+  <!-- TODO (REQUIRED): Change the scm section to include correct repository.       -->
+  <!-- **************************************************************************** -->
+  <scm>
+    <connection>scm:git:https://github.com/jexxa-projects/MavenTemplate.git</connection>
+    <url>https://github.com/jexxa-projects/MavenTemplate</url>
+    <developerConnection>scm:git:https://github.com/jexxa-projects/MavenTemplate.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <properties>
+    <!-- **************************************************************************** -->
+    <!-- TODO (REQUIRED): Change the repository to upload your image.                 -->
+    <!-- **************************************************************************** -->
+    <image.repository.root>ghcr.io/jexxa-projects</image.repository.root>
+    <test.coverage.minimum>0.00</test.coverage.minimum>     <!-- Minimum Test coverage in %-->
+
+    <!-- ************************************************************* -->
+    <!-- TODO (OPTIONAL): Change your project specific settings here   -->
+    <!-- ************************************************************* -->
+    <main.class>${project.groupId}.${project.name}</main.class>
+    <docker.http.port>7500</docker.http.port>
+    <docker.https.port>8081</docker.https.port>
+    <docker.base.image>eclipse-temurin:17-alpine</docker.base.image>
+
+    <!-- target/compiler configuration  -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <!-- **************************************************************************** -->
+    <!-- TODO (REQUIRED): Add version of dependencies here                            -->
+    <!-- **************************************************************************** -->
+
+    <!-- version of test dependencies -->
+    <junit.platform.launcher.version>1.9.2</junit.platform.launcher.version>
+    <junit.jupiter.engine.version>5.9.2</junit.jupiter.engine.version>
+    <junit.jupiter.params.version>5.9.2</junit.jupiter.params.version>
+    <awaitility.version>4.2.0</awaitility.version>
+    <unirest.java.version>3.14.1</unirest.java.version>
+
+
+    <!-- server-name used in mavens settings.xml to find to your repository credentials -->
+    <project.scm.id>github</project.scm.id>
+
+    <!--information for filtered sources  -->
+    <build.timestamp>${maven.build.timestamp}</build.timestamp>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+
+    <!--version of  maven plugins  -->
+    <maven.clean.plugin>3.2.0</maven.clean.plugin>
+    <maven.compiler.plugin>3.11.0</maven.compiler.plugin>
+    <maven.deploy.plugin>3.1.1</maven.deploy.plugin>
+    <maven.failsafe.plugin>3.0.0</maven.failsafe.plugin>
+    <maven.install.plugin>3.1.1</maven.install.plugin>
+    <maven.jar.plugin>3.3.0</maven.jar.plugin>
+    <maven.resources.plugin>3.3.1</maven.resources.plugin>
+    <maven.site.plugin>3.12.1</maven.site.plugin>
+    <maven.surefire.plugin>3.0.0</maven.surefire.plugin>
+    <maven.release.plugin>3.0.0-M1</maven.release.plugin>
+    <maven.jacoco.plugin>0.8.9</maven.jacoco.plugin>
+    <maven.reports.plugin>3.4.2</maven.reports.plugin>
+    <maven.enforcer.plugin>3.3.0</maven.enforcer.plugin>
+    <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
+    <maven.versions.plugin>2.15.0</maven.versions.plugin>
+    <maven.build.helper.version>3.3.0</maven.build.helper.version>
+    <maven.jib.plugin>3.3.1</maven.jib.plugin>
+    <maven.shade.plugin>3.4.1</maven.shade.plugin>
+    <maven.exec.plugin>3.1.0</maven.exec.plugin>
+
+  <!-- command to start the application for integration tests -->
+  <context.command.start>
+        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec,port=6300,output=tcpserver
+        -jar -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties ${project.build.directory}/${project.artifactId}-jar-with-dependencies.jar
+   </context.command.start>
+</properties>
+
+  <dependencies>
+    <!-- dependencies for application core -->
+
+    <!-- ********************************************************* -->
+    <!-- TODO (OPTIONAL): Add additional dependencies if required  -->
+    <!-- ********************************************************* -->
+
+
+    <!-- *************************************** -->
+    <!-- TODO (OPTIONAL): dependencies for tests -->
+    <!-- *************************************** -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.platform.launcher.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.engine.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit.jupiter.params.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>org.jacoco.agent</artifactId>
+      <version>${maven.jacoco.plugin}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- ********************************************************************** -->
+  <!-- IMPORTANT: Change following lines only if you are familiar with maven  -->
+  <!-- IMPORTANT: If you really need to adjust following lines, please check  -->
+  <!-- IMPORTANT: if you should start your maven project.                     -->
+  <!-- ********************************************************************** -->
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults -->
+      <plugins>
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven.clean.plugin}</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven.enforcer.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven.resources.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven.install.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven.deploy.plugin}</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven.site.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${maven.reports.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${maven.build.helper.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${maven.versions.plugin}</version>
+          <configuration>
+            <!--suppress UnresolvedMavenProperty -->
+            <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${maven.jacoco.plugin}</version>
+        <executions>
+          <execution>
+            <id>default-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>default-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>COMPLEXITY</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>${test.coverage.minimum}</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+
+      <!-- Sets all docker tags -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <id>parse-version</id>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+            <configuration>
+              <propertyPrefix>parsedVersion</propertyPrefix>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>validate</phase>
+
+            <!-- Sets dockerTag to snapshot or latest -->
+            <id>set-docker-image-tag</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>dockerTag</name>
+              <value>${project.version} snapshot latest</value>
+              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+              <replacement>$1$2</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>validate</phase>
+
+            <!-- Sets dockerTag to snapshot or latest -->
+            <id>set-dockerMajorTag-tag</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>dockerMajorTag</name>
+              <value>${project.version} snapshot latest</value>
+              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+              <!--suppress UnresolvedMavenProperty -->
+              <replacement>${parsedVersion.majorVersion}.$1$2</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+          <execution>
+            <phase>validate</phase>
+
+            <!-- Sets dockerTag to snapshot or latest -->
+            <id>set-dockerMajorMinor-tag</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>dockerMajorMinorTag</name>
+              <value>${project.version} snapshot latest</value>
+              <regex>(?=.*SNAPSHOT).*(snapshot).*|.*(latest).*</regex>
+              <!--suppress UnresolvedMavenProperty -->
+              <replacement>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.$1$2</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.6</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven.shade.plugin}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+
+            <configuration>
+
+              <finalName>${project.artifactId}-jar-with-dependencies</finalName>
+
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>module-info.class</exclude>
+                    <exclude>about.html</exclude>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                    <exclude>META-INF/*.txt</exclude>
+                    <exclude>META-INF/NOTICE</exclude>
+                    <exclude>META-INF/LICENSE</exclude>
+                  </excludes>
+                </filter>
+
+                <filter>
+                  <artifact>org.eclipse.jetty:*</artifact>
+                  <excludes>
+                    <exclude>**/encoding.properties</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>${main.class}</mainClass>
+                </transformer>
+              </transformers>
+
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.jar.plugin}</version>
+
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>${main.class}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin> <!-- build a docker image -->
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>${maven.jib.plugin}</version>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <from>
+            <image>${docker.base.image}</image>
+          </from>
+          <to>
+            <image>${image.repository.root}/${project.artifactId}:${project.version}</image>
+            <tags>
+              <!--suppress UnresolvedMavenProperty -->
+              <tag>${dockerTag}</tag>
+              <!--suppress UnresolvedMavenProperty -->
+              <tag>${dockerMajorTag}</tag>
+              <!--suppress UnresolvedMavenProperty -->
+              <tag>${dockerMajorMinorTag}</tag>
+            </tags>
+          </to>
+          <container>
+            <creationTime>
+              USE_CURRENT_TIMESTAMP
+            </creationTime>
+            <ports>
+              <port>${docker.http.port}</port>
+              <port>${docker.https.port}</port>
+            </ports>
+          </container>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+  <profiles>
+    <profile>
+      <id>integrationTests</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${maven.failsafe.plugin}</version>
+            <configuration>
+              <!--suppress UnresolvedMavenProperty -->
+              <!-- Property surefireArgLine wird vom maven-failsafe-plugin gesetzt-->
+              <argLine>${failsafeArgLine}</argLine>
+              <shutdown>kill</shutdown>
+
+            </configuration>
+            <executions>
+              <execution>
+                <id>integration-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${maven.jacoco.plugin}</version>
+            <executions>
+              <!--
+                  Prepares the property pointing to the JaCoCo runtime agent which
+                  is passed as VM argument when Maven the Surefire plugin is executed.
+              -->
+              <execution>
+                <id>pre-unit-test</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!-- Sets the path to the file which contains the execution data. -->
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>surefireArgLine</propertyName>
+                </configuration>
+              </execution>
+              <!--
+                  Ensures that the code coverage report for unit tests is created after
+                  unit tests have been run.
+              -->
+              <execution>
+                <id>post-unit-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <!-- Sets the path to the file which contains the execution data. -->
+                  <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                  <!-- Sets the output directory for the code coverage report. -->
+                  <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+                <configuration>
+                  <!-- Sets the path to the file which contains the execution data. -->
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+                  <!--
+                      Sets the name of the property containing the settings
+                      for JaCoCo runtime agent.
+                  -->
+                  <propertyName>failsafeArgLine</propertyName>
+                </configuration>
+              </execution>
+              <!--
+                  Ensures that the code coverage report for integration tests after
+                  integration tests have been run.
+              -->
+              <execution>
+                <id>post-integration-test-dump</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>dump</goal>
+                </goals>
+                <configuration>
+                  <!-- Sets the path to the file which contains the execution data. -->
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-it-application.exec</destFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>post-integration-test-report</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <!-- Sets the path to the file which contains the execution data. -->
+                  <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                  <!-- Sets the output directory for the code coverage report. -->
+                  <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                </configuration>
+              </execution>
+              <execution>
+                <id>merge-results</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>merge</goal>
+                </goals>
+                <configuration>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}/coverage-reports</directory>
+                      <includes>
+                        <include>*.exec</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                  <destFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</destFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>post-merge-report</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <dataFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</dataFile>
+                  <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${maven.exec.plugin}</version>
+            <executions>
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${java.home}/bin/java</executable>
+                  <async>true</async>
+                  <commandlineArgs>
+                    ${context.command.start}
+                  </commandlineArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>     <!-- add tag developer image -->
+      <id>localDockerImage</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <dockerTag>developerImage</dockerTag>
+        <dockerMajorTag>developerImage</dockerMajorTag>
+        <dockerMajorMinorTag>developerImage</dockerMajorMinorTag>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>dockerDeveloperTags</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <build>
+        <plugins>
+
+          <!-- When calling maven release:prepare and release:perform execute only install and NOT deploy. Deploy publishes the image
+               which should be bone by build server-->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <goals>install</goals>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+            </configuration>
+          </plugin>
+        </plugins>
+
+      </build>
+    </profile>
+  </profiles>
+
+</project>

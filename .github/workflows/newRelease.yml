@@ -53,6 +53,6 @@ jobs:
 
       # Build the new release
       - name: Create new release
-        run: mvn -B  -P '!dockerDeveloperTags' -P integrationTests release:prepare release:perform
+        run: mvn -B -P integrationTests release:prepare release:perform
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

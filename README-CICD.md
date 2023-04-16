@@ -51,8 +51,7 @@ In addition, it can be easily run and maintained on your developing machine.
 *   [developerStack.yml](deploy/developerStack.yml)
     *   Includes all required dependencies to run the application during development on your local machine
 
-*   [docker-compose.yml](deploy/docker-compose.yml)
-    *   Stack to run the application as stack in your production environment
+
 
 ### Deploy Stack 
 

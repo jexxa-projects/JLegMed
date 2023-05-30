@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.asyncreceive;
 
 import io.jexxa.jlegmed.asyncreceive.processor.UpdateContract;
 import io.jexxa.jlegmed.asyncreceive.processor.PersistContract;
-import io.jexxa.jlegmed.asyncreceive.dto.Contract;
+import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 
 public final class ContractMediator
 {
@@ -16,7 +16,7 @@ public final class ContractMediator
         var lulli = new Lulli();
 
         lulli
-                .receive(Contract.class).from("TOPIC").andProcessWith(PersistContract.class)
+                .receive(NewContract.class).from("TOPIC").andProcessWith(PersistContract.class)
                 .receive(UpdateContract.class).from("TOPIC").andProcessWith(UpdateContract.class)
 
                 .run();
@@ -54,10 +54,10 @@ public final class ContractMediator
         public T process(T arg1);
     }
 
-    static class Lulli2 implements SinkInterface<Contract> {
+    static class Lulli2 implements SinkInterface<NewContract> {
         @Override
-        public Contract process(Contract contract) {
-            return contract;
+        public NewContract process(NewContract newContract) {
+            return newContract;
         }
     }
 

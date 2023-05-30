@@ -1,14 +1,9 @@
 package io.jexxa.jlegmed.asyncreceive.processor;
 
-import io.jexxa.jlegmed.asyncreceive.dto.Contract;
+import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 
 public interface PersistContract
 {
-    //void persistiere(Deckelreise deckelreise, double stahlgewicht);
-
-    static void persistiere(Contract contract){
-
-    };
-
+    void persist(NewContract newContract);
 
 }

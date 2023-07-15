@@ -74,13 +74,6 @@
     <maven.versions.plugin>2.16.0</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.5.0</maven.shade.plugin>
-    <maven.exec.plugin>3.1.0</maven.exec.plugin>
-
-  <!-- command to start the application for integration tests -->
-  <context.command.start>
-        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${maven.jacoco.plugin}/org.jacoco.agent-${maven.jacoco.plugin}-runtime.jar=destfile=jacoco-it-app.exec,port=6300,output=tcpserver
-        -jar -Dio.jexxa.config.import=./src/test/resources/jexxa-test.properties ${project.build.directory}/${project.artifactId}-jar-with-dependencies.jar
-   </context.command.start>
 </properties>
 
   <dependencies>
@@ -430,14 +423,16 @@
                   integration tests have been run.
               -->
               <execution>
-                <id>post-integration-test-dump</id>
+                <id>post-integration-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>dump</goal>
+                  <goal>report</goal>
                 </goals>
                 <configuration>
                   <!-- Sets the path to the file which contains the execution data. -->
-                  <destFile>${project.build.directory}/coverage-reports/jacoco-it-application.exec</destFile>
+                  <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                  <!-- Sets the output directory for the code coverage report. -->
+                  <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
                 </configuration>
               </execution>
               <execution>
@@ -480,28 +475,6 @@
                 <configuration>
                   <dataFile>${project.build.directory}/coverage-reports/jacoco-aggregate.exec</dataFile>
                   <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>${maven.exec.plugin}</version>
-            <executions>
-              <execution>
-                <id>pre-integration-test</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>${java.home}/bin/java</executable>
-                  <async>true</async>
-                  <commandlineArgs>
-                    ${context.command.start}
-                  </commandlineArgs>
                 </configuration>
               </execution>
             </executions>

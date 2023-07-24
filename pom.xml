@@ -44,7 +44,7 @@
     <!-- version of test dependencies -->
     <junit.platform.launcher.version>1.9.3</junit.platform.launcher.version>
     <junit.jupiter.engine.version>5.9.3</junit.jupiter.engine.version>
-    <junit.jupiter.params.version>5.9.3</junit.jupiter.params.version>
+    <junit.jupiter.params.version>5.10.0</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
     <unirest.java.version>3.14.1</unirest.java.version>
 

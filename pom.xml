@@ -41,6 +41,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
 
+    <!-- version of dependencies -->
+    <jexxa.adapter.api.version>4.2.0</jexxa.adapter.api.version>
+    <!--<activemq.artemis.client.version>2.31.0</activemq.artemis.client.version>
+    <postgres.version>42.6.0</postgres.version> -->
+    <slf4j.simple.version>2.0.9</slf4j.simple.version>
+
     <!-- version of test dependencies -->
     <junit.platform.launcher.version>1.9.3</junit.platform.launcher.version>
     <junit.jupiter.engine.version>5.9.3</junit.jupiter.engine.version>
@@ -77,9 +83,28 @@
 </properties>
 
   <dependencies>
-    <!-- dependencies for application core -->
+    <!-- dependencies for library -->
+    <dependency>
+      <groupId>io.jexxa</groupId>
+      <artifactId>jexxa-adapter-api</artifactId>
+      <version>${jexxa.adapter.api.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.simple.version}</version>
+    </dependency>
+
 
     <!-- dependencies for tests -->
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility-groovy</artifactId>
+      <version>${awaitility.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-launcher</artifactId>

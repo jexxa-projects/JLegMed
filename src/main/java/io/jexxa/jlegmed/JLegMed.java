@@ -2,52 +2,51 @@ package io.jexxa.jlegmed;
 
 
 import io.jexxa.jlegmed.processor.Processor;
-import io.jexxa.jlegmed.producer.Producer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public final class JLegMed
 {
-    private Class<?> expectedData;
-    private Producer producer;
-    private Processor processor;
 
-    public <T> JLegMed receive(Class<T> expectedData)
-    {
-        this.expectedData = expectedData;
-        return this;
-    }
-
-    public <T extends Producer> JLegMed with(Class<T> clazz) {
-        try {
-            this.producer = clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e){
-            return null;
-        }
-        return this;
-    }
-
+    private final List<EachFlowGraph> eachFlowGraphs = new ArrayList<>();
+    private final List<AwaitFlowGraph> awaitFlowGraphs = new ArrayList<>();
+    private FlowGraph currentFlowGraph;
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
     {
-        try {
-            this.processor = clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e){
-            return null;
-        }
-
+        currentFlowGraph.andProcessWith(clazz);
         return this;
     }
 
-    public void run()
+    public void start()
     {
-        while (true) {
-            run(1);
-        }
+        awaitFlowGraphs.forEach(AwaitFlowGraph::start);
+        eachFlowGraphs.forEach(EachFlowGraph::start);
     }
 
-    public void run(int iteration)
+    public void stop()
     {
-        for (int i = 0; i < iteration; ++i) {
-            processor.process( producer.receive(expectedData) );
-        }
+        awaitFlowGraphs.forEach(AwaitFlowGraph::stop);
+        eachFlowGraphs.forEach(EachFlowGraph::stop);
+    }
+
+
+    EachFlowGraph each(int fixedRate, TimeUnit timeUnit)
+    {
+        var eachFlowgraph = new EachFlowGraph(this, fixedRate, timeUnit);
+        this.currentFlowGraph = eachFlowgraph;
+        eachFlowGraphs.add(eachFlowgraph);
+        return eachFlowgraph;
+    }
+
+    <T> AwaitFlowGraph await(Class<T> expectedData)
+    {
+        AwaitFlowGraph awaitFlowGraph = new AwaitFlowGraph(this);
+        awaitFlowGraph.receive(expectedData);
+        currentFlowGraph = awaitFlowGraph;
+        awaitFlowGraphs.add(awaitFlowGraph);
+        return awaitFlowGraph;
     }
 
 }

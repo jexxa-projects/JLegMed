@@ -3,6 +3,7 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.processor.Processor;
 import io.jexxa.jlegmed.producer.Producer;
+import io.jexxa.jlegmed.producer.URL;
 
 public final class AwaitFlowGraph implements FlowGraph
 {
@@ -20,7 +21,15 @@ public final class AwaitFlowGraph implements FlowGraph
     {
         this.expectedData = expectedData;
     }
-
+    public URL from(String url) {
+        try {
+            return new URL(url, expectedData, jLegMed);
+            //this.producer = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        //return jLegMed;
+    }
     public <T extends Producer> JLegMed from(Class<T> clazz) {
         try {
             this.producer = clazz.getDeclaredConstructor().newInstance();

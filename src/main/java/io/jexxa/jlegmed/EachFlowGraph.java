@@ -5,6 +5,7 @@ import io.jexxa.jlegmed.jexxacp.scheduler.IScheduled;
 import io.jexxa.jlegmed.jexxacp.scheduler.Scheduler;
 import io.jexxa.jlegmed.processor.Processor;
 import io.jexxa.jlegmed.producer.Producer;
+import io.jexxa.jlegmed.producer.URL;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,16 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return jLegMed;
+    }
+
+    public URL from(String url) {
+        try {
+            return new URL(url, expectedData, jLegMed);
+            //this.producer = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        //return jLegMed;
     }
 
     public <T extends Processor> EachFlowGraph andProcessWith(Class<T> clazz)
@@ -78,6 +89,7 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
     public void execute() {
         processor.process( producer.receive(expectedData) );
     }
+
 
 
 }

@@ -17,8 +17,8 @@ class JLegMedTest {
     @Test
     void testAwait() {
         var jlegmed = new JLegMed();
-        jlegmed.
-                await(NewContract.class).from(GenericProducer.class)
+        jlegmed
+                .await(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(ConsoleProcessor.class)
 
                 .start();
@@ -31,8 +31,8 @@ class JLegMedTest {
     @Disabled("Currently not implemented")
     void testAwaitURL() {
         var jlegmed = new JLegMed();
-        jlegmed.
-                await(NewContract.class).from("jms://MYURL").with(this::readData)
+        jlegmed
+                .await(NewContract.class).from("jms://MYURL").with(this::readData)
                 .andProcessWith(ConsoleProcessor.class)
 
                 .await(NewContract.class).from("file://MYURL").with(this::readData)

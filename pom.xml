@@ -43,6 +43,9 @@
 
     <!-- version of dependencies -->
     <jexxa.adapter.api.version>4.2.0</jexxa.adapter.api.version>
+    <gson.version>2.10.1</gson.version>
+    <javax.jms.version>2.0.1</javax.jms.version>
+
     <!--<activemq.artemis.client.version>2.31.0</activemq.artemis.client.version>
     <postgres.version>42.6.0</postgres.version> -->
     <slf4j.simple.version>2.0.9</slf4j.simple.version>
@@ -88,6 +91,20 @@
       <groupId>io.jexxa</groupId>
       <artifactId>jexxa-adapter-api</artifactId>
       <version>${jexxa.adapter.api.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>javax.jms-api</artifactId>
+      <version>${javax.jms.version}</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>

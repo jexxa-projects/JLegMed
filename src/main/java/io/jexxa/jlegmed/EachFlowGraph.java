@@ -52,7 +52,12 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
         //return jLegMed;
     }
 
-    public <T extends Processor> EachFlowGraph andProcessWith(Class<T> clazz)
+    public URL andSendTo(String url) {
+        return new URL(url, expectedData, jLegMed);
+    }
+
+
+     public <T extends Processor> EachFlowGraph andProcessWith(Class<T> clazz)
     {
         try {
             this.processor = clazz.getDeclaredConstructor().newInstance();

@@ -48,9 +48,9 @@
     <slf4j.simple.version>2.0.9</slf4j.simple.version>
 
     <!-- version of test dependencies -->
-    <junit.platform.launcher.version>1.9.3</junit.platform.launcher.version>
-    <junit.jupiter.engine.version>5.9.3</junit.jupiter.engine.version>
-    <junit.jupiter.params.version>5.9.3</junit.jupiter.params.version>
+    <junit.platform.launcher.version>1.10.0</junit.platform.launcher.version>
+    <junit.jupiter.engine.version>5.10.0</junit.jupiter.engine.version>
+    <junit.jupiter.params.version>5.10.0</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
     <unirest.java.version>3.14.1</unirest.java.version>
 
@@ -75,11 +75,11 @@
     <maven.release.plugin>3.0.0-M1</maven.release.plugin>
     <maven.jacoco.plugin>0.8.10</maven.jacoco.plugin>
     <maven.reports.plugin>3.4.5</maven.reports.plugin>
-    <maven.enforcer.plugin>3.3.0</maven.enforcer.plugin>
+    <maven.enforcer.plugin>3.4.1</maven.enforcer.plugin>
     <maven.javadoc.plugin>3.2.0</maven.javadoc.plugin>
-    <maven.versions.plugin>2.16.0</maven.versions.plugin>
+    <maven.versions.plugin>2.16.1</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
-    <maven.shade.plugin>3.5.0</maven.shade.plugin>
+    <maven.shade.plugin>3.5.1</maven.shade.plugin>
 </properties>
 
   <dependencies>

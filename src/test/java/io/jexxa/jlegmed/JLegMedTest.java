@@ -2,9 +2,6 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.jdbc.JDBCConnection;
-import io.jexxa.jlegmed.jexxacp.messaging.MessageSender;
-import io.jexxa.jlegmed.jexxacp.messaging.MessageSenderPool;
-import io.jexxa.jlegmed.jexxacp.messaging.jms.JMSSender;
 import io.jexxa.jlegmed.processor.ConsoleProcessor;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Disabled;
@@ -13,8 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.jexxacp.messaging.MessageSenderPool.getMessageSender;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class JLegMedTest {
 
@@ -27,7 +25,7 @@ class JLegMedTest {
 
                 .start();
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
 
 
@@ -45,27 +43,28 @@ class JLegMedTest {
 
                 .start();
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
     @Test
-    void testEach() throws InterruptedException {
+    void testEach() {
+        //Arrange
         var jlegmed = new JLegMed();
         jlegmed
                 .each(1, SECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(ConsoleProcessor.class)
-
+        //Act
                 .start();
 
-        //replace with await
-        Thread.sleep(3000);
+        await().pollDelay(3, SECONDS).until(() -> true);
 
-        jlegmed.stop();
+        //Assert
+        assertDoesNotThrow(jlegmed::stop);
     }
 
     @Test
     @Disabled("Currently not implemented")
-    void testEachSend() throws InterruptedException {
+    void testEachSend() {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(1, SECONDS)
@@ -75,15 +74,15 @@ class JLegMedTest {
                 .start();
 
         //replace with await
-        Thread.sleep(3000);
+        await().pollDelay(3, SECONDS).until(() -> true);
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
 
 
     @Test
     @Disabled("Currently not implemented")
-    void testURLEach() throws InterruptedException {
+    void testURLEach()  {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(1, SECONDS)
@@ -93,13 +92,13 @@ class JLegMedTest {
                 .start();
 
         //replace with await
-        Thread.sleep(3000);
+        await().pollDelay(3, SECONDS).until(() -> true);
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
 
     @Test
-    void testMultipleEach() throws InterruptedException {
+    void testMultipleEach() {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(1, SECONDS).receive(NewContract.class).from(GenericProducer.class)
@@ -111,9 +110,9 @@ class JLegMedTest {
                 .start();
 
         //replace with await
-        Thread.sleep(3000);
+        await().pollDelay(3, SECONDS).until(() -> true);
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
 
     @Test
@@ -128,7 +127,7 @@ class JLegMedTest {
 
                 .start();
 
-        jlegmed.stop();
+        assertDoesNotThrow(jlegmed::stop);
     }
 
     private NewContract readData(Properties properties )
@@ -152,11 +151,4 @@ class JLegMedTest {
         NEW_CONTRACT_SCHEMA2
     }
 
-    private <T> void sendData(Properties properties, T message)
-    {
-        getMessageSender(properties).send(message)
-                .toTopic("MyTopic")
-                .addHeader("type", message.getClass().getSimpleName())
-                .asJson();
-    }
 }

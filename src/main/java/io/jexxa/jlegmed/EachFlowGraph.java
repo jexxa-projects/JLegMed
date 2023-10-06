@@ -67,6 +67,12 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
         return this;
     }
 
+    @Override
+    public FlowGraph andProcessWith(Processor processor) {
+        processorList.add(processor);
+        return this;
+    }
+
 
     public void start()
     {

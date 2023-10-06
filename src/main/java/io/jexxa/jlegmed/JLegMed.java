@@ -19,6 +19,12 @@ public final class JLegMed
         return this;
     }
 
+    public JLegMed andProcessWith(Processor processor)
+    {
+        currentFlowGraph.andProcessWith(processor);
+        return this;
+    }
+
 
     public void start()
     {

@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.processor.ConsoleProcessor;
 import io.jexxa.jlegmed.processor.IDProcessor;
+import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -20,37 +22,66 @@ class JLegMedTest {
     @Test
     void testEach() {
         //Arrange
+        var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .each(1, SECONDS)
+                .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(ConsoleProcessor.class)
+                .andProcessWith(messageCollector);
         //Act
-                .start();
-
-        await().pollDelay(3, SECONDS).until(() -> true);
+        jlegmed.start();
 
         //Assert
-        assertDoesNotThrow(jlegmed::stop);
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
     }
 
     @Test
     void testEachMultipleProcessor() {
         //Arrange
+        var messageCollector = new MessageCollector();
+
         var jlegmed = new JLegMed();
         jlegmed
-                .each(1, SECONDS)
+                .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith( IDProcessor.class )
                 .andProcessWith( IDProcessor.class )
                 .andProcessWith(ConsoleProcessor.class)
-                //Act
-                .start();
-
-        await().pollDelay(3, SECONDS).until(() -> true);
+                .andProcessWith(messageCollector);
+        //Act
+        jlegmed.start();
 
         //Assert
-        assertDoesNotThrow(jlegmed::stop);
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+
+    @Test
+    void testMultipleEach() {
+        //Arrange
+        var messageCollector1 = new MessageCollector();
+        var messageCollector2 = new MessageCollector();
+
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
+                .andProcessWith(ConsoleProcessor.class)
+                .andProcessWith(messageCollector1)
+
+                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
+                .andProcessWith(ConsoleProcessor.class)
+                .andProcessWith(messageCollector2);
+
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
+
+        jlegmed.stop();
     }
 
     @Test
@@ -118,23 +149,6 @@ class JLegMedTest {
         assertDoesNotThrow(jlegmed::stop);
     }
 
-    @Test
-    void testMultipleEach() {
-        var jlegmed = new JLegMed();
-        jlegmed
-                .each(1, SECONDS).receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith(ConsoleProcessor.class)
-
-                .each(2, SECONDS).receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith(ConsoleProcessor.class)
-
-                .start();
-
-        //replace with await
-        await().pollDelay(3, SECONDS).until(() -> true);
-
-        assertDoesNotThrow(jlegmed::stop);
-    }
 
     @Test
     void testMultipleAwait() {

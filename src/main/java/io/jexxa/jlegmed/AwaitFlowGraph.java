@@ -50,6 +50,11 @@ public final class AwaitFlowGraph implements FlowGraph
         return this;
     }
 
+    @Override
+    public FlowGraph andProcessWith(Processor processor) {
+        return this;
+    }
+
 
     public void start()
     {

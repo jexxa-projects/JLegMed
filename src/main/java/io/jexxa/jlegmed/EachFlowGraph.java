@@ -7,6 +7,8 @@ import io.jexxa.jlegmed.processor.Processor;
 import io.jexxa.jlegmed.producer.Producer;
 import io.jexxa.jlegmed.producer.URL;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public final class EachFlowGraph implements IScheduled, FlowGraph
@@ -14,7 +16,7 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
     private final Scheduler scheduler = new Scheduler();
     private Class<?> expectedData;
     private Producer producer;
-    private Processor processor;
+    private final List<Processor> processorList = new ArrayList<>();
     private final int fixedRate;
     private final TimeUnit timeUnit;
     private final JLegMed jLegMed;
@@ -52,15 +54,12 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
         //return jLegMed;
     }
 
-    public URL andSendTo(String url) {
-        return new URL(url, expectedData, jLegMed);
-    }
 
 
      public <T extends Processor> EachFlowGraph andProcessWith(Class<T> clazz)
     {
         try {
-            this.processor = clazz.getDeclaredConstructor().newInstance();
+            this.processorList.add(clazz.getDeclaredConstructor().newInstance());
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -92,7 +91,10 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
 
     @Override
     public void execute() {
-        processor.process( producer.receive(expectedData) );
+        var result = producer.receive(expectedData);
+        for (Processor processor : processorList) {
+            result = processor.process(result);
+        }
     }
 
 

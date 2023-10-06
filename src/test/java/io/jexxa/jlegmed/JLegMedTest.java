@@ -3,6 +3,7 @@ package io.jexxa.jlegmed;
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.processor.ConsoleProcessor;
+import io.jexxa.jlegmed.processor.IDProcessor;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,59 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class JLegMedTest {
+
+    @Test
+    void testEach() {
+        //Arrange
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(1, SECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
+                .andProcessWith(ConsoleProcessor.class)
+        //Act
+                .start();
+
+        await().pollDelay(3, SECONDS).until(() -> true);
+
+        //Assert
+        assertDoesNotThrow(jlegmed::stop);
+    }
+
+    @Test
+    void testEachMultipleProcessor() {
+        //Arrange
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(1, SECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
+                .andProcessWith( IDProcessor.class )
+                .andProcessWith( IDProcessor.class )
+                .andProcessWith(ConsoleProcessor.class)
+                //Act
+                .start();
+
+        await().pollDelay(3, SECONDS).until(() -> true);
+
+        //Assert
+        assertDoesNotThrow(jlegmed::stop);
+    }
+
+    @Test
+    @Disabled("Currently not implemented")
+    void testEachSend() {
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(1, SECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
+            //    .andSendTo("MyTopic").with(this::sendData)
+
+                .start();
+
+        //replace with await
+        await().pollDelay(3, SECONDS).until(() -> true);
+
+        assertDoesNotThrow(jlegmed::stop);
+    }
 
     @Test
     void testAwait() {
@@ -42,39 +96,6 @@ class JLegMedTest {
 
 
                 .start();
-
-        assertDoesNotThrow(jlegmed::stop);
-    }
-    @Test
-    void testEach() {
-        //Arrange
-        var jlegmed = new JLegMed();
-        jlegmed
-                .each(1, SECONDS)
-                .receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith(ConsoleProcessor.class)
-        //Act
-                .start();
-
-        await().pollDelay(3, SECONDS).until(() -> true);
-
-        //Assert
-        assertDoesNotThrow(jlegmed::stop);
-    }
-
-    @Test
-    @Disabled("Currently not implemented")
-    void testEachSend() {
-        var jlegmed = new JLegMed();
-        jlegmed
-                .each(1, SECONDS)
-                .receive(NewContract.class).from(GenericProducer.class)
-            //    .andSendTo("MyTopic").with(this::sendData)
-
-                .start();
-
-        //replace with await
-        await().pollDelay(3, SECONDS).until(() -> true);
 
         assertDoesNotThrow(jlegmed::stop);
     }

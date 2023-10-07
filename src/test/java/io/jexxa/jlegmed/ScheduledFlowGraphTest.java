@@ -2,12 +2,11 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.UpdatedContract;
+import io.jexxa.jlegmed.processor.Context;
 import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.processor.StandardProcessors;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Test;
-
-import java.util.Properties;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -103,7 +102,7 @@ class ScheduledFlowGraphTest {
             return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "newInfo"));
         }
 
-        public static Message propertiesTransfromer(Message message, Properties properties) {
+        public static Message propertiesTransfromer(Message message, Context context) {
             return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "porpertiesTransformer"));
         }
     }

@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed;
 
 
+import io.jexxa.jlegmed.processor.ContextProcessor;
 import io.jexxa.jlegmed.processor.Processor;
-import io.jexxa.jlegmed.processor.PropertiesProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public final class JLegMed
         currentFlowGraph.andProcessWith(processor);
         return this;
     }
-    public JLegMed andProcessWith(PropertiesProcessor processor)
+    public JLegMed andProcessWith(ContextProcessor processor)
     {
         currentFlowGraph.andProcessWith(processor);
         return this;
@@ -56,5 +56,6 @@ public final class JLegMed
         flowGraphs.add(eachFlowgraph);
         return eachFlowgraph;
     }
+
 
 }

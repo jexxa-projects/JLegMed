@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed;
 
+import io.jexxa.jlegmed.processor.Context;
+import io.jexxa.jlegmed.processor.ContextProcessor;
 import io.jexxa.jlegmed.processor.Processor;
-import io.jexxa.jlegmed.processor.PropertiesProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Properties;
 public abstract class AbstractFlowGraph implements FlowGraph {
 
     private final List<Processor> processorList = new ArrayList<>();
+
+    private final Context context = new Context(new Properties());
 
     private final JLegMed jLegMed;
 
@@ -35,8 +38,8 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     }
 
     @Override
-    public void andProcessWith(PropertiesProcessor processor) {
-        processorList.add(new MyPropertiesProcessor(processor, new Properties()));
+    public void andProcessWith(ContextProcessor processor) {
+        processorList.add(new MyPropertiesProcessor(processor, context));
     }
 
     @Override
@@ -62,18 +65,18 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     private static class MyPropertiesProcessor implements Processor
     {
 
-        private final Properties properties;
-        private final PropertiesProcessor propertiesProcessor;
+        private final Context context;
+        private final ContextProcessor contextProcessor;
 
-        public MyPropertiesProcessor(PropertiesProcessor processor, Properties properties)
+        public MyPropertiesProcessor(ContextProcessor processor, Context context)
         {
-            this.properties = properties;
-            this.propertiesProcessor = processor;
+            this.context = context;
+            this.contextProcessor = processor;
         }
 
         @Override
         public Message process(Message message) {
-            return propertiesProcessor.process(message, properties);
+            return contextProcessor.process(message, context);
         }
     }
 }

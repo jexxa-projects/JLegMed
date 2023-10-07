@@ -1,6 +1,8 @@
-package io.jexxa.jlegmed.producer;
+package io.jexxa.jlegmed.plugins.generic.producer;
 
-public class GenericProducer implements Producer{
+import io.jexxa.jlegmed.core.Producer;
+
+public class GenericProducer implements Producer {
     private int counter = 0;
     public <T> T produce(Class<T> clazz)
     {

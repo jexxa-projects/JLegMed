@@ -1,13 +1,13 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.dto.incoming.NewContract;
-import io.jexxa.jlegmed.jexxacp.common.wrapper.logger.SLF4jLogger;
+import io.jexxa.jlegmed.common.logger.SLF4jLogger;
 import io.jexxa.jlegmed.processor.MessageCollector;
-import io.jexxa.jlegmed.processor.StandardProcessors;
-import io.jexxa.jlegmed.producer.GenericActiveProducer;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.plugins.generic.producer.GenericActiveProducer;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.Context.idOf;
+import static io.jexxa.jlegmed.core.Context.idOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
@@ -20,8 +20,8 @@ class ActiveFlowGraphTest {
         jlegmed
                 .await(NewContract.class)
                 .from(GenericActiveProducer.class)
-                .andProcessWith( StandardProcessors::idProcessor )
-                .andProcessWith( StandardProcessors::consoleLogger )
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
         //Act
         jlegmed.start();
@@ -40,7 +40,7 @@ class ActiveFlowGraphTest {
                 .await(NewContract.class)
                 .from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( StandardProcessors::consoleLogger )
+                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
         //Act
         jlegmed.start();
@@ -60,13 +60,13 @@ class ActiveFlowGraphTest {
                 .await(NewContract.class)
                 .from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( StandardProcessors::consoleLogger )
+                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1 )
 
                 .await(NewContract.class)
                 .from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( StandardProcessors::consoleLogger )
+                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector2 );
 
         //Act

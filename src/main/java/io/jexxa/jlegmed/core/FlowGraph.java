@@ -1,7 +1,4 @@
-package io.jexxa.jlegmed;
-
-import io.jexxa.jlegmed.processor.Processor;
-import io.jexxa.jlegmed.processor.ContextProcessor;
+package io.jexxa.jlegmed.core;
 
 public interface FlowGraph {
     <T extends Processor> void andProcessWith(Class<T> clazz);

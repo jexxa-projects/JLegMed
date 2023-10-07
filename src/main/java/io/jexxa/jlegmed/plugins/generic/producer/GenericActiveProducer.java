@@ -1,14 +1,15 @@
-package io.jexxa.jlegmed.producer;
+package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.FlowGraph;
-import io.jexxa.jlegmed.Message;
-import io.jexxa.jlegmed.jexxacp.scheduler.IScheduled;
-import io.jexxa.jlegmed.jexxacp.scheduler.Scheduler;
+import io.jexxa.jlegmed.core.ActiveProducer;
+import io.jexxa.jlegmed.core.FlowGraph;
+import io.jexxa.jlegmed.core.Message;
+import io.jexxa.jlegmed.core.scheduler.IScheduled;
+import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class GenericActiveProducer implements ActiveProducer , IScheduled {
+public class GenericActiveProducer implements ActiveProducer, IScheduled {
     private static final int FIXED_RATE = 5;
     private static final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 

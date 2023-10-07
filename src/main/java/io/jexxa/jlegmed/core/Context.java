@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -18,6 +18,7 @@ public class Context {
         return clazz.cast(contextData.get(id));
     }
 
+    @SuppressWarnings("unused")
     public Properties getProperties()
     {
         return properties;

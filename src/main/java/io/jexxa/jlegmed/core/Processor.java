@@ -1,6 +1,4 @@
-package io.jexxa.jlegmed.processor;
-
-import io.jexxa.jlegmed.Message;
+package io.jexxa.jlegmed.core;
 
 public interface Processor {
     Message process(Message message);

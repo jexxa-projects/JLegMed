@@ -1,6 +1,5 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 public class Message {

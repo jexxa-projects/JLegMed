@@ -1,10 +1,8 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
 
-import io.jexxa.jlegmed.jexxacp.scheduler.IScheduled;
-import io.jexxa.jlegmed.jexxacp.scheduler.Scheduler;
-import io.jexxa.jlegmed.producer.ContextProducer;
-import io.jexxa.jlegmed.producer.Producer;
+import io.jexxa.jlegmed.core.scheduler.IScheduled;
+import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
 import java.util.concurrent.TimeUnit;
 

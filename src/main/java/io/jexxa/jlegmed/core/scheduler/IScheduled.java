@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.jexxacp.scheduler;
+package io.jexxa.jlegmed.core.scheduler;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,8 +1,5 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
-
-import io.jexxa.jlegmed.processor.ContextProcessor;
-import io.jexxa.jlegmed.processor.Processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +11,7 @@ public final class JLegMed
     private final List<FlowGraph> flowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
 
+    @SuppressWarnings("unused")
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
     {
         currentFlowGraph.andProcessWith(clazz);
@@ -31,6 +29,7 @@ public final class JLegMed
         return this;
     }
 
+    @SuppressWarnings("java:S1172")
     public <T> ActiveFlowGraph await(Class<T> inputData) {
         var flowGraph = new ActiveFlowGraph(this);
         this.currentFlowGraph = flowGraph;

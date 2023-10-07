@@ -1,8 +1,8 @@
-package io.jexxa.jlegmed.producer;
+package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.Context;
+import io.jexxa.jlegmed.core.Context;
 
-import static io.jexxa.jlegmed.Context.idOf;
+import static io.jexxa.jlegmed.core.Context.idOf;
 
 public class GenericContextProducer {
 

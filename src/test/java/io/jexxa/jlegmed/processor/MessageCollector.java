@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.processor;
 
-import groovyjarjarantlr.debug.MessageAdapter;
-import io.jexxa.jlegmed.Message;
+import io.jexxa.jlegmed.core.Message;
+import io.jexxa.jlegmed.core.Processor;
 
 import java.util.ArrayList;
 import java.util.List;

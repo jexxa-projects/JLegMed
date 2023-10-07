@@ -1,7 +1,4 @@
-package io.jexxa.jlegmed;
-
-import io.jexxa.jlegmed.processor.ContextProcessor;
-import io.jexxa.jlegmed.processor.Processor;
+package io.jexxa.jlegmed.core;
 
 import java.util.ArrayList;
 import java.util.List;

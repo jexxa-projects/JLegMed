@@ -1,11 +1,11 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.processor.MessageCollector;
-import io.jexxa.jlegmed.processor.StandardProcessors;
-import io.jexxa.jlegmed.producer.GenericContextProducer;
-import io.jexxa.jlegmed.producer.GenericProducer;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.plugins.generic.producer.GenericContextProducer;
+import io.jexxa.jlegmed.plugins.generic.producer.GenericProducer;
 import org.junit.jupiter.api.Test;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -22,8 +22,8 @@ class ScheduledFlowGraphTest {
         jlegmed
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith( StandardProcessors::idProcessor )
-                .andProcessWith( StandardProcessors::consoleLogger )
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
         //Act
         jlegmed.start();
@@ -60,11 +60,11 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith(StandardProcessors::idProcessor)
+                .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector1)
 
                 .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith(StandardProcessors::idProcessor)
+                .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2);
 
         //Act
@@ -86,11 +86,11 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
-                .andProcessWith(StandardProcessors::consoleLogger)
+                .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector1)
 
                 .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
-                .andProcessWith(StandardProcessors::consoleLogger)
+                .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector2);
 
         //Act
@@ -111,7 +111,7 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(MyTransformer::transformToUpdatedContract)
-                .andProcessWith(StandardProcessors::idProcessor)
+                .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector);
         //Act
         jlegmed.start();

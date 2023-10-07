@@ -1,7 +1,5 @@
-package io.jexxa.jlegmed;
+package io.jexxa.jlegmed.core;
 
-
-import io.jexxa.jlegmed.producer.ActiveProducer;
 
 import java.util.Properties;
 

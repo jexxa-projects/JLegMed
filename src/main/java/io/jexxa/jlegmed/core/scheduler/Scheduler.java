@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.jexxacp.scheduler;
+package io.jexxa.jlegmed.core.scheduler;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.InvocationManager;
@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.jexxacp.common.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
 
 
 public class Scheduler implements IDrivingAdapter

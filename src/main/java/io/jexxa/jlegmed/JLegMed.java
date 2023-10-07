@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public final class JLegMed
 {
 
-    private final List<ScheduledFlowGraph> scheduledFlowGraphs = new ArrayList<>();
+    private final List<FlowGraph> flowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
 
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
@@ -31,15 +31,21 @@ public final class JLegMed
         return this;
     }
 
+    public <T> ActiveFlowGraph await(Class<T> inputData) {
+        var flowGraph = new ActiveFlowGraph(this);
+        this.currentFlowGraph = flowGraph;
+        flowGraphs.add(flowGraph);
+        return flowGraph;
+    }
 
     public void start()
     {
-        scheduledFlowGraphs.forEach(ScheduledFlowGraph::start);
+        flowGraphs.forEach(FlowGraph::start);
     }
 
     public void stop()
     {
-        scheduledFlowGraphs.forEach(ScheduledFlowGraph::stop);
+        flowGraphs.forEach(FlowGraph::stop);
     }
 
 
@@ -47,7 +53,7 @@ public final class JLegMed
     {
         var eachFlowgraph = new ScheduledFlowGraph(this, fixedRate, timeUnit);
         this.currentFlowGraph = eachFlowgraph;
-        scheduledFlowGraphs.add(eachFlowgraph);
+        flowGraphs.add(eachFlowgraph);
         return eachFlowgraph;
     }
 

@@ -2,7 +2,7 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.jdbc.JDBCConnection;
-import io.jexxa.jlegmed.processor.ConsoleProcessor;
+import io.jexxa.jlegmed.processor.StandardProcessors;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +53,7 @@ class JLegMedTest {
         jlegmed
                 .each(1, SECONDS)
                 .receive(NewContract.class).from("jdbc://MYDataBase").with(this::readData)
-                .andProcessWith(ConsoleProcessor.class)
+                .andProcessWith(StandardProcessors::consoleLogger)
 
                 .start();
 

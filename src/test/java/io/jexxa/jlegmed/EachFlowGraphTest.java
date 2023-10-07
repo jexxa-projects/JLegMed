@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EachFlowGraphTest {
     @Test
@@ -74,6 +76,9 @@ class EachFlowGraphTest {
         jlegmed.start();
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
+
+        //Assert
+        assertFalse(messageCollector.getMessages(UpdatedContract.class).isEmpty());
     }
 
     public static class MyTransformer  {

@@ -8,7 +8,6 @@ public class GenericProducer implements Producer{
             ++counter;
             return clazz.getDeclaredConstructor(int.class).newInstance(counter);
         } catch (Exception e){
-            System.out.println("error creating new instance of " + clazz.getName());
             return null;
         }
     }

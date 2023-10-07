@@ -2,7 +2,6 @@ package io.jexxa.jlegmed;
 
 
 import io.jexxa.jlegmed.processor.Processor;
-import io.jexxa.jlegmed.producer.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +10,7 @@ import java.util.concurrent.TimeUnit;
 public final class JLegMed
 {
 
-    private final List<EachFlowGraph> eachFlowGraphs = new ArrayList<>();
-    //private final List<AwaitFlowGraph> awaitFlowGraphs = new ArrayList<>();
+    private final List<ScheduledFlowGraph> scheduledFlowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
     {
@@ -29,33 +27,21 @@ public final class JLegMed
 
     public void start()
     {
-      //  awaitFlowGraphs.forEach(AwaitFlowGraph::start);
-        eachFlowGraphs.forEach(EachFlowGraph::start);
+        scheduledFlowGraphs.forEach(ScheduledFlowGraph::start);
     }
 
     public void stop()
     {
-        //awaitFlowGraphs.forEach(AwaitFlowGraph::stop);
-        eachFlowGraphs.forEach(EachFlowGraph::stop);
+        scheduledFlowGraphs.forEach(ScheduledFlowGraph::stop);
     }
 
 
-    EachFlowGraph each(int fixedRate, TimeUnit timeUnit)
+    ScheduledFlowGraph each(int fixedRate, TimeUnit timeUnit)
     {
-        var eachFlowgraph = new EachFlowGraph(this, fixedRate, timeUnit);
+        var eachFlowgraph = new ScheduledFlowGraph(this, fixedRate, timeUnit);
         this.currentFlowGraph = eachFlowgraph;
-        eachFlowGraphs.add(eachFlowgraph);
+        scheduledFlowGraphs.add(eachFlowgraph);
         return eachFlowgraph;
     }
-
-/*    <T> AwaitFlowGraph await(Class<T> expectedData)
-    {
-        AwaitFlowGraph awaitFlowGraph = new AwaitFlowGraph(this);
-        awaitFlowGraph.receive(expectedData);
-        currentFlowGraph = awaitFlowGraph;
-        awaitFlowGraphs.add(awaitFlowGraph);
-        return awaitFlowGraph;
-    }
-*/
 
 }

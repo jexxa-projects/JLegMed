@@ -12,7 +12,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class EachFlowGraphTest {
+class ScheduledFlowGraphTest {
     @Test
     void testSingleFlowGraph() {
         //Arrange

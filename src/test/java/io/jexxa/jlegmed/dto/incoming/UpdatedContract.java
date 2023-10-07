@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.asyncreceive.dto.incoming;
+package io.jexxa.jlegmed.dto.incoming;
 
 public record UpdatedContract(int contract, String updateInformation) {
 }

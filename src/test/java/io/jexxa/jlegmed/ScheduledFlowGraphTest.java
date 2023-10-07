@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed;
 
-import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
-import io.jexxa.jlegmed.asyncreceive.dto.incoming.UpdatedContract;
+import io.jexxa.jlegmed.dto.incoming.NewContract;
+import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.processor.StandardProcessors;
 import io.jexxa.jlegmed.producer.GenericContextProducer;

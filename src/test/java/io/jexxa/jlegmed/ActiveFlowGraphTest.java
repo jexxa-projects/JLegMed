@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed;
 
-import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
+import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.processor.StandardProcessors;

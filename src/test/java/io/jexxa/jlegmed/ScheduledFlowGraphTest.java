@@ -2,9 +2,9 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.UpdatedContract;
-import io.jexxa.jlegmed.processor.Context;
 import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.processor.StandardProcessors;
+import io.jexxa.jlegmed.producer.GenericContextProducer;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Test;
 
@@ -34,14 +34,14 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
-    void testPropertiesFlowGraph() {
+    void testTransformFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith( MyTransformer::propertiesTransfromer )
+                .andProcessWith( MyTransformer::contextTransformer)
                 .andProcessWith( messageCollector );
         //Act
         jlegmed.start();
@@ -78,6 +78,31 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
+    void testMultipleContextFlowGraphs() {
+        //Arrange
+        var messageCollector1 = new MessageCollector();
+        var messageCollector2 = new MessageCollector();
+
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
+                .andProcessWith(StandardProcessors::consoleLogger)
+                .andProcessWith(messageCollector1)
+
+                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
+                .andProcessWith(StandardProcessors::consoleLogger)
+                .andProcessWith(messageCollector2);
+
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
+
+        jlegmed.stop();
+    }
+    @Test
     void testTransformData() {
         //Arrange
         var messageCollector = new MessageCollector();
@@ -102,7 +127,7 @@ class ScheduledFlowGraphTest {
             return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "newInfo"));
         }
 
-        public static Message propertiesTransfromer(Message message, Context context) {
+        public static Message contextTransformer(Message message, Context context) {
             return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "porpertiesTransformer"));
         }
     }

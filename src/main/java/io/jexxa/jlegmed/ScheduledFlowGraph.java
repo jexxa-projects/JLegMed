@@ -3,6 +3,7 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.jexxacp.scheduler.IScheduled;
 import io.jexxa.jlegmed.jexxacp.scheduler.Scheduler;
+import io.jexxa.jlegmed.producer.ContextProducer;
 import io.jexxa.jlegmed.producer.Producer;
 
 import java.util.concurrent.TimeUnit;
@@ -12,6 +13,7 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     private final int fixedRate;
     private final TimeUnit timeUnit;
     private Producer producer;
+    private ContextProducer contextProducer;
     private Class<?> expectedData;
 
     public <T> ScheduledFlowGraph receive(Class<T> expectedData)
@@ -23,6 +25,15 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     public <T extends Producer> JLegMed from(Class<T> clazz) {
         try {
             this.producer = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e){
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        return getjLegMed();
+    }
+
+    public JLegMed from(ContextProducer contextProducer) {
+        try {
+            this.contextProducer = contextProducer;
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -59,7 +70,12 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
 
     @Override
     public void execute() {
-        processMessage( new Message(producer.produce(expectedData)));
+        if (contextProducer != null)
+        {
+            processMessage(new Message(contextProducer.produce(expectedData, getContext())));
+        } else {
+            processMessage( new Message(producer.produce(expectedData)));
+        }
     }
 
 }

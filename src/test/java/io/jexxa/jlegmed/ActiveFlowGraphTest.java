@@ -2,12 +2,12 @@ package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.asyncreceive.dto.incoming.NewContract;
 import io.jexxa.jlegmed.jexxacp.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.processor.Context;
 import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.processor.StandardProcessors;
 import io.jexxa.jlegmed.producer.GenericActiveProducer;
 import org.junit.jupiter.api.Test;
 
+import static io.jexxa.jlegmed.Context.idOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
@@ -79,8 +79,10 @@ class ActiveFlowGraphTest {
     }
     private static Message skipEachSecondMessage(Message message, Context context)
     {
-        var currentCounter = context.getContextData("skipEachSecondMessage", Integer.class, 1);
-        context.updateContextData("skipEachSecondMessage", currentCounter+1);
+        var contextID = idOf(ActiveFlowGraphTest.class, "skipEachSecondMessage");
+        var currentCounter = context.getContextData(contextID, Integer.class, 1);
+
+        context.updateContextData(contextID, currentCounter+1);
         if (currentCounter % 2 == 0) {
             SLF4jLogger.getLogger(ActiveFlowGraphTest.class).info("Skip Message");
             return null;

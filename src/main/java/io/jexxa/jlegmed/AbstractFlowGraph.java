@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed;
 
-import io.jexxa.jlegmed.processor.Context;
 import io.jexxa.jlegmed.processor.ContextProcessor;
 import io.jexxa.jlegmed.processor.Processor;
 
@@ -78,5 +77,10 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         public Message process(Message message) {
             return contextProcessor.process(message, context);
         }
+    }
+
+    protected Context getContext()
+    {
+        return context;
     }
 }

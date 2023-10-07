@@ -1,11 +1,13 @@
 package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.processor.Processor;
+import io.jexxa.jlegmed.processor.PropertiesProcessor;
 import io.jexxa.jlegmed.producer.Producer;
 import io.jexxa.jlegmed.producer.URL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public abstract class AbstractFlowGraph implements FlowGraph {
     private Class<?> expectedData;
@@ -60,6 +62,11 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         processorList.add(processor);
     }
 
+    @Override
+    public void andProcessWith(PropertiesProcessor processor) {
+        processorList.add(new MyPropertiesProcessor(processor, new Properties()));
+    }
+
     public void processMessage(Message message)
     {
         var result = message;
@@ -85,4 +92,21 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         return producer;
     }
 
+    private static class MyPropertiesProcessor implements Processor
+    {
+
+        private final Properties properties;
+        private final PropertiesProcessor propertiesProcessor;
+
+        public MyPropertiesProcessor(PropertiesProcessor processor, Properties properties)
+        {
+            this.properties = properties;
+            this.propertiesProcessor = processor;
+        }
+
+        @Override
+        public Message process(Message message) {
+            return propertiesProcessor.process(message, properties);
+        }
+    }
 }

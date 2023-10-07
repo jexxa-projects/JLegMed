@@ -2,6 +2,7 @@ package io.jexxa.jlegmed;
 
 
 import io.jexxa.jlegmed.processor.Processor;
+import io.jexxa.jlegmed.processor.PropertiesProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public final class JLegMed
 
     private final List<ScheduledFlowGraph> scheduledFlowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
+
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
     {
         currentFlowGraph.andProcessWith(clazz);
@@ -19,6 +21,11 @@ public final class JLegMed
     }
 
     public JLegMed andProcessWith(Processor processor)
+    {
+        currentFlowGraph.andProcessWith(processor);
+        return this;
+    }
+    public JLegMed andProcessWith(PropertiesProcessor processor)
     {
         currentFlowGraph.andProcessWith(processor);
         return this;

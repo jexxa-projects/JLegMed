@@ -7,6 +7,8 @@ import io.jexxa.jlegmed.processor.StandardProcessors;
 import io.jexxa.jlegmed.producer.GenericProducer;
 import org.junit.jupiter.api.Test;
 
+import java.util.Properties;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -32,6 +34,23 @@ class ScheduledFlowGraphTest {
         jlegmed.stop();
     }
 
+    @Test
+    void testPropertiesFlowGraph() {
+        //Arrange
+        var messageCollector = new MessageCollector();
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
+                .andProcessWith( MyTransformer::propertiesTransfromer )
+                .andProcessWith( messageCollector );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
 
     @Test
     void testMultipleFlowGraphs() {
@@ -82,6 +101,10 @@ class ScheduledFlowGraphTest {
     public static class MyTransformer  {
         public static Message transformToUpdatedContract(Message message) {
             return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "newInfo"));
+        }
+
+        public static Message propertiesTransfromer(Message message, Properties properties) {
+            return new Message(new UpdatedContract(message.getData(NewContract.class).contractNumber(), "porpertiesTransformer"));
         }
     }
 

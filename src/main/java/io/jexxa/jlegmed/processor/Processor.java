@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.processor;
 
+import io.jexxa.jlegmed.Message;
+
 public interface Processor {
-    <T> T process(T data);
+    Message process(Message message);
 }

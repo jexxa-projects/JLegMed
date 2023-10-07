@@ -1,9 +1,10 @@
 package io.jexxa.jlegmed;
 
 import io.jexxa.jlegmed.processor.Processor;
+import io.jexxa.jlegmed.producer.URL;
 
 public interface FlowGraph {
-    public <T extends Processor> FlowGraph andProcessWith(Class<T> clazz);
-    public FlowGraph andProcessWith(Processor processor);
+    <T extends Processor> FlowGraph andProcessWith(Class<T> clazz);
+    FlowGraph andProcessWith(Processor processor);
 
 }

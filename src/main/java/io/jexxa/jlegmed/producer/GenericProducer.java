@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.producer;
 
 public class GenericProducer implements Producer{
     private int counter = 0;
-    public <T> T receive(Class<T> clazz)
+    public <T> T produce(Class<T> clazz)
     {
         try {
             ++counter;

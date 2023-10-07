@@ -2,6 +2,7 @@ package io.jexxa.jlegmed;
 
 
 import io.jexxa.jlegmed.processor.Processor;
+import io.jexxa.jlegmed.producer.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ public final class JLegMed
 {
 
     private final List<EachFlowGraph> eachFlowGraphs = new ArrayList<>();
-    private final List<AwaitFlowGraph> awaitFlowGraphs = new ArrayList<>();
+    //private final List<AwaitFlowGraph> awaitFlowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
     public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
     {
@@ -28,13 +29,13 @@ public final class JLegMed
 
     public void start()
     {
-        awaitFlowGraphs.forEach(AwaitFlowGraph::start);
+      //  awaitFlowGraphs.forEach(AwaitFlowGraph::start);
         eachFlowGraphs.forEach(EachFlowGraph::start);
     }
 
     public void stop()
     {
-        awaitFlowGraphs.forEach(AwaitFlowGraph::stop);
+        //awaitFlowGraphs.forEach(AwaitFlowGraph::stop);
         eachFlowGraphs.forEach(EachFlowGraph::stop);
     }
 
@@ -47,7 +48,7 @@ public final class JLegMed
         return eachFlowgraph;
     }
 
-    <T> AwaitFlowGraph await(Class<T> expectedData)
+/*    <T> AwaitFlowGraph await(Class<T> expectedData)
     {
         AwaitFlowGraph awaitFlowGraph = new AwaitFlowGraph(this);
         awaitFlowGraph.receive(expectedData);
@@ -55,6 +56,6 @@ public final class JLegMed
         awaitFlowGraphs.add(awaitFlowGraph);
         return awaitFlowGraph;
     }
-
+*/
 
 }

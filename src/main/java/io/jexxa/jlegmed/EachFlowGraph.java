@@ -73,7 +73,6 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
         return this;
     }
 
-
     public void start()
     {
         scheduler.register(this);
@@ -97,12 +96,16 @@ public final class EachFlowGraph implements IScheduled, FlowGraph
 
     @Override
     public void execute() {
-        var result = producer.receive(expectedData);
+
+        var result = new Message(producer.produce(expectedData));
+
         for (Processor processor : processorList) {
             result = processor.process(result);
+            if (result == null)
+            {
+                return;
+            }
         }
     }
-
-
 
 }

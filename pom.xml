@@ -79,7 +79,19 @@
     <maven.versions.plugin>2.16.1</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.5.1</maven.shade.plugin>
-</properties>
+
+    <!-- sonar configuration  -->
+    <sonar.organization>jexxa-projects</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.projectKey>jexxa-projects_Jexxa</sonar.projectKey>
+    <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+    <sonar.login>${sonar-login}</sonar.login>
+    <sonar.java.source>1.17</sonar.java.source>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-ut/jacoco.xml,target/site/jacoco-it/jacoco.xml </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.java.libraries>target</sonar.java.libraries>
+    <argLine>-Xmx2048m -Xms1024m</argLine>
+
+  </properties>
 
   <dependencies>
     <!-- dependencies for library -->

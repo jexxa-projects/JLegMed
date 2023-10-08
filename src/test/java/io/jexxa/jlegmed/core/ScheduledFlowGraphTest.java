@@ -59,11 +59,13 @@ class ScheduledFlowGraphTest {
 
         var jlegmed = new JLegMed();
         jlegmed
-                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector1)
 
-                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericProducer.class)
+                .each(20, MILLISECONDS)
+                .receive(NewContract.class).from(GenericProducer.class)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2);
 
@@ -85,11 +87,13 @@ class ScheduledFlowGraphTest {
 
         var jlegmed = new JLegMed();
         jlegmed
-                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class).from(GenericContextProducer::produce)
                 .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector1)
 
-                .each(10, MILLISECONDS).receive(NewContract.class).from(GenericContextProducer::produce)
+                .each(20, MILLISECONDS)
+                .receive(NewContract.class).from(GenericContextProducer::produce)
                 .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector2);
 

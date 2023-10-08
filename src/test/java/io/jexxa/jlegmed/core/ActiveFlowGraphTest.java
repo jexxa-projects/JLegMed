@@ -18,8 +18,7 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class)
-                .from(GenericActiveProducer.class)
+                .await(NewContract.class).from(GenericActiveProducer.class)
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
@@ -37,8 +36,7 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class)
-                .from(GenericActiveProducer.class)
+                .await(NewContract.class).from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
@@ -57,14 +55,12 @@ class ActiveFlowGraphTest {
         var messageCollector2 = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class)
-                .from(GenericActiveProducer.class)
+                .await(NewContract.class).from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1 )
 
-                .await(NewContract.class)
-                .from(GenericActiveProducer.class)
+                .await(NewContract.class).from(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector2 );

@@ -33,10 +33,6 @@
   </scm>
 
   <properties>
-    <test.coverage.minimum>0.00</test.coverage.minimum>     <!-- Minimum Test coverage in %-->
-
-    <main.class>${project.groupId}.${project.name}</main.class>
-
     <!-- target/compiler configuration  -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
@@ -151,13 +147,8 @@
     </dependency>
   </dependencies>
 
-  <!-- ********************************************************************** -->
-  <!-- IMPORTANT: Change following lines only if you are familiar with maven  -->
-  <!-- IMPORTANT: If you really need to adjust following lines, please check  -->
-  <!-- IMPORTANT: if you should start your maven project.                     -->
-  <!-- ********************************************************************** -->
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults -->
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (maybe moved to parent pom) -->
       <plugins>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
@@ -166,16 +157,25 @@
         </plugin>
         <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
         <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven.enforcer.plugin}</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>${maven.resources.plugin}</version>
         </plugin>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>templating-maven-plugin</artifactId>
+          <version>${maven.templating.plugin}</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven.compiler.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven.failsafe.plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven.release.plugin}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -190,11 +190,9 @@
           <version>${maven.install.plugin}</version>
         </plugin>
         <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${maven.deploy.plugin}</version>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${maven.reports.plugin}</version>
         </plugin>
         <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
         <plugin>
@@ -202,13 +200,24 @@
           <version>${maven.site.plugin}</version>
         </plugin>
         <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>${maven.reports.plugin}</version>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${maven.jacoco.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${maven.build.helper.version}</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${gpg.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven.enforcer.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${maven.shade.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -219,67 +228,155 @@
             <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
           </configuration>
         </plugin>
+
+
+        <plugin>
+          <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven.deploy.plugin}</version>
+          <executions>
+            <execution>
+              <id>deploy</id>
+              <phase>deploy</phase>
+              <goals><goal>deploy</goal></goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
 
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
 
+
+    <!-- Plugin specific configuration -->
     <plugins>
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${maven.jacoco.plugin}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
-            <id>default-prepare-agent</id>
+            <id>compile</id>
+            <phase>compile</phase>
             <goals>
-              <goal>prepare-agent</goal>
+              <goal>compile</goal>
             </goals>
           </execution>
           <execution>
-            <id>default-report</id>
+            <id>testCompile</id>
+            <phase>test-compile</phase>
             <goals>
-              <goal>report</goal>
+              <goal>testCompile</goal>
             </goals>
           </execution>
+        </executions>
+        <configuration>
+          <compilerArgument>-Xlint:all</compilerArgument>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <!--suppress UnresolvedMavenProperty -->
+          <!-- Property failsafeArgLine is set from failsafe plugin-->
+          <argLine>${failsafeArgLine}</argLine>
+        </configuration>
+        <executions>
           <execution>
-            <id>default-check</id>
+            <id>integration-tests</id>
             <goals>
-              <goal>check</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
             </goals>
-            <configuration>
-              <rules>
-                <rule>
-                  <element>BUNDLE</element>
-                  <limits>
-                    <limit>
-                      <counter>COMPLEXITY</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>${test.coverage.minimum}</minimum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
           </execution>
         </executions>
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <nonFilteredFileExtensions>
-            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
-          </nonFilteredFileExtensions>
+          <!--suppress UnresolvedMavenProperty -->
+          <!-- Property surefireArgLine wird vom maven-surefire-plugin gesetzt-->
+          <argLine>${surefireArgLine}</argLine>
         </configuration>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <releaseProfiles>sign-artifacts</releaseProfiles>
+          <arguments>-Psign-artifacts</arguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin}</version>
+        <configuration>
+          <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+          <tags>
+            <tag>
+              <name>pre</name>
+              <placement>mc</placement>
+              <head>Preconditions:</head>
+            </tag>
+            <tag>
+              <name>post</name>
+              <placement>mc</placement>
+              <head>Postconditions:</head>
+            </tag>
+            <tag>
+              <name>inv</name>
+              <placement>t</placement>
+              <head>Invariants:</head>
+            </tag>
+            <tag>
+              <name>startuml</name>
+              <placement>t</placement>
+              <head>Plantuml:</head>
+            </tag>
+            <tag>
+              <name>enduml</name>
+              <placement>t</placement>
+              <head>Plantuml:</head>
+            </tag>
+            <tag>
+              <name>Optional</name>
+              <placement>t</placement>
+              <head>Plantuml-Optional:</head>
+            </tag>
+          </tags>
+          <additionalOptions>-Xdoclint:none -Xdoclint:-missing</additionalOptions>
+          <additionalJOptions>
+            <additionalJOption>-Xdoclint:none</additionalJOption>
+            <additionalJOption>-Xdoclint:-missing</additionalJOption>
+          </additionalJOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -301,75 +398,15 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven.shade.plugin}</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-
-            <configuration>
-
-              <finalName>${project.artifactId}-jar-with-dependencies</finalName>
-
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>module-info.class</exclude>
-                    <exclude>about.html</exclude>
-                    <exclude>META-INF/MANIFEST.MF</exclude>
-                    <exclude>META-INF/*.txt</exclude>
-                    <exclude>META-INF/NOTICE</exclude>
-                    <exclude>META-INF/LICENSE</exclude>
-                  </excludes>
-                </filter>
-
-                <filter>
-                  <artifact>org.eclipse.jetty:*</artifact>
-                  <excludes>
-                    <exclude>**/encoding.properties</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${main.class}</mainClass>
-                </transformer>
-              </transformers>
-
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven.jar.plugin}</version>
-
+        <artifactId>maven-resources-plugin</artifactId>
         <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <mainClass>${main.class}</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <release>${maven.compiler.release}</release>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
         </configuration>
       </plugin>
     </plugins>
-
   </build>
   <profiles>
     <profile>

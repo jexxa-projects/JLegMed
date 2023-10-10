@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.inputStreamOf;
-import static io.jexxa.jlegmed.plugins.messaging.MessageProcessors.sendToTopicAsJSON;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

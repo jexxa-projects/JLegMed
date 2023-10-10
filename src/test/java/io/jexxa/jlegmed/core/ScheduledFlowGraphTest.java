@@ -195,28 +195,5 @@ class ScheduledFlowGraphTest {
         }
     }
 
-    @Test
-    void testJMSFlowGraph() {
-        //Arrange
-        var messageCollector = new MessageCollector();
-        var jlegmed = new JLegMed();
-        jlegmed
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(GenericProducer.class)
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith(  ScheduledFlowGraphTest::testTopicSender)
-                .andProcessWith( messageCollector );
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
-    }
-
-    public static Message testTopicSender(Message message, Context context)
-    {
-        return sendToTopicAsJSON (message, context, "TestTopic");
-    }
 
 }

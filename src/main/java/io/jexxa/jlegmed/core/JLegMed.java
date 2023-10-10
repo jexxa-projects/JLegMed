@@ -48,7 +48,7 @@ public final class JLegMed
     }
 
 
-    ScheduledFlowGraph each(int fixedRate, TimeUnit timeUnit)
+    public ScheduledFlowGraph each(int fixedRate, TimeUnit timeUnit)
     {
         var eachFlowgraph = new ScheduledFlowGraph(this, fixedRate, timeUnit);
         this.currentFlowGraph = eachFlowgraph;

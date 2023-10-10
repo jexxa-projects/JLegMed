@@ -21,25 +21,25 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
         return this;
     }
 
-    public <T extends Producer> JLegMed from(Class<T> clazz) {
+    public JLegMed generatedWith(Producer producer) {
         try {
-            this.producer = clazz.getDeclaredConstructor().newInstance();
+            this.producer = producer;
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return getjLegMed();
     }
 
-    public <T extends ProducerURL> T fromURL(T produerURL) {
-        produerURL.setFlowGraph(this);
-        produerURL.setApplication(getjLegMed());
-        produerURL.setProperties(new Properties());
-        this.producer = produerURL.getProducer();
+    public <T extends ProducerURL> T from(T producerURL) {
+        producerURL.setFlowGraph(this);
+        producerURL.setApplication(getjLegMed());
+        producerURL.setProperties(new Properties());
+        this.producer = producerURL.getProducer();
 
-        return produerURL;
+        return producerURL;
     }
 
-    public JLegMed from(ContextProducer contextProducer) {
+    public JLegMed generatedWith(ContextProducer contextProducer) {
         try {
             this.contextProducer = contextProducer;
         } catch (Exception e){
@@ -87,7 +87,7 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
         }
 
         if ( result != null) {
-            processMessage(new Message(result));
+            processMessage(new Content(result));
         }
     }
 

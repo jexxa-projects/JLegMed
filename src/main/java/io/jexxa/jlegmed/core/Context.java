@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Context {
@@ -12,10 +13,9 @@ public class Context {
         this.properties = properties;
     }
 
-    public <T> T getContextData(String id, Class<T> clazz, T startValue)
+    public <T> Optional<T> get(String id, Class<T> clazz)
     {
-        contextData.putIfAbsent(id, startValue);
-        return clazz.cast(contextData.get(id));
+        return Optional.ofNullable(clazz.cast(contextData.get(id)));
     }
 
     @SuppressWarnings("unused")
@@ -24,11 +24,13 @@ public class Context {
         return properties;
     }
 
-    public void updateContextData(String id, Object data) {
+
+    public <T> T update(String id, T data) {
         contextData.put(id, data);
+        return data;
     }
 
-    public static String idOf(Class<?> type, String id)
+    public static String contextID(Class<?> type, String id)
     {
         return type.getSimpleName() + id;
     }

@@ -11,7 +11,7 @@ public class ActiveFlowGraph extends AbstractFlowGraph {
         super(jLegMed);
     }
 
-    public <T extends ActiveProducer> JLegMed from(Class<T> clazz) {
+    public <T extends ActiveProducer> JLegMed generatedWith(Class<T> clazz) {
         try {
             this.activeProducer = clazz.getDeclaredConstructor().newInstance();
             activeProducer.init(new Properties(), this);

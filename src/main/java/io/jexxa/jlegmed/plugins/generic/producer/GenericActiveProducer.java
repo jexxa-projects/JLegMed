@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.ActiveProducer;
 import io.jexxa.jlegmed.core.FlowGraph;
-import io.jexxa.jlegmed.core.Message;
+import io.jexxa.jlegmed.core.Content;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
@@ -48,6 +48,6 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
     public void execute()
     {
         ++counter;
-        flowGraph.processMessage(new Message(counter));
+        flowGraph.processMessage(new Content(counter));
     }
 }

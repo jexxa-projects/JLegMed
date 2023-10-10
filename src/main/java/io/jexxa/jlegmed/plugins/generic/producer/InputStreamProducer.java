@@ -10,6 +10,9 @@ import java.io.InputStreamReader;
 public class InputStreamProducer implements Producer {
     private final InputStream inputStream;
     private final Gson gson = new Gson();
+    private ProducerMode producerMode = ProducerMode.ONLY_ONCE;
+
+    private enum ProducerMode{ONLY_ONCE, UNTIL_STOPPED}
 
     public InputStreamProducer(InputStream inputStream)
     {
@@ -17,9 +20,11 @@ public class InputStreamProducer implements Producer {
         inputStream.mark(8000);
     }
     @Override
-    public <T> T produce(Class<T> clazz) {
+    public  Object produce(Class<?> clazz) {
+        var result = gson.fromJson(new InputStreamReader(inputStream), clazz);
+
         try {
-            if (inputStream.available() == 0) {
+            if (producerMode == ProducerMode.UNTIL_STOPPED) {
                 inputStream.reset();
             }
         } catch (IOException e)
@@ -27,6 +32,14 @@ public class InputStreamProducer implements Producer {
             return null;
         }
 
-        return gson.fromJson(new InputStreamReader(inputStream), clazz);
+        return result;
+    }
+
+    public void untilStopped() {
+        producerMode = ProducerMode.UNTIL_STOPPED;
+    }
+
+    public void onlyOnce() {
+        producerMode = ProducerMode.ONLY_ONCE;
     }
 }

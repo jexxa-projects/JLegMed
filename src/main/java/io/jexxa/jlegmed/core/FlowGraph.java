@@ -8,5 +8,5 @@ public interface FlowGraph {
     void start();
     void stop();
 
-    void processMessage(Message message);
+    void processMessage(Content content);
 }

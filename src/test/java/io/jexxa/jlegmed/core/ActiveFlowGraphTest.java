@@ -2,12 +2,12 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.common.logger.SLF4jLogger;
-import io.jexxa.jlegmed.processor.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.generic.producer.GenericActiveProducer;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.core.Context.idOf;
+import static io.jexxa.jlegmed.core.Context.contextID;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
@@ -18,7 +18,8 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class).from(GenericActiveProducer.class)
+                .await(NewContract.class).generatedWith(GenericActiveProducer.class)
+
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
@@ -36,7 +37,8 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class).from(GenericActiveProducer.class)
+                .await(NewContract.class).generatedWith(GenericActiveProducer.class)
+
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
@@ -55,12 +57,12 @@ class ActiveFlowGraphTest {
         var messageCollector2 = new MessageCollector();
         var jlegmed = new JLegMed();
         jlegmed
-                .await(NewContract.class).from(GenericActiveProducer.class)
+                .await(NewContract.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1 )
 
-                .await(NewContract.class).from(GenericActiveProducer.class)
+                .await(NewContract.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector2 );
@@ -76,17 +78,17 @@ class ActiveFlowGraphTest {
 
 
 
-    private static Message skipEachSecondMessage(Message message, Context context)
+    private static Content skipEachSecondMessage(Content content, Context context)
     {
-        var contextID = idOf(ActiveFlowGraphTest.class, "skipEachSecondMessage");
-        var currentCounter = context.getContextData(contextID, Integer.class, 1);
+        var contextID = contextID(ActiveFlowGraphTest.class, "skipEachSecondMessage");
+        int currentCounter = context.get(contextID, Integer.class).orElse(1);
+        context.update(contextID, currentCounter+1);
 
-        context.updateContextData(contextID, currentCounter+1);
         if (currentCounter % 2 == 0) {
             SLF4jLogger.getLogger(ActiveFlowGraphTest.class).info("Skip Message");
             return null;
         }
-        return message;
+        return content;
     }
 
 }

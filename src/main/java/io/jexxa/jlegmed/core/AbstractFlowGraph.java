@@ -39,9 +39,9 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     }
 
     @Override
-    public void processMessage(Message message)
+    public void processMessage(Content content)
     {
-        var result = message;
+        var result = content;
 
         for (Processor processor : processorList) {
             result = processor.process(result);
@@ -71,8 +71,8 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         }
 
         @Override
-        public Message process(Message message) {
-            return contextProcessor.process(message, context);
+        public Content process(Content content) {
+            return contextProcessor.process(content, context);
         }
     }
 

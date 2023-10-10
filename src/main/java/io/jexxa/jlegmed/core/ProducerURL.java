@@ -7,7 +7,7 @@ public abstract class ProducerURL {
     private JLegMed jLegMed;
     private Properties properties;
 
-    abstract Producer getProducer();
+    protected abstract Producer getProducer();
 
     void setFlowGraph(FlowGraph flowGraph) {
         this.flowGraph = flowGraph;

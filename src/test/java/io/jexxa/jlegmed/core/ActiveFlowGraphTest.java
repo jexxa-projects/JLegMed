@@ -73,6 +73,9 @@ class ActiveFlowGraphTest {
         await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
     }
+
+
+
     private static Message skipEachSecondMessage(Message message, Context context)
     {
         var contextID = idOf(ActiveFlowGraphTest.class, "skipEachSecondMessage");
@@ -85,4 +88,5 @@ class ActiveFlowGraphTest {
         }
         return message;
     }
+
 }

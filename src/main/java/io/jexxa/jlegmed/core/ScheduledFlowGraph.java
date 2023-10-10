@@ -4,6 +4,7 @@ package io.jexxa.jlegmed.core;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public final class ScheduledFlowGraph extends AbstractFlowGraph implements IScheduled {
@@ -27,6 +28,15 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return getjLegMed();
+    }
+
+    public <T extends ProducerURL> T fromURL(T produerURL) {
+        produerURL.setFlowGraph(this);
+        produerURL.setApplication(getjLegMed());
+        produerURL.setProperties(new Properties());
+        this.producer = produerURL.getProducer();
+
+        return produerURL;
     }
 
     public JLegMed from(ContextProducer contextProducer) {
@@ -68,11 +78,16 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
 
     @Override
     public void execute() {
+        Object result;
         if (contextProducer != null)
         {
-            processMessage(new Message(contextProducer.produce(expectedData, getContext())));
+            result = contextProducer.produce(expectedData, getContext());
         } else {
-            processMessage( new Message(producer.produce(expectedData)));
+            result = producer.produce(expectedData);
+        }
+
+        if ( result != null) {
+            processMessage(new Message(result));
         }
     }
 

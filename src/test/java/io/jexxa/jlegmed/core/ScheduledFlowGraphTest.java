@@ -1,13 +1,20 @@
 package io.jexxa.jlegmed.core;
 
+import com.google.gson.Gson;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
-import io.jexxa.jlegmed.processor.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.generic.producer.GenericContextProducer;
 import io.jexxa.jlegmed.plugins.generic.producer.GenericProducer;
+import io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer;
+import io.jexxa.jlegmed.processor.MessageCollector;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.Deserializer.GSON;
+import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.streamOf;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -33,6 +40,28 @@ class ScheduledFlowGraphTest {
         jlegmed.stop();
     }
 
+    @Test
+    void testProducerFlowGraph() {
+        //Arrange
+        var messageCollector = new MessageCollector();
+        var newContract = new NewContract(1);
+
+        var inputStream = new ByteArrayInputStream(new Gson().toJson(newContract).getBytes());
+
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class).fromURL(streamOf(inputStream)).withSerializer(GSON)
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 1);
+        jlegmed.stop();
+    }
     @Test
     void testTransformFlowGraph() {
         //Arrange
@@ -136,4 +165,37 @@ class ScheduledFlowGraphTest {
         }
     }
 
+    public static class InputStreamURL extends ProducerURL {
+
+        private final InputStream inputStream;
+        private InputStreamProducer inputStreamProducer;
+
+        public static enum Deserializer {NONE, GSON;}
+
+        public InputStreamURL(InputStream inputStreamReader)
+        {
+            this.inputStream = inputStreamReader;
+        }
+
+        @Override
+        public InputStreamProducer getProducer() {
+            if (inputStreamProducer == null )
+            {
+                this.inputStreamProducer = new InputStreamProducer(inputStream, getFlowGraph());
+            }
+            return inputStreamProducer;
+        }
+
+        JLegMed withSerializer(Deserializer deserializer)
+        {
+            if (deserializer == GSON) {
+                getProducer().setGsonDeserializer();
+            }
+            return getApplication();
+        }
+
+        public static InputStreamURL streamOf(InputStream inputStream) {
+            return new InputStreamURL(inputStream);
+        }
+    }
 }

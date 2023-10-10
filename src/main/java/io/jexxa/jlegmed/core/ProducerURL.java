@@ -26,9 +26,6 @@ public abstract class ProducerURL {
         return jLegMed;
     }
 
-    public JLegMed and() {
-        return jLegMed;
-    }
 
     void setProperties(Properties properties)
     {

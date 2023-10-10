@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.Deserializer.GSON;
-import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.streamOf;
+import static io.jexxa.jlegmed.core.ScheduledFlowGraphTest.InputStreamURL.inputStreamOf;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -41,7 +40,7 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
-    void testProducerFlowGraph() {
+    void testProducerURLFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector();
         var newContract = new NewContract(1);
@@ -51,7 +50,8 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).fromURL(streamOf(inputStream)).withSerializer(GSON)
+                .receive(NewContract.class).fromURL(inputStreamOf(inputStream)).repeatUntilStopped()
+
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector );
@@ -170,8 +170,6 @@ class ScheduledFlowGraphTest {
         private final InputStream inputStream;
         private InputStreamProducer inputStreamProducer;
 
-        public static enum Deserializer {NONE, GSON;}
-
         public InputStreamURL(InputStream inputStreamReader)
         {
             this.inputStream = inputStreamReader;
@@ -181,20 +179,17 @@ class ScheduledFlowGraphTest {
         public InputStreamProducer getProducer() {
             if (inputStreamProducer == null )
             {
-                this.inputStreamProducer = new InputStreamProducer(inputStream, getFlowGraph());
+                this.inputStreamProducer = new InputStreamProducer(inputStream);
             }
             return inputStreamProducer;
         }
 
-        JLegMed withSerializer(Deserializer deserializer)
-        {
-            if (deserializer == GSON) {
-                getProducer().setGsonDeserializer();
-            }
+        public JLegMed repeatUntilStopped() {
+
             return getApplication();
         }
 
-        public static InputStreamURL streamOf(InputStream inputStream) {
+        public static InputStreamURL inputStreamOf(InputStream inputStream) {
             return new InputStreamURL(inputStream);
         }
     }

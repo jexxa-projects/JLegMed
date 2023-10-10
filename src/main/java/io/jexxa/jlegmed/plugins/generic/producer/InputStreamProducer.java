@@ -1,32 +1,32 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.FlowGraph;
 import io.jexxa.jlegmed.core.Producer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class InputStreamProducer implements Producer {
     private final InputStream inputStream;
-    private final FlowGraph flowGraph;
+    private final Gson gson = new Gson();
 
-    private boolean gsonDeserializer;
-
-    public InputStreamProducer(InputStream inputStream, FlowGraph flowGraph)
+    public InputStreamProducer(InputStream inputStream)
     {
         this.inputStream = inputStream;
-        this.flowGraph = flowGraph;
+        inputStream.mark(8000);
     }
     @Override
     public <T> T produce(Class<T> clazz) {
-        var reader = new InputStreamReader(inputStream);
-        var gson = new Gson();
-        return gson.fromJson(reader, clazz);
-    }
+        try {
+            if (inputStream.available() == 0) {
+                inputStream.reset();
+            }
+        } catch (IOException e)
+        {
+            return null;
+        }
 
-    public void setGsonDeserializer()
-    {
-        this.gsonDeserializer = true;
+        return gson.fromJson(new InputStreamReader(inputStream), clazz);
     }
 }

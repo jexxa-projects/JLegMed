@@ -47,7 +47,7 @@ class ScheduledFlowGraphTest {
         jlegmed
                 .each(10, MILLISECONDS)
 
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generatedWith(GenericProducer::counter)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -131,12 +131,12 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector1)
 
                 .each(20, MILLISECONDS)
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2);
 
@@ -150,33 +150,6 @@ class ScheduledFlowGraphTest {
         jlegmed.stop();
     }
 
-    @Test
-    void testMultipleContextFlowGraphs() {
-        //Arrange
-        var messageCollector1 = new MessageCollector();
-        var messageCollector2 = new MessageCollector();
-
-        var jlegmed = new JLegMed();
-        jlegmed
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith(messageCollector1)
-
-                .each(20, MILLISECONDS)
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith(messageCollector2);
-
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
-        await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
-
-        jlegmed.stop();
-    }
     @Test
     void testTransformData() {
         //Arrange

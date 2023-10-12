@@ -4,6 +4,8 @@ package io.jexxa.jlegmed.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public final class JLegMed
 {
@@ -11,21 +13,15 @@ public final class JLegMed
     private final List<FlowGraph> flowGraphs = new ArrayList<>();
     private FlowGraph currentFlowGraph;
 
-    @SuppressWarnings("unused")
-    public <T extends Processor> JLegMed andProcessWith(Class<T> clazz)
+    public <U, V> JLegMed andProcessWith(BiFunction<U, Context, V> processor)
     {
-        currentFlowGraph.andProcessWith(clazz);
+        currentFlowGraph.andProcessWith(new TypedProcessor<>(processor));
         return this;
     }
 
-    public JLegMed andProcessWith(Processor processor)
+    public <U, V> JLegMed andProcessWith(Function<U,V> function)
     {
-        currentFlowGraph.andProcessWith(processor);
-        return this;
-    }
-    public JLegMed andProcessWith(ContextProcessor processor)
-    {
-        currentFlowGraph.andProcessWith(processor);
+        currentFlowGraph.andProcessWith(new TypedProcessor<>(function));
         return this;
     }
 

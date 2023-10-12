@@ -10,6 +10,9 @@ public record Content(Object data) {
     public <T> T getData(Class<T> dataType) {
         return dataType.cast(data);
     }
+    public Object getData() {
+        return data;
+    }
 
     @Override
     public String toString() {

@@ -22,7 +22,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -30,7 +30,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -42,7 +42,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraphContextSource() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -51,7 +51,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -60,10 +60,31 @@ class ScheduledFlowGraphTest {
         jlegmed.stop();
     }
 
+
+    @Test
+    void testFlowGraphContextSource2() {
+        //Arrange
+        var messageCollector = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS)
+
+                .receive(Integer.class).generatedWith( () -> 1)
+
+                .andProcessWith( GenericProcessors::incrementer )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
     @Test
     void testFlowGraphContextTypedSource() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -72,7 +93,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -84,7 +105,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerWithContext() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -93,7 +114,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -105,7 +126,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerURL() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed();
@@ -115,7 +136,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -127,7 +148,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerURLOnlyOnce() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed();
@@ -137,7 +158,7 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -149,13 +170,13 @@ class ScheduledFlowGraphTest {
     @Test
     void testTransformFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<UpdatedContract>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).generatedWith(GenericProducer::newContract)
                 .andProcessWith( MyTransformer::contextTransformer)
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -167,20 +188,20 @@ class ScheduledFlowGraphTest {
     @Test
     void testMultipleFlowGraphs() {
         //Arrange
-        var messageCollector1 = new MessageCollector();
-        var messageCollector2 = new MessageCollector();
+        var messageCollector1 = new MessageCollector<Integer>();
+        var messageCollector2 = new MessageCollector<Integer>();
 
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector1)
+                .andProcessWith(messageCollector1::collect)
 
                 .each(20, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector2);
+                .andProcessWith(messageCollector2::collect);
 
         //Act
         jlegmed.start();
@@ -195,7 +216,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testTransformData() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<UpdatedContract>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -204,23 +225,24 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith(MyTransformer::transformToUpdatedContract)
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector);
+                .andProcessWith(GenericProcessors::consoleLogger)
+                .andProcessWith(messageCollector::collect);
         //Act
         jlegmed.start();
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
 
         //Assert
-        assertFalse(messageCollector.getMessages(UpdatedContract.class).isEmpty());
+        assertFalse(messageCollector.getMessages().isEmpty());
     }
 
     private static class MyTransformer  {
-        public static Content transformToUpdatedContract(Content content) {
-            return new Content(new UpdatedContract(content.getData(NewContract.class).contractNumber(), "newInfo"));
+        public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
+            return new UpdatedContract(newContract.contractNumber(), "newInfo");
         }
 
-        public static Content contextTransformer(Content content, Context context) {
-            return new Content(new UpdatedContract(content.getData(NewContract.class).contractNumber(), "propertiesTransformer"));
+        public static UpdatedContract contextTransformer(NewContract newContract, Context context) {
+            return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer");
         }
     }
 }

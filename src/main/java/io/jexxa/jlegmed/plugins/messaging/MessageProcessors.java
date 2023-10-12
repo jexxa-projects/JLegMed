@@ -1,15 +1,14 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
 import io.jexxa.jlegmed.core.Context;
-import io.jexxa.jlegmed.core.Content;
 
 public class MessageProcessors {
-    public static Content sendToTopicAsJSON(Content content, Context context, String topic)
+    public static Object sendToTopicAsJSON(Object content, Context context, String topic)
     {
         var messageSender = MessageSenderManager.getMessageSender(MessageProcessors.class, context.getProperties());
-        messageSender.send(content.data())
+        messageSender.send(content)
                 .toTopic(topic)
-                .addHeader("Type", content.data().getClass().getSimpleName())
+                .addHeader("Type", content.getClass().getSimpleName())
                 .asJson();
 
         return content;

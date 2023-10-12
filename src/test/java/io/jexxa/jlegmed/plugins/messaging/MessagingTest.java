@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
-import io.jexxa.jlegmed.core.Content;
 import io.jexxa.jlegmed.core.Context;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -18,7 +17,7 @@ class MessagingTest {
     @Test
     void testFlowGraphMessageSender() {
         //Arrange
-        var messageCollector = new MessageCollector();
+        var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
@@ -27,7 +26,7 @@ class MessagingTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( MessagingTest::testTopicSender)
-                .andProcessWith( messageCollector );
+                .andProcessWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -37,7 +36,7 @@ class MessagingTest {
     }
 
 
-    private static Content testTopicSender(Content content, Context context)
+    private static Object testTopicSender(Object content, Context context)
     {
         return sendToTopicAsJSON (content, context, "TestTopic");
     }

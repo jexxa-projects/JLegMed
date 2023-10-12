@@ -15,10 +15,12 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     private ContextProducer contextProducer;
     private Class<?> expectedData;
 
-    public <T> ScheduledFlowGraph receive(Class<T> expectedData)
+
+
+    public <T> TypedContextProducer<T> receive(Class<T> expectedData)
     {
         this.expectedData = expectedData;
-        return this;
+        return new TypedContextProducer<>(this);
     }
 
     public JLegMed generatedWith(Producer producer) {

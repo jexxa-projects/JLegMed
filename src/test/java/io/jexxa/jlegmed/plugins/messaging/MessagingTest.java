@@ -1,12 +1,11 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
+import io.jexxa.jlegmed.core.Content;
 import io.jexxa.jlegmed.core.Context;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.Content;
-import io.jexxa.jlegmed.dto.incoming.NewContract;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.messaging.MessageProcessors.sendToTopicAsJSON;
@@ -24,7 +23,7 @@ class MessagingTest {
         jlegmed
                 .each(10, MILLISECONDS)
 
-                .receive(NewContract.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generatedWith(GenericProducer::counter)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( MessagingTest::testTopicSender)

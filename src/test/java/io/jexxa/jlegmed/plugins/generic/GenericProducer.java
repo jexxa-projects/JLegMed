@@ -7,14 +7,14 @@ import static io.jexxa.jlegmed.core.Context.contextID;
 
 public class GenericProducer {
 
-    public static Object counter(Class<?> clazz, Context context) {
+    public static Integer counter(Context context) {
         var contextID = contextID(GenericProducer.class, "counter");
         var currentCounter = context.get(contextID,Integer.class).orElse(0);
 
         return context.update(contextID, currentCounter+1);
     }
 
-    public static Object newContract(Class<?> clazz, Context context) {
+    public static NewContract newContract(Context context) {
         var contextID = contextID(GenericProducer.class, "contractCounter");
         var currentCounter = context.get(contextID,Integer.class).orElse(1);
 

@@ -26,8 +26,7 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed();
         jlegmed
                 .each(10, MILLISECONDS)
-
-                .receive(String.class).generatedWith(message -> "Hello World")
+                .receive(String.class).generatedWith(() -> "Hello World")
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -39,6 +38,49 @@ class ScheduledFlowGraphTest {
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
     }
+
+    @Test
+    void testFlowGraphContextSource() {
+        //Arrange
+        var messageCollector = new MessageCollector();
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS)
+
+                .receive(String.class).generatedWith((context) -> "Hello World")
+
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+
+    @Test
+    void testFlowGraphContextTypedSource() {
+        //Arrange
+        var messageCollector = new MessageCollector();
+        var jlegmed = new JLegMed();
+        jlegmed
+                .each(10, MILLISECONDS)
+
+                .receive(String.class).generatedWith((context, type) -> "Hello World")
+
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+
     @Test
     void testProducerWithContext() {
         //Arrange

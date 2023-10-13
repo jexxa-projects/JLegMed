@@ -86,26 +86,21 @@ public class Scheduler implements IDrivingAdapter
     private IScheduled validateSchedulerConfiguration(Object object)
     {
         Objects.requireNonNull(object);
-        try {
-            var scheduledConfiguration = (IScheduled) (object);
+        return getScheduled(object);
+    }
 
-            if ((scheduledConfiguration.fixedDelay() < 0 && scheduledConfiguration.fixedRate() < 0)
-                || (scheduledConfiguration.fixedDelay() >= 0 && scheduledConfiguration.fixedRate() >= 0))
-            {
-                throw new IllegalArgumentException(
-                        String.format("Given method %s::%s does not provide a valid  value for `fixedInterval` or `fixedDelay` in @Scheduled (exact one of these values must be >=0)!"
-                                , object.getClass().getSimpleName()
-                                , object.getClass().getName()));
-            }
-            return scheduledConfiguration;
-        } catch (RuntimeException e)
+    private static IScheduled getScheduled(Object object) {
+        var scheduledConfiguration = (IScheduled) object;
+
+        if ((scheduledConfiguration.fixedDelay() < 0 && scheduledConfiguration.fixedRate() < 0)
+            || (scheduledConfiguration.fixedDelay() >= 0 && scheduledConfiguration.fixedRate() >= 0))
         {
             throw new IllegalArgumentException(
-                    String.format("Given object %s does not provide a %s annotation for any public method!"
+                    String.format("Given method %s::%s does not provide a valid  value for `fixedInterval` or `fixedDelay` in @Scheduled (exact one of these values must be >=0)!"
                             , object.getClass().getSimpleName()
                             , object.getClass().getName()));
-
         }
+        return scheduledConfiguration;
     }
 
 }

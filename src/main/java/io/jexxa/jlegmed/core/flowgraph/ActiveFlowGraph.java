@@ -1,5 +1,7 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
+
+import io.jexxa.jlegmed.core.JLegMed;
 
 import java.util.Properties;
 

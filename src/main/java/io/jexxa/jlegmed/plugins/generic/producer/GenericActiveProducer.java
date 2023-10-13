@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.ActiveProducer;
-import io.jexxa.jlegmed.core.FlowGraph;
-import io.jexxa.jlegmed.core.Content;
+import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 

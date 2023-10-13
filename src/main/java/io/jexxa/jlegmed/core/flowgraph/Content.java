@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
 import static java.util.Objects.requireNonNull;
 

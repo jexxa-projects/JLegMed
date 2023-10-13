@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 import com.google.gson.Gson;
+import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;

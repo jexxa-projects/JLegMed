@@ -1,6 +1,9 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Content;
+import io.jexxa.jlegmed.core.flowgraph.ContextProducer;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 

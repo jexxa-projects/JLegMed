@@ -1,12 +1,13 @@
 package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.common.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.generic.producer.GenericActiveProducer;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.core.Context.contextID;
+import static io.jexxa.jlegmed.core.flowgraph.Context.contextID;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 

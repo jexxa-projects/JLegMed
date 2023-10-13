@@ -1,9 +1,8 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
 public interface FlowGraph {
-    <T extends Processor> void andProcessWith(Class<T> clazz);
+
     void andProcessWith(Processor processor);
-    void andProcessWith(ContextProcessor processor);
 
     void start();
     void stop();

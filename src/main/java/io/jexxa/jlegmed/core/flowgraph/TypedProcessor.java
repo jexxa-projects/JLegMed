@@ -1,9 +1,9 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class TypedProcessor<U, V> implements ContextProcessor {
+public class TypedProcessor<U, V> implements Processor {
     private BiFunction<U, Context,V> contextFunction;
     private Function<U, V> processFunction;
     public TypedProcessor(BiFunction<U, Context,V> contextFunction)
@@ -15,6 +15,7 @@ public class TypedProcessor<U, V> implements ContextProcessor {
     {
         this.processFunction = processFunction;
     }
+
 
     @Override
     public Content process(Content content, Context context) {

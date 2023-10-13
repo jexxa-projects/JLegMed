@@ -1,5 +1,8 @@
 package io.jexxa.jlegmed.core;
 
+import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.flowgraph.ContextProducer;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;

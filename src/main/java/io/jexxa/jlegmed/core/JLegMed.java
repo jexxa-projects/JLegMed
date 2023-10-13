@@ -1,6 +1,11 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

@@ -1,6 +1,9 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core;
 
-import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.flowgraph.Content;
+import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Processor;
 
 import java.util.ArrayList;
 import java.util.List;

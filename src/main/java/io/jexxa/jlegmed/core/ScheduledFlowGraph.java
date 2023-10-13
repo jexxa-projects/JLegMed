@@ -1,13 +1,11 @@
 package io.jexxa.jlegmed.core;
 
 
-import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Producer;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public final class ScheduledFlowGraph extends AbstractFlowGraph implements IScheduled {
@@ -26,9 +24,7 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     }
 
     public <T extends ProducerURL> T from(T producerURL) {
-        producerURL.setFlowGraph(this);
         producerURL.setApplication(getjLegMed());
-        producerURL.setProperties(new Properties());
         this.producer = producerURL.getProducer();
 
         return producerURL;

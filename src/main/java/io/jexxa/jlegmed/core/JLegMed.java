@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.core;
 
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;

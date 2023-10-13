@@ -17,7 +17,7 @@ public class TypedProducer<T> implements Producer {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }
 
-    public JLegMed generatedWith( Function<Context, T> contextFunction)
+    public JLegMed generatedWith(Function<Context, T> contextFunction)
     {
         this.contextFunction = contextFunction;
         return scheduledFlowGraph.generatedWith(this);

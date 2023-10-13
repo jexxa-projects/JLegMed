@@ -19,7 +19,7 @@ class MessagingTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("MessageSender")
                 .each(10, MILLISECONDS)
 
                 .receive(Integer.class).generatedWith(GenericProducer::counter)

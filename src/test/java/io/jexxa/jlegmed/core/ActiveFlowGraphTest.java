@@ -18,6 +18,7 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
         jlegmed
+                .newFlowGraph("ActiveFlowgraph")
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
 
                 .andProcessWith( GenericProcessors::idProcessor )
@@ -36,7 +37,7 @@ class ActiveFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("ActiveFlowgraph")
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
 
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
@@ -56,12 +57,13 @@ class ActiveFlowGraphTest {
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("ActiveFlowgraph1")
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1::collect )
 
+                .newFlowGraph("ActiveFlowgraph2")
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )

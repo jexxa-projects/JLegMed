@@ -25,7 +25,7 @@ class ScheduledFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
                 .receive(String.class).generatedWith(() -> "Hello World")
 
@@ -45,7 +45,7 @@ class ScheduledFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
 
                 .receive(String.class).generatedWith((context) -> "Hello World")
@@ -63,11 +63,11 @@ class ScheduledFlowGraphTest {
 
 
     @Test
-    void testFlowGraphContextSource2() {
+    void testFlowGraphIncrementer() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("Incrementer")
                 .each(10, MILLISECONDS)
 
                 .receive(Integer.class).generatedWith( () -> 1)
@@ -87,7 +87,7 @@ class ScheduledFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)
 
                 .receive(String.class).generatedWith((context, type) -> "Hello World")
@@ -108,7 +108,7 @@ class ScheduledFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("ProducerWithContext")
                 .each(10, MILLISECONDS)
 
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
@@ -131,7 +131,7 @@ class ScheduledFlowGraphTest {
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("ProducerURL")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStreamOf(inputStream)).untilStopped()
 
@@ -153,7 +153,7 @@ class ScheduledFlowGraphTest {
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("ProducerURLOnlyOnce")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStreamOf(inputStream)).onlyOnce()
 
@@ -169,14 +169,14 @@ class ScheduledFlowGraphTest {
         assertEquals(1, messageCollector.getNumberOfReceivedMessages());
     }
     @Test
-    void testTransformFlowGraph() {
+    void testTransformDataWithContext() {
         //Arrange
         var messageCollector = new MessageCollector<UpdatedContract>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).generatedWith(GenericProducer::newContract)
-                .andProcessWith( MyTransformer::contextTransformer)
+                .andProcessWith( ContractTransformer::contextTransformer)
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -193,12 +193,13 @@ class ScheduledFlowGraphTest {
         var messageCollector2 = new MessageCollector<Integer>();
 
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("flowGraph1")
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector1::collect)
 
+                .newFlowGraph("flowGraph2")
                 .each(20, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
@@ -219,12 +220,12 @@ class ScheduledFlowGraphTest {
         //Arrange
         var messageCollector = new MessageCollector<UpdatedContract>();
         var jlegmed = new JLegMed();
-        jlegmed
+        jlegmed.newFlowGraph("transformData")
                 .each(10, MILLISECONDS)
 
                 .receive(NewContract.class).generatedWith(GenericProducer::newContract)
 
-                .andProcessWith(MyTransformer::transformToUpdatedContract)
+                .andProcessWith(ContractTransformer::transformToUpdatedContract)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector::collect);
@@ -237,7 +238,7 @@ class ScheduledFlowGraphTest {
         assertFalse(messageCollector.getMessages().isEmpty());
     }
 
-    private static class MyTransformer  {
+    private static class ContractTransformer {
         public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
             return new UpdatedContract(newContract.contractNumber(), "newInfo");
         }

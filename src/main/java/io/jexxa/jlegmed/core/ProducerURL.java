@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core;
 
+import io.jexxa.jlegmed.core.flowgraph.Producer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.Properties;

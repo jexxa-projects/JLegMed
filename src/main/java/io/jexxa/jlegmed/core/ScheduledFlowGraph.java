@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Content;
-import io.jexxa.jlegmed.core.flowgraph.ContextProducer;
+import io.jexxa.jlegmed.core.flowgraph.Producer;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
 
@@ -15,24 +15,14 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     private final int fixedRate;
     private final TimeUnit timeUnit;
     private Producer producer;
-    private ContextProducer contextProducer;
     private Class<?> expectedData;
 
 
 
-    public <T> TypedContextProducer<T> receive(Class<T> expectedData)
+    public <T> TypedProducer<T> receive(Class<T> expectedData)
     {
         this.expectedData = expectedData;
-        return new TypedContextProducer<>(this);
-    }
-
-    public JLegMed generatedWith(Producer producer) {
-        try {
-            this.producer = producer;
-        } catch (Exception e){
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
-        return getjLegMed();
+        return new TypedProducer<>(this);
     }
 
     public <T extends ProducerURL> T from(T producerURL) {
@@ -44,9 +34,9 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
         return producerURL;
     }
 
-    public JLegMed generatedWith(ContextProducer contextProducer) {
+    public JLegMed generatedWith(Producer producer) {
         try {
-            this.contextProducer = contextProducer;
+            this.producer = producer;
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -83,13 +73,7 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
 
     @Override
     public void execute() {
-        Object result;
-        if (contextProducer != null)
-        {
-            result = contextProducer.produce(expectedData, getContext());
-        } else {
-            result = producer.produce(expectedData);
-        }
+        var result = producer.produce(expectedData, getContext());
 
         if ( result != null) {
             processMessage(new Content(result));

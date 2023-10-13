@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.Producer;
+import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.flowgraph.Producer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ public class InputStreamProducer implements Producer {
         inputStream.mark(8000);
     }
     @Override
-    public  Object produce(Class<?> clazz) {
+    public  Object produce(Class<?> clazz, Context context) {
         var result = gson.fromJson(new InputStreamReader(inputStream), clazz);
 
         try {

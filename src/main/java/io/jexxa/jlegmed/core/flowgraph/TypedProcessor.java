@@ -6,6 +6,8 @@ import java.util.function.Function;
 public class TypedProcessor<U, V> implements Processor {
     private BiFunction<U, Context,V> contextFunction;
     private Function<U, V> processFunction;
+
+    private Object processorConfiguration;
     public TypedProcessor(BiFunction<U, Context,V> contextFunction)
     {
         this.contextFunction = contextFunction;
@@ -40,6 +42,16 @@ public class TypedProcessor<U, V> implements Processor {
         }
 
         return null;
+    }
+
+    @Override
+    public <T> void setConfiguration(T configuration) {
+        this.processorConfiguration = configuration;
+    }
+
+    @Override
+    public Object getConfiguration() {
+        return this.processorConfiguration;
     }
 
 }

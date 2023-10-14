@@ -2,14 +2,27 @@ package io.jexxa.jlegmed.plugins.messaging;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 
+import static io.jexxa.jlegmed.plugins.messaging.MessageProducer.DestinationType.QUEUE;
+import static io.jexxa.jlegmed.plugins.messaging.MessageProducer.DestinationType.TOPIC;
+
 public class MessageProcessors {
-    public static Object sendToTopicAsJSON(Object content, Context context, String topic)
+    public static Object sendAsJSON(Object content, Context context)
     {
-        var messageSender = MessageSenderManager.getMessageSender(MessageProcessors.class, context.getProperties());
-        messageSender.send(content)
-                .toTopic(topic)
-                .addHeader("Type", content.getClass().getSimpleName())
-                .asJson();
+        var messageConfiguration = context.getProcessorConfig(MessageConfiguration.class);
+
+        var messageSender = MessageSenderManager.getMessageSender(MessageProcessors.class, context.getProperties(messageConfiguration.propertiesPrefix()));
+
+        if ( messageConfiguration.destinationType.equals(TOPIC)) {
+            messageSender.send(content)
+                    .toTopic(messageConfiguration.destinationName)
+                    .addHeader("Type", content.getClass().getSimpleName())
+                    .asJson();
+        } else {
+            messageSender.send(content)
+                    .toQueue(messageConfiguration.destinationName)
+                    .addHeader("Type", content.getClass().getSimpleName())
+                    .asJson();
+        }
 
         return content;
     }
@@ -18,4 +31,14 @@ public class MessageProcessors {
     {
 
     }
+
+    public record MessageConfiguration( MessageProducer.DestinationType destinationType, String destinationName, String propertiesPrefix) {
+        public static MessageConfiguration topic(String topicName, String propertiesPrefix) {
+            return new MessageConfiguration(TOPIC, topicName, propertiesPrefix);
+        }
+        public static MessageConfiguration queue(String queueName, String propertiesPrefix) {
+            return new MessageConfiguration(QUEUE, queueName, propertiesPrefix);
+        }
+    }
+
 }

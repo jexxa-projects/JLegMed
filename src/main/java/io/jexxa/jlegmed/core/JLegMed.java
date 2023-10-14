@@ -3,6 +3,7 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Processor;
 import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public final class JLegMed
 
     private final Map<String, FlowGraph> flowGraphs = new HashMap<>();
     private FlowGraph currentFlowGraph;
+    private Processor currentProcessor;
 
     private String currentFlowGraphID;
 
@@ -27,13 +29,21 @@ public final class JLegMed
 
     public <U, V> JLegMed andProcessWith(BiFunction<U, Context, V> processor)
     {
-        currentFlowGraph.andProcessWith(new TypedProcessor<>(processor));
+        this.currentProcessor = new TypedProcessor<>(processor);
+        currentFlowGraph.andProcessWith(currentProcessor);
         return this;
     }
 
     public <U, V> JLegMed andProcessWith(Function<U,V> function)
     {
-        currentFlowGraph.andProcessWith(new TypedProcessor<>(function));
+        this.currentProcessor = new TypedProcessor<>(function);
+        currentFlowGraph.andProcessWith(currentProcessor);
+        return this;
+    }
+
+    public  <T> JLegMed useConfig(T configuration)
+    {
+        this.currentProcessor.setConfiguration(configuration);
         return this;
     }
 

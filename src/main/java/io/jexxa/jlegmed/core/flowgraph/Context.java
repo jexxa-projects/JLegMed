@@ -7,6 +7,7 @@ import java.util.Properties;
 public class Context {
     private final HashMap<String, Object> contextData = new HashMap<>();
     private final Properties properties;
+    private Object currentProcessorConfig;
 
     public Context(Properties properties)
     {
@@ -24,6 +25,20 @@ public class Context {
         return properties;
     }
 
+    public Properties getProperties(String propertiesPrefix)
+    {
+        return properties;
+    }
+
+    public <T> T getProcessorConfig(Class<T> conigType)
+    {
+        return conigType.cast(currentProcessorConfig);
+    }
+
+    public void setProcessorConfiguration(Object processorConfig)
+    {
+        this.currentProcessorConfig = processorConfig;
+    }
 
     public <T> T update(String id, T data) {
         contextData.put(id, data);

@@ -34,6 +34,7 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         var result = content;
 
         for (var processor : processorList) {
+            context.setProcessorConfiguration(processor.getConfiguration());
             result = processor.process(result, context);
             if (result == null)
             {
@@ -47,7 +48,7 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         return jLegMed;
     }
 
-    protected Context getContext()
+    public Context getContext()
     {
         return context;
     }

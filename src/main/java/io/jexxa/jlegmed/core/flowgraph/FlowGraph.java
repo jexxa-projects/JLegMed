@@ -8,4 +8,6 @@ public interface FlowGraph {
     void stop();
 
     void processMessage(Content content);
+
+    Context getContext();
 }

@@ -61,7 +61,7 @@ public class Scheduler implements IDrivingAdapter
         catch (Exception e)
         {
             getLogger(iScheduled.getClass()).error(e.getMessage());
-            getLogger(iScheduled.getClass()).info(e.getMessage(), e);
+            getLogger(iScheduled.getClass()).debug(e.getMessage(), e);
         }
     }
 

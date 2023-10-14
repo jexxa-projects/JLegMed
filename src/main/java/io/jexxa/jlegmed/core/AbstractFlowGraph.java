@@ -31,16 +31,25 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     @Override
     public void processMessage(Content content)
     {
-        var result = content;
+        try {
+            var result = content;
 
-        for (var processor : processorList) {
-            context.setProcessorConfiguration(processor.getConfiguration());
-            result = processor.process(result, context);
-            if (result == null)
-            {
-                return;
+            for (var processor : processorList) {
+                context.setProcessorConfiguration(processor.getConfiguration());
+                result = processor.process(result, context);
+                if (result == null) {
+                    return;
+                }
             }
+        } catch (RuntimeException e)
+        {
+            throw new ProcessingException(this, content, e);
         }
+    }
+
+    public String getFlowGraphID()
+    {
+        return getjLegMed().getFlowgraphID(this);
     }
 
     protected JLegMed getjLegMed()

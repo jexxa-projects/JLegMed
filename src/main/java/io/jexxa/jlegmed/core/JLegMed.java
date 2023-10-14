@@ -99,4 +99,12 @@ public final class JLegMed
         }
     }
 
+    String getFlowgraphID(FlowGraph flowGraph)
+    {
+        return flowGraphs.entrySet().stream()
+                .filter( ( entry -> entry.getValue().equals(flowGraph) ))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse("Unknown FlowGraph");
+    }
+
 }

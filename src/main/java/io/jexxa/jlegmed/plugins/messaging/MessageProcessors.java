@@ -9,8 +9,9 @@ public class MessageProcessors {
     public static Object sendAsJSON(Object content, Context context)
     {
         var messageConfiguration = context.getProcessorConfig(MessageConfiguration.class);
+        var properties = context.getProperties(messageConfiguration.propertiesPrefix());
 
-        var messageSender = MessageSenderManager.getMessageSender(MessageProcessors.class, context.getProperties(messageConfiguration.propertiesPrefix()));
+        var messageSender = MessageSenderManager.getMessageSender(MessageProcessors.class, properties);
 
         if ( messageConfiguration.destinationType.equals(TOPIC)) {
             messageSender.send(content)

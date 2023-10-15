@@ -10,7 +10,13 @@ public class ProcessingException extends RuntimeException {
 
     private static String getMessage(AbstractFlowGraph flowGraph, Content data, Throwable throwable)
     {
-        return throwable.getClass() + " occurred in FlowGraph " + flowGraph.getFlowGraphID()
-                + ". Could not process data " + data.toString();
+        if (throwable instanceof ClassCastException ) {
+            return throwable.getClass().getSimpleName() + " occurred in FlowGraph " + flowGraph.getFlowGraphID()
+                    + ". Could not process data " + data.toString();
+        }
+
+        return throwable.getClass().getSimpleName() + " occurred in FlowGraph " + flowGraph.getFlowGraphID()
+                + ". Could not process data " + data.toString() + " -> Reason: " + throwable.getMessage();
+
     }
 }

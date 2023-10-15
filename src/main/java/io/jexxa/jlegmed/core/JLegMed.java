@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.jlegmed.common.properties.PropertiesLoader;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Processor;
@@ -13,6 +14,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_BUILD_TIMESTAMP;
+import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_NAME;
+import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_REPOSITORY;
+import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_VERSION;
+
 public final class JLegMed
 {
 
@@ -22,7 +28,6 @@ public final class JLegMed
 
     private String currentFlowGraphID;
 
-    private final Class<?> application;
     private final Properties properties;
 
     public JLegMed()
@@ -32,8 +37,12 @@ public final class JLegMed
 
     public JLegMed(Class<?> application)
     {
-        this.application = application;
-        this.properties  = System.getProperties();
+        this(application, new Properties());
+    }
+
+    public JLegMed(Class<?> application, Properties properties)
+    {
+        this.properties  = new PropertiesLoader(application).createProperties(properties);
     }
 
     public JLegMed newFlowGraph(String flowGraphID)
@@ -125,6 +134,21 @@ public final class JLegMed
                 .filter( ( entry -> entry.getValue().equals(flowGraph) ))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse("Unknown FlowGraph");
+    }
+
+    public VersionInfo getVersion()
+    {
+        return JLegMedVersion.getVersion();
+    }
+
+    public VersionInfo applicationInfo()
+    {
+        return VersionInfo.of()
+                .version(properties.getProperty(JLEGMED_APPLICATION_VERSION, ""))
+                .repository(properties.getProperty(JLEGMED_APPLICATION_REPOSITORY, ""))
+                .buildTimestamp(properties.getProperty(JLEGMED_APPLICATION_BUILD_TIMESTAMP, ""))
+                .projectName(properties.getProperty(JLEGMED_APPLICATION_NAME, ""))
+                .create();
     }
 
 }

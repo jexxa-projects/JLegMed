@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -27,7 +28,18 @@ public class Context {
 
     public Properties getProperties(String propertiesPrefix)
     {
-        return properties;
+        var subset = new Properties();
+
+        List<String> result = properties.keySet().stream()
+                .map(Object::toString)
+                .filter(string -> string.contains(propertiesPrefix))
+                .toList();
+
+        result.forEach( element -> subset.put(
+                element.substring(element.lastIndexOf(propertiesPrefix) + propertiesPrefix.length() + 1),
+                properties.getProperty(element) ));
+
+        return subset;
     }
 
     public <T> T getProcessorConfig(Class<T> conigType)

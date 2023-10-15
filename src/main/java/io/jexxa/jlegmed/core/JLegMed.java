@@ -8,6 +8,7 @@ import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -20,6 +21,20 @@ public final class JLegMed
     private Processor currentProcessor;
 
     private String currentFlowGraphID;
+
+    private final Class<?> application;
+    private final Properties properties;
+
+    public JLegMed()
+    {
+        this(JLegMed.class);
+    }
+
+    public JLegMed(Class<?> application)
+    {
+        this.application = application;
+        this.properties  = System.getProperties();
+    }
 
     public JLegMed newFlowGraph(String flowGraphID)
     {
@@ -99,7 +114,12 @@ public final class JLegMed
         }
     }
 
-    String getFlowgraphID(FlowGraph flowGraph)
+    public Properties getProperties()
+    {
+        return properties;
+    }
+
+    public String getFlowgraphID(FlowGraph flowGraph)
     {
         return flowGraphs.entrySet().stream()
                 .filter( ( entry -> entry.getValue().equals(flowGraph) ))

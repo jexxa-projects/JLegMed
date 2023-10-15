@@ -7,19 +7,19 @@ import io.jexxa.jlegmed.core.flowgraph.Processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public abstract class AbstractFlowGraph implements FlowGraph {
 
     private final List<Processor> processorList = new ArrayList<>();
 
-    private final Context context = new Context(new Properties());
+    private final Context context;
 
     private final JLegMed jLegMed;
 
     protected AbstractFlowGraph(JLegMed jLegMed)
     {
         this.jLegMed = jLegMed;
+        this.context = new Context(jLegMed.getProperties());
     }
 
 

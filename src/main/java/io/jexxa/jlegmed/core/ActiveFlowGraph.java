@@ -3,8 +3,6 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
 
-import java.util.Properties;
-
 public class ActiveFlowGraph extends AbstractFlowGraph {
 
     private ActiveProducer activeProducer;
@@ -16,7 +14,7 @@ public class ActiveFlowGraph extends AbstractFlowGraph {
     public <T extends ActiveProducer> JLegMed generatedWith(Class<T> clazz) {
         try {
             this.activeProducer = clazz.getDeclaredConstructor().newInstance();
-            activeProducer.init(new Properties(), this);
+            activeProducer.init(getContext().getProperties(), this);
 
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);

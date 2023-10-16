@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 
 import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
@@ -12,7 +12,7 @@ import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
 
 
 @CheckReturnValue
-public class MessageProducer
+public class MessageFactory
 {
     public enum DestinationType { TOPIC, QUEUE }
     private Properties properties;
@@ -23,7 +23,7 @@ public class MessageProducer
     private DestinationType destinationType;
     private String destination;
 
-    protected <T> MessageProducer(T message, MessageSender messageSender, MessageSender.MessageType messageType)
+    protected <T> MessageFactory(T message, MessageSender messageSender, MessageSender.MessageType messageType)
     {
         this.message = Objects.requireNonNull(message);
         this.messageSender = Objects.requireNonNull(messageSender);
@@ -31,7 +31,7 @@ public class MessageProducer
     }
 
     @CheckReturnValue
-    public MessageProducer toQueue(String destination)
+    public MessageFactory toQueue(String destination)
     {
         this.destination = Objects.requireNonNull(destination);
         this.destinationType = DestinationType.QUEUE;
@@ -40,7 +40,7 @@ public class MessageProducer
     }
 
     @CheckReturnValue
-    public MessageProducer toTopic(String destination)
+    public MessageFactory toTopic(String destination)
     {
         this.destination = Objects.requireNonNull(destination);
         this.destinationType = DestinationType.TOPIC;
@@ -49,7 +49,7 @@ public class MessageProducer
     }
 
     @CheckReturnValue
-    public MessageProducer addHeader(String key, String value)
+    public MessageFactory addHeader(String key, String value)
     {
         if (properties == null)
         {

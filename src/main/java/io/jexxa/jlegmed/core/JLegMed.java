@@ -72,7 +72,7 @@ public final class JLegMed
     }
 
     @SuppressWarnings("java:S1172")
-    public <T> ActiveFlowGraph await(Class<T> inputData) {
+    public <T> ActiveFlowGraph<T> await(Class<T> inputData) {
         if (currentFlowGraphID == null || currentFlowGraphID.isEmpty())
         {
             throw new InvalidFlowGraphException("No flowgraph id defined");
@@ -82,9 +82,9 @@ public final class JLegMed
         {
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
-        var flowGraph = new ActiveFlowGraph(this);
-        this.currentFlowGraph = flowGraph;
+        var flowGraph = new ActiveFlowGraph<>(this,inputData);
         flowGraphs.put(currentFlowGraphID, flowGraph);
+        this.currentFlowGraph = flowGraph;
         return flowGraph;
     }
 

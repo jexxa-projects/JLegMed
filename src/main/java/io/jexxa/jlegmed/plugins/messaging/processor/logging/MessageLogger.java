@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.plugins.messaging.logging;
+package io.jexxa.jlegmed.plugins.messaging.processor.logging;
 
-import io.jexxa.jlegmed.plugins.messaging.MessageSender;
+import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import org.slf4j.Logger;
 
 import java.util.Properties;

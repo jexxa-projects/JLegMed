@@ -1,27 +1,27 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 
 import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
 
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.plugins.messaging.MessageProducer.DestinationType.QUEUE;
-import static io.jexxa.jlegmed.plugins.messaging.MessageProducer.DestinationType.TOPIC;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.QUEUE;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
 
 public abstract class MessageSender
 {
     public enum MessageType{TEXT_MESSAGE, BYTE_MESSAGE }
 
     @CheckReturnValue
-    public <T> MessageProducer send(T message)
+    public <T> MessageFactory send(T message)
     {
-        return new MessageProducer(message, this, MessageType.TEXT_MESSAGE);
+        return new MessageFactory(message, this, MessageType.TEXT_MESSAGE);
     }
 
     @CheckReturnValue
-    public <T> MessageProducer sendByteMessage(T message)
+    public <T> MessageFactory sendByteMessage(T message)
     {
-        return new MessageProducer(message, this, MessageType.BYTE_MESSAGE);
+        return new MessageFactory(message, this, MessageType.BYTE_MESSAGE);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class MessageSender
      */
     protected abstract void sendToTopic(String message, String destination, Properties messageProperties, MessageType messageType);
 
-    public record Configuration(MessageProducer.DestinationType destinationType, String destinationName, String connectionName) {
+    public record Configuration(MessageFactory.DestinationType destinationType, String destinationName, String connectionName) {
         public static Configuration topic(String topicName, String connectionName) {
             return new Configuration(TOPIC, topicName, connectionName);
         }

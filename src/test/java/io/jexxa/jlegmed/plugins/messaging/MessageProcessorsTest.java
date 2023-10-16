@@ -4,10 +4,11 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.MessageSender.Configuration.queue;
-import static io.jexxa.jlegmed.plugins.messaging.MessageSender.Configuration.topic;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.queue;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.topic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

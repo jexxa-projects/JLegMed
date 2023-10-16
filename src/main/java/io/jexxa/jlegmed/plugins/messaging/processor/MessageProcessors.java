@@ -1,8 +1,8 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 
-import static io.jexxa.jlegmed.plugins.messaging.MessageProducer.DestinationType.TOPIC;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
 
 public class MessageProcessors {
     public static Object sendAsJSON(Object content, Context context)
@@ -10,7 +10,7 @@ public class MessageProcessors {
         var messageConfiguration = context.getProcessorConfig(MessageSender.Configuration.class);
         var properties = context.getProperties(messageConfiguration.connectionName());
 
-        var messageSender = MessageSenderManager.getMessageSender(messageConfiguration, properties);
+        var messageSender = MessagingManager.getMessageSender(messageConfiguration, properties);
 
         if ( messageConfiguration.destinationType().equals(TOPIC)) {
             messageSender.send(content)

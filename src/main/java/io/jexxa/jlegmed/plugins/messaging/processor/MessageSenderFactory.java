@@ -1,9 +1,9 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
 import io.jexxa.jlegmed.common.factory.ClassFactory;
-import io.jexxa.jlegmed.plugins.messaging.jms.JMSSender;
-import io.jexxa.jlegmed.plugins.messaging.logging.MessageLogger;
+import io.jexxa.jlegmed.plugins.messaging.processor.jms.JMSSender;
+import io.jexxa.jlegmed.plugins.messaging.processor.logging.MessageLogger;
 
 import java.util.HashMap;
 import java.util.Map;

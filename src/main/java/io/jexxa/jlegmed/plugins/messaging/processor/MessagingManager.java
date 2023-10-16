@@ -1,11 +1,11 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class MessageSenderManager {
-    private static final MessageSenderManager messageSenderManager = new MessageSenderManager();
+public class MessagingManager {
+    private static final MessagingManager messageSenderManager = new MessagingManager();
 
     private final Map<String, MessageSender> messageSenderMap = new HashMap<>();
 
@@ -19,12 +19,13 @@ public class MessageSenderManager {
     {
         if (!messageSenderMap.containsKey(configuration.connectionName()))
         {
-            messageSenderMap.put(configuration.connectionName(), MessageSenderFactory.getMessageSender(MessageSenderManager.class, properties));
+            messageSenderMap.put(configuration.connectionName(), MessageSenderFactory.getMessageSender(MessagingManager.class, properties));
         }
 
         return messageSenderMap.get(configuration.connectionName());
     }
-    static MessageSenderManager getInstance() {
+
+    static MessagingManager getInstance() {
         return messageSenderManager;
     }
 

@@ -1,8 +1,8 @@
-package io.jexxa.jlegmed.plugins.messaging.jms;
+package io.jexxa.jlegmed.plugins.messaging.processor.jms;
 
 
 import io.jexxa.jlegmed.common.function.ThrowingConsumer;
-import io.jexxa.jlegmed.plugins.messaging.MessageSender;
+import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;

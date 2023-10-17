@@ -1,4 +1,7 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.processor;
+
+import io.jexxa.jlegmed.core.flowgraph.Content;
+import io.jexxa.jlegmed.core.flowgraph.Context;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

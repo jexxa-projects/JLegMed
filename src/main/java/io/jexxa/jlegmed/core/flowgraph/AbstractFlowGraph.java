@@ -1,13 +1,11 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.flowgraph.Content;
-import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.Processor;
-import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
+import io.jexxa.jlegmed.core.processor.Processor;
+import io.jexxa.jlegmed.core.processor.TypedProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -18,12 +16,12 @@ public abstract class AbstractFlowGraph implements FlowGraph {
 
     private final Context context;
 
-    private final JLegMed jLegMed;
+    private final String flowGraphID;
 
-    protected AbstractFlowGraph(JLegMed jLegMed)
+    protected AbstractFlowGraph(String flowGraphID, Properties properties)
     {
-        this.jLegMed = jLegMed;
-        this.context = new Context(jLegMed.getProperties());
+        this.flowGraphID = flowGraphID;
+        this.context = new Context(properties);
     }
 
 
@@ -69,12 +67,7 @@ public abstract class AbstractFlowGraph implements FlowGraph {
 
     public String getFlowGraphID()
     {
-        return getjLegMed().getFlowgraphID(this);
-    }
-
-    protected JLegMed getjLegMed()
-    {
-        return jLegMed;
+        return flowGraphID;
     }
 
     public Context getContext()

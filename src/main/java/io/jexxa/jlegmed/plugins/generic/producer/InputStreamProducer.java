@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.Producer;
+import io.jexxa.jlegmed.core.producer.Producer;
 
 import java.io.IOException;
 import java.io.InputStream;

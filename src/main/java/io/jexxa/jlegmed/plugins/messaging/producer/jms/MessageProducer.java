@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import javax.jms.MessageListener;
@@ -37,11 +37,7 @@ public class MessageProducer implements ActiveProducer {
 
     static IDrivingAdapter getInternalMessageReceiver(String connectionName, Properties properties)
     {
-        if (!messageReceiverMap.containsKey(connectionName))
-        {
-            messageReceiverMap.put(connectionName, new JMSAdapter(properties));
-        }
-
+        messageReceiverMap.computeIfAbsent(connectionName, key -> new JMSAdapter(properties));
         return messageReceiverMap.get(connectionName);
     }
 }

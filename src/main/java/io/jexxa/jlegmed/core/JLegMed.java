@@ -2,7 +2,9 @@ package io.jexxa.jlegmed.core;
 
 
 import io.jexxa.jlegmed.common.properties.PropertiesLoader;
+import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +57,7 @@ public final class JLegMed
         {
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
-        var flowGraph = new ActiveFlowGraph<>(this,inputData);
+        var flowGraph = new ActiveFlowGraph<>(currentFlowGraphID, properties,inputData);
         flowGraphs.put(currentFlowGraphID, flowGraph);
         return flowGraph;
     }
@@ -82,7 +84,7 @@ public final class JLegMed
         {
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
-        var eachFlowgraph = new ScheduledFlowGraph(this, fixedRate, timeUnit);
+        var eachFlowgraph = new ScheduledFlowGraph(currentFlowGraphID, properties, fixedRate, timeUnit);
         flowGraphs.put(currentFlowGraphID, eachFlowgraph);
         return eachFlowgraph;
     }
@@ -97,14 +99,6 @@ public final class JLegMed
     public Properties getProperties()
     {
         return properties;
-    }
-
-    public String getFlowgraphID(FlowGraph flowGraph)
-    {
-        return flowGraphs.entrySet().stream()
-                .filter( ( entry -> entry.getValue().equals(flowGraph) ))
-                .map(Map.Entry::getKey)
-                .findFirst().orElse("Unknown FlowGraph");
     }
 
     public VersionInfo getVersion()

@@ -1,14 +1,13 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.Producer;
 
 public abstract class ProducerURL {
     private FlowGraph flowGraph;
 
-    protected abstract Producer getProducer();
+    public abstract Producer getProducer();
 
-    void setFlowGraph(FlowGraph flowGraph) {
+    public void setFlowGraph(FlowGraph flowGraph) {
         this.flowGraph = flowGraph;
     }
 

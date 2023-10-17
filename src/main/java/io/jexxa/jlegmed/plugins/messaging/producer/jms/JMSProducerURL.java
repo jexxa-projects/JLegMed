@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.ActiveFlowGraph;
-import io.jexxa.jlegmed.core.ActiveProducerURL;
-import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
+import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
+import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
@@ -31,7 +31,7 @@ public class JMSProducerURL extends ActiveProducerURL {
     }
 
     @Override
-    protected ActiveProducer getActiveProducer() {
+    public ActiveProducer getActiveProducer() {
         return messageProducer;
     }
 }

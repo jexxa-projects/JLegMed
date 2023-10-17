@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.ProducerURL;
+import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.io.InputStream;

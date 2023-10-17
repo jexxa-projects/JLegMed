@@ -1,8 +1,8 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.Producer;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -13,7 +13,7 @@ public class TypedProducer<T> implements Producer {
     private BiFunction<Context, Class<T>, T> producerContextFunction;
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
-    TypedProducer(ScheduledFlowGraph scheduledFlowGraph)
+    public TypedProducer(ScheduledFlowGraph scheduledFlowGraph)
     {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }

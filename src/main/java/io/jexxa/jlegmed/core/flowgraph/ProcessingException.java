@@ -1,6 +1,4 @@
-package io.jexxa.jlegmed.core;
-
-import io.jexxa.jlegmed.core.flowgraph.Content;
+package io.jexxa.jlegmed.core.flowgraph;
 
 public class ProcessingException extends RuntimeException {
     public ProcessingException(AbstractFlowGraph flowGraph, Content data, Throwable throwable)

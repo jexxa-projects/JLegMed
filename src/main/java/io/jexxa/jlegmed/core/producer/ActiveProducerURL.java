@@ -1,19 +1,19 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 public abstract class ActiveProducerURL {
     private FlowGraph flowgraph;
 
-    protected abstract ActiveProducer getActiveProducer();
+    public abstract ActiveProducer getActiveProducer();
 
     public <T> void init(ActiveFlowGraph<T> flowGraph)
     {
         getActiveProducer().init(flowGraph.getContext().getProperties(), flowGraph);
     }
 
-    void setFlowGraph(FlowGraph flowgraph) {
+    public void setFlowGraph(FlowGraph flowgraph) {
         this.flowgraph = flowgraph;
     }
 

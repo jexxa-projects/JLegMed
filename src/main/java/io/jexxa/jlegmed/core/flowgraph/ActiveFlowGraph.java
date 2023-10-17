@@ -1,16 +1,18 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
+
+import java.util.Properties;
 
 public class ActiveFlowGraph<T> extends AbstractFlowGraph {
 
     private ActiveProducer activeProducer;
     private final Class<T> inputDataType;
-    public ActiveFlowGraph(JLegMed jLegMed, Class<T> inputDataType)
+    public ActiveFlowGraph(String flowGraphID, Properties properties, Class<T> inputDataType)
     {
-        super(jLegMed);
+        super(flowGraphID, properties);
         this.inputDataType = inputDataType;
     }
 

@@ -2,17 +2,12 @@ package io.jexxa.jlegmed.core;
 
 
 import io.jexxa.jlegmed.common.properties.PropertiesLoader;
-import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.Processor;
-import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_BUILD_TIMESTAMP;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_NAME;
@@ -23,8 +18,6 @@ public final class JLegMed
 {
 
     private final Map<String, FlowGraph> flowGraphs = new HashMap<>();
-    private FlowGraph currentFlowGraph;
-    private Processor currentProcessor;
 
     private String currentFlowGraphID;
 
@@ -51,26 +44,6 @@ public final class JLegMed
         return this;
     }
 
-    public <U, V> JLegMed andProcessWith(BiFunction<U, Context, V> processor)
-    {
-        this.currentProcessor = new TypedProcessor<>(processor);
-        currentFlowGraph.andProcessWith(currentProcessor);
-        return this;
-    }
-
-    public <U, V> JLegMed andProcessWith(Function<U,V> function)
-    {
-        this.currentProcessor = new TypedProcessor<>(function);
-        currentFlowGraph.andProcessWith(currentProcessor);
-        return this;
-    }
-
-    public  <T> JLegMed useConfig(T configuration)
-    {
-        this.currentProcessor.setConfiguration(configuration);
-        return this;
-    }
-
     @SuppressWarnings("java:S1172")
     public <T> ActiveFlowGraph<T> await(Class<T> inputData) {
         if (currentFlowGraphID == null || currentFlowGraphID.isEmpty())
@@ -84,7 +57,6 @@ public final class JLegMed
         }
         var flowGraph = new ActiveFlowGraph<>(this,inputData);
         flowGraphs.put(currentFlowGraphID, flowGraph);
-        this.currentFlowGraph = flowGraph;
         return flowGraph;
     }
 
@@ -111,7 +83,6 @@ public final class JLegMed
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
         var eachFlowgraph = new ScheduledFlowGraph(this, fixedRate, timeUnit);
-        this.currentFlowGraph = eachFlowgraph;
         flowGraphs.put(currentFlowGraphID, eachFlowgraph);
         return eachFlowgraph;
     }

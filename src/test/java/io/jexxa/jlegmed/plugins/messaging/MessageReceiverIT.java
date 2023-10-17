@@ -29,9 +29,9 @@ class MessageReceiverIT {
 
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(MessageProcessors::sendAsJSON).useConfig(topic("MyTopic", "test-jms-connection"))
-                .andProcessWith(messageCollector1::collect)
+                .andProcessWith(messageCollector1::collect);
 
-                .newFlowGraph("MessageReceiver")
+        jlegmed.newFlowGraph("MessageReceiver")
                 .await(Integer.class).from(topicURL("MyTopic", "test-jms-connection")).asJSON()
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2::collect);

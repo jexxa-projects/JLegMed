@@ -61,9 +61,9 @@ class ActiveFlowGraphTest {
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector1::collect )
+                .andProcessWith( messageCollector1::collect );
 
-                .newFlowGraph("ActiveFlowgraph2")
+        jlegmed.newFlowGraph("ActiveFlowgraph2")
                 .await(Integer.class).generatedWith(GenericActiveProducer.class)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )

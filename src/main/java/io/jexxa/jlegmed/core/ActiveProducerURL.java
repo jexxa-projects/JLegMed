@@ -1,9 +1,10 @@
 package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.core.flowgraph.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 public abstract class ActiveProducerURL {
-    private JLegMed jLegMed;
+    private FlowGraph flowgraph;
 
     protected abstract ActiveProducer getActiveProducer();
 
@@ -12,12 +13,12 @@ public abstract class ActiveProducerURL {
         getActiveProducer().init(flowGraph.getContext().getProperties(), flowGraph);
     }
 
-    void setApplication(JLegMed jLegMed) {
-        this.jLegMed = jLegMed;
+    void setFlowGraph(FlowGraph flowgraph) {
+        this.flowgraph = flowgraph;
     }
 
-    protected JLegMed getApplication()
+    protected FlowGraph getFlowgraph()
     {
-        return jLegMed;
+        return flowgraph;
     }
 }

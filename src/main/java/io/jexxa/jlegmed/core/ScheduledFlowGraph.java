@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core;
 
 
 import io.jexxa.jlegmed.core.flowgraph.Content;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Producer;
 import io.jexxa.jlegmed.core.scheduler.IScheduled;
 import io.jexxa.jlegmed.core.scheduler.Scheduler;
@@ -24,19 +25,19 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph implements ISche
     }
 
     public <T extends ProducerURL> T from(T producerURL) {
-        producerURL.setApplication(getjLegMed());
+        producerURL.setFlowGraph(this);
         this.producer = producerURL.getProducer();
 
         return producerURL;
     }
 
-    public JLegMed generatedWith(Producer producer) {
+    public FlowGraph generatedWith(Producer producer) {
         try {
             this.producer = producer;
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
-        return getjLegMed();
+        return this;
     }
 
     public ScheduledFlowGraph(JLegMed jLegMed, int fixedRate, TimeUnit timeUnit)

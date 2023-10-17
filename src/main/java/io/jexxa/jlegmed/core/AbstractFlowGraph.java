@@ -4,13 +4,17 @@ import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Processor;
+import io.jexxa.jlegmed.core.flowgraph.TypedProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public abstract class AbstractFlowGraph implements FlowGraph {
 
     private final List<Processor> processorList = new ArrayList<>();
+    private Processor currentProcessor ;
 
     private final Context context;
 
@@ -23,9 +27,25 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     }
 
 
-    @Override
-    public void andProcessWith(Processor processor) {
-        processorList.add(processor);
+    public <U, V> AbstractFlowGraph andProcessWith(BiFunction<U, Context, V> processor)
+    {
+        this.currentProcessor = new TypedProcessor<>(processor);
+        processorList.add(currentProcessor);
+        return this;
+    }
+
+    public <U, V> AbstractFlowGraph andProcessWith(Function<U,V> function)
+    {
+        this.currentProcessor = new TypedProcessor<>(function);
+        processorList.add(currentProcessor);
+        return this;
+    }
+
+
+    public  <T> AbstractFlowGraph useConfig(T configuration)
+    {
+        this.currentProcessor.setConfiguration(configuration);
+        return this;
     }
 
     @Override

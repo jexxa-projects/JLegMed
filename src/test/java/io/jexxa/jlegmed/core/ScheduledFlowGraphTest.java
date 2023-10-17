@@ -198,9 +198,9 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector1::collect)
+                .andProcessWith(messageCollector1::collect);
 
-                .newFlowGraph("flowGraph2")
+        jlegmed.newFlowGraph("flowGraph2")
                 .each(20, MILLISECONDS)
                 .receive(Integer.class).generatedWith(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)

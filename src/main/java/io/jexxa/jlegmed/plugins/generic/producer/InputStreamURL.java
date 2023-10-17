@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.ProducerURL;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.io.InputStream;
 
@@ -24,14 +24,14 @@ public class InputStreamURL extends ProducerURL {
         return inputStreamProducer;
     }
 
-    public JLegMed untilStopped() {
+    public FlowGraph untilStopped() {
         getProducer().untilStopped();
-        return getApplication();
+        return getFlowGraph();
     }
 
-    public JLegMed onlyOnce() {
+    public FlowGraph onlyOnce() {
         getProducer().onlyOnce();
-        return getApplication();
+        return getFlowGraph();
     }
 
     public static InputStreamURL inputStreamOf(InputStream inputStream) {

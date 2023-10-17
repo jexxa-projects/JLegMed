@@ -5,6 +5,7 @@ import io.jexxa.jlegmed.common.properties.PropertiesLoader;
 import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
+import io.jexxa.jlegmed.core.producer.TypedProducer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,9 @@ public final class JLegMed
     private String currentFlowGraphID;
 
     private final Properties properties;
+
+    private int fixedInterval;
+    private TimeUnit timeUnit;
 
     public JLegMed()
     {
@@ -57,7 +61,7 @@ public final class JLegMed
         {
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
-        var flowGraph = new ActiveFlowGraph<>(currentFlowGraphID, properties,inputData);
+        var flowGraph = new ActiveFlowGraph<>(currentFlowGraphID, inputData, properties);
         flowGraphs.put(currentFlowGraphID, flowGraph);
         return flowGraph;
     }
@@ -73,7 +77,7 @@ public final class JLegMed
     }
 
 
-    public ScheduledFlowGraph each(int fixedRate, TimeUnit timeUnit)
+    public JLegMed each(int fixedRate, TimeUnit timeUnit)
     {
         if (currentFlowGraphID == null || currentFlowGraphID.isEmpty())
         {
@@ -84,10 +88,21 @@ public final class JLegMed
         {
             throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
         }
-        var eachFlowgraph = new ScheduledFlowGraph(currentFlowGraphID, properties, fixedRate, timeUnit);
-        flowGraphs.put(currentFlowGraphID, eachFlowgraph);
-        return eachFlowgraph;
+
+        this.fixedInterval = fixedRate;
+        this.timeUnit = timeUnit;
+
+        return this;
     }
+
+    public <T> TypedProducer<T> receive(Class<T> expectedData)
+    {
+        var eachFlowgraph = new ScheduledFlowGraph<T>(currentFlowGraphID, properties, fixedInterval, timeUnit);
+        flowGraphs.put(currentFlowGraphID, eachFlowgraph);
+        return eachFlowgraph.receive(expectedData);
+    }
+
+
 
     public static class InvalidFlowGraphException extends RuntimeException {
         InvalidFlowGraphException(String message)

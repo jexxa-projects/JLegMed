@@ -6,13 +6,13 @@ import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 
 import java.util.Properties;
 
-public class ActiveFlowGraph<T> extends AbstractFlowGraph {
+public class ActiveFlowGraph<T> extends AbstractFlowGraph<T> {
 
     private ActiveProducer activeProducer;
     private final Class<T> inputDataType;
-    public ActiveFlowGraph(String flowGraphID, Properties properties, Class<T> inputDataType)
+    public ActiveFlowGraph(String flowGraphID, Class<T> inputDataType, Properties properties)
     {
-        super(flowGraphID, properties);
+        super(flowGraphID,  properties );
         this.inputDataType = inputDataType;
     }
 
@@ -25,6 +25,8 @@ public class ActiveFlowGraph<T> extends AbstractFlowGraph {
         }
         return producerURL;
     }
+
+
     @Override
     public void start() {
         activeProducer.start();
@@ -35,8 +37,8 @@ public class ActiveFlowGraph<T> extends AbstractFlowGraph {
         activeProducer.stop();
     }
 
-    public Class<T> getInputDataType()
-    {
+    @Override
+    public Class<T> getInputData() {
         return inputDataType;
     }
 }

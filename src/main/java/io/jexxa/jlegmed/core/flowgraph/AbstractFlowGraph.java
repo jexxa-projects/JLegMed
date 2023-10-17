@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class AbstractFlowGraph implements FlowGraph {
+public abstract class AbstractFlowGraph<T> implements FlowGraph {
 
     private final List<Processor> processorList = new ArrayList<>();
     private Processor currentProcessor ;
@@ -23,15 +23,17 @@ public abstract class AbstractFlowGraph implements FlowGraph {
         this.context = new Context(properties);
     }
 
+    public  abstract Class<T> getInputData();
 
-    public <U, V> AbstractFlowGraph andProcessWith(BiFunction<U, Context, V> processor)
+
+    public <U, V> AbstractFlowGraph<T> andProcessWith(BiFunction<U, Context, V> processor)
     {
         this.currentProcessor = new TypedProcessor<>(processor);
         processorList.add(currentProcessor);
         return this;
     }
 
-    public <U, V> AbstractFlowGraph andProcessWith(Function<U,V> function)
+    public <U, V> AbstractFlowGraph<T> andProcessWith(Function<U,V> function)
     {
         this.currentProcessor = new TypedProcessor<>(function);
         processorList.add(currentProcessor);
@@ -39,7 +41,7 @@ public abstract class AbstractFlowGraph implements FlowGraph {
     }
 
 
-    public  <T> AbstractFlowGraph useConfig(T configuration)
+    public  <U> AbstractFlowGraph<T> useConfig(U configuration)
     {
         this.currentProcessor.setConfiguration(configuration);
         return this;

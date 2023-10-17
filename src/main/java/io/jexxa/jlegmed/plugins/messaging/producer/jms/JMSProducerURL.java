@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
-import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
-import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;
@@ -12,7 +12,7 @@ public class JMSProducerURL implements ActiveProducerURL {
 
     private final MessageSender.Configuration configuration;
     private MessageProducer messageProducer;
-    private ActiveFlowGraph<?> flowGraph;
+    private AbstractFlowGraph<?> flowGraph;
 
     public JMSProducerURL(MessageSender.Configuration configuration)
     {
@@ -20,7 +20,7 @@ public class JMSProducerURL implements ActiveProducerURL {
     }
 
     @Override
-    public <T> ActiveProducer init(ActiveFlowGraph<T> flowGraph)
+    public <T> ActiveProducer init(AbstractFlowGraph<T> flowGraph)
     {
         messageProducer = new MessageProducer(configuration.connectionName(),
                 flowGraph.getContext().getProperties(configuration.connectionName()));
@@ -30,7 +30,7 @@ public class JMSProducerURL implements ActiveProducerURL {
     }
     public FlowGraph asJSON( )
     {
-        JSONMessageListener messageListener = new TypedMessageListener<>(flowGraph.getInputDataType(), flowGraph, configuration);
+        JSONMessageListener messageListener = new TypedMessageListener<>(flowGraph.getInputData(), flowGraph, configuration);
         messageProducer.register(messageListener);
 
         return flowGraph;

@@ -9,12 +9,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TypedProducer<T> implements Producer {
-    private final ScheduledFlowGraph scheduledFlowGraph;
+    private final ScheduledFlowGraph<T> scheduledFlowGraph;
     private BiFunction<Context, Class<T>, T> producerContextFunction;
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
 
-    public TypedProducer(ScheduledFlowGraph scheduledFlowGraph) {
+    public TypedProducer(ScheduledFlowGraph<T> scheduledFlowGraph) {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }
 

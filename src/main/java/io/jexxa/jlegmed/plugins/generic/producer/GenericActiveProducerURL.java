@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
@@ -15,7 +15,7 @@ public class GenericActiveProducerURL implements ActiveProducerURL {
     private GenericActiveProducer genericActiveProducer;
 
     @Override
-    public <U> ActiveProducer init(ActiveFlowGraph<U> flowGraph) {
+    public <U> ActiveProducer init(AbstractFlowGraph<U> flowGraph) {
         this.flowGraph = flowGraph;
         genericActiveProducer = new GenericActiveProducer(flowGraph);
         return genericActiveProducer;

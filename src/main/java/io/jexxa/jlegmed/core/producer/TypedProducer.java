@@ -13,46 +13,41 @@ public class TypedProducer<T> implements Producer {
     private BiFunction<Context, Class<T>, T> producerContextFunction;
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
-    public TypedProducer(ScheduledFlowGraph scheduledFlowGraph)
-    {
+
+    public TypedProducer(ScheduledFlowGraph scheduledFlowGraph) {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }
 
-    public FlowGraph generatedWith(Function<Context, T> contextFunction)
-    {
+    public FlowGraph generatedWith(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
         return scheduledFlowGraph.generatedWith(this);
     }
 
-    public FlowGraph generatedWith( BiFunction<Context, Class<T>, T> producerContextFunction)
-    {
+    public FlowGraph generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
         return scheduledFlowGraph.generatedWith(this);
     }
 
-    public FlowGraph generatedWith( Supplier<T> producerSupplier)
-    {
+    public FlowGraph generatedWith(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
         return scheduledFlowGraph.generatedWith(this);
     }
+
     public <U extends ProducerURL> U from(U producerURL) {
         return scheduledFlowGraph.from(producerURL);
     }
 
     @Override
     public Object produce(Class<?> clazz, Context context) {
-        if (producerContextFunction != null)
-        {
+        if (producerContextFunction != null) {
             return producerContextFunction.apply(context, (Class<T>) clazz);
         }
 
-        if (contextFunction != null)
-        {
+        if (contextFunction != null) {
             return contextFunction.apply(context);
         }
 
-        if (producerSupplier != null)
-        {
+        if (producerSupplier != null) {
             return producerSupplier.get();
         }
         return null;

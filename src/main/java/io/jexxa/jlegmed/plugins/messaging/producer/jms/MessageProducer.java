@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import javax.jms.MessageListener;
 import java.util.HashMap;
@@ -14,9 +13,10 @@ public class MessageProducer implements ActiveProducer {
     private static final Map<String, IDrivingAdapter> messageReceiverMap = new HashMap<>();
 
     private IDrivingAdapter jmsAdapter;
-    @Override
-    public void init(Properties properties, FlowGraph flowGraph) {
-        jmsAdapter = getInternalMessageReceiver("MyConfig",  properties);
+
+    public MessageProducer(String connectionName, Properties properties)
+    {
+        jmsAdapter = getInternalMessageReceiver(connectionName, properties);
     }
 
     @Override

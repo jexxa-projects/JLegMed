@@ -9,7 +9,6 @@ public interface FlowGraph {
     <U, V> FlowGraph andProcessWith(Function<U,V> function);
     <T> FlowGraph useConfig(T configuration);
 
-
     void start();
     void stop();
 

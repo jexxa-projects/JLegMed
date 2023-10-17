@@ -16,22 +16,9 @@ public class ActiveFlowGraph<T> extends AbstractFlowGraph {
         this.inputDataType = inputDataType;
     }
 
-    public <U extends ActiveProducer> FlowGraph generatedWith(Class<U> clazz) {
-        try {
-            this.activeProducer = clazz.getDeclaredConstructor().newInstance();
-            activeProducer.init(getContext().getProperties(), this);
-
-        } catch (Exception e){
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
-        return this;
-    }
-
     public <U extends ActiveProducerURL> U from(U producerURL) {
         try {
-            producerURL.setFlowGraph(this);
-            producerURL.init(this);
-            this.activeProducer = producerURL.getActiveProducer();
+            this.activeProducer = producerURL.init(this);
 
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);

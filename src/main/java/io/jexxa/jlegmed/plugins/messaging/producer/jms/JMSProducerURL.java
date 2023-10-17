@@ -8,10 +8,11 @@ import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;
 
-public class JMSProducerURL extends ActiveProducerURL {
+public class JMSProducerURL implements ActiveProducerURL {
 
     private final MessageSender.Configuration configuration;
-    private final MessageProducer messageProducer = new MessageProducer();
+    private MessageProducer messageProducer;
+    private ActiveFlowGraph<?> flowGraph;
 
     public JMSProducerURL(MessageSender.Configuration configuration)
     {
@@ -19,19 +20,19 @@ public class JMSProducerURL extends ActiveProducerURL {
     }
 
     @Override
-    public <T> void init(ActiveFlowGraph<T> flowGraph)
+    public <T> ActiveProducer init(ActiveFlowGraph<T> flowGraph)
     {
-        JSONMessageListener messageListener = new TypedMessageListener<>(flowGraph.getInputDataType(), flowGraph, configuration);
-        getActiveProducer().init(flowGraph.getContext().getProperties(configuration.connectionName()), flowGraph);
-        messageProducer.register(messageListener);
+        messageProducer = new MessageProducer(configuration.connectionName(),
+                flowGraph.getContext().getProperties(configuration.connectionName()));
+
+        this.flowGraph = flowGraph;
+        return messageProducer;
     }
     public FlowGraph asJSON( )
     {
-        return getFlowgraph();
-    }
+        JSONMessageListener messageListener = new TypedMessageListener<>(flowGraph.getInputDataType(), flowGraph, configuration);
+        messageProducer.register(messageListener);
 
-    @Override
-    public ActiveProducer getActiveProducer() {
-        return messageProducer;
+        return flowGraph;
     }
 }

@@ -15,18 +15,18 @@ import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
 @SuppressWarnings("unused")
 public class TypedMessageListener<T> extends JSONMessageListener
 {
-    private final Class<T> clazz;
+    private final Class<?> clazz;
     private final FlowGraph flowGraph;
     private final MessageSender.Configuration configuration;
 
-    public TypedMessageListener(Class<T> clazz, FlowGraph flowGraph, MessageSender.Configuration configuration)
+    public TypedMessageListener(Class<?> clazz, FlowGraph flowGraph, MessageSender.Configuration configuration)
     {
         this.clazz = Objects.requireNonNull( clazz );
         this.flowGraph = Objects.requireNonNull(flowGraph);
         this.configuration = configuration;
     }
 
-    public void onMessage(T message)
+    public void forwardMessage(Object message)
     {
         flowGraph.processMessage(new Content(message));
     }
@@ -34,7 +34,7 @@ public class TypedMessageListener<T> extends JSONMessageListener
     @Override
     public final void onMessage(String message)
     {
-        onMessage( fromJson(message, clazz ));
+        forwardMessage( mfromJson(message, clazz ));
     }
 
     public JMSConfiguration getConfiguration()
@@ -52,7 +52,7 @@ public class TypedMessageListener<T> extends JSONMessageListener
     }
 
 
-    protected static <U> U fromJson( String message, Class<U> clazz)
+    protected static Object mfromJson( String message, Class<?> clazz)
     {
         return getJSONConverter().fromJson( message, clazz);
     }

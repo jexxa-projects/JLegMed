@@ -9,7 +9,7 @@ public interface FlowGraph {
 
     <U, V> FlowGraph andProcessWith(BiFunction<U, Context, V> processor);
     <U, V> FlowGraph andProcessWith(Function<U,V> function);
-    public  <T> AbstractFlowGraph useConfig(T configuration);
+    <T> AbstractFlowGraph useConfig(T configuration);
 
 
     void start();

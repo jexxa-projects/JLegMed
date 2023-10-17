@@ -1,18 +1,8 @@
 package io.jexxa.jlegmed.core.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
-public abstract class ProducerURL {
-    private FlowGraph flowGraph;
+public interface ProducerURL {
 
-    public abstract Producer getProducer();
-
-    public void setFlowGraph(FlowGraph flowGraph) {
-        this.flowGraph = flowGraph;
-    }
-
-    protected FlowGraph getFlowGraph()
-    {
-        return flowGraph;
-    }
+    Producer init(ScheduledFlowGraph flowGraph);
 }

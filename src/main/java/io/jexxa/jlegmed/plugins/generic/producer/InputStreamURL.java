@@ -1,12 +1,15 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
+import io.jexxa.jlegmed.core.producer.Producer;
+import io.jexxa.jlegmed.core.producer.ProducerURL;
 
 import java.io.InputStream;
 
-public class InputStreamURL extends ProducerURL {
+public class InputStreamURL implements ProducerURL {
 
+    private FlowGraph flowGraph;
     private final InputStream inputStream;
     private InputStreamProducer inputStreamProducer;
 
@@ -15,8 +18,9 @@ public class InputStreamURL extends ProducerURL {
         this.inputStream = inputStreamReader;
     }
 
-    @Override
-    public InputStreamProducer getProducer() {
+    public Producer init(ScheduledFlowGraph flowGraph)
+    {
+        this.flowGraph = flowGraph;
         if (inputStreamProducer == null )
         {
             this.inputStreamProducer = new InputStreamProducer(inputStream);
@@ -25,13 +29,13 @@ public class InputStreamURL extends ProducerURL {
     }
 
     public FlowGraph untilStopped() {
-        getProducer().untilStopped();
-        return getFlowGraph();
+        inputStreamProducer.untilStopped();
+        return flowGraph;
     }
 
     public FlowGraph onlyOnce() {
-        getProducer().onlyOnce();
-        return getFlowGraph();
+        inputStreamProducer.onlyOnce();
+        return flowGraph;
     }
 
     public static InputStreamURL inputStreamOf(InputStream inputStream) {

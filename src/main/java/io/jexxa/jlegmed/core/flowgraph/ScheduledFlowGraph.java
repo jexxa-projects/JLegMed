@@ -34,9 +34,7 @@ public final class ScheduledFlowGraph extends AbstractFlowGraph {
     }
 
     public <T extends ProducerURL> T from(T producerURL) {
-        producerURL.setFlowGraph(this);
-        this.producer = producerURL.getProducer();
-
+        this.producer = producerURL.init(this);
         return producerURL;
     }
 

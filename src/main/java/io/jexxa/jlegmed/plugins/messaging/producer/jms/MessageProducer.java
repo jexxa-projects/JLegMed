@@ -12,7 +12,7 @@ public class MessageProducer implements ActiveProducer {
 
     private static final Map<String, IDrivingAdapter> messageReceiverMap = new HashMap<>();
 
-    private IDrivingAdapter jmsAdapter;
+    private final IDrivingAdapter jmsAdapter;
 
     public MessageProducer(String connectionName, Properties properties)
     {

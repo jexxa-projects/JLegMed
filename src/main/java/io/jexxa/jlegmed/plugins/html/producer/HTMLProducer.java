@@ -18,11 +18,8 @@ public class HTMLProducer implements Producer {
     @Override
     public Object produce(Class<?> clazz, Context context) {
 
-        var result = Unirest.get(url)
+        return Unirest.get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)
                 .asObject(clazz).getBody();
-
-        System.out.println(result);
-        return result;
     }
 }

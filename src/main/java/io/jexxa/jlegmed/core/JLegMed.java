@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.jlegmed.common.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.properties.PropertiesLoader;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
@@ -19,11 +20,7 @@ public final class JLegMed
     private final Map<String, FlowGraph> flowGraphs = new HashMap<>();
 
     private final Properties properties;
-
-    public JLegMed()
-    {
-        this(JLegMed.class);
-    }
+    private final Class<?> application;
 
     public JLegMed(Class<?> application)
     {
@@ -33,6 +30,7 @@ public final class JLegMed
     public JLegMed(Class<?> application, Properties properties)
     {
         this.properties  = new PropertiesLoader(application).createProperties(properties);
+        this.application = application;
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
@@ -48,7 +46,10 @@ public final class JLegMed
 
     public void start()
     {
+        SLF4jLogger.getLogger(JLegMed.class).info("Start application {}", application.getSimpleName());
+        SLF4jLogger.getLogger(JLegMed.class).info("{}", applicationInfo());
         flowGraphs.forEach((key, value) -> value.start());
+        SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
     }
 
     public void stop()

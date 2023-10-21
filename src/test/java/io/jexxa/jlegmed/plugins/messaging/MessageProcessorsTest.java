@@ -19,7 +19,7 @@ class MessageProcessorsTest {
     void testSendMessageToTopic() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(MessageProcessorsTest.class);
         jlegmed.newFlowGraph("MessageSender")
                 .each(10, MILLISECONDS)
 
@@ -41,7 +41,7 @@ class MessageProcessorsTest {
     void testSendMessageToQueue() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(MessageProcessorsTest.class);
         jlegmed.newFlowGraph("MessageSender")
                 .each(10, MILLISECONDS)
 

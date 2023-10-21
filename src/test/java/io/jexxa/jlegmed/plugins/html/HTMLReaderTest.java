@@ -11,7 +11,6 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.html.producer.HTMLProducer;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.html.HTMLReaderTest.HTMLReaderURL.httpURL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -21,7 +20,7 @@ class HTMLReaderTest {
     void testFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<VersionInfo>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(HTMLReaderTest.class);
         jlegmed.newFlowGraph("HTMLReader")
                 .each(50, MILLISECONDS)
                 //.receive(VersionInfo.class).from(httpURL("http://localhost:7503/BoundedContext/contextVersion")).asJson()

@@ -21,7 +21,7 @@ class MessageReceiverIT {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(MessageReceiverIT.class);
         jlegmed.newFlowGraph("MessageSender")
                 .each(10, MILLISECONDS)
 

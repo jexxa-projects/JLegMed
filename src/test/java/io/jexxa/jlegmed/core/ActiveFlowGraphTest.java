@@ -18,7 +18,7 @@ class ActiveFlowGraphTest {
     void testSingleFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed
                 .newFlowGraph("ActiveFlowgraph")
                 .await(Integer.class).from(genericProducerURL())
@@ -39,7 +39,7 @@ class ActiveFlowGraphTest {
     void testContextFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed.newFlowGraph("ActiveFlowgraph")
                 .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
 
@@ -59,7 +59,7 @@ class ActiveFlowGraphTest {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed();
+        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed.newFlowGraph("ActiveFlowgraph1")
                 .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )

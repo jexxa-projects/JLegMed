@@ -2,15 +2,11 @@ package io.jexxa.jlegmed.core;
 
 
 import io.jexxa.jlegmed.common.properties.PropertiesLoader;
-import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
-import io.jexxa.jlegmed.core.producer.TypedProducer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_BUILD_TIMESTAMP;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_NAME;
@@ -22,12 +18,7 @@ public final class JLegMed
 
     private final Map<String, FlowGraph> flowGraphs = new HashMap<>();
 
-    private String currentFlowGraphID;
-
     private final Properties properties;
-
-    private int fixedInterval;
-    private TimeUnit timeUnit;
 
     public JLegMed()
     {
@@ -44,26 +35,15 @@ public final class JLegMed
         this.properties  = new PropertiesLoader(application).createProperties(properties);
     }
 
-    public JLegMed newFlowGraph(String flowGraphID)
+    public FlowGraphBuilder newFlowGraph(String flowGraphID)
     {
-        this.currentFlowGraphID = flowGraphID;
-        return this;
+        return new FlowGraphBuilder(flowGraphID, this);
     }
 
-    @SuppressWarnings("java:S1172")
-    public <T> ActiveFlowGraph<T> await(Class<T> inputData) {
-        if (currentFlowGraphID == null || currentFlowGraphID.isEmpty())
-        {
-            throw new InvalidFlowGraphException("No flowgraph id defined");
-        }
 
-        if (flowGraphs.containsKey(currentFlowGraphID))
-        {
-            throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
-        }
-        var flowGraph = new ActiveFlowGraph<>(currentFlowGraphID, inputData, properties);
-        flowGraphs.put(currentFlowGraphID, flowGraph);
-        return flowGraph;
+    void addFlowGraph(String flowGraphID, FlowGraph flowGraph)
+    {
+        flowGraphs.put(flowGraphID, flowGraph);
     }
 
     public void start()
@@ -74,41 +54,6 @@ public final class JLegMed
     public void stop()
     {
         flowGraphs.forEach((key, value) -> value.stop());
-    }
-
-
-    public JLegMed each(int fixedRate, TimeUnit timeUnit)
-    {
-        if (currentFlowGraphID == null || currentFlowGraphID.isEmpty())
-        {
-            throw new InvalidFlowGraphException("No flowgraph id defined");
-        }
-
-        if (flowGraphs.containsKey(currentFlowGraphID))
-        {
-            throw new InvalidFlowGraphException("Flowgraph with ID " + currentFlowGraphID + " is already defined");
-        }
-
-        this.fixedInterval = fixedRate;
-        this.timeUnit = timeUnit;
-
-        return this;
-    }
-
-    public <T> TypedProducer<T> receive(Class<T> expectedData)
-    {
-        var eachFlowgraph = new ScheduledFlowGraph<T>(currentFlowGraphID, properties, fixedInterval, timeUnit);
-        flowGraphs.put(currentFlowGraphID, eachFlowgraph);
-        return eachFlowgraph.receive(expectedData);
-    }
-
-
-
-    public static class InvalidFlowGraphException extends RuntimeException {
-        InvalidFlowGraphException(String message)
-        {
-            super(message);
-        }
     }
 
     public Properties getProperties()

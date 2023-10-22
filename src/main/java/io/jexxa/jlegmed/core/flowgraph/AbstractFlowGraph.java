@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.jlegmed.core.processor.TypedInputPipe;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.processor.TypedProcessor;
 
@@ -28,32 +29,35 @@ public abstract class AbstractFlowGraph<T> implements FlowGraph {
     public  abstract Class<T> getInputData();
 
 
-    public <U, V> AbstractFlowGraph<T> andProcessWith(BiFunction<U, Context, V> successorFunction)
+    public <U, V> TypedConnector<V> andProcessWith(BiFunction<U, Context, V> successorFunction)
     {
         var successor = new TypedProcessor<>(successorFunction);
         if ( currentProcessor != null) {
-            currentProcessor.getOutputPipe().connectTo(successor.getInputPipe());
+            TypedOutputPipe<U> outputPipe = (TypedOutputPipe<U>) currentProcessor.getOutputPipe();
+            outputPipe.connectTo(successor.getInputPipe());
         } else if (sourceOutputPipe != null){
-            sourceOutputPipe.connectTo(successor.getInputPipe());
+            TypedOutputPipe<U> outputPipe =  (TypedOutputPipe<U>)sourceOutputPipe;
+            outputPipe.connectTo(successor.getInputPipe());
         }
 
         this.currentProcessor = successor;
         processorList.add(currentProcessor);
-        return this;
+        return new TypedConnector<>(this, successor.getOutputPipe(), null);
     }
 
-    public <U, V> AbstractFlowGraph<T> andProcessWith(Function<U,V> successorFunction)
+    public <U, V> TypedConnector<V> andProcessWith(Function<U,V> successorFunction)
     {
         var successor = new TypedProcessor<>(successorFunction);
         if ( currentProcessor != null) {
-            currentProcessor.getOutputPipe().connectTo(successor.getInputPipe());
+            TypedOutputPipe<U> outputPipe = (TypedOutputPipe<U>) currentProcessor.getOutputPipe();
+            outputPipe.connectTo(successor.getInputPipe());
         }  else if (sourceOutputPipe != null) {
-            sourceOutputPipe.connectTo(successor.getInputPipe());
-        }
+            TypedOutputPipe<U> outputPipe =  (TypedOutputPipe<U>)sourceOutputPipe;
+            outputPipe.connectTo(successor.getInputPipe());        }
 
         this.currentProcessor = successor;
         processorList.add(currentProcessor);
-        return this;
+        return new TypedConnector<>(this, successor.getOutputPipe(), null);
     }
 
 
@@ -70,7 +74,8 @@ public abstract class AbstractFlowGraph<T> implements FlowGraph {
         try {
             if (!processorList.isEmpty())
             {
-                processorList.get(0).getInputPipe().receive(content, context);
+                TypedInputPipe<T> inputPipe = (TypedInputPipe<T>) processorList.get(0).getInputPipe();
+                inputPipe.receive(content.getData(getInputData()), context);
             }
         } catch (RuntimeException e)
         {

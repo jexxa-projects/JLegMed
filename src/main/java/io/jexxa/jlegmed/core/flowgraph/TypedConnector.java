@@ -1,32 +1,47 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
+import io.jexxa.jlegmed.core.processor.TypedProcessor;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class TypedConnector<T> {
     private final AbstractFlowGraph<?> flowGraph;
-
+    private TypedOutputPipe<T> predecessorPipe;
+    private TypedProcessor<?,?> predecessor;
 
     public TypedConnector(AbstractFlowGraph<?> flowGraph)
     {
         this.flowGraph = flowGraph;
     }
 
+    public TypedConnector(AbstractFlowGraph<?> flowGraph, TypedOutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
+    {
+        this.flowGraph = flowGraph;
+        this.predecessorPipe = predecessorPipe;
+        this.predecessor = predecessor;
+    }
+
     public <R> TypedConnector<R> andProcessWith(BiFunction<T, Context, R> successorFunction)
     {
-        flowGraph.andProcessWith(successorFunction);
-        return new TypedConnector<>(flowGraph);
+        var successor = new TypedProcessor<>(successorFunction);
+        predecessorPipe.connectTo(successor.getInputPipe());
+        return new TypedConnector<>(flowGraph, successor.getOutputPipe(), successor);
     }
 
     public <R> TypedConnector<R> andProcessWith(Function<T,R> successorFunction)
     {
-        flowGraph.andProcessWith(successorFunction);
-        return new TypedConnector<>(flowGraph);
+        var successor = new TypedProcessor<>(successorFunction);
+        predecessorPipe.connectTo(successor.getInputPipe());
+
+        return new TypedConnector<>(flowGraph, successor.getOutputPipe(), successor);
     }
+
 
     public <U> TypedConnector<T> useConfig(U configuration)
     {
-        flowGraph.useConfig(configuration);
+        predecessor.setConfiguration(configuration);
         return this;
     }
 

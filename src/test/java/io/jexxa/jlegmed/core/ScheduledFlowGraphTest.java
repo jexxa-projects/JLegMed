@@ -23,7 +23,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
@@ -85,7 +85,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraphContextTypedSource() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)
@@ -149,7 +149,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerURL() {
         //Arrange
-        var messageCollector = new MessageCollector<NewContract>();
+        var messageCollector = new MessageCollector<>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -171,7 +171,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerURLOnlyOnce() {
         //Arrange
-        var messageCollector = new MessageCollector<NewContract>();
+        var messageCollector = new MessageCollector<>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);

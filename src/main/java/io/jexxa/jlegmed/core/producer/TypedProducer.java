@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.core.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
@@ -11,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class TypedProducer<T> implements Producer {
+public class TypedProducer<T> implements Producer<T> {
     private final ScheduledFlowGraph<T> scheduledFlowGraph;
     private BiFunction<Context, Class<T>, T> producerContextFunction;
     private Supplier<T> producerSupplier;
@@ -26,7 +25,7 @@ public class TypedProducer<T> implements Producer {
     public TypedConnector<T> generatedWith(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
         scheduledFlowGraph.generatedWith(this);
-        return new TypedConnector<>(scheduledFlowGraph);
+        return new TypedConnector<>(scheduledFlowGraph, this.outputPipe, null);
     }
 
 
@@ -51,18 +50,18 @@ public class TypedProducer<T> implements Producer {
     }
 
     @Override
-    public void produce(Class<?> clazz, Context context) {
-        Content content = null;
+    public void produce(Class<T> clazz, Context context) {
+        T content = null;
         if (producerContextFunction != null) {
-            content = new Content(producerContextFunction.apply(context, (Class<T>) clazz));
+            content = producerContextFunction.apply(context,clazz);
         }
 
         if (contextFunction != null) {
-            content = new Content(contextFunction.apply(context));
+            content = contextFunction.apply(context);
         }
 
         if (producerSupplier != null) {
-            content = new Content(producerSupplier.get());
+            content = producerSupplier.get();
         }
         if (content != null)
         {

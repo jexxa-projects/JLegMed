@@ -1,15 +1,14 @@
 package io.jexxa.jlegmed.core.processor;
 
 import io.jexxa.jlegmed.common.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 
-public class TypedOutputPipe<T> implements OutputPipe
+public class TypedOutputPipe<T> implements OutputPipe<T>
 {
-    private TypedInputPipe<?> inputPipe;
+    private TypedInputPipe<T> inputPipe;
 
     @Override
-    public void forward(Content content, Context context) {
+    public void forward(T content, Context context) {
         if (inputPipe != null)
         {
             inputPipe.receive(content, context);
@@ -18,7 +17,7 @@ public class TypedOutputPipe<T> implements OutputPipe
         }
     }
 
-    public void connectTo(TypedInputPipe<?> inputPipe)
+    public void connectTo(TypedInputPipe<T> inputPipe)
     {
         this.inputPipe = inputPipe;
     }

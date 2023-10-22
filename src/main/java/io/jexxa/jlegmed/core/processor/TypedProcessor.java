@@ -1,12 +1,11 @@
 package io.jexxa.jlegmed.core.processor;
 
-import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class TypedProcessor<T, R> implements Processor {
+public class TypedProcessor<T, R> implements Processor<T> {
     private BiFunction<T, Context, R> contextFunction;
     private Function<T, R> processFunction;
 
@@ -34,7 +33,7 @@ public class TypedProcessor<T, R> implements Processor {
     }
 
     @Override
-    public void process(Content content, Context context) {
+    public void process(T content, Context context) {
 
         do {
             processorConfig.decreaseCall();
@@ -43,13 +42,13 @@ public class TypedProcessor<T, R> implements Processor {
             R result = null;
 
             if (processFunction != null) {
-                result = processFunction.apply((T) content.getData());
+                result = processFunction.apply(content);
             } else if (contextFunction != null) {
-                result = contextFunction.apply((T) content.getData(), context);
+                result = contextFunction.apply(content, context);
             }
 
             if (result != null) {
-                getOutputPipe().forward(new Content(result), context);
+                getOutputPipe().forward(result, context);
             }
             processorConfig.resetRepeatActive();
 

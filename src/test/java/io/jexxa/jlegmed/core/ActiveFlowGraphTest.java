@@ -17,7 +17,7 @@ class ActiveFlowGraphTest {
     @Test
     void testSingleFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<Integer>();
+        var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed
                 .newFlowGraph("ActiveFlowgraph")
@@ -38,7 +38,7 @@ class ActiveFlowGraphTest {
     @Test
     void testContextFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<Integer>();
+        var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed.newFlowGraph("ActiveFlowgraph")
                 .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
@@ -57,8 +57,8 @@ class ActiveFlowGraphTest {
     @Test
     void testMultipleContextFlowGraph() {
         //Arrange
-        var messageCollector1 = new MessageCollector<Integer>();
-        var messageCollector2 = new MessageCollector<Integer>();
+        var messageCollector1 = new MessageCollector<>();
+        var messageCollector2 = new MessageCollector<>();
         var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed.newFlowGraph("ActiveFlowgraph1")
                 .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
@@ -83,7 +83,7 @@ class ActiveFlowGraphTest {
 
 
 
-    private static Object skipEachSecondMessage(Object data, Context context)
+    private static <T> T skipEachSecondMessage(T data, Context context)
     {
         var contextID = contextID(ActiveFlowGraphTest.class, "skipEachSecondMessage");
         int currentCounter = context.get(contextID, Integer.class).orElse(1);

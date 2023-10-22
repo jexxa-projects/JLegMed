@@ -18,7 +18,7 @@ class HTMLReaderTest {
     @Test
     void testFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<VersionInfo>();
+        var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(HTMLReaderTest.class);
         jlegmed.newFlowGraph("HTMLReader")
                 .each(50, MILLISECONDS)

@@ -1,8 +1,10 @@
 package io.jexxa.jlegmed.core.producer;
 
+import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -14,6 +16,8 @@ public class TypedProducer<T> implements Producer {
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
 
+    private final TypedOutputPipe<T> outputPipe = new TypedOutputPipe<>();
+
     public TypedProducer(ScheduledFlowGraph<T> scheduledFlowGraph) {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }
@@ -22,6 +26,7 @@ public class TypedProducer<T> implements Producer {
         this.contextFunction = contextFunction;
         return scheduledFlowGraph.generatedWith(this);
     }
+
 
     public FlowGraph generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
@@ -33,23 +38,39 @@ public class TypedProducer<T> implements Producer {
         return scheduledFlowGraph.generatedWith(this);
     }
 
+    @Override
+    public TypedOutputPipe<T> getOutputPipe()
+    {
+        return outputPipe;
+    }
+
     public <U extends ProducerURL> U from(U producerURL) {
         return scheduledFlowGraph.from(producerURL);
     }
 
     @Override
-    public Object produce(Class<?> clazz, Context context) {
+    public void produce(Class<?> clazz, Context context) {
+        Content content = null;
         if (producerContextFunction != null) {
-            return producerContextFunction.apply(context, (Class<T>) clazz);
+            content = new Content(producerContextFunction.apply(context, (Class<T>) clazz));
         }
 
         if (contextFunction != null) {
-            return contextFunction.apply(context);
+            content = new Content(contextFunction.apply(context));
         }
 
         if (producerSupplier != null) {
-            return producerSupplier.get();
+            content = new Content(producerSupplier.get());
         }
-        return null;
+        if (content != null)
+        {
+            outputPipe.forward(content, context);
+        }
     }
+
+    public ScheduledFlowGraph<T> getFlowGraph()
+    {
+        return scheduledFlowGraph;
+    }
+
 }

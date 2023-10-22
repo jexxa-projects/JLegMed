@@ -5,7 +5,6 @@ import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.producer.Producer;
 import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.producer.TypedProducer;
 
@@ -18,7 +17,7 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     private final Scheduler scheduler = new Scheduler();
     private final FlowGraphSchedule<T> flowGraphSchedule;
 
-    private Producer producer;
+    private TypedProducer<T> producer = new TypedProducer<>(this);
     private Class<T> expectedData;
 
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
@@ -30,17 +29,21 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     public TypedProducer<T> receive(Class<T> expectedData)
     {
         this.expectedData = expectedData;
-        return new TypedProducer<>(this);
+        var typedProducer =  new TypedProducer<>(this);
+        setProducerOutputPipe(typedProducer.getOutputPipe());
+        return typedProducer;
     }
 
     public <U extends ProducerURL> U from(U producerURL) {
-        this.producer = producerURL.init(this);
+        producerURL.init(producer);
+        setProducerOutputPipe(producer.getOutputPipe());
         return producerURL;
     }
 
-    public FlowGraph generatedWith(Producer producer) {
+    public FlowGraph generatedWith(TypedProducer<T> producer) {
         try {
             this.producer = producer;
+            setProducerOutputPipe(producer.getOutputPipe());
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -111,10 +114,7 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
 
     private void iterateFlowGraph()
     {
-        var result = producer.produce(expectedData, getContext());
-        if ( result != null) {
-            processMessage(new Content(result));
-        }
+        producer.produce(expectedData, getContext());
     }
 
 

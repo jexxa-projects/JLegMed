@@ -1,9 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.producer.Producer;
 import io.jexxa.jlegmed.core.producer.ProducerURL;
+import io.jexxa.jlegmed.core.producer.TypedProducer;
 
 import java.io.InputStream;
 
@@ -18,14 +17,14 @@ public class InputStreamURL implements ProducerURL {
         this.inputStream = inputStreamReader;
     }
 
-    public <T> Producer init(AbstractFlowGraph<T> flowGraph)
+    public <T> void init(TypedProducer<T> typedProducer)
     {
-        this.flowGraph = flowGraph;
         if (inputStreamProducer == null )
         {
             this.inputStreamProducer = new InputStreamProducer(inputStream);
+            flowGraph = typedProducer.getFlowGraph();
         }
-        return inputStreamProducer;
+        typedProducer.generatedWith(inputStreamProducer::produce);
     }
 
     public FlowGraph untilStopped() {

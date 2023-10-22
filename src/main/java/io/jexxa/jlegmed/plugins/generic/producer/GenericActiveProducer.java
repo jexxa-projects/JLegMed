@@ -38,6 +38,7 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
         scheduler.stop();
     }
 
+
     @Override
     public int fixedRate() {
         return fixedRate;

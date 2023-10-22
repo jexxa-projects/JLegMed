@@ -1,10 +1,9 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.producer.Producer;
 import kong.unirest.Unirest;
 
-public class HTMLProducer implements Producer {
+public class HTMLProducer {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_TYPE = "application/json";
 
@@ -15,8 +14,7 @@ public class HTMLProducer implements Producer {
         this.url = url;
     }
 
-    @Override
-    public Object produce(Class<?> clazz, Context context) {
+    public <T> T produce(Context context, Class<T> clazz) {
 
         return Unirest.get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)

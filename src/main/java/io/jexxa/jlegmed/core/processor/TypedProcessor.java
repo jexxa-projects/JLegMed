@@ -10,7 +10,7 @@ public class TypedProcessor<T, R> implements Processor {
     private BiFunction<T, Context, R> contextFunction;
     private Function<T, R> processFunction;
 
-    private Object processorConfiguration;
+    private final ProcessorConfig processorConfig = new ProcessorConfig();
 
     private final TypedInputPipe<T> inputPipe = new TypedInputPipe<>(this);
     private final TypedOutputPipe<R> outputPipe = new TypedOutputPipe<>();
@@ -35,27 +35,30 @@ public class TypedProcessor<T, R> implements Processor {
 
     @Override
     public void process(Content content, Context context) {
-        context.setProcessorConfiguration(processorConfiguration);
 
-        R result = null;
+        do {
+            processorConfig.decreaseCall();
+            context.setProcessorConfig(processorConfig);
 
-        if (processFunction != null) {
-            result = processFunction.apply((T) content.getData());
-        } else if (contextFunction != null) {
-            result = contextFunction.apply((T) content.getData(), context);
-        }
+            R result = null;
 
-        if (result != null) {
-            getOutputPipe().forward(new Content(result), context);
-        }
+            if (processFunction != null) {
+                result = processFunction.apply((T) content.getData());
+            } else if (contextFunction != null) {
+                result = contextFunction.apply((T) content.getData(), context);
+            }
+
+            if (result != null) {
+                getOutputPipe().forward(new Content(result), context);
+            }
+            processorConfig.resetRepeatActive();
+
+        } while (processorConfig.isProcessedAgain());
 
     }
 
     public <U> void setConfiguration(U configuration) {
-        this.processorConfiguration = configuration;
+        this.processorConfig.setConfig(configuration);
     }
 
-    public Object getConfiguration() {
-        return this.processorConfiguration;
-    }
 }

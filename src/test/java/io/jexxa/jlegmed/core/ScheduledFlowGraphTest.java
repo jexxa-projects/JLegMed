@@ -126,6 +126,28 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
+    void testDuplicateMessage() {
+        //Arrange
+        var messageCollector = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed.newFlowGraph("DuplicateMessage")
+                .each(10, MILLISECONDS)
+
+                .receive(Integer.class).generatedWith(GenericProducer::counter)
+
+                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( GenericProcessors::duplicate)
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+        jlegmed.stop();
+    }
+
+    @Test
     void testProducerURL() {
         //Arrange
         var messageCollector = new MessageCollector<NewContract>();

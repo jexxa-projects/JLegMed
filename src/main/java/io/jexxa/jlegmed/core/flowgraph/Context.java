@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.jlegmed.core.processor.ProcessorConfig;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +10,7 @@ import java.util.Properties;
 public class Context {
     private final HashMap<String, Object> contextData = new HashMap<>();
     private final Properties properties;
-    private Object currentProcessorConfig;
+    private ProcessorConfig processorConfig;
 
     public Context(Properties properties)
     {
@@ -44,12 +46,12 @@ public class Context {
 
     public <T> T getProcessorConfig(Class<T> conigType)
     {
-        return conigType.cast(currentProcessorConfig);
+        return processorConfig.getConfig(conigType);
     }
 
-    public void setProcessorConfiguration(Object processorConfig)
+    public void setProcessorConfig(ProcessorConfig processorConfig)
     {
-        this.currentProcessorConfig = processorConfig;
+        this.processorConfig = processorConfig;
     }
 
     public <T> T update(String id, T data) {
@@ -60,5 +62,14 @@ public class Context {
     public static String contextID(Class<?> type, String id)
     {
         return type.getSimpleName() + id;
+    }
+
+    public boolean isProcessedAgain() {
+        return processorConfig.isProcessedAgain();
+    }
+
+    public void processAgain()
+    {
+        processorConfig.processAgain();
     }
 }

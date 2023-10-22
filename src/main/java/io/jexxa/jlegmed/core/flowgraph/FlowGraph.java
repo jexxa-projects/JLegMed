@@ -7,7 +7,6 @@ public interface FlowGraph {
 
     <U, V> TypedConnector<V> andProcessWith(BiFunction<U, Context, V> processor);
     <U, V> TypedConnector<V> andProcessWith(Function<U,V> function);
-    <U> FlowGraph useConfig(U configuration);
 
     void start();
     void stop();

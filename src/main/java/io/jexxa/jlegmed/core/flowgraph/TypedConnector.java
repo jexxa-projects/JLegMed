@@ -8,13 +8,9 @@ import java.util.function.Function;
 
 public class TypedConnector<T> {
     private final AbstractFlowGraph<?> flowGraph;
-    private TypedOutputPipe<T> predecessorPipe;
-    private TypedProcessor<?,?> predecessor;
+    private final TypedOutputPipe<T> predecessorPipe;
+    private final TypedProcessor<?,?> predecessor;
 
-    public TypedConnector(AbstractFlowGraph<?> flowGraph)
-    {
-        this.flowGraph = flowGraph;
-    }
 
     public TypedConnector(AbstractFlowGraph<?> flowGraph, TypedOutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
     {

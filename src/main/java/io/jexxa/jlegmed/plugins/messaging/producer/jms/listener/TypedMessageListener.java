@@ -15,11 +15,11 @@ import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
 @SuppressWarnings("unused")
 public class TypedMessageListener<T> extends JSONMessageListener
 {
-    private final Class<?> clazz;
+    private final Class<T> clazz;
     private final FlowGraph flowGraph;
     private final MessageSender.Configuration configuration;
 
-    public TypedMessageListener(Class<?> clazz, FlowGraph flowGraph, MessageSender.Configuration configuration)
+    public TypedMessageListener(Class<T> clazz, FlowGraph flowGraph, MessageSender.Configuration configuration)
     {
         this.clazz = Objects.requireNonNull( clazz );
         this.flowGraph = Objects.requireNonNull(flowGraph);

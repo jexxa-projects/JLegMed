@@ -34,27 +34,21 @@ public class TypedProcessor<T, R> implements Processor {
     }
 
     @Override
-    public Content process(Content content, Context context) {
+    public void process(Content content, Context context) {
         context.setProcessorConfiguration(processorConfiguration);
+
+        R result = null;
+
         if (processFunction != null) {
-            var result = processFunction.apply((T) content.getData());
-            if (result != null) {
-                getOutputPipe().forward(new Content(result), context);
-                return new Content(result);
-            }
-            return null;
+            result = processFunction.apply((T) content.getData());
+        } else if (contextFunction != null) {
+            result = contextFunction.apply((T) content.getData(), context);
         }
 
-        if (contextFunction != null) {
-            var result = contextFunction.apply((T) content.getData(), context);
-            if (result != null) {
-                getOutputPipe().forward(new Content(result), context);
-                return new Content(result);
-            }
-            return null;
+        if (result != null) {
+            getOutputPipe().forward(new Content(result), context);
         }
 
-        return null;
     }
 
     public <U> void setConfiguration(U configuration) {

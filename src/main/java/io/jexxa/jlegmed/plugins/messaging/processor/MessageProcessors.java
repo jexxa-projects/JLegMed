@@ -5,7 +5,7 @@ import io.jexxa.jlegmed.core.flowgraph.Context;
 import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
 
 public class MessageProcessors {
-    public static Object sendAsJSON(Object content, Context context)
+    public static <T> T sendAsJSON(T content, Context context)
     {
         var messageConfiguration = context.getProcessorConfig(MessageSender.Configuration.class);
         var properties = context.getProperties(messageConfiguration.connectionName());

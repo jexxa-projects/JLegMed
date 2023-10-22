@@ -5,7 +5,7 @@ import io.jexxa.jlegmed.core.flowgraph.Context;
 
 public class GenericProcessors {
 
-    public static Object idProcessor(Object data) {
+    public static <T> T idProcessor(T data) {
         return data;
     }
 
@@ -13,13 +13,13 @@ public class GenericProcessors {
         return ++counter;
     }
 
-    public static Object consoleLogger(Object data)
+    public static <T> T consoleLogger(T data)
     {
         SLF4jLogger.getLogger(GenericProcessors.class).info( "Data : {}", data );
         return data;
     }
 
-    public static Object duplicate(Object data, Context context)
+    public static <T> T duplicate(T data, Context context)
     {
         if (!context.isProcessedAgain()) {
             context.processAgain();

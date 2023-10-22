@@ -17,7 +17,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScheduledFlowGraphTest {
 
@@ -259,30 +258,6 @@ class ScheduledFlowGraphTest {
 
         //Assert
         assertFalse(messageCollector.getMessages().isEmpty());
-    }
-
-
-    @Test
-    void testThrowingFlowGraph() {
-        //Arrange
-        var messageCollector1 = new MessageCollector<Integer>();
-        var messageCollector2 = new MessageCollector<UpdatedContract>();
-        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
-        jlegmed.newFlowGraph("transformData")
-                .each(50, MILLISECONDS)
-
-                .receive(Integer.class).generatedWith(GenericProducer::counter)
-
-                .andProcessWith(messageCollector1::collect)
-                .andProcessWith(ContractTransformer::transformToUpdatedContract)
-                .andProcessWith(messageCollector2::collect);
-
-        //Act
-        jlegmed.start();
-        await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
-        //Assert
-        assertTrue(messageCollector2.getMessages().isEmpty());
     }
 
 

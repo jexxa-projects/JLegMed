@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
 
-public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
+public final class ScheduledFlowGraph<T> extends FlowGraph {
     private final Scheduler scheduler = new Scheduler();
     private final FixedRateScheduler fixedRateScheduler;
 
@@ -57,11 +57,6 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
         scheduler.stop();
     }
 
-    @Override
-    public Class<T> getInputData() {
-        return expectedData;
-    }
-
     private void iterateFlowGraph()
     {
         producer.produce(expectedData, getContext());
@@ -69,7 +64,7 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
 
     private static class FixedRateScheduler implements IScheduled
     {
-        ScheduledFlowGraph<?> flowGraph;
+        private final ScheduledFlowGraph<?> flowGraph;
         private final int fixedRate;
         private final TimeUnit timeUnit;
 

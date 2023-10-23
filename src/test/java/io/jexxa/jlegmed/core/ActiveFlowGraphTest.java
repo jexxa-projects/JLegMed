@@ -21,7 +21,8 @@ class ActiveFlowGraphTest {
         var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed
                 .newFlowGraph("ActiveFlowgraph")
-                .await(Integer.class).from(genericProducerURL())
+                .await(Integer.class)
+                .from(genericProducerURL())
                 .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
 
                 .andProcessWith( GenericProcessors::idProcessor )

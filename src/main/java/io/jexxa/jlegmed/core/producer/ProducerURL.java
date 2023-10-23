@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
+import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
 import io.jexxa.jlegmed.core.processor.OutputPipe;
 
 public abstract class ProducerURL<T> {
@@ -12,9 +12,9 @@ public abstract class ProducerURL<T> {
         doInit(producer);
     }
 
-    protected TypedConnector<T> getConnector()
+    protected ProcessorConnector<T> getConnector()
     {
-        return new TypedConnector<>(getOutputPipe(), null);
+        return new ProcessorConnector<>(getOutputPipe(), null);
     }
 
     protected OutputPipe<T> getOutputPipe()

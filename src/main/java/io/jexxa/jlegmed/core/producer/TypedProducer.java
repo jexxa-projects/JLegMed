@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
+import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 
 import java.util.function.BiFunction;
@@ -21,23 +21,23 @@ public class TypedProducer<T> implements Producer<T> {
         this.scheduledFlowGraph = scheduledFlowGraph;
     }
 
-    public TypedConnector<T> generatedWith(Function<Context, T> contextFunction) {
+    public ProcessorConnector<T> generatedWith(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
         scheduledFlowGraph.generatedWith(this);
-        return new TypedConnector<>(this.outputPipe, null);
+        return new ProcessorConnector<>(this.outputPipe, null);
     }
 
 
-    public TypedConnector<T>  generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
+    public ProcessorConnector<T> generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
         scheduledFlowGraph.generatedWith(this);
-        return new TypedConnector<>(this.outputPipe, null);
+        return new ProcessorConnector<>(this.outputPipe, null);
     }
 
-    public TypedConnector<T> generatedWith(Supplier<T> producerSupplier) {
+    public ProcessorConnector<T> generatedWith(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
         scheduledFlowGraph.generatedWith(this);
-        return new TypedConnector<>(this.outputPipe, null);
+        return new ProcessorConnector<>(this.outputPipe, null);
     }
 
     @Override

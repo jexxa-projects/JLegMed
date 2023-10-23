@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
+import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
+import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 
@@ -12,11 +12,11 @@ import java.util.function.Supplier;
 
 public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
     private GenericActiveProducer<T> genericActiveProducer;
-    private TypedConnector<T> typedConnector;
+    private ProcessorConnector<T> processorConnector;
     @Override
-    public ActiveProducer<T> init(FlowGraph<T> flowGraph) {
-        genericActiveProducer = new GenericActiveProducer<>(flowGraph);
-        typedConnector = new TypedConnector<>(genericActiveProducer.getOutputPipe(), null);
+    public ActiveProducer<T> init(SourceConnector<T> sourceConnector) {
+        genericActiveProducer = new GenericActiveProducer<>(sourceConnector);
+        processorConnector = new ProcessorConnector<>(genericActiveProducer.getOutputPipe(), null);
         return genericActiveProducer;
     }
 
@@ -33,10 +33,10 @@ public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
         return this;
     }
 
-    public TypedConnector<T> withInterval(int fixedRate, TimeUnit timeUnit)
+    public ProcessorConnector<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
         genericActiveProducer.setInterval(fixedRate, timeUnit);
-        return typedConnector;
+        return processorConnector;
     }
 
     public static <T> GenericActiveProducerURL<T> genericProducerURL() {

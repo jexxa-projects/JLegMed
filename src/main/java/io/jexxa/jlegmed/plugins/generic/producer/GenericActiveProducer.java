@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.processor.OutputPipe;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
@@ -22,11 +22,11 @@ public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
     private Supplier<T> supplier;
     private final OutputPipe<T> outputPipe = new TypedOutputPipe<>();
 
-    private final FlowGraph<T> flowGraph;
+    private final SourceConnector<T> sourceConnector;
 
-    public GenericActiveProducer(FlowGraph<T> flowGraph)
+    public GenericActiveProducer(SourceConnector<T> sourceConnector)
     {
-        this.flowGraph = flowGraph;
+        this.sourceConnector = sourceConnector;
         scheduler.register(this);
     }
 
@@ -61,14 +61,14 @@ public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
     {
         T result = null;
         if (contextFunction != null) {
-            result = contextFunction.apply(flowGraph.getContext());
+            result = contextFunction.apply(sourceConnector.getContext());
         } else if (supplier != null) {
             result = supplier.get();
         }
 
         if (result != null )
         {
-            outputPipe.forward(result, flowGraph.getContext());
+            outputPipe.forward(result, sourceConnector.getContext());
         }
     }
 

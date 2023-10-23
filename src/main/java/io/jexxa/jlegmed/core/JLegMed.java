@@ -17,7 +17,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_VERSIO
 public final class JLegMed
 {
 
-    private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
+    private final Map<String, FlowGraph> flowGraphs = new HashMap<>();
 
     private final Properties properties;
     private final Class<?> application;
@@ -39,7 +39,7 @@ public final class JLegMed
     }
 
 
-    void addFlowGraph(String flowGraphID, FlowGraph<?> flowGraph)
+    void addFlowGraph(String flowGraphID, FlowGraph flowGraph)
     {
         flowGraphs.put(flowGraphID, flowGraph);
     }

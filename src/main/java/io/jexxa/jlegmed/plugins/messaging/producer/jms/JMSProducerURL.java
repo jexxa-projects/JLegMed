@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
+import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
+import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
@@ -12,7 +12,8 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
 
     private final MessageSender.Configuration configuration;
     private MessageProducer<T> messageProducer;
-    private FlowGraph<T> flowGraph;
+
+    private SourceConnector<T> sourceConnector;
 
     public JMSProducerURL(MessageSender.Configuration configuration)
     {
@@ -20,23 +21,23 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
     }
 
     @Override
-    public ActiveProducer<T> init(FlowGraph<T> flowGraph)
+    public ActiveProducer<T> init(SourceConnector<T> sourceConnector)
     {
         messageProducer = new MessageProducer<>(configuration.connectionName(),
-                flowGraph.getContext().getProperties(configuration.connectionName()));
+                sourceConnector.getContext().getProperties(configuration.connectionName()));
 
-        this.flowGraph = flowGraph;
+        this.sourceConnector = sourceConnector;
         return messageProducer;
     }
-    public TypedConnector<T> asJSON( )
+    public ProcessorConnector<T> asJSON( )
     {
         JSONMessageListener messageListener = new TypedMessageListener<>(
-                flowGraph.getInputData(),
+                sourceConnector.getSourceType(),
                 messageProducer.getOutputPipe(),
                 configuration,
-                flowGraph.getContext());
+                sourceConnector.getContext());
         messageProducer.register(messageListener);
 
-        return new TypedConnector<>(messageProducer.getOutputPipe(), null);
+        return new ProcessorConnector<>(messageProducer.getOutputPipe(), null);
     }
 }

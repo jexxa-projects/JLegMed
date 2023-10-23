@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import java.util.Properties;
 
-public abstract class FlowGraph<T> {
+public abstract class FlowGraph {
     private final Context context;
 
     private final String flowGraphID;
@@ -23,7 +23,6 @@ public abstract class FlowGraph<T> {
         return context;
     }
 
-    public  abstract Class<T> getInputData();
     public abstract void start();
     public abstract void stop();
 

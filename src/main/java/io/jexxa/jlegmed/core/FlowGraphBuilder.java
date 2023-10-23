@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.producer.TypedProducer;
 
 import java.util.concurrent.TimeUnit;
@@ -20,10 +21,10 @@ public class FlowGraphBuilder {
         this.jLegMed = jLegMed;
     }
 
-    public <T> ActiveFlowGraph<T> await(Class<T> inputData) {
-        var flowGraph = new ActiveFlowGraph<>(flowGraphID, inputData, jLegMed.getProperties());
+    public <T> SourceConnector<T> await(Class<T> inputData) {
+        var flowGraph = new ActiveFlowGraph(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
-        return flowGraph;
+        return new SourceConnector<>(inputData, flowGraph);
     }
 
     public FlowGraphBuilder each(int fixedRate, TimeUnit timeUnit)

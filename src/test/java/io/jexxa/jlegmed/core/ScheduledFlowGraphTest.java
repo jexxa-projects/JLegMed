@@ -177,7 +177,9 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("ProducerURLOnlyOnce")
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStreamOf(inputStream)).onlyOnce()
+                .receive(NewContract.class)
+                .from(inputStreamOf(inputStream))
+                .onlyOnce()
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )

@@ -1,43 +1,49 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.producer.TypedProducer;
 
 import java.io.InputStream;
 
-public class InputStreamURL implements ProducerURL {
+public class InputStreamURL<T> extends ProducerURL<T> {
 
-    private FlowGraph flowGraph;
     private final InputStream inputStream;
     private InputStreamProducer inputStreamProducer;
+    private TypedProducer<T> typedProducer;
 
     public InputStreamURL(InputStream inputStreamReader)
     {
         this.inputStream = inputStreamReader;
     }
 
-    public <T> void init(TypedProducer<T> typedProducer)
+    public void init(TypedProducer<T> typedProducer)
     {
+        this.typedProducer = typedProducer;
         if (inputStreamProducer == null )
         {
             this.inputStreamProducer = new InputStreamProducer(inputStream);
-            flowGraph = typedProducer.getFlowGraph();
         }
         typedProducer.generatedWith(inputStreamProducer::produce);
     }
 
-    public FlowGraph untilStopped() {
+    @Override
+    protected TypedOutputPipe<T> getOutputPipe() {
+        return typedProducer.getOutputPipe();
+    }
+
+    public TypedConnector<T> untilStopped() {
         inputStreamProducer.untilStopped();
-        return flowGraph;
+        return getConnector();
     }
 
-    public FlowGraph onlyOnce() {
+    public TypedConnector<T> onlyOnce() {
         inputStreamProducer.onlyOnce();
-        return flowGraph;
+        return getConnector();
     }
 
-    public static InputStreamURL inputStreamOf(InputStream inputStream) {
-        return new InputStreamURL(inputStream);
+    public static <T> InputStreamURL<T> inputStreamOf(InputStream inputStream) {
+        return new InputStreamURL<>(inputStream);
     }
 }

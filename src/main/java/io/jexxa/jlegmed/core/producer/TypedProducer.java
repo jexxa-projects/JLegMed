@@ -46,7 +46,7 @@ public class TypedProducer<T> implements Producer<T> {
         return outputPipe;
     }
 
-    public <U extends ProducerURL> U from(U producerURL) {
+    public <U extends ProducerURL<T>> U from(U producerURL) {
         return scheduledFlowGraph.from(producerURL);
     }
 
@@ -68,11 +68,6 @@ public class TypedProducer<T> implements Producer<T> {
         {
             outputPipe.forward(content, context);
         }
-    }
-
-    public ScheduledFlowGraph<T> getFlowGraph()
-    {
-        return scheduledFlowGraph;
     }
 
 }

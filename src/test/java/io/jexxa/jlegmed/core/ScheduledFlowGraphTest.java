@@ -149,15 +149,13 @@ class ScheduledFlowGraphTest {
     @Test
     void testProducerURL() {
         //Arrange
-        var messageCollector = new MessageCollector<>();
+        var messageCollector = new MessageCollector<NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("ProducerURL")
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class)
-                .from(inputStreamOf(inputStream))
-                .untilStopped()
+                .each(10, MILLISECONDS).receive(NewContract.class)
+                .from(inputStreamOf(inputStream)).untilStopped()
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )

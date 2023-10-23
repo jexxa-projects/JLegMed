@@ -62,12 +62,6 @@ public abstract class AbstractFlowGraph<T> implements FlowGraph {
 
 
 
-    public  <U> AbstractFlowGraph<T> useConfig(U configuration)
-    {
-        this.currentProcessor.setConfiguration(configuration);
-        return this;
-    }
-
     @Override
     public void processMessage(Content content)
     {

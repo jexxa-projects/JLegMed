@@ -1,29 +1,35 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.producer.TypedProducer;
 
-public class HTMLReaderURL implements ProducerURL {
+public class HTMLReaderURL<T> extends ProducerURL<T> {
 
     private final String url;
-    private FlowGraph flowGraph;
+    TypedProducer<T> typedProducer;
 
     public HTMLReaderURL(String url) {
         this.url = url;
     }
 
     @Override
-    public <T> void init(TypedProducer<T> producer) {
+    public void init(TypedProducer<T> producer) {
         var htmlProducer = new HTMLProducer(url);
         producer.generatedWith(htmlProducer::produce);
+        this.typedProducer = producer;
     }
 
-    public FlowGraph asJson() {
-        return flowGraph;
+    @Override
+    protected TypedOutputPipe<T> getOutputPipe() {
+        return typedProducer.getOutputPipe();
     }
 
-    public static HTMLReaderURL httpURL(String url) {
-        return new HTMLReaderURL(url);
+    public TypedProducer<T> asJson() {
+        return typedProducer;
+    }
+
+    public static <T> HTMLReaderURL<T> httpURL(String url) {
+        return new HTMLReaderURL<>(url);
     }
 }

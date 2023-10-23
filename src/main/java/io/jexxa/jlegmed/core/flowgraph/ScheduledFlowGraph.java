@@ -34,20 +34,19 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
         return typedProducer;
     }
 
-    public <U extends ProducerURL> U from(U producerURL) {
+    public <U extends ProducerURL<T>> U from(U producerURL) {
         producerURL.init(producer);
         setProducerOutputPipe(producer.getOutputPipe());
         return producerURL;
     }
 
-    public FlowGraph generatedWith(TypedProducer<T> producer) {
+    public void generatedWith(TypedProducer<T> producer) {
         try {
             this.producer = producer;
             setProducerOutputPipe(producer.getOutputPipe());
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }
-        return this;
     }
 
 

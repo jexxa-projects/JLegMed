@@ -4,14 +4,28 @@ import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 
 public abstract class ProducerURL<T> {
+    private TypedProducer<T> typedProducer;
 
-    public abstract void init(TypedProducer<T> producer);
+    public void init(TypedProducer<T> producer)
+    {
+        this.typedProducer = producer;
+        doInit(producer);
+    }
 
     protected TypedConnector<T> getConnector()
     {
         return new TypedConnector<>(getOutputPipe(), null);
     }
 
-    protected abstract TypedOutputPipe<T> getOutputPipe();
+    protected TypedOutputPipe<T> getOutputPipe()
+    {
+        if (typedProducer != null) {
+            return typedProducer.getOutputPipe();
+        }
+
+        throw new IllegalStateException("Method Init if producer URL was not called");
+    }
+
+    protected abstract void doInit(TypedProducer<T> producer);
 
 }

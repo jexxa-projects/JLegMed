@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
-import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ProducerURL;
 import io.jexxa.jlegmed.core.producer.TypedProducer;
 
@@ -11,26 +10,19 @@ public class InputStreamURL<T> extends ProducerURL<T> {
 
     private final InputStream inputStream;
     private InputStreamProducer inputStreamProducer;
-    private TypedProducer<T> typedProducer;
-
     public InputStreamURL(InputStream inputStreamReader)
     {
         this.inputStream = inputStreamReader;
     }
 
-    public void init(TypedProducer<T> typedProducer)
+
+    protected void doInit(TypedProducer<T> typedProducer)
     {
-        this.typedProducer = typedProducer;
         if (inputStreamProducer == null )
         {
             this.inputStreamProducer = new InputStreamProducer(inputStream);
         }
         typedProducer.generatedWith(inputStreamProducer::produce);
-    }
-
-    @Override
-    protected TypedOutputPipe<T> getOutputPipe() {
-        return typedProducer.getOutputPipe();
     }
 
     public TypedConnector<T> untilStopped() {

@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
-import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
+import io.jexxa.jlegmed.core.processor.OutputPipe;
 
 public abstract class ProducerURL<T> {
     private TypedProducer<T> typedProducer;
@@ -17,7 +17,7 @@ public abstract class ProducerURL<T> {
         return new TypedConnector<>(getOutputPipe(), null);
     }
 
-    protected TypedOutputPipe<T> getOutputPipe()
+    protected OutputPipe<T> getOutputPipe()
     {
         if (typedProducer != null) {
             return typedProducer.getOutputPipe();

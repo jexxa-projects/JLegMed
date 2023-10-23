@@ -11,8 +11,8 @@ public class TypedProcessor<T, R> implements Processor<T> {
 
     private final ProcessorConfig processorConfig = new ProcessorConfig();
 
-    private final TypedInputPipe<T> inputPipe = new TypedInputPipe<>(this);
-    private final TypedOutputPipe<R> outputPipe = new TypedOutputPipe<>();
+    private final InputPipe<T> inputPipe = new TypedInputPipe<>(this);
+    private final OutputPipe<R> outputPipe = new TypedOutputPipe<>();
 
     public TypedProcessor(BiFunction<T, Context, R> contextFunction) {
         this.contextFunction = contextFunction;
@@ -22,12 +22,12 @@ public class TypedProcessor<T, R> implements Processor<T> {
         this.processFunction = processFunction;
     }
 
-    public TypedInputPipe<T> getInputPipe()
+    public InputPipe<T> getInputPipe()
     {
         return inputPipe;
     }
 
-    public TypedOutputPipe<R> getOutputPipe()
+    public OutputPipe<R> getOutputPipe()
     {
         return outputPipe;
     }

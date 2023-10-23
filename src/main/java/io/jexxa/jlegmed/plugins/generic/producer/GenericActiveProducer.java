@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.processor.OutputPipe;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 
@@ -19,7 +20,7 @@ public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
 
     private Function<Context, T> contextFunction;
     private Supplier<T> supplier;
-    private final TypedOutputPipe<T> outputPipe = new TypedOutputPipe<>();
+    private final OutputPipe<T> outputPipe = new TypedOutputPipe<>();
 
     private final FlowGraph flowGraph;
 
@@ -29,7 +30,7 @@ public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
         scheduler.register(this);
     }
 
-    public TypedOutputPipe<T> getOutputPipe()
+    public OutputPipe<T> getOutputPipe()
     {
         return outputPipe;
     }

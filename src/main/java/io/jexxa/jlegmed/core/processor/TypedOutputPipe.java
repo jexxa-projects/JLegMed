@@ -5,7 +5,7 @@ import io.jexxa.jlegmed.core.flowgraph.Context;
 
 public class TypedOutputPipe<T> implements OutputPipe<T>
 {
-    private TypedInputPipe<T> inputPipe;
+    private InputPipe<T> inputPipe;
 
     @Override
     public void forward(T content, Context context) {
@@ -17,7 +17,8 @@ public class TypedOutputPipe<T> implements OutputPipe<T>
         }
     }
 
-    public void connectTo(TypedInputPipe<T> inputPipe)
+    @Override
+    public void connectTo(InputPipe<T> inputPipe)
     {
         this.inputPipe = inputPipe;
     }

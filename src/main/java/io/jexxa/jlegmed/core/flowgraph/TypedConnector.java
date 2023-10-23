@@ -1,17 +1,17 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
+import io.jexxa.jlegmed.core.processor.OutputPipe;
 import io.jexxa.jlegmed.core.processor.TypedProcessor;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class TypedConnector<T> {
-    private final TypedOutputPipe<T> predecessorPipe;
+    private final OutputPipe<T> predecessorPipe;
     private final TypedProcessor<?,?> predecessor;
 
 
-    public TypedConnector(TypedOutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
+    public TypedConnector(OutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessor = predecessor;
@@ -38,6 +38,4 @@ public class TypedConnector<T> {
         predecessor.setConfiguration(configuration);
         return this;
     }
-
-
 }

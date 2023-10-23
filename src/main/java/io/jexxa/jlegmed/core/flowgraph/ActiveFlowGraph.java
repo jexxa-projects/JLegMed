@@ -16,7 +16,7 @@ public class ActiveFlowGraph<T> extends AbstractFlowGraph<T> {
         this.inputDataType = inputDataType;
     }
 
-    public <U extends ActiveProducerURL> U from(U producerURL) {
+    public <U extends ActiveProducerURL<T>> U from(U producerURL) {
         try {
             this.activeProducer = producerURL.init(this);
 

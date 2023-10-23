@@ -41,7 +41,10 @@ class ActiveFlowGraphTest {
         var messageCollector = new MessageCollector<>();
         var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
         jlegmed.newFlowGraph("ActiveFlowgraph")
-                .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
+                .await(Integer.class)
+                .from(genericProducerURL())
+                .using(GenericProducer::counter)
+                .withInterval(50, MILLISECONDS)
 
                 .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )

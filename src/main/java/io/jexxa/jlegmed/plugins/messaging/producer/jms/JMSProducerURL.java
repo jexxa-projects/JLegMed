@@ -8,7 +8,7 @@ import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;
 
-public class JMSProducerURL implements ActiveProducerURL {
+public class JMSProducerURL<T> implements ActiveProducerURL<T> {
 
     private final MessageSender.Configuration configuration;
     private MessageProducer messageProducer;
@@ -20,7 +20,7 @@ public class JMSProducerURL implements ActiveProducerURL {
     }
 
     @Override
-    public <T> ActiveProducer init(AbstractFlowGraph<T> flowGraph)
+    public ActiveProducer init(AbstractFlowGraph<T> flowGraph)
     {
         messageProducer = new MessageProducer(configuration.connectionName(),
                 flowGraph.getContext().getProperties(configuration.connectionName()));

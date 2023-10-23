@@ -10,24 +10,24 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class GenericActiveProducerURL implements ActiveProducerURL {
+public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
     private FlowGraph flowGraph;
     private GenericActiveProducer genericActiveProducer;
 
     @Override
-    public <U> ActiveProducer init(AbstractFlowGraph<U> flowGraph) {
+    public ActiveProducer init(AbstractFlowGraph<T> flowGraph) {
         this.flowGraph = flowGraph;
         genericActiveProducer = new GenericActiveProducer(flowGraph);
         return genericActiveProducer;
     }
 
-    public GenericActiveProducerURL using(Function<Context, Object> function)
+    public GenericActiveProducerURL<T> using(Function<Context, Object> function)
     {
         genericActiveProducer.setFunction(function);
         return this;
     }
 
-    public GenericActiveProducerURL using(Supplier<Object> function)
+    public GenericActiveProducerURL<T> using(Supplier<Object> function)
     {
         genericActiveProducer.setSupplier(function);
         return this;
@@ -39,7 +39,7 @@ public class GenericActiveProducerURL implements ActiveProducerURL {
         return flowGraph;
     }
 
-    public static GenericActiveProducerURL genericProducerURL() {
-        return new GenericActiveProducerURL();
+    public static <T> GenericActiveProducerURL<T> genericProducerURL() {
+        return new GenericActiveProducerURL<>();
     }
 }

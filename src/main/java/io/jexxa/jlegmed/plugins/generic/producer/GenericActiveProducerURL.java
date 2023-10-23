@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
@@ -14,7 +14,7 @@ public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
     private GenericActiveProducer<T> genericActiveProducer;
     private TypedConnector<T> typedConnector;
     @Override
-    public ActiveProducer init(AbstractFlowGraph<T> flowGraph) {
+    public ActiveProducer<T> init(FlowGraph<T> flowGraph) {
         genericActiveProducer = new GenericActiveProducer<>(flowGraph);
         typedConnector = new TypedConnector<>(genericActiveProducer.getOutputPipe(), null);
         return genericActiveProducer;

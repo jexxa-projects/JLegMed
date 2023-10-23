@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class MessageProducer<T> implements ActiveProducer {
+public class MessageProducer<T> implements ActiveProducer<T> {
 
     private static final Map<String, IDrivingAdapter> messageReceiverMap = new HashMap<>();
 

@@ -1,6 +1,10 @@
 package io.jexxa.jlegmed.core.producer;
 
-public interface ActiveProducer {
+import io.jexxa.jlegmed.core.processor.OutputPipe;
+
+public interface ActiveProducer<T> {
     void start();
     void stop();
+
+    OutputPipe<T> getOutputPipe();
 }

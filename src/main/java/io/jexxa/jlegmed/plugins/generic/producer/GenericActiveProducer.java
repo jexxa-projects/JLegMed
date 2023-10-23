@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
+public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
@@ -22,9 +22,9 @@ public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
     private Supplier<T> supplier;
     private final OutputPipe<T> outputPipe = new TypedOutputPipe<>();
 
-    private final FlowGraph flowGraph;
+    private final FlowGraph<T> flowGraph;
 
-    public GenericActiveProducer(FlowGraph flowGraph)
+    public GenericActiveProducer(FlowGraph<T> flowGraph)
     {
         this.flowGraph = flowGraph;
         scheduler.register(this);
@@ -62,10 +62,10 @@ public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
         T result = null;
         if (contextFunction != null) {
             result = contextFunction.apply(flowGraph.getContext());
-        }
-        if (supplier != null) {
+        } else if (supplier != null) {
             result = supplier.get();
         }
+
         if (result != null )
         {
             outputPipe.forward(result, flowGraph.getContext());

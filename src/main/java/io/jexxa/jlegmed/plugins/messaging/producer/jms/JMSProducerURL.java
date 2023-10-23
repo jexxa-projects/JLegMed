@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
@@ -12,7 +12,7 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
 
     private final MessageSender.Configuration configuration;
     private MessageProducer<T> messageProducer;
-    private AbstractFlowGraph<T> flowGraph;
+    private FlowGraph<T> flowGraph;
 
     public JMSProducerURL(MessageSender.Configuration configuration)
     {
@@ -20,7 +20,7 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
     }
 
     @Override
-    public ActiveProducer init(AbstractFlowGraph<T> flowGraph)
+    public ActiveProducer<T> init(FlowGraph<T> flowGraph)
     {
         messageProducer = new MessageProducer<>(configuration.connectionName(),
                 flowGraph.getContext().getProperties(configuration.connectionName()));

@@ -6,9 +6,9 @@ import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 
 import java.util.Properties;
 
-public class ActiveFlowGraph<T> extends AbstractFlowGraph<T> {
+public class ActiveFlowGraph<T> extends FlowGraph<T> {
 
-    private ActiveProducer activeProducer;
+    private ActiveProducer<T> activeProducer;
     private final Class<T> inputDataType;
     public ActiveFlowGraph(String flowGraphID, Class<T> inputDataType, Properties properties)
     {

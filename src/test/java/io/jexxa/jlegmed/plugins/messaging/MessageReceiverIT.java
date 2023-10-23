@@ -19,7 +19,7 @@ class MessageReceiverIT {
     @Test
     void testReceiveFromTopic() {
         //Arrange
-        var messageCollector1 = new MessageCollector<>();
+        var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<>();
         var jlegmed = new JLegMed(MessageReceiverIT.class);
         jlegmed.newFlowGraph("MessageSender")

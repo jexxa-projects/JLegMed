@@ -23,7 +23,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<>();
+        var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
@@ -85,7 +85,7 @@ class ScheduledFlowGraphTest {
     @Test
     void testFlowGraphContextTypedSource() {
         //Arrange
-        var messageCollector = new MessageCollector<>();
+        var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)

@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
 import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
@@ -29,14 +28,16 @@ public class TypedProducer<T> implements Producer<T> {
     }
 
 
-    public FlowGraph generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
+    public TypedConnector<T>  generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
-        return scheduledFlowGraph.generatedWith(this);
+        scheduledFlowGraph.generatedWith(this);
+        return new TypedConnector<>(scheduledFlowGraph, this.outputPipe, null);
     }
 
-    public FlowGraph generatedWith(Supplier<T> producerSupplier) {
+    public TypedConnector<T> generatedWith(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
-        return scheduledFlowGraph.generatedWith(this);
+        scheduledFlowGraph.generatedWith(this);
+        return new TypedConnector<>(scheduledFlowGraph, this.outputPipe, null);
     }
 
     @Override

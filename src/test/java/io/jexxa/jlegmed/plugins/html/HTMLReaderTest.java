@@ -2,12 +2,8 @@ package io.jexxa.jlegmed.plugins.html;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.producer.ProducerURL;
-import io.jexxa.jlegmed.core.producer.TypedProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
-import io.jexxa.jlegmed.plugins.html.producer.HTMLProducer;
 import org.junit.jupiter.api.Test;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

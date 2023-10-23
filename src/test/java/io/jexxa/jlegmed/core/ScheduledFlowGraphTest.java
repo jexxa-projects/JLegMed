@@ -155,7 +155,9 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("ProducerURL")
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStreamOf(inputStream)).untilStopped()
+                .receive(NewContract.class)
+                .from(inputStreamOf(inputStream))
+                .untilStopped()
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )

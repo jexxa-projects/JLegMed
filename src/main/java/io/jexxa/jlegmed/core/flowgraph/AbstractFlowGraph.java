@@ -42,7 +42,7 @@ public abstract class AbstractFlowGraph<T> implements FlowGraph {
 
         this.currentProcessor = successor;
         processorList.add(currentProcessor);
-        return new TypedConnector<>(this, successor.getOutputPipe(), null);
+        return new TypedConnector<>(successor.getOutputPipe(), null);
     }
 
     public <U, V> TypedConnector<V> andProcessWith(Function<U,V> successorFunction)
@@ -57,7 +57,7 @@ public abstract class AbstractFlowGraph<T> implements FlowGraph {
 
         this.currentProcessor = successor;
         processorList.add(currentProcessor);
-        return new TypedConnector<>(this, successor.getOutputPipe(), null);
+        return new TypedConnector<>(successor.getOutputPipe(), null);
     }
 
 

@@ -7,14 +7,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class TypedConnector<T> {
-    private final AbstractFlowGraph<?> flowGraph;
     private final TypedOutputPipe<T> predecessorPipe;
     private final TypedProcessor<?,?> predecessor;
 
 
-    public TypedConnector(AbstractFlowGraph<?> flowGraph, TypedOutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
+    public TypedConnector(TypedOutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
     {
-        this.flowGraph = flowGraph;
         this.predecessorPipe = predecessorPipe;
         this.predecessor = predecessor;
     }
@@ -23,7 +21,7 @@ public class TypedConnector<T> {
     {
         var successor = new TypedProcessor<>(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
-        return new TypedConnector<>(flowGraph, successor.getOutputPipe(), successor);
+        return new TypedConnector<>(successor.getOutputPipe(), successor);
     }
 
     public <R> TypedConnector<R> andProcessWith(Function<T,R> successorFunction)
@@ -31,7 +29,7 @@ public class TypedConnector<T> {
         var successor = new TypedProcessor<>(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
 
-        return new TypedConnector<>(flowGraph, successor.getOutputPipe(), successor);
+        return new TypedConnector<>(successor.getOutputPipe(), successor);
     }
 
 

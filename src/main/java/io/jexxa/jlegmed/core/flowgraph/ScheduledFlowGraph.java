@@ -15,7 +15,7 @@ import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
 
 public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     private final Scheduler scheduler = new Scheduler();
-    private final FlowGraphSchedule<T> flowGraphSchedule;
+    private final FixedRateScheduler fixedRateScheduler;
 
     private TypedProducer<T> producer = new TypedProducer<>(this);
     private Class<T> expectedData;
@@ -23,7 +23,7 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
     {
         super(flowGraphID, properties);
-        this.flowGraphSchedule = new FlowGraphSchedule<>(this, fixedRate, timeUnit);
+        this.fixedRateScheduler = new FixedRateScheduler(this, fixedRate, timeUnit);
     }
 
     public TypedProducer<T> receive(Class<T> expectedData)
@@ -48,7 +48,7 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
 
     public void start()
     {
-        scheduler.register(flowGraphSchedule);
+        scheduler.register(fixedRateScheduler);
         scheduler.start();
     }
 
@@ -63,13 +63,13 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     }
 
 
-    private static class FlowGraphSchedule<T> implements IScheduled
+    private static class FixedRateScheduler implements IScheduled
     {
-        ScheduledFlowGraph<T> flowGraph;
+        ScheduledFlowGraph<?> flowGraph;
         private final int fixedRate;
         private final TimeUnit timeUnit;
 
-        FlowGraphSchedule(ScheduledFlowGraph<T> flowGraph, int fixedRate, TimeUnit timeUnit)
+        FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit)
         {
             this.flowGraph = flowGraph;
             this.fixedRate = fixedRate;

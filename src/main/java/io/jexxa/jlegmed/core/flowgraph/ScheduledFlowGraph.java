@@ -45,13 +45,14 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
         }
     }
 
-
+    @Override
     public void start()
     {
         scheduler.register(fixedRateScheduler);
         scheduler.start();
     }
 
+    @Override
     public void stop()
     {
         scheduler.stop();
@@ -62,49 +63,26 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
         producer.produce(expectedData, getContext());
     }
 
-    private static class FixedRateScheduler implements IScheduled
-    {
-        private final ScheduledFlowGraph<?> flowGraph;
-        private final int fixedRate;
-        private final TimeUnit timeUnit;
-
-        FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit)
-        {
-            this.flowGraph = flowGraph;
-            this.fixedRate = fixedRate;
-            this.timeUnit = timeUnit;
-        }
-        @Override
-        public int fixedRate() {
-            return fixedRate;
-        }
+    private record FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate,
+                                      TimeUnit timeUnit) implements IScheduled {
 
         @Override
-        public TimeUnit timeUnit() {
-            return timeUnit;
+            public void execute() {
+                try {
+                    InvocationManager
+                            .getInvocationHandler(flowGraph)
+                            .invoke(flowGraph, flowGraph::iterateFlowGraph);
+                } catch (InvocationTargetRuntimeException e) {
+                    getLogger(this.getClass()).error(e.getTargetException().getMessage());
+                    getLogger(this.getClass()).debug(e.getTargetException().getMessage(), e.getTargetException());
+                } catch (Exception e) {
+                    getLogger(this.getClass()).error(e.getMessage());
+                    getLogger(this.getClass()).debug(e.getMessage(), e);
+                }
+            }
+
+
         }
-
-        @Override
-        public void execute()
-        {
-            try {
-                InvocationManager
-                        .getInvocationHandler(flowGraph)
-                        .invoke(flowGraph, flowGraph::iterateFlowGraph);
-            }
-            catch (InvocationTargetRuntimeException e) {
-                getLogger(this.getClass()).error(e.getTargetException().getMessage());
-                getLogger(this.getClass()).debug(e.getTargetException().getMessage(), e.getTargetException());
-            }
-            catch (Exception e)
-            {
-                getLogger(this.getClass()).error(e.getMessage());
-                getLogger(this.getClass()).debug(e.getMessage(), e);
-            }
-        }
-
-
-    }
 
 
 

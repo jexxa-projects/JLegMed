@@ -36,6 +36,7 @@ public class MessageProducer<T> implements ActiveProducer<T> {
         jmsAdapter.register(messageListener);
     }
 
+    @Override
     public TypedOutputPipe<T> getOutputPipe()
     {
         return outputPipe;

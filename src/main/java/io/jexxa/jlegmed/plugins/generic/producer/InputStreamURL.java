@@ -16,6 +16,7 @@ public class InputStreamURL<T> extends ProducerURL<T> {
     }
 
 
+    @Override
     protected void doInit(TypedProducer<T> typedProducer)
     {
         if (inputStreamProducer == null )

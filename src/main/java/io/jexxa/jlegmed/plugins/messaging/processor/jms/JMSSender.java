@@ -33,6 +33,7 @@ public class JMSSender extends MessageSender implements AutoCloseable
         Objects.requireNonNull(getConnection()); //Try to create a connection to ensure fail fast
     }
 
+    @Override
     protected void sendToTopic(String message, String topicName, Properties messageProperties, MessageType messageType)
     {
         try
@@ -50,6 +51,7 @@ public class JMSSender extends MessageSender implements AutoCloseable
         }
     }
 
+    @Override
     protected void sendToQueue(String message, String queueName, Properties messageProperties, MessageType messageType)
     {
         try
@@ -112,7 +114,7 @@ public class JMSSender extends MessageSender implements AutoCloseable
         {
             connection = createConnection(properties);
             // Register an exception listener that closes the connection as soon as the error occurs. This approach ensures that we recreate a connection
-            // as soon as next message must be sent, and we can handle a temporary error in between sending two messages. If the error still exist, the
+            // as soon as the next message must be sent, and we can handle a temporary error in between sending two messages. If the error still exists, the
             // application will get a RuntimeError
             try {
                 connection.setExceptionListener(exception -> {

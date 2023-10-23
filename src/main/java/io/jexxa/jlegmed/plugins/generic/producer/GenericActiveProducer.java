@@ -30,6 +30,7 @@ public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
         scheduler.register(this);
     }
 
+    @Override
     public OutputPipe<T> getOutputPipe()
     {
         return outputPipe;

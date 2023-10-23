@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.AbstractFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.TypedConnector;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 
@@ -11,32 +11,32 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
-    private FlowGraph flowGraph;
-    private GenericActiveProducer genericActiveProducer;
-
+    private GenericActiveProducer<T> genericActiveProducer;
+    private TypedConnector<T> typedConnector;
     @Override
     public ActiveProducer init(AbstractFlowGraph<T> flowGraph) {
-        this.flowGraph = flowGraph;
-        genericActiveProducer = new GenericActiveProducer(flowGraph);
+        genericActiveProducer = new GenericActiveProducer<>(flowGraph);
+        typedConnector = new TypedConnector<>(genericActiveProducer.getOutputPipe(), null);
         return genericActiveProducer;
     }
 
-    public GenericActiveProducerURL<T> using(Function<Context, Object> function)
+    public GenericActiveProducerURL<T> using(Function<Context, T> function)
     {
         genericActiveProducer.setFunction(function);
         return this;
     }
 
-    public GenericActiveProducerURL<T> using(Supplier<Object> function)
+    @SuppressWarnings("unused")
+    public GenericActiveProducerURL<T> using(Supplier<T> function)
     {
         genericActiveProducer.setSupplier(function);
         return this;
     }
 
-    public FlowGraph withInterval(int fixedRate, TimeUnit timeUnit)
+    public TypedConnector<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
         genericActiveProducer.setInterval(fixedRate, timeUnit);
-        return flowGraph;
+        return typedConnector;
     }
 
     public static <T> GenericActiveProducerURL<T> genericProducerURL() {

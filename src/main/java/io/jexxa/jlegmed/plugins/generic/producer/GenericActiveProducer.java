@@ -2,23 +2,24 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.flowgraph.Content;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class GenericActiveProducer implements ActiveProducer, IScheduled {
+public class GenericActiveProducer<T> implements ActiveProducer, IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
     private final Scheduler scheduler = new Scheduler();
 
-    private Function<Context, Object> contextFunction;
-    private Supplier<Object> supplier;
+    private Function<Context, T> contextFunction;
+    private Supplier<T> supplier;
+    private final TypedOutputPipe<T> outputPipe = new TypedOutputPipe<>();
 
     private final FlowGraph flowGraph;
 
@@ -26,6 +27,11 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
     {
         this.flowGraph = flowGraph;
         scheduler.register(this);
+    }
+
+    public TypedOutputPipe<T> getOutputPipe()
+    {
+        return outputPipe;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
     @Override
     public void execute()
     {
-        Object result = null;
+        T result = null;
         if (contextFunction != null) {
             result = contextFunction.apply(flowGraph.getContext());
         }
@@ -61,7 +67,7 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
         }
         if (result != null )
         {
-            flowGraph.processMessage(new Content(result));
+            outputPipe.forward(result, flowGraph.getContext());
         }
     }
 
@@ -70,11 +76,11 @@ public class GenericActiveProducer implements ActiveProducer, IScheduled {
         this.timeUnit = timeUnit;
     }
 
-    public void setFunction(Function<Context, Object> function) {
+    public void setFunction(Function<Context, T> function) {
         this.contextFunction = function;
     }
 
-    public void setSupplier(Supplier<Object> supplier) {
+    public void setSupplier(Supplier<T> supplier) {
         this.supplier = supplier;
     }
 }

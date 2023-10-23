@@ -29,21 +29,17 @@ public final class ScheduledFlowGraph<T> extends AbstractFlowGraph<T> {
     public TypedProducer<T> receive(Class<T> expectedData)
     {
         this.expectedData = expectedData;
-        var typedProducer =  new TypedProducer<>(this);
-        setProducerOutputPipe(typedProducer.getOutputPipe());
-        return typedProducer;
+        return new TypedProducer<>(this);
     }
 
     public <U extends ProducerURL<T>> U from(U producerURL) {
         producerURL.init(producer);
-        setProducerOutputPipe(producer.getOutputPipe());
         return producerURL;
     }
 
     public void generatedWith(TypedProducer<T> producer) {
         try {
             this.producer = producer;
-            setProducerOutputPipe(producer.getOutputPipe());
         } catch (Exception e){
             throw new IllegalArgumentException(e.getMessage(), e);
         }

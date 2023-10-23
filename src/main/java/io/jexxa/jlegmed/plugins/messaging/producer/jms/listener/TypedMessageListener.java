@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms.listener;
 
-import io.jexxa.jlegmed.core.flowgraph.Content;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.processor.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.DefaultJMSConfiguration;
@@ -16,19 +16,21 @@ import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
 public class TypedMessageListener<T> extends JSONMessageListener
 {
     private final Class<T> clazz;
-    private final FlowGraph flowGraph;
+    private final OutputPipe<T> outputPipe;
     private final MessageSender.Configuration configuration;
+    private final Context context;
 
-    public TypedMessageListener(Class<T> clazz, FlowGraph flowGraph, MessageSender.Configuration configuration)
+    public TypedMessageListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageSender.Configuration configuration, Context context)
     {
         this.clazz = Objects.requireNonNull( clazz );
-        this.flowGraph = Objects.requireNonNull(flowGraph);
+        this.outputPipe = Objects.requireNonNull(outputPipe);
         this.configuration = configuration;
+        this.context = context;
     }
 
-    public void forwardMessage(Object message)
+    public void forwardMessage(T message)
     {
-        flowGraph.processMessage(new Content(message));
+        outputPipe.forward(message, context);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class TypedMessageListener<T> extends JSONMessageListener
     }
 
 
-    protected static Object mfromJson( String message, Class<?> clazz)
+    protected T mfromJson( String message, Class<T> clazz)
     {
         return getJSONConverter().fromJson( message, clazz);
     }

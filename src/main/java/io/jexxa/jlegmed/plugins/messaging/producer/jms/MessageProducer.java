@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
+import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
 import io.jexxa.jlegmed.core.producer.ActiveProducer;
 
 import javax.jms.MessageListener;
@@ -8,11 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class MessageProducer implements ActiveProducer {
+public class MessageProducer<T> implements ActiveProducer {
 
     private static final Map<String, IDrivingAdapter> messageReceiverMap = new HashMap<>();
 
     private final IDrivingAdapter jmsAdapter;
+    private final TypedOutputPipe<T> outputPipe = new TypedOutputPipe<>();
 
     public MessageProducer(String connectionName, Properties properties)
     {
@@ -34,6 +36,10 @@ public class MessageProducer implements ActiveProducer {
         jmsAdapter.register(messageListener);
     }
 
+    public TypedOutputPipe<T> getOutputPipe()
+    {
+        return outputPipe;
+    }
 
     static IDrivingAdapter getInternalMessageReceiver(String connectionName, Properties properties)
     {

@@ -32,7 +32,9 @@ class MessageReceiverIT {
                 .andProcessWith(messageCollector1::collect);
 
         jlegmed.newFlowGraph("MessageReceiver")
-                .await(Integer.class).from(topicURL("MyTopic", "test-jms-connection")).asJSON()
+                .await(Integer.class)
+                .from(topicURL("MyTopic", "test-jms-connection"))
+                .asJSON()
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2::collect);
         //Act
@@ -43,9 +45,9 @@ class MessageReceiverIT {
         jlegmed.stop();
     }
 
-    static JMSProducerURL topicURL(String topicName, String connectionName)
+    static <T> JMSProducerURL<T> topicURL(String topicName, String connectionName)
     {
-        return new JMSProducerURL(new MessageSender.Configuration(TOPIC, topicName, connectionName));
+        return new JMSProducerURL<>(new MessageSender.Configuration(TOPIC, topicName, connectionName));
     }
 }
 

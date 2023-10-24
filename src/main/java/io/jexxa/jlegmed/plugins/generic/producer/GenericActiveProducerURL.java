@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducerURL;
@@ -12,11 +12,11 @@ import java.util.function.Supplier;
 
 public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
     private GenericActiveProducer<T> genericActiveProducer;
-    private ProcessorConnector<T> processorConnector;
+    private Binding<T> binding;
     @Override
     public Producer<T> init(SourceConnector<T> sourceConnector) {
         genericActiveProducer = new GenericActiveProducer<>(sourceConnector);
-        processorConnector = new ProcessorConnector<>(genericActiveProducer.getOutputPipe(), null);
+        binding = new Binding<>(genericActiveProducer.getOutputPipe(), null);
         return genericActiveProducer;
     }
 
@@ -33,10 +33,10 @@ public class GenericActiveProducerURL<T> implements ActiveProducerURL<T> {
         return this;
     }
 
-    public ProcessorConnector<T> withInterval(int fixedRate, TimeUnit timeUnit)
+    public Binding<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
         genericActiveProducer.setInterval(fixedRate, timeUnit);
-        return processorConnector;
+        return binding;
     }
 
     public static <T> GenericActiveProducerURL<T> genericProducerURL() {

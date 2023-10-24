@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducerURL;
@@ -29,7 +29,7 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
         this.sourceConnector = sourceConnector;
         return messageProducer;
     }
-    public ProcessorConnector<T> asJSON( )
+    public Binding<T> asJSON( )
     {
         JSONMessageListener messageListener = new TypedMessageListener<>(
                 sourceConnector.getSourceType(),
@@ -38,6 +38,6 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
                 sourceConnector.getContext());
         messageProducer.register(messageListener);
 
-        return new ProcessorConnector<>(messageProducer.getOutputPipe(), null);
+        return new Binding<>(messageProducer.getOutputPipe(), null);
     }
 }

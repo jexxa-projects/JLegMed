@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.io.IOException;
@@ -43,12 +43,12 @@ public class InputStreamProducer<T> extends TypedProducer<T> {
         return result;
     }
 
-    public ProcessorConnector<T> untilStopped() {
+    public Binding<T> untilStopped() {
         producerMode = ProducerMode.UNTIL_STOPPED;
         return getConnector();
     }
 
-    public ProcessorConnector<T> onlyOnce() {
+    public Binding<T> onlyOnce() {
         producerMode = ProducerMode.ONLY_ONCE;
         return getConnector();
     }

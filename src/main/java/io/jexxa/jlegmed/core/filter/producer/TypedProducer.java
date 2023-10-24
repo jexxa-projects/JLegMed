@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -16,18 +16,18 @@ public class TypedProducer<T> implements Producer<T> {
 
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
-    public ProcessorConnector<T> with(Function<Context, T> contextFunction) {
+    public Binding<T> with(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
         return getConnector();
     }
 
 
-    public ProcessorConnector<T> with(BiFunction<Context, Class<T>, T> producerContextFunction) {
+    public Binding<T> with(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
         return getConnector();
     }
 
-    public ProcessorConnector<T> with(Supplier<T> producerSupplier) {
+    public Binding<T> with(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
         return getConnector();
     }
@@ -42,9 +42,9 @@ public class TypedProducer<T> implements Producer<T> {
         return producingType;
     }
 
-    protected ProcessorConnector<T> getConnector()
+    protected Binding<T> getConnector()
     {
-        return new ProcessorConnector<>(this.outputPipe, null);
+        return new Binding<>(this.outputPipe, null);
     }
 
     @Override

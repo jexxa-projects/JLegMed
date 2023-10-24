@@ -65,7 +65,7 @@ public class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
         return getConnector();
     }
 
-    public static <T> ActiveProducer<T> genericProducerURL() {
+    public static <T> ActiveProducer<T> activeProducer() {
         return new ActiveProducer<>();
     }
 

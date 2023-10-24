@@ -8,21 +8,20 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.Context.contextID;
-import static io.jexxa.jlegmed.plugins.generic.producer.ActiveProducer.genericProducerURL;
+import static io.jexxa.jlegmed.plugins.generic.producer.ActiveProducer.activeProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-class ActiveFlowGraphTest {
+class FlowGraphTest {
     @Test
     void testSingleFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<>();
-        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
-        jlegmed
-                .newFlowGraph("ActiveFlowgraph")
-                .await(Integer.class)
-                .from(genericProducerURL())
+        var messageCollector = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed(FlowGraphTest.class);
+        jlegmed.newFlowGraph("FlowGraphTest")
+
+                .await(Integer.class).from(activeProducer())
                 .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
 
                 .andProcessWith( GenericProcessors::idProcessor )
@@ -39,15 +38,13 @@ class ActiveFlowGraphTest {
     @Test
     void testContextFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<>();
-        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
-        jlegmed.newFlowGraph("ActiveFlowgraph")
-                .await(Integer.class)
-                .from(genericProducerURL())
-                .using(GenericProducer::counter)
-                .withInterval(50, MILLISECONDS)
+        var messageCollector = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed(FlowGraphTest.class);
+        jlegmed.newFlowGraph("FlowGraphTest")
+                .await(Integer.class).from(activeProducer())
+                .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
 
-                .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
+                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect );
         //Act
@@ -61,20 +58,22 @@ class ActiveFlowGraphTest {
     @Test
     void testMultipleContextFlowGraph() {
         //Arrange
-        var messageCollector1 = new MessageCollector<>();
-        var messageCollector2 = new MessageCollector<>();
-        var jlegmed = new JLegMed(ActiveFlowGraphTest.class);
-        jlegmed.newFlowGraph("ActiveFlowgraph1")
-                .await(Integer.class)
-                .from(genericProducerURL()).using(GenericProducer::counter)
-                .withInterval(50, MILLISECONDS)
-                .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
+        var messageCollector1 = new MessageCollector<Integer>();
+        var messageCollector2 = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed(FlowGraphTest.class);
+        jlegmed.newFlowGraph("FlowGraphTest1")
+                .await(Integer.class).from(activeProducer())
+                .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
+
+                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1::collect );
 
-        jlegmed.newFlowGraph("ActiveFlowgraph2")
-                .await(Integer.class).from(genericProducerURL()).using(GenericProducer::counter).withInterval(50, MILLISECONDS)
-                .andProcessWith( ActiveFlowGraphTest::skipEachSecondMessage )
+        jlegmed.newFlowGraph("FlowGraphTest2")
+                .await(Integer.class).from(activeProducer())
+                .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
+
+                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector2::collect );
 
@@ -91,12 +90,12 @@ class ActiveFlowGraphTest {
 
     private static <T> T skipEachSecondMessage(T data, Context context)
     {
-        var contextID = contextID(ActiveFlowGraphTest.class, "skipEachSecondMessage");
+        var contextID = contextID(FlowGraphTest.class, "skipEachSecondMessage");
         int currentCounter = context.get(contextID, Integer.class).orElse(1);
         context.update(contextID, currentCounter+1);
 
         if (currentCounter % 2 == 0) {
-            SLF4jLogger.getLogger(ActiveFlowGraphTest.class).info("Skip Message");
+            SLF4jLogger.getLogger(FlowGraphTest.class).info("Skip Message");
             return null;
         }
         return data;

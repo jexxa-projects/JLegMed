@@ -47,6 +47,7 @@
     <postgres.version>42.6.0</postgres.version>
     <slf4j.simple.version>2.0.9</slf4j.simple.version>
     <unirest.java.version>3.14.5</unirest.java.version>
+    <javalin.version>5.6.2</javalin.version>
 
 
     <!-- version of test dependencies -->
@@ -55,6 +56,8 @@
     <junit.jupiter.params.version>5.10.0</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
     <unirest.java.version>3.14.1</unirest.java.version>
+    <jackson.databind.version>2.15.3</jackson.databind.version>
+
 
 
     <!-- server-name used in mavens settings.xml to find to your repository credentials -->
@@ -176,6 +179,34 @@
       <artifactId>artemis-jms-client</artifactId>
       <version>${activemq.artemis.client.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- dependencies test -->
+    <dependency>
+      <groupId>io.javalin</groupId>
+      <artifactId>javalin</artifactId>
+      <version>${javalin.version}</version>
+      <scope>test</scope>
+      <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-xml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.databind.version}</version>
+    </dependency>
+
+    <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>11.0.16</version>
     </dependency>
 
     <dependency>

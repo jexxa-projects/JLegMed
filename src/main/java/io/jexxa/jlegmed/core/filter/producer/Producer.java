@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.core.producer;
+package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.processor.OutputPipe;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 public interface Producer<T> {
     void start();

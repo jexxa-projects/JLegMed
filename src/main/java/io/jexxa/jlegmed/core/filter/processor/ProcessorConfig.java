@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.processor;
+package io.jexxa.jlegmed.core.filter.processor;
 
 public class ProcessorConfig {
     private int processCounter = 0;

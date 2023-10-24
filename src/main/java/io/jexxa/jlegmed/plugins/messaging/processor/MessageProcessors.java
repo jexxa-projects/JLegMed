@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 
 import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
 

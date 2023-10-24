@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
-import io.jexxa.jlegmed.core.producer.ProducerURL;
-import io.jexxa.jlegmed.core.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.producer.ProducerURL;
+import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 public class HTMLReaderURL<T> extends ProducerURL<T> {
 
@@ -15,7 +15,7 @@ public class HTMLReaderURL<T> extends ProducerURL<T> {
     @Override
     protected void doInit(TypedProducer<T> producer) {
         var htmlProducer = new HTMLProducer(url);
-        producer.generatedWith(htmlProducer::produce);
+        producer.with(htmlProducer::produce);
     }
 
     public ProcessorConnector<T> asJson() {

@@ -19,7 +19,7 @@ class HTMLReaderTest {
         jlegmed.newFlowGraph("HTMLReader")
                 .each(50, MILLISECONDS)
                 //.receive(VersionInfo.class).from(httpURL("http://localhost:7503/BoundedContext/contextVersion")).asJson()
-                .receive(VersionInfo.class).generatedWith(() -> new VersionInfo("a","b", "s", "d" ))
+                .receive(VersionInfo.class).generated().with(() -> new VersionInfo("a","b", "s", "d" ))
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);

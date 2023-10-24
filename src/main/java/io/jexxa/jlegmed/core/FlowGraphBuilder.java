@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.core;
 import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
-import io.jexxa.jlegmed.core.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,11 +35,32 @@ public class FlowGraphBuilder {
         return this;
     }
 
-    public <T> TypedProducer<T> receive(Class<T> expectedData)
+    public <T> ScheduledFlowGraphBuilder<T> receive(Class<T> expectedData)
     {
         var eachFlowgraph = new ScheduledFlowGraph<T>(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
         jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
-        return eachFlowgraph.receive(expectedData);
+        eachFlowgraph.receive(expectedData);
+
+        return new ScheduledFlowGraphBuilder<>(eachFlowgraph);
+    }
+
+    public static class ScheduledFlowGraphBuilder<T>
+    {
+        private final ScheduledFlowGraph<T> scheduledFlowGraph;
+
+        ScheduledFlowGraphBuilder(ScheduledFlowGraph<T> scheduledFlowGraph)
+        {
+            this.scheduledFlowGraph = scheduledFlowGraph;
+        }
+        public <U extends TypedProducer<T>> U from(U producer)
+        {
+            return scheduledFlowGraph.from(producer);
+        }
+
+        public TypedProducer<T> generated()
+        {
+            return scheduledFlowGraph.getProducer();
+        }
     }
 
 }

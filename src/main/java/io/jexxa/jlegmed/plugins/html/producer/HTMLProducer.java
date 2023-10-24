@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 import kong.unirest.Unirest;
 
 public class HTMLProducer {

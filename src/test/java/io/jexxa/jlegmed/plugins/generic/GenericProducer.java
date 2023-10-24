@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.plugins.generic;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 
-import static io.jexxa.jlegmed.core.flowgraph.Context.contextID;
+import static io.jexxa.jlegmed.core.filter.Context.contextID;
 
 public class GenericProducer {
 

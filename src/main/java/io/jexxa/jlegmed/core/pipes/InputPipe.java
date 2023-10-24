@@ -1,6 +1,7 @@
-package io.jexxa.jlegmed.core.processor;
+package io.jexxa.jlegmed.core.pipes;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.processor.TypedProcessor;
 
 public class InputPipe<T> {
 

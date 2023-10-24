@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
-import io.jexxa.jlegmed.core.producer.Producer;
-import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducerURL;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;

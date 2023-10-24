@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducerURL;
 
 public class SourceConnector<T> {
 

@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.producer;
+package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 

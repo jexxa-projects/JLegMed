@@ -1,7 +1,7 @@
-package io.jexxa.jlegmed.core.processor;
+package io.jexxa.jlegmed.core.pipes;
 
 import io.jexxa.jlegmed.common.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 
 public class OutputPipe<T> {
     private InputPipe<T> inputPipe;

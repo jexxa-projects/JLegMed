@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
-import io.jexxa.jlegmed.core.producer.Producer;
-import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducerURL;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;

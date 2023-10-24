@@ -1,7 +1,7 @@
-package io.jexxa.jlegmed.core.producer;
+package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
-import io.jexxa.jlegmed.core.processor.OutputPipe;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 public abstract class ProducerURL<T> {
     private TypedProducer<T> typedProducer;

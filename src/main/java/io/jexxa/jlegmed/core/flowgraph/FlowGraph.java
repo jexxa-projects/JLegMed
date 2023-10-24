@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.jlegmed.core.filter.Context;
+
 import java.util.Properties;
 
 public abstract class FlowGraph {

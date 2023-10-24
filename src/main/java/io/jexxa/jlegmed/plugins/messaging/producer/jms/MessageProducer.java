@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.jlegmed.core.processor.OutputPipe;
-import io.jexxa.jlegmed.core.producer.Producer;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import javax.jms.MessageListener;
 import java.util.HashMap;

@@ -2,10 +2,10 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
-import io.jexxa.jlegmed.core.processor.OutputPipe;
-import io.jexxa.jlegmed.core.producer.Producer;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;

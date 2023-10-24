@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.flowgraph.Context;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamURL.inputStreamOf;
+import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.inputStream;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -27,7 +27,7 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
-                .receive(String.class).generatedWith(() -> "Hello World")
+                .receive(String.class).generated().with(() -> "Hello World")
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -48,7 +48,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
 
-                .receive(String.class).generatedWith((context) -> "Hello World")
+                .receive(String.class).generated().with((context) -> "Hello World")
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -70,7 +70,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("Incrementer")
                 .each(10, MILLISECONDS)
 
-                .receive(Integer.class).generatedWith( () -> 1)
+                .receive(Integer.class).generated().with( () -> 1)
 
                 .andProcessWith( GenericProcessors::incrementer )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -90,7 +90,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)
 
-                .receive(String.class).generatedWith((context, type) -> "Hello World")
+                .receive(String.class).generated().with((context, type) -> "Hello World")
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -111,7 +111,8 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("ProducerWithContext")
                 .each(10, MILLISECONDS)
 
-                .receive(Integer.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class)
+                .generated().with(GenericProducer::counter)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -132,7 +133,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("DuplicateMessage")
                 .each(10, MILLISECONDS)
 
-                .receive(Integer.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generated().with(GenericProducer::counter)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::duplicate)
@@ -154,8 +155,10 @@ class ScheduledFlowGraphTest {
 
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("ProducerURL")
-                .each(10, MILLISECONDS).receive(NewContract.class)
-                .from(inputStreamOf(inputStream)).untilStopped()
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class)
+                .from(inputStream(inputStream))
+                .untilStopped()
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -178,7 +181,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("ProducerURLOnlyOnce")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class)
-                .from(inputStreamOf(inputStream))
+                .from(inputStream(inputStream))
                 .onlyOnce()
 
                 .andProcessWith( GenericProcessors::idProcessor )
@@ -199,7 +202,7 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).generatedWith(GenericProducer::newContract)
+                .receive(NewContract.class).generated().with(GenericProducer::newContract)
                 .andProcessWith( ContractTransformer::contextTransformer)
                 .andProcessWith( messageCollector::collect);
         //Act
@@ -219,13 +222,13 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("flowGraph1")
                 .each(10, MILLISECONDS)
-                .receive(Integer.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generated().with(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector1::collect);
 
         jlegmed.newFlowGraph("flowGraph2")
                 .each(20, MILLISECONDS)
-                .receive(Integer.class).generatedWith(GenericProducer::counter)
+                .receive(Integer.class).generated().with(GenericProducer::counter)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2::collect);
 
@@ -247,7 +250,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("transformData")
                 .each(10, MILLISECONDS)
 
-                .receive(NewContract.class).generatedWith(GenericProducer::newContract)
+                .receive(NewContract.class).generated().with(GenericProducer::newContract)
 
                 .andProcessWith(ContractTransformer::transformToUpdatedContract)
                 .andProcessWith(GenericProcessors::idProcessor)

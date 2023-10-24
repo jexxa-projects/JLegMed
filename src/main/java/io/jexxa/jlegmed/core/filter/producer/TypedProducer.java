@@ -1,45 +1,55 @@
-package io.jexxa.jlegmed.core.producer;
+package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
-import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
-import io.jexxa.jlegmed.core.processor.OutputPipe;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConnector;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TypedProducer<T> implements Producer<T> {
-    private final ScheduledFlowGraph<T> scheduledFlowGraph;
     private BiFunction<Context, Class<T>, T> producerContextFunction;
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
+    private Class<T> producingType;
 
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
-    public TypedProducer(ScheduledFlowGraph<T> scheduledFlowGraph) {
-        this.scheduledFlowGraph = scheduledFlowGraph;
-    }
-
-    public ProcessorConnector<T> generatedWith(Function<Context, T> contextFunction) {
+    public ProcessorConnector<T> with(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
-        return new ProcessorConnector<>(this.outputPipe, null);
+        return getConnector();
     }
 
 
-    public ProcessorConnector<T> generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
+    public ProcessorConnector<T> with(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
-        return new ProcessorConnector<>(this.outputPipe, null);
+        return getConnector();
     }
 
-    public ProcessorConnector<T> generatedWith(Supplier<T> producerSupplier) {
+    public ProcessorConnector<T> with(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
+        return getConnector();
+    }
+
+    public void setType(Class<T> producingType)
+    {
+        this.producingType = producingType;
+    }
+
+    protected Class<T> getType()
+    {
+        return producingType;
+    }
+
+    protected ProcessorConnector<T> getConnector()
+    {
         return new ProcessorConnector<>(this.outputPipe, null);
     }
 
     @Override
     public void start() {
-        //No action required
+        doInit();
     }
 
     @Override
@@ -53,11 +63,12 @@ public class TypedProducer<T> implements Producer<T> {
         return outputPipe;
     }
 
-    public <U extends ProducerURL<T>> U from(U producerURL) {
-        return scheduledFlowGraph.from(producerURL);
+    public <U extends TypedProducer<T>> U from(U producer) {
+        doInit();
+        return producer;
     }
 
-    public void produce(Class<T> clazz, Context context) {
+    public void produceData(Class<T> clazz, Context context) {
         T content = null;
         if (producerContextFunction != null) {
             content = producerContextFunction.apply(context,clazz);
@@ -74,6 +85,11 @@ public class TypedProducer<T> implements Producer<T> {
         {
             outputPipe.forward(content, context);
         }
+    }
+
+    protected void doInit()
+    {
+        //Empty method to be implemented by subclasses
     }
 
 }

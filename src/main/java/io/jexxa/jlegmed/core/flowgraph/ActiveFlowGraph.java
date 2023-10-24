@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 
-import io.jexxa.jlegmed.core.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.Properties;
 

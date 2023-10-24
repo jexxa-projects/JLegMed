@@ -1,7 +1,7 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.filter.processor;
 
-import io.jexxa.jlegmed.core.processor.OutputPipe;
-import io.jexxa.jlegmed.core.processor.TypedProcessor;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

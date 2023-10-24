@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.filter;
 
-import io.jexxa.jlegmed.core.processor.ProcessorConfig;
+import io.jexxa.jlegmed.core.filter.processor.ProcessorConfig;
 
 import java.util.HashMap;
 import java.util.List;

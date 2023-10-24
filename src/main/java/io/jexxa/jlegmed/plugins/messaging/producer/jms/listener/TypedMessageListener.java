@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms.listener;
 
-import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.processor.OutputPipe;
+import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.DefaultJMSConfiguration;

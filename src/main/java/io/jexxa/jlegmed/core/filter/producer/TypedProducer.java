@@ -22,7 +22,6 @@ public class TypedProducer<T> implements Producer<T> {
         return getConnector();
     }
 
-
     public Binding<T> with(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
         return getConnector();
@@ -37,6 +36,8 @@ public class TypedProducer<T> implements Producer<T> {
     {
         this.producingType = producingType;
     }
+
+    @Override
     public void setContext(Context context)
     {
         this.context = context;

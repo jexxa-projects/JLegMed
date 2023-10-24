@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties.JEXXA_JDBC_DRIVER;
-import static io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties.JEXXA_OBJECTSTORE_STRATEGY;
+import static io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties.JDBC_DRIVER;
+import static io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties.OBJECTSTORE_STRATEGY;
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 
-@SuppressWarnings({"unused", "DuplicatedCode"})
+@SuppressWarnings({"unused", "DuplicatedCode", "java:S6548"})
 public final class ObjectStoreManager
 {
     private static final ObjectStoreManager REPOSITORY_MANAGER = new ObjectStoreManager();
@@ -114,16 +114,16 @@ public final class ObjectStoreManager
         }
 
         // 3. Check explicit configuration
-        if (properties.containsKey(JEXXA_OBJECTSTORE_STRATEGY)) {
+        if (properties.containsKey(OBJECTSTORE_STRATEGY)) {
             try {
-                return Class.forName(properties.getProperty(JEXXA_OBJECTSTORE_STRATEGY));
+                return Class.forName(properties.getProperty(OBJECTSTORE_STRATEGY));
             } catch (ClassNotFoundException e) {
-                getLogger(ObjectStoreManager.class).warn("Unknown or invalid object store {} -> Ignore setting", properties.getProperty(JEXXA_OBJECTSTORE_STRATEGY));
+                getLogger(ObjectStoreManager.class).warn("Unknown or invalid object store {} -> Ignore setting", properties.getProperty(OBJECTSTORE_STRATEGY));
             }
         }
 
         // 4. If a JDBC driver is stated in Properties => Use JDBCKeyValueRepository
-        if (properties.containsKey(JEXXA_JDBC_DRIVER))
+        if (properties.containsKey(JDBC_DRIVER))
         {
             return JDBCObjectStore.class;
         }

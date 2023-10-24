@@ -82,10 +82,10 @@ public class JDBCConnection implements AutoCloseable
     protected void setIsolationLevel()
     {
         if (isolationLevel == null
-                && properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_TRANSACTION_ISOLATION_LEVEL))
+                && properties.containsKey(JDBCProperties.JDBC_TRANSACTION_ISOLATION_LEVEL))
         {
             isolationLevel = IsolationLevel.valueOf(properties
-                    .getProperty(JexxaJDBCProperties.JEXXA_JDBC_TRANSACTION_ISOLATION_LEVEL)
+                    .getProperty(JDBCProperties.JDBC_TRANSACTION_ISOLATION_LEVEL)
                     .toUpperCase(Locale.ROOT).replace('-', '_')
             );
         }
@@ -99,20 +99,20 @@ public class JDBCConnection implements AutoCloseable
 
     public final void autocreateDatabase(final Properties properties)
     {
-        if (properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_AUTOCREATE_DATABASE))
+        if (properties.containsKey(JDBCProperties.JDBC_AUTOCREATE_DATABASE))
         {
-            var splitURL = properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL).split("/");
+            var splitURL = properties.getProperty(JDBCProperties.JDBC_URL).split("/");
             var dbName = splitURL[splitURL.length - 1].toLowerCase(Locale.ENGLISH); //last part of the URL is the name of the database (Note: Some DBs such as postgres require a name in lower case!)
 
             var creationProperties = new Properties();
             creationProperties.putAll(properties);
 
-            var username = new Secret(creationProperties, JexxaJDBCProperties.JEXXA_JDBC_USERNAME, JexxaJDBCProperties.JEXXA_JDBC_FILE_USERNAME);
-            var password = new Secret(creationProperties, JexxaJDBCProperties.JEXXA_JDBC_PASSWORD, JexxaJDBCProperties.JEXXA_JDBC_FILE_PASSWORD);
+            var username = new Secret(creationProperties, JDBCProperties.JDBC_USERNAME, JDBCProperties.JDBC_FILE_USERNAME);
+            var password = new Secret(creationProperties, JDBCProperties.JDBC_PASSWORD, JDBCProperties.JDBC_FILE_PASSWORD);
 
             try (var setupConnection = DriverManager.
                     getConnection(
-                            creationProperties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_AUTOCREATE_DATABASE),
+                            creationProperties.getProperty(JDBCProperties.JDBC_AUTOCREATE_DATABASE),
                             username.getSecret(),
                             password.getSecret());
                  var statement = setupConnection.createStatement())
@@ -135,14 +135,15 @@ public class JDBCConnection implements AutoCloseable
         {
             if (!isValid())
             {
-                LOGGER.warn("JDBC connection for connection {} is invalid. ", properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
-                LOGGER.warn("Try to reset JDBC connection for connection {}",  properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+                var jdbcURL =  properties.getProperty(JDBCProperties.JDBC_URL);
+                LOGGER.warn("JDBC connection for connection {} is invalid. ", jdbcURL);
+                LOGGER.warn("Try to reset JDBC connection for connection {}", jdbcURL);
                 reset();
-                LOGGER.warn("JDBC connection for connection {} successfully restarted.",  properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+                LOGGER.warn("JDBC connection for connection {} successfully restarted.", jdbcURL);
             }
         } catch (RuntimeException e)
         {
-            LOGGER.error("Could not reset JDBC connection for connection {}. Reason: {}", properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL), e.getMessage());
+            LOGGER.error("Could not reset JDBC connection for connection {}. Reason: {}", properties.getProperty(JDBCProperties.JDBC_URL), e.getMessage());
             throw e;
         }
 
@@ -210,6 +211,7 @@ public class JDBCConnection implements AutoCloseable
         return new JDBCTableBuilder<>(this::validateConnection);
     }
 
+    @SuppressWarnings("java:S1452")
     public JDBCTableBuilder<?> createTableCommand()
     {
         return new JDBCTableBuilder<>(this::validateConnection);
@@ -231,7 +233,7 @@ public class JDBCConnection implements AutoCloseable
         {
             if (!getConnection().isValid(NO_TIMEOUT))
             {
-                throw new IllegalStateException("JDBC Connection is invalid for connection " + properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+                throw new IllegalStateException("JDBC Connection is invalid for connection " + properties.getProperty(JDBCProperties.JDBC_URL));
             }
         } catch (SQLException e)
         {
@@ -291,12 +293,12 @@ public class JDBCConnection implements AutoCloseable
 
     private static Connection initJDBCConnection(Properties properties, boolean autoCommit)
     {
-        var username = new Secret(properties, JexxaJDBCProperties.JEXXA_JDBC_USERNAME, JexxaJDBCProperties.JEXXA_JDBC_FILE_USERNAME);
-        var password = new Secret(properties, JexxaJDBCProperties.JEXXA_JDBC_PASSWORD, JexxaJDBCProperties.JEXXA_JDBC_FILE_PASSWORD);
+        var username = new Secret(properties, JDBCProperties.JDBC_USERNAME, JDBCProperties.JDBC_FILE_USERNAME);
+        var password = new Secret(properties, JDBCProperties.JDBC_PASSWORD, JDBCProperties.JDBC_FILE_PASSWORD);
 
         try {
             var connection = DriverManager.getConnection(
-                    properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL),
+                    properties.getProperty(JDBCProperties.JDBC_URL),
                     username.getSecret(),
                     password.getSecret()
             );
@@ -315,24 +317,24 @@ public class JDBCConnection implements AutoCloseable
     {
         try
         {
-            Class.forName(properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_DRIVER));
+            Class.forName(properties.getProperty(JDBCProperties.JDBC_DRIVER));
         }
         catch (ClassNotFoundException e)
         {
-            throw new IllegalArgumentException("Specified JDBC driver is not available: " + properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_DRIVER), e);
+            throw new IllegalArgumentException("Specified JDBC driver is not available: " + properties.getProperty(JDBCProperties.JDBC_DRIVER), e);
         }
     }
 
     private static void validateProperties(Properties properties)
     {
-        if (!properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_URL))
+        if (!properties.containsKey(JDBCProperties.JDBC_URL))
         {
-            throw new IllegalArgumentException("Parameter " + JexxaJDBCProperties.JEXXA_JDBC_URL + " is missing");
+            throw new IllegalArgumentException("Parameter " + JDBCProperties.JDBC_URL + " is missing");
         }
 
-        if (!properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_DRIVER) )
+        if (!properties.containsKey(JDBCProperties.JDBC_DRIVER) )
         {
-            throw new IllegalArgumentException("Parameter " + JexxaJDBCProperties.JEXXA_JDBC_DRIVER + " is missing");
+            throw new IllegalArgumentException("Parameter " + JDBCProperties.JDBC_DRIVER + " is missing");
         }
     }
 }

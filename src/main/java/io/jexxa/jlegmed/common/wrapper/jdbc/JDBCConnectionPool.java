@@ -6,23 +6,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static io.jexxa.adapterapi.JexxaContext.registerCleanupHandler;
 
-public class JDBCConnectionPool implements AutoCloseable {
+@SuppressWarnings("java:S6548")
+public final class JDBCConnectionPool implements AutoCloseable {
 
     private static final JDBCConnectionPool JDBC_CONNECTION_POOL = new JDBCConnectionPool();
 
     // Concurrent maps are used to handle optimized concurrent access to this class without synchronizing each method
-    // This is possible because methods that are accessed in parallel, are synchronized by the maps (such as computeIfAbsent)
+    // This is possible because methods that are accessed in parallel are synchronized by the maps (such as computeIfAbsent)
     private final Map<String, JDBCConnection> sharedConnectionMap = new ConcurrentHashMap<>();
     private final Map<Object, JDBCConnection> exclusiveConnectionMap = new ConcurrentHashMap<>();
     private final Map<Object, JDBCConnection.IsolationLevel> connectionConfiguration = new ConcurrentHashMap<>();
 
     public static synchronized JDBCConnection getConnection(Properties properties, Object managingObject)
     {
-        var connectionName = properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL);
+        var connectionName = properties.getProperty(JDBCProperties.JDBC_URL);
 
         if ( connectionName == null )
         {
-            throw new IllegalArgumentException("Parameter " + JexxaJDBCProperties.JEXXA_JDBC_URL + " is missing");
+            throw new IllegalArgumentException("Parameter " + JDBCProperties.JDBC_URL + " is missing");
         }
 
         if (JDBC_CONNECTION_POOL.requiresExclusiveConnection(managingObject))

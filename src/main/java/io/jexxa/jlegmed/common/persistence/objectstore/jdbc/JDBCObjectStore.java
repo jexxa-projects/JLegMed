@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.common.persistence.objectstore.jdbc;
 
-import io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties;
+import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCObject;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.SQLDataType;
 import io.jexxa.jlegmed.common.wrapper.jdbc.database.DatabaseManager;
@@ -53,7 +53,7 @@ public class JDBCObjectStore<T,K, M extends Enum<M> & MetadataSchema> extends JD
         this.aggregateClazz = aggregateClazz;
         this.metaData = metaData;
         this.jdbcSchema = EnumSet.allOf(metaData);
-        this.database = DatabaseManager.getDatabase(properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+        this.database = DatabaseManager.getDatabase(properties.getProperty(JDBCProperties.JDBC_URL));
 
         manageObjectStore(properties);
     }
@@ -152,7 +152,7 @@ public class JDBCObjectStore<T,K, M extends Enum<M> & MetadataSchema> extends JD
     private void manageObjectStore(Properties properties)
     {
         Objects.requireNonNull(properties);
-        if (properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_AUTOCREATE_TABLE))
+        if (properties.containsKey(JDBCProperties.JDBC_AUTOCREATE_TABLE))
         {
             autoCreateDatabase();
             renameKeyValueColumns();

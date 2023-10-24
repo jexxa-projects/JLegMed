@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.common.persistence;
 
 import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
 import io.jexxa.jlegmed.common.wrapper.factory.ClassFactory;
-import io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties;
+import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties;
 import io.jexxa.jlegmed.common.persistence.repository.IRepository;
 import io.jexxa.jlegmed.common.persistence.repository.imdb.IMDBRepository;
 import io.jexxa.jlegmed.common.persistence.repository.jdbc.JDBCKeyValueRepository;
@@ -13,10 +13,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties.JEXXA_REPOSITORY_STRATEGY;
+import static io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties.REPOSITORY_STRATEGY;
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 
+@SuppressWarnings("java:S6548")
 public final class RepositoryManager
 {
     private static final RepositoryManager REPOSITORY_MANAGER = new RepositoryManager();
@@ -109,15 +110,15 @@ public final class RepositoryManager
         }
 
         // 3. Check explicit configuration
-        if (properties.containsKey(JEXXA_REPOSITORY_STRATEGY)) {
+        if (properties.containsKey(REPOSITORY_STRATEGY)) {
             try {
-                return Class.forName(properties.getProperty(JEXXA_REPOSITORY_STRATEGY));
+                return Class.forName(properties.getProperty(REPOSITORY_STRATEGY));
             } catch (ClassNotFoundException e) {
-                getLogger(ObjectStoreManager.class).warn("Unknown or invalid repository {} -> Ignore setting", properties.getProperty(JEXXA_REPOSITORY_STRATEGY));
+                getLogger(ObjectStoreManager.class).warn("Unknown or invalid repository {} -> Ignore setting", properties.getProperty(REPOSITORY_STRATEGY));
             }
         }
         // 4. If a JDBC driver is stated in Properties => Use JDBCKeyValueRepository
-        if (properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_DRIVER))
+        if (properties.containsKey(JDBCProperties.JDBC_DRIVER))
         {
             return JDBCKeyValueRepository.class;
         }

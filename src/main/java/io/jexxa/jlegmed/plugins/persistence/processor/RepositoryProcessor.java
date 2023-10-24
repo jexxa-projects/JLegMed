@@ -7,7 +7,10 @@ public class RepositoryProcessor {
 
     public static <T extends AbstractAggregate<T, ?>> T persist(T data, Context context)
     {
-        var repository = RepositoryManager.getRepository(data.getAggregateType(), data.getKeyFunction(), context.getProperties());
+        var processorfConfig = context.getProcessorConfig(RepositoryConfiguration.class);
+        var properties = context.getProperties(processorfConfig.propertiesPrefix());
+
+        var repository = RepositoryManager.getRepository(data.getAggregateType(), data.getKeyFunction(), properties);
         repository.add(data);
         return data;
     }
@@ -17,6 +20,11 @@ public class RepositoryProcessor {
         var repository = RepositoryManager.getRepository(data.getAggregateType(), data.getKeyFunction(), context.getProperties());
         repository.update(data);
         return data;
+    }
+
+    public record RepositoryConfiguration(String propertiesPrefix)
+    {
+        public static RepositoryConfiguration repositoryOf(String propertiesPrefix) { return new RepositoryConfiguration(propertiesPrefix);}
     }
 
     private RepositoryProcessor()

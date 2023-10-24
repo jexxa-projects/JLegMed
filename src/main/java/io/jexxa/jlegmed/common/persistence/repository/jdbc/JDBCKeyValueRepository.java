@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.common.persistence.repository.jdbc;
 
-import io.jexxa.jlegmed.common.wrapper.jdbc.JexxaJDBCProperties;
+import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCProperties;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCObject;
 import io.jexxa.jlegmed.common.wrapper.jdbc.database.DatabaseManager;
 import io.jexxa.jlegmed.common.wrapper.jdbc.database.IDatabase;
@@ -32,13 +32,14 @@ public class JDBCKeyValueRepository<T, K> extends JDBCRepository implements IRep
         REPOSITORY_VALUE
     }
 
+    @SuppressWarnings("unused")
     public JDBCKeyValueRepository(Class<T> aggregateClazz, Function<T,K> keyFunction, Properties properties)
     {
         super(properties);
 
         this.keyFunction = Objects.requireNonNull( keyFunction );
         this.aggregateClazz = Objects.requireNonNull(aggregateClazz);
-        this.database = DatabaseManager.getDatabase(properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+        this.database = DatabaseManager.getDatabase(properties.getProperty(JDBCProperties.JDBC_URL));
 
         manageDBTable(properties);
     }
@@ -49,7 +50,7 @@ public class JDBCKeyValueRepository<T, K> extends JDBCRepository implements IRep
 
         this.keyFunction = Objects.requireNonNull( keyFunction );
         this.aggregateClazz = Objects.requireNonNull(aggregateClazz);
-        this.database = DatabaseManager.getDatabase(properties.getProperty(JexxaJDBCProperties.JEXXA_JDBC_URL));
+        this.database = DatabaseManager.getDatabase(properties.getProperty(JDBCProperties.JDBC_URL));
 
         if ( manageTable )
         {
@@ -152,7 +153,7 @@ public class JDBCKeyValueRepository<T, K> extends JDBCRepository implements IRep
 
     private void manageDBTable(Properties properties)
     {
-        if (properties.containsKey(JexxaJDBCProperties.JEXXA_JDBC_AUTOCREATE_TABLE))
+        if (properties.containsKey(JDBCProperties.JDBC_AUTOCREATE_TABLE))
         {
             autocreateTableKeyValue();
             renameKeyValueColumns();

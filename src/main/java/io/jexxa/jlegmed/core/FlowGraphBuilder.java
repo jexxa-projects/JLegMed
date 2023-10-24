@@ -1,9 +1,8 @@
 package io.jexxa.jlegmed.core;
 
-import io.jexxa.jlegmed.core.flowgraph.ActiveFlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,10 +20,10 @@ public class FlowGraphBuilder {
         this.jLegMed = jLegMed;
     }
 
-    public <T> SourceConnector<T> await(Class<T> inputData) {
-        var flowGraph = new ActiveFlowGraph(flowGraphID, jLegMed.getProperties());
+    public <T> AwaitFlowGraphBuilder<T> await(Class<T> inputData) {
+        var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
-        return new SourceConnector<>(inputData, flowGraph);
+        return new AwaitFlowGraphBuilder<>(flowGraph, inputData);
     }
 
     public FlowGraphBuilder each(int fixedRate, TimeUnit timeUnit)
@@ -61,6 +60,30 @@ public class FlowGraphBuilder {
         {
             return scheduledFlowGraph.getProducer();
         }
+    }
+
+    public static class AwaitFlowGraphBuilder<T>
+    {
+        private final FlowGraph flowGraph;
+        private final Class<T> sourceType;
+
+        AwaitFlowGraphBuilder(FlowGraph flowGraph, Class<T> sourceType)
+        {
+            this.sourceType = sourceType;
+            this.flowGraph = flowGraph;
+        }
+        public <U extends TypedProducer<T>> U from(U producer) {
+            try {
+                flowGraph.setProducer(producer);
+                producer.setContext(flowGraph.getContext());
+                producer.setType(sourceType);
+
+            } catch (Exception e){
+                throw new IllegalArgumentException(e.getMessage(), e);
+            }
+            return producer;
+        }
+
     }
 
 }

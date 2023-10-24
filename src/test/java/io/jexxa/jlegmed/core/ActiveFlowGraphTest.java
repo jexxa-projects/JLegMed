@@ -8,7 +8,7 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.Context.contextID;
-import static io.jexxa.jlegmed.plugins.generic.producer.GenericActiveProducerURL.genericProducerURL;
+import static io.jexxa.jlegmed.plugins.generic.producer.ActiveProducer.genericProducerURL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

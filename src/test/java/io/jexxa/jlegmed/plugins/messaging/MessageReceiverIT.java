@@ -6,7 +6,7 @@ import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducerURL;
+import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
@@ -45,9 +45,9 @@ class MessageReceiverIT {
         jlegmed.stop();
     }
 
-    static <T> JMSProducerURL<T> topicURL(String topicName, String connectionName)
+    static <T> JMSProducer<T> topicURL(String topicName, String connectionName)
     {
-        return new JMSProducerURL<>(new MessageSender.Configuration(TOPIC, topicName, connectionName));
+        return new JMSProducer<>(new MessageSender.Configuration(TOPIC, topicName, connectionName));
     }
 }
 

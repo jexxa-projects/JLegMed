@@ -46,7 +46,7 @@ public abstract class JSONMessageListener implements MessageListener
         }
         catch (JMSException exception)
         {
-            //In case of a JMS exception we assume that data cannot be read due to some internal JMS issues and discard the message
+            //In case of a JMS exception, we assume that data cannot be read due to some internal JMS issues and discard the message
             getLogger(getClass()).error("Could not process received message as text or byte message -> Discard it. Reason: {}", exception.getMessage());
         }
         currentMessage = null;

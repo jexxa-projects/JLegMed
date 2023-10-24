@@ -16,7 +16,7 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
     private final Scheduler scheduler = new Scheduler();
     private final FixedRateScheduler fixedRateScheduler;
 
-    private TypedProducer<T> producer = new TypedProducer<>();
+    private TypedProducer<T> producer;
     private Class<T> expectedData;
 
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
@@ -28,12 +28,15 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
     public void receive(Class<T> expectedData)
     {
         this.expectedData = expectedData;
-        producer.setType(expectedData);
+        producer = new TypedProducer<>();
+        setProducer(new TypedProducer<>());
+        getProducer().setType(expectedData);
     }
 
     public <U extends TypedProducer<T>> U from(U typedProducer) {
-        this.producer = typedProducer;
-        this.producer.setType(expectedData);
+        producer = typedProducer;
+        setProducer(typedProducer);
+        typedProducer.setType(expectedData);
         return typedProducer;
     }
 

@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.Binding;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -13,6 +13,7 @@ public class TypedProducer<T> implements Producer<T> {
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
     private Class<T> producingType;
+    private Context context;
 
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
@@ -35,6 +36,10 @@ public class TypedProducer<T> implements Producer<T> {
     public void setType(Class<T> producingType)
     {
         this.producingType = producingType;
+    }
+    public void setContext(Context context)
+    {
+        this.context = context;
     }
 
     protected Class<T> getType()
@@ -86,7 +91,10 @@ public class TypedProducer<T> implements Producer<T> {
             outputPipe.forward(content, context);
         }
     }
-
+    protected Context getContext()
+    {
+        return context;
+    }
     protected void doInit()
     {
         //Empty method to be implemented by subclasses

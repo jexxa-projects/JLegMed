@@ -7,7 +7,7 @@ import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.Destin
 public class MessageProcessors {
     public static <T> T sendAsJSON(T content, Context context)
     {
-        var messageConfiguration = context.getProcessorConfig(MessageSender.Configuration.class);
+        var messageConfiguration = context.getFilterConfig(MessageSender.Configuration.class);
         var properties = context.getProperties(messageConfiguration.connectionName());
 
         var messageSender = MessagingManager.getMessageSender(messageConfiguration, properties);

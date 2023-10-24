@@ -38,6 +38,6 @@ public class JMSProducer<T> extends TypedProducer<T> {
                 getContext());
         jmsAdapter.register(messageListener);
 
-        return new Binding<>(getOutputPipe(), null);
+        return new Binding<>(getOutputPipe(), this);
     }
 }

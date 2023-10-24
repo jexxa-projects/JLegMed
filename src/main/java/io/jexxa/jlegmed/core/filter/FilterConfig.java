@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.core.filter.processor;
+package io.jexxa.jlegmed.core.filter;
 
-public class ProcessorConfig {
+public class FilterConfig {
     private int processCounter = 0;
     private boolean processAgain;
     private Object config;
@@ -15,7 +15,7 @@ public class ProcessorConfig {
         processAgain = true; // Set this flag to true so that the scheduled filter/processor knows that it is called again
     }
 
-    void decreaseCall()
+    public void decreaseProcessCounter()
     {
         if ( processCounter > 0)
         {
@@ -23,7 +23,7 @@ public class ProcessorConfig {
         }
     }
 
-    void resetRepeatActive()
+    public void resetRepeatActive()
     {
         // reset the trigger only of the counter is <= 0. This enables the processor
         // 1. to inform a scheduler that the method is called multiple times

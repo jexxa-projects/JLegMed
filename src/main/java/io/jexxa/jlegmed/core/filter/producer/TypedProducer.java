@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -14,6 +15,7 @@ public class TypedProducer<T> implements Producer<T> {
     private Function<Context, T> contextFunction;
     private Class<T> producingType;
     private Context context;
+    private final FilterConfig filterConfig = new FilterConfig();
 
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
@@ -50,7 +52,7 @@ public class TypedProducer<T> implements Producer<T> {
 
     protected Binding<T> getConnector()
     {
-        return new Binding<>(this.outputPipe, null);
+        return new Binding<>(this.outputPipe, this);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class TypedProducer<T> implements Producer<T> {
     }
 
     public void produceData(Class<T> clazz, Context context) {
+        context.setFilterConfig(filterConfig);
         T content = null;
         if (producerContextFunction != null) {
             content = producerContextFunction.apply(context,clazz);
@@ -101,4 +104,7 @@ public class TypedProducer<T> implements Producer<T> {
         //Empty method to be implemented by subclasses
     }
 
+    public <U> void setConfiguration(U configuration) {
+        this.filterConfig.setConfig(configuration);
+    }
 }

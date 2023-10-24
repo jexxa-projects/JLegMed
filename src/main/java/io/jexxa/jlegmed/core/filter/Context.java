@@ -1,7 +1,5 @@
 package io.jexxa.jlegmed.core.filter;
 
-import io.jexxa.jlegmed.core.filter.processor.ProcessorConfig;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +8,7 @@ import java.util.Properties;
 public class Context {
     private final HashMap<String, Object> contextData = new HashMap<>();
     private final Properties properties;
-    private ProcessorConfig processorConfig;
+    private FilterConfig filterConfig;
 
     public Context(Properties properties)
     {
@@ -44,14 +42,14 @@ public class Context {
         return subset;
     }
 
-    public <T> T getProcessorConfig(Class<T> conigType)
+    public <T> T getFilterConfig(Class<T> conigType)
     {
-        return processorConfig.getConfig(conigType);
+        return filterConfig.getConfig(conigType);
     }
 
-    public void setProcessorConfig(ProcessorConfig processorConfig)
+    public void setFilterConfig(FilterConfig filterConfig)
     {
-        this.processorConfig = processorConfig;
+        this.filterConfig = filterConfig;
     }
 
     public <T> T update(String id, T data) {
@@ -65,11 +63,11 @@ public class Context {
     }
 
     public boolean isProcessedAgain() {
-        return processorConfig.isProcessedAgain();
+        return filterConfig.isProcessedAgain();
     }
 
     public void processAgain()
     {
-        processorConfig.processAgain();
+        filterConfig.processAgain();
     }
 }

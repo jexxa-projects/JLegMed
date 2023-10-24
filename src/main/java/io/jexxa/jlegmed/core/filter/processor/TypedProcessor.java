@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
 import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
@@ -11,7 +12,7 @@ public class TypedProcessor<T, R> implements Processor<T> {
     private BiFunction<T, Context, R> contextFunction;
     private Function<T, R> processFunction;
 
-    private final ProcessorConfig processorConfig = new ProcessorConfig();
+    private final FilterConfig filterConfig = new FilterConfig();
 
     private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
@@ -38,8 +39,8 @@ public class TypedProcessor<T, R> implements Processor<T> {
     public void process(T content, Context context) {
 
         do {
-            processorConfig.decreaseCall();
-            context.setProcessorConfig(processorConfig);
+            filterConfig.decreaseProcessCounter();
+            context.setFilterConfig(filterConfig);
 
             R result = null;
 
@@ -52,14 +53,14 @@ public class TypedProcessor<T, R> implements Processor<T> {
             if (result != null) {
                 getOutputPipe().forward(result, context);
             }
-            processorConfig.resetRepeatActive();
+            filterConfig.resetRepeatActive();
 
-        } while (processorConfig.isProcessedAgain());
+        } while (filterConfig.isProcessedAgain());
 
     }
 
     public <U> void setConfiguration(U configuration) {
-        this.processorConfig.setConfig(configuration);
+        this.filterConfig.setConfig(configuration);
     }
 
 }

@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.filter;
 
 import io.jexxa.jlegmed.core.filter.processor.TypedProcessor;
+import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -14,14 +15,22 @@ import java.util.function.Function;
  */
 public class Binding<T> {
     private final OutputPipe<T> predecessorPipe;
-    private final TypedProcessor<?,?> predecessor;
+    private TypedProcessor<?,T> predecessorProcessor;
+    private TypedProducer<T> predecessorProducer;
 
 
-    public Binding(OutputPipe<T> predecessorPipe, TypedProcessor<?,?> predecessor)
+    public Binding(OutputPipe<T> predecessorPipe, TypedProcessor<?,T> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
-        this.predecessor = predecessor;
+        this.predecessorProcessor = predecessor;
     }
+
+    public Binding(OutputPipe<T> predecessorPipe, TypedProducer<T> predecessor)
+    {
+        this.predecessorPipe = predecessorPipe;
+        this.predecessorProducer = predecessor;
+    }
+
 
     public <R> Binding<R> andProcessWith(BiFunction<T, Context, R> successorFunction)
     {
@@ -41,7 +50,15 @@ public class Binding<T> {
 
     public <U> Binding<T> useConfig(U configuration)
     {
-        predecessor.setConfiguration(configuration);
+        if (predecessorProcessor != null)
+        {
+            predecessorProcessor.setConfiguration(configuration);
+        }
+        if (predecessorProducer != null)
+        {
+            predecessorProducer.setConfiguration(configuration);
+        }
+
         return this;
     }
 }

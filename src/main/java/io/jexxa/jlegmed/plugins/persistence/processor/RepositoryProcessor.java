@@ -7,7 +7,7 @@ public class RepositoryProcessor {
 
     public static <T extends AbstractAggregate<T, ?>> T persist(T data, Context context)
     {
-        var processorfConfig = context.getProcessorConfig(RepositoryConfiguration.class);
+        var processorfConfig = context.getFilterConfig(RepositoryConfiguration.class);
         var properties = context.getProperties(processorfConfig.propertiesPrefix());
 
         var repository = RepositoryManager.getRepository(data.getAggregateType(), data.getKeyFunction(), properties);

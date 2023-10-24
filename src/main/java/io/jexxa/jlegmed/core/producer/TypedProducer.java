@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.core.producer;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
-import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
-import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
+import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
+import io.jexxa.jlegmed.core.processor.OutputPipe;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -15,7 +15,7 @@ public class TypedProducer<T> implements Producer<T> {
     private Supplier<T> producerSupplier;
     private Function<Context, T> contextFunction;
 
-    private final TypedOutputPipe<T> outputPipe = new TypedOutputPipe<>();
+    private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
     public TypedProducer(ScheduledFlowGraph<T> scheduledFlowGraph) {
         this.scheduledFlowGraph = scheduledFlowGraph;
@@ -41,7 +41,17 @@ public class TypedProducer<T> implements Producer<T> {
     }
 
     @Override
-    public TypedOutputPipe<T> getOutputPipe()
+    public void start() {
+        //No action required
+    }
+
+    @Override
+    public void stop() {
+        //No action required
+    }
+
+    @Override
+    public OutputPipe<T> getOutputPipe()
     {
         return outputPipe;
     }
@@ -50,7 +60,6 @@ public class TypedProducer<T> implements Producer<T> {
         return scheduledFlowGraph.from(producerURL);
     }
 
-    @Override
     public void produce(Class<T> clazz, Context context) {
         T content = null;
         if (producerContextFunction != null) {

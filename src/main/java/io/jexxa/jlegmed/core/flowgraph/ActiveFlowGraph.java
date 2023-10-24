@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 
-import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.Producer;
 
 import java.util.Properties;
 
 public class ActiveFlowGraph extends FlowGraph {
 
-    private ActiveProducer<?> activeProducer;
+    private Producer<?> producer;
     public ActiveFlowGraph(String flowGraphID, Properties properties)
     {
         super(flowGraphID,  properties );
@@ -15,16 +15,16 @@ public class ActiveFlowGraph extends FlowGraph {
 
     @Override
     public void start() {
-        activeProducer.start();
+        producer.start();
     }
 
     @Override
     public void stop() {
-        activeProducer.stop();
+        producer.stop();
     }
 
-    public void setActiveProducer(ActiveProducer<?> activeProducer)
+    public void setActiveProducer(Producer<?> producer)
     {
-        this.activeProducer = activeProducer;
+        this.producer = producer;
     }
 }

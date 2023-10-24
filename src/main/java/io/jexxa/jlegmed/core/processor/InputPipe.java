@@ -2,6 +2,16 @@ package io.jexxa.jlegmed.core.processor;
 
 import io.jexxa.jlegmed.core.flowgraph.Context;
 
-public interface InputPipe<T> {
-    void receive(T content, Context context);
+public class InputPipe<T> {
+
+    private final TypedProcessor<T, ?> processor;
+
+    public InputPipe(TypedProcessor<T, ?> processor)
+    {
+        this.processor = processor;
+    }
+    public void receive(T content, Context context) {
+        processor.process(content, context);
+    }
+
 }

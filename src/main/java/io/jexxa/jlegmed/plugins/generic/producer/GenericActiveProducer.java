@@ -5,14 +5,13 @@ import io.jexxa.jlegmed.common.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.flowgraph.Context;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
 import io.jexxa.jlegmed.core.processor.OutputPipe;
-import io.jexxa.jlegmed.core.processor.TypedOutputPipe;
-import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.Producer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
+public class GenericActiveProducer<T> implements Producer<T>, IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
@@ -20,7 +19,7 @@ public class GenericActiveProducer<T> implements ActiveProducer<T>, IScheduled {
 
     private Function<Context, T> contextFunction;
     private Supplier<T> supplier;
-    private final OutputPipe<T> outputPipe = new TypedOutputPipe<>();
+    private final OutputPipe<T> outputPipe = new OutputPipe<>();
 
     private final SourceConnector<T> sourceConnector;
 

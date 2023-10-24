@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.jlegmed.core.flowgraph.ProcessorConnector;
 import io.jexxa.jlegmed.core.flowgraph.SourceConnector;
-import io.jexxa.jlegmed.core.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.producer.Producer;
 import io.jexxa.jlegmed.core.producer.ActiveProducerURL;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
@@ -21,7 +21,7 @@ public class JMSProducerURL<T> implements ActiveProducerURL<T> {
     }
 
     @Override
-    public ActiveProducer<T> init(SourceConnector<T> sourceConnector)
+    public Producer<T> init(SourceConnector<T> sourceConnector)
     {
         messageProducer = new MessageProducer<>(configuration.connectionName(),
                 sourceConnector.getContext().getProperties(configuration.connectionName()));

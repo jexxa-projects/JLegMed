@@ -4,7 +4,7 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.jlegmed.common.function.ThrowingConsumer;
-import io.jexxa.jlegmed.common.jms.JMSProperties;
+import io.jexxa.jlegmed.common.wrapper.jms.JMSProperties;
 
 import javax.jms.Connection;
 import javax.jms.Destination;
@@ -24,8 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.common.jms.JMSConnection.createConnection;
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.jms.JMSConnection.createConnection;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 
 public class JMSAdapter implements AutoCloseable, IDrivingAdapter

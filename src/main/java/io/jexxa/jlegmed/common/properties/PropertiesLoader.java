@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_NAME;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_PROPERTIES;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_CONFIG_IMPORT;

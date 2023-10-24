@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.factory;
+package io.jexxa.jlegmed.common.wrapper.factory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

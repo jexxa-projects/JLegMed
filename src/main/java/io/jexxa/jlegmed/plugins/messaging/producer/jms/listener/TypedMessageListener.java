@@ -9,7 +9,7 @@ import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSConfiguration;
 
 import java.util.Objects;
 
-import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
+import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
 
 
 @SuppressWarnings("unused")

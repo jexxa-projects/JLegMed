@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.jms;
+package io.jexxa.jlegmed.common.wrapper.jms;
 
 public final class JMSProperties {
     public static final String JNDI_PROVIDER_URL_KEY = "java.naming.provider.url";

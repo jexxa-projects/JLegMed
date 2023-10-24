@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.common.jms.JMSConnection.createConnection;
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.jms.JMSConnection.createConnection;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 @SuppressWarnings({"unused", "java:S1133"})
 public class JMSSender extends MessageSender implements AutoCloseable

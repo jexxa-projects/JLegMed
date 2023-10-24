@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
 import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
-import io.jexxa.jlegmed.common.factory.ClassFactory;
+import io.jexxa.jlegmed.common.wrapper.factory.ClassFactory;
 import io.jexxa.jlegmed.plugins.messaging.processor.jms.JMSSender;
 import io.jexxa.jlegmed.plugins.messaging.processor.logging.MessageLogger;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.common.jms.JMSProperties.JNDI_FACTORY_KEY;
+import static io.jexxa.jlegmed.common.wrapper.jms.JMSProperties.JNDI_FACTORY_KEY;
 
 
 public final class MessageSenderFactory

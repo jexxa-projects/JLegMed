@@ -10,7 +10,7 @@ import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 public final class ScheduledFlowGraph<T> extends FlowGraph {
     private final Scheduler scheduler = new Scheduler();

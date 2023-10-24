@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.json.gson;
+package io.jexxa.jlegmed.common.wrapper.json.gson;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;

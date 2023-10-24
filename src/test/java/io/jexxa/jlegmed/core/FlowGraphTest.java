@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core;
 
-import io.jexxa.jlegmed.common.logger.SLF4jLogger;
+import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;

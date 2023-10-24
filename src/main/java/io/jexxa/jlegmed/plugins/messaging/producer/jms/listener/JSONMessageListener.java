@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 
 @SuppressWarnings("unused")

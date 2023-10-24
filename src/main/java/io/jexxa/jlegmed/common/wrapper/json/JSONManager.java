@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.common.json;
+package io.jexxa.jlegmed.common.wrapper.json;
 
-import io.jexxa.jlegmed.common.json.gson.GsonConverter;
+import io.jexxa.jlegmed.common.wrapper.json.gson.GsonConverter;
 
 @SuppressWarnings("unused")
 public final class JSONManager

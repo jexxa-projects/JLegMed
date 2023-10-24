@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 
-import io.jexxa.jlegmed.common.logger.SLF4jLogger;
+import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.properties.PropertiesLoader;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 

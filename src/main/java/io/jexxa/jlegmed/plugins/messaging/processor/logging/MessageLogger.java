@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
 
 @SuppressWarnings("unused")

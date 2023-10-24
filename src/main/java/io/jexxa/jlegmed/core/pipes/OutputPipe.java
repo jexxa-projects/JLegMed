@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.pipes;
 
-import io.jexxa.jlegmed.common.logger.SLF4jLogger;
+import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.Context;
 
 public class OutputPipe<T> {

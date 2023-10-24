@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.json;
+package io.jexxa.jlegmed.common.wrapper.json;
 
 import java.io.Reader;
 import java.lang.reflect.Type;

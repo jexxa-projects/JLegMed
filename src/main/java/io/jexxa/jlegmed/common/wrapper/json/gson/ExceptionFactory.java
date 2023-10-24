@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.json.gson;
+package io.jexxa.jlegmed.common.wrapper.json.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,12 +7,11 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
-
-import static io.jexxa.jlegmed.common.logger.SLF4jLogger.getLogger;
 
 
 final class ExceptionFactory implements TypeAdapterFactory
@@ -70,7 +69,7 @@ final class ExceptionFactory implements TypeAdapterFactory
                 } else if ("message".equals(name)) {
                     message = reader.nextString();
                 } else {
-                    getLogger(ExceptionTypeAdapter.class).warn("Unhandled element `{}` in exception {}", name, rawType.getSimpleName());
+                    SLF4jLogger.getLogger(ExceptionTypeAdapter.class).warn("Unhandled element `{}` in exception {}", name, rawType.getSimpleName());
                     reader.skipValue();
                 }
             }

@@ -1,14 +1,12 @@
-package io.jexxa.jlegmed.common.json.gson;
+package io.jexxa.jlegmed.common.wrapper.json.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import io.jexxa.jlegmed.common.json.JSONConverter;
+import io.jexxa.jlegmed.common.wrapper.json.JSONConverter;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
-
-import static io.jexxa.jlegmed.common.json.gson.DateTimeAdapter.registerDateTimeAdapter;
 
 
 @SuppressWarnings("unused")
@@ -70,7 +68,7 @@ public class GsonConverter implements JSONConverter
     {
         var gsonBuilder = new GsonBuilder();
         gsonBuilder.enableComplexMapKeySerialization();
-        registerDateTimeAdapter(gsonBuilder);
+        DateTimeAdapter.registerDateTimeAdapter(gsonBuilder);
         ExceptionFactory.registerExceptionAdapter(gsonBuilder);
         return gsonBuilder;
     }

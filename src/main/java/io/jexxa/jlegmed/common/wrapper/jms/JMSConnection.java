@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.jms;
+package io.jexxa.jlegmed.common.wrapper.jms;
 
 
 import io.jexxa.jlegmed.common.properties.Secret;

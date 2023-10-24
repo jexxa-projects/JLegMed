@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.jexxa.jlegmed.common.json.JSONManager.getJSONConverter;
+import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
 
 
 @CheckReturnValue

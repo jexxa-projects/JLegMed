@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.common.logger;
+package io.jexxa.jlegmed.common.wrapper.logger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

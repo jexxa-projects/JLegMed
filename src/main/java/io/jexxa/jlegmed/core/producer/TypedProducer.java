@@ -23,20 +23,17 @@ public class TypedProducer<T> implements Producer<T> {
 
     public ProcessorConnector<T> generatedWith(Function<Context, T> contextFunction) {
         this.contextFunction = contextFunction;
-        scheduledFlowGraph.generatedWith(this);
         return new ProcessorConnector<>(this.outputPipe, null);
     }
 
 
     public ProcessorConnector<T> generatedWith(BiFunction<Context, Class<T>, T> producerContextFunction) {
         this.producerContextFunction = producerContextFunction;
-        scheduledFlowGraph.generatedWith(this);
         return new ProcessorConnector<>(this.outputPipe, null);
     }
 
     public ProcessorConnector<T> generatedWith(Supplier<T> producerSupplier) {
         this.producerSupplier = producerSupplier;
-        scheduledFlowGraph.generatedWith(this);
         return new ProcessorConnector<>(this.outputPipe, null);
     }
 

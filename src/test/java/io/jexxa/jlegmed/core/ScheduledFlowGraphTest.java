@@ -41,29 +41,8 @@ class ScheduledFlowGraphTest {
         jlegmed.stop();
     }
 
-
     @Test
-    void testLambdaSourceFlowGraph() {
-        //Arrange
-        var messageCollector = new MessageCollector<String>();
-        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
-        jlegmed.newFlowGraph("HelloWorld")
-                .each(10, MILLISECONDS)
-                .receive(String.class).from(() -> "Hello World")
-
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
-    }
-
-    @Test
-    void testLambdaProcessorFlowGraph() {
+    void testChangeContent() {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -79,11 +58,12 @@ class ScheduledFlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        assertEquals("Hello World-Hello World", messageCollector.getMessages().get(0));
         jlegmed.stop();
     }
 
     @Test
-    void testFlowGraphContextSource() {
+    void testUseContext() {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -105,42 +85,22 @@ class ScheduledFlowGraphTest {
 
 
     @Test
-    void testFlowGraphIncrementer() {
-        //Arrange
-        var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
-        jlegmed.newFlowGraph("Incrementer")
-                .each(10, MILLISECONDS)
-
-                .receive(Integer.class).from( () -> 1)
-
-                .andProcessWith( GenericProcessors::incrementer )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
-    }
-    @Test
-    void testFlowGraphContextTypedSource() {
+    void testUseTypedInformation() {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)
-                .receive(String.class).from((context, type) -> "Hello World")
+                .receive(String.class).from((context, type) -> "Hello World - Type:" + type.getSimpleName())
 
                 .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        assertEquals("Hello World - Type:" + String.class.getSimpleName(), messageCollector.getMessages().get(0));
         jlegmed.stop();
     }
 
@@ -156,18 +116,22 @@ class ScheduledFlowGraphTest {
                 .from(GenericProducer::counter)
 
                 .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
-        //Assert
+        //Assert - We expect a counting value
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
+
+        assertEquals(1, messageCollector.getMessages().get(0));
+        assertEquals(2, messageCollector.getMessages().get(1));
+        assertEquals(3, messageCollector.getMessages().get(2));
+
     }
 
     @Test
-    void testDuplicateProcessor() {
+    void testProcessorGeneratesMoreOutputDataForASingleInput() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -175,21 +139,23 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
 
                 .receive(Integer.class).from(GenericProducer::counter)
-
-                .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::duplicate)
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
-        //Assert
+        //Assert - Counter is now received twice
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
         jlegmed.stop();
+
+        assertEquals(1, messageCollector.getMessages().get(0));
+        assertEquals(1, messageCollector.getMessages().get(1));
+        assertEquals(2, messageCollector.getMessages().get(2));
+        assertEquals(2, messageCollector.getMessages().get(3));
     }
 
     @Test
-    void testDuplicateProducer() {
+    void testProducerGeneratesMoreOutputDataPerIteration() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -197,7 +163,6 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
 
                 .receive(Integer.class).from(ScheduledFlowGraphTest::duplicateProducer)
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -205,10 +170,15 @@ class ScheduledFlowGraphTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
         jlegmed.stop();
+
+        assertEquals(1, messageCollector.getMessages().get(0));
+        assertEquals(1, messageCollector.getMessages().get(1));
+        assertEquals(2, messageCollector.getMessages().get(2));
+        assertEquals(2, messageCollector.getMessages().get(3));
     }
 
     @Test
-    void testProducerURL() {
+    void testFilterConfigUntilStopped() {
         //Arrange
         var messageCollector = new MessageCollector<NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
@@ -219,18 +189,17 @@ class ScheduledFlowGraphTest {
                 .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(InputStreamProducer.ProducerMode.UNTIL_STOPPED)
 
                 .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
-        //Assert
+        //Assert - We must receive > 1 messages
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() > 1);
         jlegmed.stop();
     }
 
     @Test
-    void testProducerURLOnlyOnce() {
+    void testFilterConfigOnlyOnce() {
         //Arrange
         var messageCollector = new MessageCollector<>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
@@ -247,27 +216,10 @@ class ScheduledFlowGraphTest {
         //Act
         jlegmed.start();
 
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 1);
+        //Assert - We receive only a single message
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() == 1);
         jlegmed.stop();
         assertEquals(1, messageCollector.getNumberOfReceivedMessages());
-    }
-    @Test
-    void testTransformDataWithContext() {
-        //Arrange
-        var messageCollector = new MessageCollector<UpdatedContract>();
-        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
-        jlegmed.newFlowGraph("transformDataWithContext")
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(GenericProducer::newContract)
-                .andProcessWith( ScheduledFlowGraphTest::contextTransformer)
-                .andProcessWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
     }
 
     @Test
@@ -323,8 +275,27 @@ class ScheduledFlowGraphTest {
     }
 
 
+    @Test
+    void testTransformDataWithContext() {
+        //Arrange
+        var messageCollector = new MessageCollector<UpdatedContract>();
+        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed.newFlowGraph("transformDataWithContext")
+                .each(10, MILLISECONDS)
+                .receive(NewContract.class).from(GenericProducer::newContract)
+                .andProcessWith( ScheduledFlowGraphTest::contextTransformer)
+                .andProcessWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+
+
     public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
-        return new UpdatedContract(newContract.contractNumber(), "newInfo");
+        return new UpdatedContract(newContract.contractNumber(), "transformToUpdatedContract");
     }
 
     public static UpdatedContract contextTransformer(NewContract newContract, Context context) {

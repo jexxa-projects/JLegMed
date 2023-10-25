@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.ScheduledProducer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class InputStreamProducer<T> extends TypedProducer<T> {
+public class InputStreamProducer<T> extends ScheduledProducer<T> {
 
     private final InputStream inputStream;
     private final Gson gson = new Gson();

@@ -167,7 +167,7 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
-    void testDuplicateMessage() {
+    void testDuplicateProcessor() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
@@ -178,6 +178,25 @@ class ScheduledFlowGraphTest {
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::duplicate)
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+        jlegmed.stop();
+    }
+
+    @Test
+    void testDuplicateProducer() {
+        //Arrange
+        var messageCollector = new MessageCollector<Integer>();
+        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed.newFlowGraph("testDuplicateProducer")
+                .each(10, MILLISECONDS)
+
+                .receive(Integer.class).from(ScheduledFlowGraphTest::duplicateProducer)
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
@@ -241,7 +260,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer::newContract)
-                .andProcessWith( ContractTransformer::contextTransformer)
+                .andProcessWith( ScheduledFlowGraphTest::contextTransformer)
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -290,7 +309,7 @@ class ScheduledFlowGraphTest {
 
                 .receive(NewContract.class).from(GenericProducer::newContract)
 
-                .andProcessWith(ContractTransformer::transformToUpdatedContract)
+                .andProcessWith(ScheduledFlowGraphTest::transformToUpdatedContract)
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(GenericProcessors::consoleLogger)
                 .andProcessWith(messageCollector::collect);
@@ -304,13 +323,24 @@ class ScheduledFlowGraphTest {
     }
 
 
-    private static class ContractTransformer {
-        public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
-            return new UpdatedContract(newContract.contractNumber(), "newInfo");
+    public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
+        return new UpdatedContract(newContract.contractNumber(), "newInfo");
+    }
+
+    public static UpdatedContract contextTransformer(NewContract newContract, Context context) {
+        return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer");
+    }
+
+    public static Integer duplicateProducer(Context context) {
+        var contextID = Context.contextID(ScheduledFlowGraphTest.class, "duplicateProducer");
+        var currentCounter = context.get(contextID, Integer.class).orElse(0);
+
+        if (!context.isProcessedAgain()) {
+            context.processAgain();
+            return context.update(contextID, currentCounter+1);
         }
 
-        public static UpdatedContract contextTransformer(NewContract newContract, Context context) {
-            return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer");
-        }
+        return currentCounter;
     }
+
 }

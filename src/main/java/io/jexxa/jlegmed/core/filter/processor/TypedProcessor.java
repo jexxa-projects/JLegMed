@@ -5,6 +5,10 @@ import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public abstract class TypedProcessor<T, R> implements Processor<T> {
     private final FilterConfig filterConfig = new FilterConfig();
 
@@ -27,7 +31,10 @@ public abstract class TypedProcessor<T, R> implements Processor<T> {
         do {
             filterConfig.decreaseProcessCounter();
             context.setFilterConfig(filterConfig);
-            doProcess(content, context);
+
+            Optional.ofNullable(doProcess(content, context))
+                    .ifPresent(result -> getOutputPipe().forward(result, context));
+
             filterConfig.resetRepeatActive();
 
         } while (filterConfig.isProcessedAgain());
@@ -37,6 +44,25 @@ public abstract class TypedProcessor<T, R> implements Processor<T> {
         this.filterConfig.setConfig(configuration);
     }
 
-    protected abstract void doProcess(T content, Context context);
+    protected abstract R doProcess(T content, Context context);
 
+    public static  <T, R> TypedProcessor<T, R> processor(BiFunction<T, Context, R> processFunction)
+    {
+        return new TypedProcessor<>() {
+            @Override
+            protected R doProcess(T data, Context context) {
+                return processFunction.apply(data, context);
+            }
+        };
+    }
+
+    public static  <T, R> TypedProcessor<T, R> processor(Function<T, R> processFunction)
+    {
+        return new TypedProcessor<>() {
+            @Override
+            protected R doProcess(T data, Context context) {
+                return processFunction.apply(data);
+            }
+        };
+    }
 }

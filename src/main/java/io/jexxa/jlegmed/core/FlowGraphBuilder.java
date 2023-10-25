@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.core;
 
-import io.jexxa.jlegmed.core.filter.SourceBinding;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.ProducerBinding;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
@@ -21,10 +20,10 @@ public class FlowGraphBuilder {
         this.jLegMed = jLegMed;
     }
 
-    public <T> AwaitFlowGraphBuilder<T> await(Class<T> inputData) {
+    public <T> ProducerBinding<T> await(Class<T> inputData) {
         var flowGraph = new FlowGraph<T>(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
-        return new AwaitFlowGraphBuilder<>(flowGraph, inputData);
+        return new ProducerBinding<>(flowGraph, inputData);
     }
 
     public FlowGraphBuilder each(int fixedRate, TimeUnit timeUnit)
@@ -35,37 +34,13 @@ public class FlowGraphBuilder {
         return this;
     }
 
-    public <T> SourceBinding<T> receive(Class<T> expectedData)
+    public <T> ProducerBinding<T> receive(Class<T> expectedData)
     {
         var eachFlowgraph = new ScheduledFlowGraph<T>(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
         jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
 
-        return new SourceBinding<>(eachFlowgraph, expectedData);
+        return new ProducerBinding<>(eachFlowgraph, expectedData);
     }
 
-
-    public static class AwaitFlowGraphBuilder<T>
-    {
-        private final FlowGraph<T> flowGraph;
-        private final Class<T> sourceType;
-
-        AwaitFlowGraphBuilder(FlowGraph<T> flowGraph, Class<T> sourceType)
-        {
-            this.sourceType = sourceType;
-            this.flowGraph = flowGraph;
-        }
-        public <U extends TypedProducer<T>> U from(U producer) {
-            try {
-                flowGraph.setProducer(producer);
-                producer.setContext(flowGraph.getContext());
-                producer.setType(sourceType);
-
-            } catch (Exception e){
-                throw new IllegalArgumentException(e.getMessage(), e);
-            }
-            return producer;
-        }
-
-    }
 
 }

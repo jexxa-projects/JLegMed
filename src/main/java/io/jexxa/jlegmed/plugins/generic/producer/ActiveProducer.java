@@ -2,20 +2,21 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
-
+public abstract class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
     private final Scheduler scheduler = new Scheduler();
+
+
     @Override
     public void start() {
         scheduler.register(this);
@@ -26,7 +27,6 @@ public class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
     public void stop() {
         scheduler.stop();
     }
-
 
     @Override
     public int fixedRate() {
@@ -45,28 +45,37 @@ public class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
     }
 
 
-    public ActiveProducer<T> using(Function<Context, T> function)
-    {
-        with(function);
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ActiveProducer<T> using(Supplier<T> function)
-    {
-        with(function);
-        return this;
-    }
-
-    public Binding<T> withInterval(int fixedRate, TimeUnit timeUnit)
+    public ActiveProducer<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
         this.fixedRate = fixedRate;
         this.timeUnit = timeUnit;
-        return getConnector();
+        return this;
     }
 
-    public static <T> ActiveProducer<T> activeProducer() {
-        return new ActiveProducer<>();
+
+    public static <T> ActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
+        return new ActiveProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return biFunction.apply(context, getType());
+            }
+        };
+    }
+    public static <T> ActiveProducer<T> activeProducer(Function<Context, T> contextFunction) {
+        return new ActiveProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return contextFunction.apply(context);
+            }
+        };
     }
 
+    public static <T> ActiveProducer<T> activeProducer(Supplier<T> contextSupplier) {
+        return new ActiveProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return contextSupplier.get();
+            }
+        };
+    }
 }

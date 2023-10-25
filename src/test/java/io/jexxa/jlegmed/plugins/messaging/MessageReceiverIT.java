@@ -5,12 +5,10 @@ import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
-import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
 import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.topic;
+import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.receiveAsJSON;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -33,8 +31,7 @@ class MessageReceiverIT {
 
         jlegmed.newFlowGraph("MessageReceiver")
                 .await(Integer.class)
-                .from(topicURL("MyTopic", "test-jms-connection"))
-                .asJSON()
+                .from(receiveAsJSON()).useConfig(topic("MyTopic", "test-jms-connection"))
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(messageCollector2::collect);
         //Act
@@ -77,10 +74,7 @@ class MessageReceiverIT {
         jlegmed.stop();
     }
 */
-    static <T> JMSProducer<T> topicURL(String topicName, String connectionName)
-    {
-        return new JMSProducer<>(new MessageSender.Configuration(TOPIC, topicName, connectionName));
-    }
+
 }
 
 

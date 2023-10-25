@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ public class InputStreamProducer<T> extends TypedProducer<T> {
     protected void doInit()
     {
         producerMode = getFilterConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
-        with(this::produce);
     }
 
-    public T produce() {
+    @Override
+    protected T doProduce(Context context) {
         var result = gson.fromJson(new InputStreamReader(inputStream), getType());
 
         try {

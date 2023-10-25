@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import kong.unirest.Unirest;
 
@@ -12,13 +13,9 @@ public class HTMLReader<T> extends TypedProducer<T> {
         this.url = url;
     }
 
+
     @Override
-    protected void doInit() {
-        with(this::produce);
-    }
-
-
-    public  T produce() {
+    protected T doProduce(Context context) {
 
         return Unirest.get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)

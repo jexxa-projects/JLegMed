@@ -7,57 +7,57 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.core.filter.processor.BiFunctionProcessor.processor;
-import static io.jexxa.jlegmed.core.filter.processor.FunctionProcessor.processor;
+import static io.jexxa.jlegmed.core.filter.processor.TypedProcessor.processor;
+
 /**
  * This class represents a connection between two filters as a first-class object to the application.
  * The main purpose is to enable configuration of the used filters while ensuring a type safe connection.
  *
  * @param <T> Datatype send over this connection
  */
-public class Binding<T> {
+public class ProcessorBinding<T> {
     private final OutputPipe<T> predecessorPipe;
     private TypedProcessor<?,T> predecessorProcessor;
     private TypedProducer<T> predecessorProducer;
 
 
-    public Binding(OutputPipe<T> predecessorPipe, TypedProcessor<?,T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, TypedProcessor<?,T> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProcessor = predecessor;
     }
 
-    public Binding(OutputPipe<T> predecessorPipe, TypedProducer<T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, TypedProducer<T> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProducer = predecessor;
     }
 
 
-    public <R> Binding<R> andProcessWith(BiFunction<T, Context, R> successorFunction)
+    public <R> ProcessorBinding<R> andProcessWith(BiFunction<T, Context, R> successorFunction)
     {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
-        return new Binding<>(successor.getOutputPipe(), successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
     }
 
-    public <R> Binding<R> andProcessWith(Function<T,R> successorFunction)
+    public <R> ProcessorBinding<R> andProcessWith(Function<T,R> successorFunction)
     {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
 
-        return new Binding<>(successor.getOutputPipe(), successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
     }
 
-    public <R> Binding<R> andProcessWith(TypedProcessor<T, R> successor)
+    public <R> ProcessorBinding<R> andProcessWith(TypedProcessor<T, R> successor)
     {
         predecessorPipe.connectTo(successor.getInputPipe());
 
-        return new Binding<>(successor.getOutputPipe(), successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
     }
 
 
-    public <U> Binding<T> useConfig(U configuration)
+    public <U> ProcessorBinding<T> useConfig(U configuration)
     {
         if (predecessorProcessor != null)
         {

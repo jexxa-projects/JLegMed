@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.jlegmed.core.filter.Binding;
+import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
@@ -9,16 +9,23 @@ import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageList
 
 public class JMSProducer<T> extends TypedProducer<T> {
 
-    private final MessageSender.Configuration configuration;
     private IDrivingAdapter jmsAdapter;
 
-    public JMSProducer(MessageSender.Configuration configuration)
-    {
-        this.configuration = configuration;
-    }
 
     @Override
     public void start() {
+        var configuration = getFilterConfig(MessageSender.Configuration.class).orElseThrow(() -> new IllegalArgumentException("No messager configuration provided"));
+        if (this.jmsAdapter == null)
+        {
+          this.jmsAdapter = new JMSAdapter(getContext().getProperties(configuration.connectionName()));
+
+            JSONMessageListener messageListener = new TypedMessageListener<>(
+                    getType(),
+                    getOutputPipe(),
+                    configuration,
+                    getContext());
+            jmsAdapter.register(messageListener);
+        }
         jmsAdapter.start();
     }
 
@@ -27,17 +34,13 @@ public class JMSProducer<T> extends TypedProducer<T> {
         jmsAdapter.stop();
     }
 
-    public Binding<T> asJSON( )
-    {
-        this.jmsAdapter = new JMSAdapter(getContext().getProperties(configuration.connectionName()));
-
-        JSONMessageListener messageListener = new TypedMessageListener<>(
-                getType(),
-                getOutputPipe(),
-                configuration,
-                getContext());
-        jmsAdapter.register(messageListener);
-
-        return new Binding<>(getOutputPipe(), this);
+    @Override
+    protected T doProduce(Context context) {
+        return null;
     }
+    public static <T> JMSProducer<T> receiveAsJSON()
+    {
+        return new JMSProducer<>();
+    }
+
 }

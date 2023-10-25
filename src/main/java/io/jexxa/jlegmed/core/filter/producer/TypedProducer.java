@@ -1,39 +1,17 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-public class TypedProducer<T> implements Producer<T> {
-    private BiFunction<Context, Class<T>, T> producerContextFunction;
-    private Supplier<T> producerSupplier;
-    private Function<Context, T> contextFunction;
+public abstract class TypedProducer<T> implements Producer<T> {
     private Class<T> producingType;
     private Context context;
     private final FilterConfig filterConfig = new FilterConfig();
 
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
-
-    public Binding<T> with(Function<Context, T> contextFunction) {
-        this.contextFunction = contextFunction;
-        return getConnector();
-    }
-
-    public Binding<T> with(BiFunction<Context, Class<T>, T> producerContextFunction) {
-        this.producerContextFunction = producerContextFunction;
-        return getConnector();
-    }
-
-    public Binding<T> with(Supplier<T> producerSupplier) {
-        this.producerSupplier = producerSupplier;
-        return getConnector();
-    }
 
     public void setType(Class<T> producingType)
     {
@@ -49,11 +27,6 @@ public class TypedProducer<T> implements Producer<T> {
     protected Class<T> getType()
     {
         return producingType;
-    }
-
-    protected Binding<T> getConnector()
-    {
-        return new Binding<>(this.outputPipe, this);
     }
 
     @Override
@@ -79,18 +52,8 @@ public class TypedProducer<T> implements Producer<T> {
 
     public void produceData(Context context) {
         context.setFilterConfig(filterConfig);
-        T content = null;
-        if (producerContextFunction != null) {
-            content = producerContextFunction.apply(context,producingType);
-        }
+        T content = doProduce(context);
 
-        if (contextFunction != null) {
-            content = contextFunction.apply(context);
-        }
-
-        if (producerSupplier != null) {
-            content = producerSupplier.get();
-        }
         if (content != null)
         {
             outputPipe.forward(content, context);
@@ -124,4 +87,6 @@ public class TypedProducer<T> implements Producer<T> {
     public <U> void setConfiguration(U configuration) {
         this.filterConfig.setConfig(configuration);
     }
+
+    protected abstract T doProduce(Context context);
 }

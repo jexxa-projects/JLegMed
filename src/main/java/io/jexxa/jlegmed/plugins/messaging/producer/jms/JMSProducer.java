@@ -1,13 +1,12 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;
 
-public class JMSProducer<T> extends TypedProducer<T> {
+public class JMSProducer<T> extends Producer<T> {
 
     private IDrivingAdapter jmsAdapter;
 
@@ -31,13 +30,12 @@ public class JMSProducer<T> extends TypedProducer<T> {
 
     @Override
     public void stop() {
-        jmsAdapter.stop();
+        if (jmsAdapter != null)
+        {
+            jmsAdapter.stop();
+        }
     }
 
-    @Override
-    protected T doProduce(Context context) {
-        return null;
-    }
     public static <T> JMSProducer<T> receiveAsJSON()
     {
         return new JMSProducer<>();

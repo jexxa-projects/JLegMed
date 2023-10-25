@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.filter;
 
 import io.jexxa.jlegmed.core.filter.processor.Processor;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -18,7 +18,7 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 public class ProcessorBinding<T> {
     private final OutputPipe<T> predecessorPipe;
     private Processor<?,T> predecessorProcessor;
-    private TypedProducer<T> predecessorProducer;
+    private Producer<T> predecessorProducer;
 
 
     public ProcessorBinding(OutputPipe<T> predecessorPipe, Processor<?,T> predecessor)
@@ -27,7 +27,7 @@ public class ProcessorBinding<T> {
         this.predecessorProcessor = predecessor;
     }
 
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, TypedProducer<T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, Producer<T> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProducer = predecessor;

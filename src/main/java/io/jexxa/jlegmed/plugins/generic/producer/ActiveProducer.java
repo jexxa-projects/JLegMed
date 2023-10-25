@@ -3,14 +3,14 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
+public abstract class ActiveProducer<T> extends Producer<T> implements IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
@@ -41,9 +41,10 @@ public abstract class ActiveProducer<T> extends TypedProducer<T> implements ISch
     @Override
     public void execute()
     {
-        produceData(getContext());
+        getOutputPipe().forward(produceData(), getContext());
     }
 
+    protected abstract T produceData();
 
     public ActiveProducer<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
@@ -56,16 +57,16 @@ public abstract class ActiveProducer<T> extends TypedProducer<T> implements ISch
     public static <T> ActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
         return new ActiveProducer<>() {
             @Override
-            protected T doProduce(Context context) {
-                return biFunction.apply(context, getType());
+            protected T produceData() {
+                return biFunction.apply(getContext(), getType());
             }
         };
     }
     public static <T> ActiveProducer<T> activeProducer(Function<Context, T> contextFunction) {
         return new ActiveProducer<>() {
             @Override
-            protected T doProduce(Context context) {
-                return contextFunction.apply(context);
+            protected T produceData() {
+                return contextFunction.apply(getContext());
             }
         };
     }
@@ -73,7 +74,7 @@ public abstract class ActiveProducer<T> extends TypedProducer<T> implements ISch
     public static <T> ActiveProducer<T> activeProducer(Supplier<T> contextSupplier) {
         return new ActiveProducer<>() {
             @Override
-            protected T doProduce(Context context) {
+            protected T produceData() {
                 return contextSupplier.get();
             }
         };

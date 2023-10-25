@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.filter;
 
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.function.BiFunction;
@@ -41,7 +41,7 @@ public class ProducerBinding<T> {
         return new ProcessorBinding<>(typedProducer.getOutputPipe(), typedProducer);
     }
 
-    public ProcessorBinding<T> from(TypedProducer<T> producer) {
+    public ProcessorBinding<T> from(Producer<T> producer) {
         producer.setType(sourceType);
         flowGraph.setProducer(producer);
         return new ProcessorBinding<>(producer.getOutputPipe(), producer);

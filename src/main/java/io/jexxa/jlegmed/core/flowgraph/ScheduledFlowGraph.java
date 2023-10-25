@@ -25,7 +25,6 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
     @Override
     public void start()
     {
-        getProducer().start();
         scheduler.register(fixedRateScheduler);
         scheduler.start();
     }
@@ -37,10 +36,9 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
         scheduler.stop();
     }
 
-
     private void iterateFlowGraph()
     {
-        getProducer().produceData(getContext());
+        getProducer().start();
     }
 
     private record FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled

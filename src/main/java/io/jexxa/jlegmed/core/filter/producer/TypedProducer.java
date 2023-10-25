@@ -1,85 +1,41 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.FilterConfig;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class TypedProducer<T> implements Producer<T> {
-    private Class<T> producingType;
-    private Context context;
-    private final FilterConfig filterConfig = new FilterConfig();
+public abstract class TypedProducer<T> extends Producer<T> {
 
-    private final OutputPipe<T> outputPipe = new OutputPipe<>();
-
-    public void setType(Class<T> producingType)
-    {
-        this.producingType = producingType;
-    }
-
-    @Override
-    public void setContext(Context context)
-    {
-        this.context = context;
-    }
-
-    protected Class<T> getType()
-    {
-        return producingType;
-    }
-
-    @Override
-    public OutputPipe<T> getOutputPipe()
-    {
-        return outputPipe;
-    }
-
-
-    public void produceData(Context context) {
-        context.setFilterConfig(filterConfig);
-        T content = doProduce(context);
+    public void produceData() {
+        getContext().setFilterConfig(getFilterConfig());
+        T content = doProduce();
 
         if (content != null)
         {
-            outputPipe.forward(content, context);
-        }
-    }
-    protected Context getContext()
-    {
-        return context;
-    }
-
-    protected FilterConfig getFilterConfig()
-    {
-        return filterConfig;
-    }
-
-    protected <R> Optional<R> getFilterConfig(Class<R> configType)
-    {
-        try {
-            return Optional.ofNullable(filterConfig.getConfig(configType));
-        } catch (ClassCastException e)
-        {
-            return Optional.empty();
+            getOutputPipe().forward(content, getContext());
         }
     }
 
-    public <U> void setConfiguration(U configuration) {
-        this.filterConfig.setConfig(configuration);
+    public void start()
+    {
+        produceData();
     }
 
-    protected abstract T doProduce(Context context);
+    public void stop()
+    {
+        //No config steps required
+    }
+
+    protected abstract T doProduce();
 
     public static <T> TypedProducer<T> producer(BiFunction<Context, Class<T>, T> function)
     {
         return new TypedProducer<>() {
             @Override
-            protected T doProduce(Context context) {
-                return function.apply(context, getType());
+            protected T doProduce() {
+                return function.apply(getContext(), getType());
             }
         };
     }
@@ -88,8 +44,8 @@ public abstract class TypedProducer<T> implements Producer<T> {
     {
         return new TypedProducer<>() {
             @Override
-            protected T doProduce(Context context) {
-                return function.apply(context);
+            protected T doProduce() {
+                return function.apply(getContext());
             }
         };
     }
@@ -98,7 +54,7 @@ public abstract class TypedProducer<T> implements Producer<T> {
     {
         return new TypedProducer<>() {
             @Override
-            protected T doProduce(Context context) {
+            protected T doProduce() {
                 return function.get();
             }
         };

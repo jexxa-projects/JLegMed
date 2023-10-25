@@ -23,7 +23,7 @@ class HTMLReaderTest {
         var jlegmed = new JLegMed(HTMLReaderTest.class);
         jlegmed.newFlowGraph("HTMLReader")
                 .each(50, MILLISECONDS)
-                .receive(VersionInfo.class).from(httpURL("http://localhost:7070/")).asJson()
+                .receive(VersionInfo.class).from(httpURL("http://localhost:7070/"))
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )

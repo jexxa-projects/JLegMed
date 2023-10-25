@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
-import io.jexxa.jlegmed.core.filter.Binding;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import kong.unirest.Unirest;
 
@@ -18,9 +17,6 @@ public class HTMLReader<T> extends TypedProducer<T> {
         with(this::produce);
     }
 
-    public Binding<T> asJson() {
-        return getConnector();
-    }
 
     public  T produce() {
 

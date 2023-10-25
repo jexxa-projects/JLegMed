@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core;
 
+import io.jexxa.jlegmed.core.filter.SourceBinding;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
@@ -21,7 +22,7 @@ public class FlowGraphBuilder {
     }
 
     public <T> AwaitFlowGraphBuilder<T> await(Class<T> inputData) {
-        var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
+        var flowGraph = new FlowGraph<T>(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
         return new AwaitFlowGraphBuilder<>(flowGraph, inputData);
     }
@@ -34,40 +35,21 @@ public class FlowGraphBuilder {
         return this;
     }
 
-    public <T> ScheduledFlowGraphBuilder<T> receive(Class<T> expectedData)
+    public <T> SourceBinding<T> receive(Class<T> expectedData)
     {
         var eachFlowgraph = new ScheduledFlowGraph<T>(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
         jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
-        eachFlowgraph.receive(expectedData);
 
-        return new ScheduledFlowGraphBuilder<>(eachFlowgraph);
+        return new SourceBinding<>(eachFlowgraph, expectedData);
     }
 
-    public static class ScheduledFlowGraphBuilder<T>
-    {
-        private final ScheduledFlowGraph<T> scheduledFlowGraph;
-
-        ScheduledFlowGraphBuilder(ScheduledFlowGraph<T> scheduledFlowGraph)
-        {
-            this.scheduledFlowGraph = scheduledFlowGraph;
-        }
-        public <U extends TypedProducer<T>> U from(U producer)
-        {
-            return scheduledFlowGraph.from(producer);
-        }
-
-        public TypedProducer<T> generated()
-        {
-            return scheduledFlowGraph.getProducer();
-        }
-    }
 
     public static class AwaitFlowGraphBuilder<T>
     {
-        private final FlowGraph flowGraph;
+        private final FlowGraph<T> flowGraph;
         private final Class<T> sourceType;
 
-        AwaitFlowGraphBuilder(FlowGraph flowGraph, Class<T> sourceType)
+        AwaitFlowGraphBuilder(FlowGraph<T> flowGraph, Class<T> sourceType)
         {
             this.sourceType = sourceType;
             this.flowGraph = flowGraph;

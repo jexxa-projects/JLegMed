@@ -24,7 +24,7 @@ class PersistenceFlowGraphIT {
         var jlegmed = new JLegMed(PersistenceFlowGraphIT.class);
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
-                .receive(String.class).generated().with(() -> "Hello World")
+                .receive(String.class).from(() -> "Hello World")
 
                 .andProcessWith( data -> new TextEntity(data) )
                 .andProcessWith( RepositoryProcessor::persist ).useConfig(repositoryOf("test-jdbc-connection"))

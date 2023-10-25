@@ -5,19 +5,15 @@ import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
 import io.jexxa.jlegmed.common.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
-public final class ScheduledFlowGraph<T> extends FlowGraph {
+public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
     private final Scheduler scheduler = new Scheduler();
     private final FixedRateScheduler fixedRateScheduler;
-
-    private TypedProducer<T> producer;
-    private Class<T> expectedData;
 
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
     {
@@ -25,30 +21,11 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
         this.fixedRateScheduler = new FixedRateScheduler(this, fixedRate, timeUnit);
     }
 
-    public void receive(Class<T> expectedData)
-    {
-        this.expectedData = expectedData;
-        producer = new TypedProducer<>();
-        setProducer(new TypedProducer<>());
-        getProducer().setType(expectedData);
-    }
-
-    public <U extends TypedProducer<T>> U from(U typedProducer) {
-        producer = typedProducer;
-        setProducer(typedProducer);
-        typedProducer.setType(expectedData);
-        return typedProducer;
-    }
-
-    public TypedProducer<T> getProducer()
-    {
-        return producer;
-    }
 
     @Override
     public void start()
     {
-        producer.start();
+        getProducer().start();
         scheduler.register(fixedRateScheduler);
         scheduler.start();
     }
@@ -56,13 +33,14 @@ public final class ScheduledFlowGraph<T> extends FlowGraph {
     @Override
     public void stop()
     {
-        producer.stop();
+        getProducer().stop();
         scheduler.stop();
     }
 
+
     private void iterateFlowGraph()
     {
-        producer.produceData(expectedData, getContext());
+        getProducer().produceData(getContext());
     }
 
     private record FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled

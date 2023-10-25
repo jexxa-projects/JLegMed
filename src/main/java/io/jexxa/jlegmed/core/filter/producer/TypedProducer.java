@@ -5,6 +5,7 @@ import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -76,11 +77,11 @@ public class TypedProducer<T> implements Producer<T> {
         return producer;
     }
 
-    public void produceData(Class<T> clazz, Context context) {
+    public void produceData(Context context) {
         context.setFilterConfig(filterConfig);
         T content = null;
         if (producerContextFunction != null) {
-            content = producerContextFunction.apply(context,clazz);
+            content = producerContextFunction.apply(context,producingType);
         }
 
         if (contextFunction != null) {
@@ -99,6 +100,22 @@ public class TypedProducer<T> implements Producer<T> {
     {
         return context;
     }
+
+    protected FilterConfig getFilterConfig()
+    {
+        return filterConfig;
+    }
+
+    protected <R> Optional<R> getFilterConfig(Class<R> configType)
+    {
+        try {
+            return Optional.ofNullable(filterConfig.getConfig(configType));
+        } catch (ClassCastException e)
+        {
+            return Optional.empty();
+        }
+    }
+
     protected void doInit()
     {
         //Empty method to be implemented by subclasses

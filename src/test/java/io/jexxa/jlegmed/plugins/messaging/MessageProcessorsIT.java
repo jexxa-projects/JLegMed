@@ -20,8 +20,7 @@ class MessageProcessorsIT {
         var jlegmed = new JLegMed(MessageProcessorsIT.class);
         jlegmed.newFlowGraph("MessageSender")
                 .each(10, MILLISECONDS)
-
-                .receive(Integer.class).generated().with(GenericProducer::counter)
+                .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)
                 .andProcessWith(MessageProcessors::sendAsJSON).useConfig(topic("MyTopic", "test-jms-connection"))

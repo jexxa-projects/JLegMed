@@ -41,7 +41,7 @@ public class ActiveProducer<T> extends TypedProducer<T> implements IScheduled {
     @Override
     public void execute()
     {
-        produceData(getType(), getContext());
+        produceData(getContext());
     }
 
 

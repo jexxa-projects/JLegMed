@@ -1,13 +1,14 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 
 import java.util.Properties;
 
-public class FlowGraph {
+public class FlowGraph<T> {
     private final Context context;
 
+    private TypedProducer<T> producer;
     private final String flowGraphID;
 
     public FlowGraph(String flowGraphID, Properties properties)
@@ -26,8 +27,6 @@ public class FlowGraph {
         return context;
     }
 
-    private Producer<?> producer;
-
     public void start() {
         producer.start();
     }
@@ -36,10 +35,15 @@ public class FlowGraph {
         producer.stop();
     }
 
-    public void setProducer(Producer<?> producer)
+    public void setProducer(TypedProducer<T> producer)
     {
         this.producer = producer;
         producer.setContext(getContext());
+    }
+
+    protected TypedProducer<T> getProducer()
+    {
+        return producer;
     }
 
 

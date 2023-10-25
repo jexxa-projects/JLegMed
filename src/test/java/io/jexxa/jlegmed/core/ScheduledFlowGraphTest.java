@@ -41,6 +41,26 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
+    void testLambdaFlowGraph() {
+        //Arrange
+        var messageCollector = new MessageCollector<String>();
+        var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed.newFlowGraph("HelloWorld")
+                .each(10, MILLISECONDS)
+                .receive(String.class).generated().with(() -> "Hello World")
+
+                .andProcessWith( content -> content + "-" + content )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+
+    @Test
     void testFlowGraphContextSource() {
         //Arrange
         var messageCollector = new MessageCollector<String>();

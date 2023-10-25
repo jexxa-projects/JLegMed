@@ -8,6 +8,7 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.Context.contextID;
+import static io.jexxa.jlegmed.core.filter.processor.FunctionProcessor.processor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ActiveProducer.activeProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -24,7 +25,7 @@ class FlowGraphTest {
                 .await(Integer.class).from(activeProducer())
                 .using(GenericProducer::counter).withInterval(50, MILLISECONDS)
 
-                .andProcessWith( GenericProcessors::idProcessor )
+                .andProcessWith( processor(GenericProcessors::idProcessor ))
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect );
         //Act

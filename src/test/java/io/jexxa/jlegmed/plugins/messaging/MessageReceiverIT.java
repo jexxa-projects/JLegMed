@@ -45,6 +45,38 @@ class MessageReceiverIT {
         jlegmed.stop();
     }
 
+
+/* TODO
+       void testReceiveFromTopic() {
+        //Arrange
+        var messageCollector1 = new MessageCollector<Integer>();
+        var messageCollector2 = new MessageCollector<>();
+        var jlegmed = new JLegMed(MessageReceiverIT.class);
+        jlegmed.newFlowGraph("MessageSender")
+                .each(10, MILLISECONDS)
+
+                //.receive(Integer.class).generated().with(GenericProducer::counter)
+                .receive(Integer.class).from(GenericProducer::counter)
+
+                .andProcessWith(GenericProcessors::idProcessor)
+                .andProcessWith(MessageProcessors::sendAsJSON).useConfig(topic("MyTopic", "test-jms-connection"))
+                .andProcessWith(messageCollector1::collect);
+
+        jlegmed.newFlowGraph("MessageReceiver")
+                .await(Integer.class)
+                .from(MesssageProducer::receiveAsJSON).useConfig( topic("MyTopic", "test-jms-connection"))
+                .andProcessWith(GenericProcessors::idProcessor)
+                .andProcessWith(messageCollector2::collect);
+
+
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
+        jlegmed.stop();
+    }
+*/
     static <T> JMSProducer<T> topicURL(String topicName, String connectionName)
     {
         return new JMSProducer<>(new MessageSender.Configuration(TOPIC, topicName, connectionName));

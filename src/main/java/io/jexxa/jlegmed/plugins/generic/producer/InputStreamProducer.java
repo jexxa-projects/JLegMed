@@ -23,7 +23,7 @@ public class InputStreamProducer<T> extends TypedProducer<T> {
 
 
     @Override
-    protected void doInit()
+    public void start()
     {
         producerMode = getFilterConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
     }

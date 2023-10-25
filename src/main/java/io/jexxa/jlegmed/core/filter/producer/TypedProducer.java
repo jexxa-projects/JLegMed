@@ -5,6 +5,9 @@ import io.jexxa.jlegmed.core.filter.FilterConfig;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class TypedProducer<T> implements Producer<T> {
     private Class<T> producingType;
@@ -30,25 +33,11 @@ public abstract class TypedProducer<T> implements Producer<T> {
     }
 
     @Override
-    public void start() {
-        doInit();
-    }
-
-    @Override
-    public void stop() {
-        //No action required
-    }
-
-    @Override
     public OutputPipe<T> getOutputPipe()
     {
         return outputPipe;
     }
 
-    public <U extends TypedProducer<T>> U from(U producer) {
-        doInit();
-        return producer;
-    }
 
     public void produceData(Context context) {
         context.setFilterConfig(filterConfig);
@@ -79,14 +68,39 @@ public abstract class TypedProducer<T> implements Producer<T> {
         }
     }
 
-    protected void doInit()
-    {
-        //Empty method to be implemented by subclasses
-    }
-
     public <U> void setConfiguration(U configuration) {
         this.filterConfig.setConfig(configuration);
     }
 
     protected abstract T doProduce(Context context);
+
+    public static <T> TypedProducer<T> producer(BiFunction<Context, Class<T>, T> function)
+    {
+        return new TypedProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return function.apply(context, getType());
+            }
+        };
+    }
+
+    public static <T> TypedProducer<T> producer(Function<Context, T> function)
+    {
+        return new TypedProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return function.apply(context);
+            }
+        };
+    }
+
+    public static <T> TypedProducer<T> producer(Supplier<T> function)
+    {
+        return new TypedProducer<>() {
+            @Override
+            protected T doProduce(Context context) {
+                return function.get();
+            }
+        };
+    }
 }

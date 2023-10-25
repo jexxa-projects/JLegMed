@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.core.filter;
 
-import io.jexxa.jlegmed.core.filter.processor.TypedProcessor;
+import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.TypedProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.core.filter.processor.TypedProcessor.processor;
+import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 
 /**
  * This class represents a connection between two filters as a first-class object to the application.
@@ -17,11 +17,11 @@ import static io.jexxa.jlegmed.core.filter.processor.TypedProcessor.processor;
  */
 public class ProcessorBinding<T> {
     private final OutputPipe<T> predecessorPipe;
-    private TypedProcessor<?,T> predecessorProcessor;
+    private Processor<?,T> predecessorProcessor;
     private TypedProducer<T> predecessorProducer;
 
 
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, TypedProcessor<?,T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, Processor<?,T> predecessor)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProcessor = predecessor;
@@ -49,7 +49,7 @@ public class ProcessorBinding<T> {
         return new ProcessorBinding<>(successor.getOutputPipe(), successor);
     }
 
-    public <R> ProcessorBinding<R> andProcessWith(TypedProcessor<T, R> successor)
+    public <R> ProcessorBinding<R> andProcessWith(Processor<T, R> successor)
     {
         predecessorPipe.connectTo(successor.getInputPipe());
 

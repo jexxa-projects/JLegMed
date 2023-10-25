@@ -2,8 +2,8 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms.listener;
 
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
+import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory;
-import io.jexxa.jlegmed.plugins.messaging.processor.MessageSender;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.DefaultJMSConfiguration;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSConfiguration;
 
@@ -17,10 +17,10 @@ public class TypedMessageListener<T> extends JSONMessageListener
 {
     private final Class<T> clazz;
     private final OutputPipe<T> outputPipe;
-    private final MessageSender.Configuration configuration;
+    private final MessageConfiguration configuration;
     private final Context context;
 
-    public TypedMessageListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageSender.Configuration configuration, Context context)
+    public TypedMessageListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageConfiguration configuration, Context context)
     {
         this.clazz = Objects.requireNonNull( clazz );
         this.outputPipe = Objects.requireNonNull(outputPipe);

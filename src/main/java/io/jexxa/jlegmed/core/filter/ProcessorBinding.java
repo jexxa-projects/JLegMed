@@ -57,7 +57,7 @@ public class ProcessorBinding<T> {
     }
 
 
-    public <U> ProcessorBinding<T> useConfig(U configuration)
+    public <U> ProcessorBinding<T> filterConfig(U configuration)
     {
         if (predecessorProcessor != null)
         {
@@ -69,5 +69,45 @@ public class ProcessorBinding<T> {
         }
 
         return this;
+    }
+
+    public ProcessorBinding<T> useProperties(PropertiesConfig propertiesConfig)
+    {
+        if (predecessorProcessor != null)
+        {
+            predecessorProcessor.setProperties(propertiesConfig);
+        }
+        if (predecessorProducer != null)
+        {
+            predecessorProducer.setProperties(propertiesConfig);
+        }
+
+        return this;
+    }
+
+    public ProcessorBinding<T> useProperties(String propertiesPrefix)
+    {
+        if (predecessorProcessor != null)
+        {
+            predecessorProcessor.setProperties(new PropertiesConfig(propertiesPrefix));
+        }
+        if (predecessorProducer != null)
+        {
+            predecessorProducer.setProperties(new PropertiesConfig(propertiesPrefix));
+        }
+
+        return this;
+    }
+
+    public <U> ProcessorBinding<T> configureWith(PropertiesConfig propertiesConfig, U filterConfig)
+    {
+        filterConfig(filterConfig);
+        return useProperties(propertiesConfig);
+    }
+
+    public <U> ProcessorBinding<T> configureWith(String propertiesPrefix, U filterConfig)
+    {
+        filterConfig(filterConfig);
+        return useProperties(propertiesPrefix);
     }
 }

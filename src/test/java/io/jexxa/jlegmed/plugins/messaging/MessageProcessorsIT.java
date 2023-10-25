@@ -7,7 +7,7 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.topic;
+import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -23,7 +23,7 @@ class MessageProcessorsIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).useConfig(topic("MyTopic", "test-jms-connection"))
+                .andProcessWith(MessageProcessors::sendAsJSON).configureWith("test-jms-connection", topic("MyTopic"))
                 .andProcessWith(messageCollector::collect);
         //Act
         jlegmed.start();

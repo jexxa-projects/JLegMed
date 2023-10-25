@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.plugins.persistence.processor.RepositoryProcessor.RepositoryConfiguration.repositoryOf;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -27,9 +26,9 @@ class PersistenceFlowGraphIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .andProcessWith( data -> new TextEntity(data) )
-                .andProcessWith( RepositoryProcessor::persist ).useConfig(repositoryOf("test-jdbc-connection"))
+                .andProcessWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
                 .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .andProcessWith( messageCollector::collect );
         //Act
         jlegmed.start();
 

@@ -216,7 +216,7 @@ class ScheduledFlowGraphTest {
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("ProducerURL")
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStream(inputStream)).useConfig(InputStreamProducer.ProducerMode.UNTIL_STOPPED)
+                .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(InputStreamProducer.ProducerMode.UNTIL_STOPPED)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -239,7 +239,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("ProducerURLOnlyOnce")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class)
-                .from(inputStream(inputStream)).useConfig(InputStreamProducer.ProducerMode.ONLY_ONCE)
+                .from(inputStream(inputStream)).filterConfig(InputStreamProducer.ProducerMode.ONLY_ONCE)
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( GenericProcessors::consoleLogger )
@@ -335,7 +335,7 @@ class ScheduledFlowGraphTest {
         var contextID = Context.contextID(ScheduledFlowGraphTest.class, "duplicateProducer");
         var currentCounter = context.get(contextID, Integer.class).orElse(0);
 
-        if (!context.isProcessedAgain()) {
+        if (context.isProcessingFinished()) {
             context.processAgain();
             return context.update(contextID, currentCounter+1);
         }

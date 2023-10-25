@@ -7,8 +7,8 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.queue;
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSender.Configuration.topic;
+import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
+import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -26,7 +26,7 @@ class MessageProcessorsTest {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).useConfig(topic("MyTopic", "internalConnection"))
+                .andProcessWith(MessageProcessors::sendAsJSON).filterConfig(topic("MyTopic"))
                 .andProcessWith(messageCollector::collect);
         //Act
         jlegmed.start();
@@ -48,7 +48,7 @@ class MessageProcessorsTest {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).useConfig(queue("MyQueue", "NO"))
+                .andProcessWith(MessageProcessors::sendAsJSON).filterConfig(queue("MyQueue"))
                 .andProcessWith(messageCollector::collect);
         //Act
         jlegmed.start();

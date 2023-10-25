@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.filter.processor;
 
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.FilterConfig;
+import io.jexxa.jlegmed.core.filter.PropertiesConfig;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
@@ -63,5 +64,9 @@ public abstract class Processor<T, R> {
                 return processFunction.apply(data);
             }
         };
+    }
+
+    public void setProperties(PropertiesConfig propertiesConfig) {
+        this.filterConfig.setProperties(propertiesConfig);
     }
 }

@@ -4,29 +4,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+@SuppressWarnings("java:S6548")
 public class MessagingManager {
     private static final MessagingManager messageSenderManager = new MessagingManager();
 
     private final Map<String, MessageSender> messageSenderMap = new HashMap<>();
 
 
-    public static MessageSender getMessageSender(MessageSender.Configuration configuration, Properties properties)
+    public static MessageSender getMessageSender(String connectionName, Properties properties)
     {
-        return getInstance().getInternalMessageSender(configuration, properties);
+        return getInstance().getInternalMessageSender(connectionName, properties);
     }
 
-    MessageSender getInternalMessageSender(MessageSender.Configuration configuration, Properties properties)
+    MessageSender getInternalMessageSender(String connectionName, Properties properties)
     {
-        if (!messageSenderMap.containsKey(configuration.connectionName()))
-        {
-            messageSenderMap.put(configuration.connectionName(), MessageSenderFactory.getMessageSender(MessagingManager.class, properties));
-        }
-
-        return messageSenderMap.get(configuration.connectionName());
+        messageSenderMap.computeIfAbsent(connectionName,
+                key -> MessageSenderFactory.getMessageSender(MessagingManager.class, properties)
+        );
+        return messageSenderMap.get(connectionName);
     }
 
     static MessagingManager getInstance() {
         return messageSenderManager;
     }
 
+    private MessagingManager()
+    {
+        // Private constructor
+    }
 }

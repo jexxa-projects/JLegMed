@@ -4,6 +4,7 @@ public class FilterConfig {
     private int processCounter = 0;
     private boolean processAgain;
     private Object config;
+    private PropertiesConfig propertiesConfig;
 
     public boolean isProcessedAgain() {
         return processCounter > 0 || processAgain;
@@ -41,5 +42,14 @@ public class FilterConfig {
     public <T> T getConfig(Class<T> configType)
     {
         return configType.cast(config);
+    }
+
+    public void setProperties(PropertiesConfig propertiesConfig) {
+        this.propertiesConfig = propertiesConfig;
+    }
+
+    public PropertiesConfig getPropertiesConfig()
+    {
+        return propertiesConfig;
     }
 }

@@ -26,30 +26,48 @@ public class Context {
         return properties;
     }
 
-    public Properties getProperties(String propertiesPrefix)
+    public Optional<Properties> getProperties(String propertiesPrefix)
     {
-        var subset = new Properties();
-
         List<String> result = properties.keySet().stream()
                 .map(Object::toString)
                 .filter(string -> string.contains(propertiesPrefix))
                 .toList();
 
+        if (result.isEmpty())
+        {
+            return Optional.empty();
+        }
+
+        var subset = new Properties();
         result.forEach( element -> subset.put(
                 element.substring(element.lastIndexOf(propertiesPrefix) + propertiesPrefix.length() + 1),
                 properties.getProperty(element) ));
 
-        return subset;
+        return Optional.of(subset);
     }
 
-    public <T> T getFilterConfig(Class<T> conigType)
+    public <T> T getFilterConfig(Class<T> configType)
     {
-        return filterConfig.getConfig(conigType);
+        return filterConfig.getConfig(configType);
     }
 
     public void setFilterConfig(FilterConfig filterConfig)
     {
         this.filterConfig = filterConfig;
+    }
+    public FilterConfig getFilterConfig()
+    {
+        return filterConfig;
+    }
+
+    public Optional<PropertiesConfig> getPropertiesConfig()
+    {
+        if (filterConfig != null)
+        {
+            return Optional.ofNullable(filterConfig.getPropertiesConfig());
+        }
+
+        return Optional.empty();
     }
 
     public <T> T update(String id, T data) {
@@ -62,12 +80,21 @@ public class Context {
         return type.getSimpleName() + id;
     }
 
-    public boolean isProcessedAgain() {
-        return filterConfig.isProcessedAgain();
+    public boolean isProcessingFinished() {
+        return !filterConfig.isProcessedAgain();
     }
 
     public void processAgain()
     {
         filterConfig.processAgain();
+    }
+
+    public Optional<Properties> getFilterProperties() {
+        if (filterConfig != null && filterConfig.getPropertiesConfig() != null)
+        {
+            return getProperties(filterConfig.getPropertiesConfig().properties());
+        }
+
+        return Optional.empty();
     }
 }

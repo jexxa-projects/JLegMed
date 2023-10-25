@@ -2,9 +2,11 @@ package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.FilterConfig;
+import io.jexxa.jlegmed.core.filter.PropertiesConfig;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Optional;
+import java.util.Properties;
 
 public abstract class Producer<T> {
 
@@ -63,4 +65,16 @@ public abstract class Producer<T> {
         }
     }
 
+    public void setProperties(PropertiesConfig propertiesConfig) {
+        filterConfig.setProperties(propertiesConfig);
+    }
+
+    protected Optional<Properties> getFilterProperties()
+    {
+        if ( filterConfig.getPropertiesConfig() == null)
+        {
+            return Optional.empty();
+        }
+        return context.getProperties(filterConfig.getPropertiesConfig().properties());
+    }
 }

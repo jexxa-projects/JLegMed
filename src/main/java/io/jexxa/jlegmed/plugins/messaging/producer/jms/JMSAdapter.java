@@ -39,7 +39,7 @@ public class JMSAdapter implements AutoCloseable, IDrivingAdapter
 
     private final Properties properties;
 
-    public JMSAdapter(final Properties properties)
+    public JMSAdapter(Properties properties)
     {
         Objects.requireNonNull(properties);
         validateProperties(properties);

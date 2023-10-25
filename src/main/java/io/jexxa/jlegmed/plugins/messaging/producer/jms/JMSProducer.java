@@ -39,7 +39,7 @@ public class JMSProducer<T> extends Producer<T> {
         }
     }
 
-    public static <T> JMSProducer<T> receiveJMSMessageAsJSON()
+    public static <T> JMSProducer<T> jmsJSONProducer()
     {
         return new JMSProducer<>();
     }

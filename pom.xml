@@ -243,11 +243,6 @@
           <version>${maven.resources.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>templating-maven-plugin</artifactId>
-          <version>${maven.templating.plugin}</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven.compiler.plugin}</version>
         </plugin>

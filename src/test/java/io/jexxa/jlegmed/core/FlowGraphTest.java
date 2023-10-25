@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.Context.contextID;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
-import static io.jexxa.jlegmed.plugins.generic.producer.ActiveProducer.activeProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledActiveProducer.activeProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

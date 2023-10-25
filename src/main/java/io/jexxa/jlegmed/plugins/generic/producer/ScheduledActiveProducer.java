@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ActiveProducer<T> extends Producer<T> implements IScheduled {
+public abstract class ScheduledActiveProducer<T> extends Producer<T> implements IScheduled {
     private int fixedRate = 5;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
@@ -46,7 +46,7 @@ public abstract class ActiveProducer<T> extends Producer<T> implements ISchedule
 
     protected abstract T produceData();
 
-    public ActiveProducer<T> withInterval(int fixedRate, TimeUnit timeUnit)
+    public ScheduledActiveProducer<T> withInterval(int fixedRate, TimeUnit timeUnit)
     {
         this.fixedRate = fixedRate;
         this.timeUnit = timeUnit;
@@ -54,16 +54,16 @@ public abstract class ActiveProducer<T> extends Producer<T> implements ISchedule
     }
 
 
-    public static <T> ActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
-        return new ActiveProducer<>() {
+    public static <T> ScheduledActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
+        return new ScheduledActiveProducer<>() {
             @Override
             protected T produceData() {
                 return biFunction.apply(getContext(), getType());
             }
         };
     }
-    public static <T> ActiveProducer<T> activeProducer(Function<Context, T> contextFunction) {
-        return new ActiveProducer<>() {
+    public static <T> ScheduledActiveProducer<T> activeProducer(Function<Context, T> contextFunction) {
+        return new ScheduledActiveProducer<>() {
             @Override
             protected T produceData() {
                 return contextFunction.apply(getContext());
@@ -71,8 +71,8 @@ public abstract class ActiveProducer<T> extends Producer<T> implements ISchedule
         };
     }
 
-    public static <T> ActiveProducer<T> activeProducer(Supplier<T> contextSupplier) {
-        return new ActiveProducer<>() {
+    public static <T> ScheduledActiveProducer<T> activeProducer(Supplier<T> contextSupplier) {
+        return new ScheduledActiveProducer<>() {
             @Override
             protected T produceData() {
                 return contextSupplier.get();

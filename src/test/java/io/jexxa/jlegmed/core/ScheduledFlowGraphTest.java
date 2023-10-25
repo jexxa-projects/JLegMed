@@ -70,10 +70,9 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
 
-                .receive(String.class).from((context) -> "Hello World")
+                .receive(String.class).from((context) -> "Hello World - " + context.getClass().getSimpleName())
 
                 .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -81,17 +80,18 @@ class ScheduledFlowGraphTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jlegmed.stop();
+        assertEquals("Hello World - " + Context.class.getSimpleName(), messageCollector.getMessages().get(0));
     }
 
 
     @Test
-    void testUseTypedInformation() {
+    void testUseTypeInformation() {
         //Arrange
         var messageCollector = new MessageCollector<String>();
         var jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
         jlegmed.newFlowGraph("TypedSource")
                 .each(10, MILLISECONDS)
-                .receive(String.class).from((context, type) -> "Hello World - Type:" + type.getSimpleName())
+                .receive(String.class).from((context, type) -> "Hello World - Type:" + type.getSimpleName() + " - " + context.getClass().getSimpleName())
 
                 .andProcessWith( GenericProcessors::idProcessor )
                 .andProcessWith( messageCollector::collect);
@@ -100,7 +100,7 @@ class ScheduledFlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals("Hello World - Type:" + String.class.getSimpleName(), messageCollector.getMessages().get(0));
+        assertEquals("Hello World - Type:" + String.class.getSimpleName()+ " - " + Context.class.getSimpleName(), messageCollector.getMessages().get(0));
         jlegmed.stop();
     }
 

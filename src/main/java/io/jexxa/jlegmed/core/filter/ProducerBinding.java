@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.jexxa.jlegmed.core.filter.producer.ScheduledProducer.producer;
+import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
 public class ProducerBinding<T> {
     private final Class<T> sourceType;

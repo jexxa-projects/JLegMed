@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.plugins.html.producer;
 
-import io.jexxa.jlegmed.core.filter.producer.ScheduledProducer;
+import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
 import kong.unirest.Unirest;
 
-public class HTMLReader<T> extends ScheduledProducer<T> {
+public class HTMLReader<T> extends FunctionalProducer<T> {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_TYPE = "application/json";
     private final String url;

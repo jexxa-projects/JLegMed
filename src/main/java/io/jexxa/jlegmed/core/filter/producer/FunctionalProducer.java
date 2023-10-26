@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ScheduledProducer<T> extends Producer<T> {
+public abstract class FunctionalProducer<T> extends Producer<T> {
     public void start()
     {
         produceData();
@@ -33,9 +33,9 @@ public abstract class ScheduledProducer<T> extends Producer<T> {
 
     protected abstract T doProduce();
 
-    public static <T> ScheduledProducer<T> producer(BiFunction<Context, Class<T>, T> function)
+    public static <T> FunctionalProducer<T> producer(BiFunction<Context, Class<T>, T> function)
     {
-        return new ScheduledProducer<>() {
+        return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
                 return function.apply(getContext(), getType());
@@ -43,9 +43,9 @@ public abstract class ScheduledProducer<T> extends Producer<T> {
         };
     }
 
-    public static <T> ScheduledProducer<T> producer(Function<Context, T> function)
+    public static <T> FunctionalProducer<T> producer(Function<Context, T> function)
     {
-        return new ScheduledProducer<>() {
+        return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
                 return function.apply(getContext());
@@ -53,9 +53,9 @@ public abstract class ScheduledProducer<T> extends Producer<T> {
         };
     }
 
-    public static <T> ScheduledProducer<T> producer(Supplier<T> function)
+    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
     {
-        return new ScheduledProducer<>() {
+        return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
                 return function.get();

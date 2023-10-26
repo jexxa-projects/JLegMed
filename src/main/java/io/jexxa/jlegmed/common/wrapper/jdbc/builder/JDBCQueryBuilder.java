@@ -104,7 +104,7 @@ public final <S extends Enum<S>> JDBCQueryBuilder<T> select(Class<S> clazz, S el
                 .append(SQLSyntax.SELECT_MAX)
                 .append("( ")
                 .append(element.name())
-                .append(")");
+                .append(" ) ");
         return this;
     }
     public JDBCQueryBuilder<T> selectMin(T element)
@@ -113,7 +113,7 @@ public final <S extends Enum<S>> JDBCQueryBuilder<T> select(Class<S> clazz, S el
                 .append(SQLSyntax.SELECT_MIN)
                 .append("( ")
                 .append(element.name())
-                .append(")");
+                .append(" ) ");
         return this;
     }
 

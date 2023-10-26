@@ -43,7 +43,7 @@
 
     <!-- version of dependencies -->
     <javax.jms.version>2.0.1</javax.jms.version>
-    <activemq.artemis.client.version>2.31.0</activemq.artemis.client.version>
+    <activemq.artemis.client.version>2.31.1</activemq.artemis.client.version>
     <postgres.version>42.6.0</postgres.version>
     <slf4j.simple.version>2.0.9</slf4j.simple.version>
     <unirest.java.version>3.14.5</unirest.java.version>

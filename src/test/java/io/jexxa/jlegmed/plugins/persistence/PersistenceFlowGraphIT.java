@@ -21,7 +21,9 @@ class PersistenceFlowGraphIT {
         //Arrange
         var messageCollector = new MessageCollector<TextEntity>();
         var jlegmed = new JLegMed(PersistenceFlowGraphIT.class);
+
         jlegmed.newFlowGraph("HelloWorld")
+
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 

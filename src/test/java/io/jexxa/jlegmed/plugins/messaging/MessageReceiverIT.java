@@ -20,7 +20,9 @@ class MessageReceiverIT {
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<>();
         var jlegmed = new JLegMed(MessageReceiverIT.class);
+
         jlegmed.newFlowGraph("MessageSender")
+
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
@@ -30,6 +32,7 @@ class MessageReceiverIT {
 
 
         jlegmed.newFlowGraph("MessageReceiver")
+
                 .await(Integer.class).from(jmsJSONProducer()).configureWith("test-jms-connection", topic("MyTopic"))
 
                 .andProcessWith(GenericProcessors::idProcessor)

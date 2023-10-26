@@ -20,9 +20,10 @@ class MessageProcessorsTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(MessageProcessorsTest.class);
-        jlegmed.newFlowGraph("MessageSender")
-                .each(10, MILLISECONDS)
 
+        jlegmed.newFlowGraph("MessageSender")
+
+                .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)
@@ -42,9 +43,10 @@ class MessageProcessorsTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(MessageProcessorsTest.class);
-        jlegmed.newFlowGraph("MessageSender")
-                .each(10, MILLISECONDS)
 
+        jlegmed.newFlowGraph("MessageSender")
+
+                .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith(GenericProcessors::idProcessor)

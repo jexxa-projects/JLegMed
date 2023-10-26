@@ -1,8 +1,6 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.filter;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.FilterConfig;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.PropertiesConfig.properties;

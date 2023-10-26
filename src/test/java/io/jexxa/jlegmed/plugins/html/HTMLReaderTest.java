@@ -21,7 +21,9 @@ class HTMLReaderTest {
         //Arrange
         var messageCollector = new MessageCollector<VersionInfo>();
         var jlegmed = new JLegMed(HTMLReaderTest.class);
+
         jlegmed.newFlowGraph("HTMLReader")
+
                 .each(50, MILLISECONDS)
                 .receive(VersionInfo.class).from(httpURL("http://localhost:7070/"))
 

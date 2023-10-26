@@ -21,11 +21,14 @@ class StreamProducerTest {
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(StreamProducerTest.class);
+
         jlegmed.newFlowGraph("FlowGraphTest1")
 
                 .await(Integer.class)
                 .from(streamProducer(infiniteStream1))
+
                 .andProcessWith( messageCollector1::collect );
+
 
         jlegmed.newFlowGraph("FlowGraphTest2")
 

@@ -5,6 +5,8 @@ import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.Context.contextID;
@@ -15,11 +17,25 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class FlowGraphTest {
+    private static JLegMed jlegmed;
+
+    @BeforeEach
+    void initBeforeEach()
+    {
+        jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+    }
+
+    @AfterEach
+    void deInitAfterEach()
+    {
+        jlegmed.stop();
+    }
+
     @Test
     void testSingleFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(FlowGraphTest.class);
+
         jlegmed.newFlowGraph("FlowGraphTest")
 
                 .await(Integer.class)
@@ -33,15 +49,15 @@ class FlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
     }
 
     @Test
     void testContextFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(FlowGraphTest.class);
+
         jlegmed.newFlowGraph("FlowGraphTest")
+
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
@@ -53,7 +69,6 @@ class FlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
     }
 
     @Test
@@ -61,8 +76,9 @@ class FlowGraphTest {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(FlowGraphTest.class);
+
         jlegmed.newFlowGraph("FlowGraphTest1")
+
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
@@ -70,7 +86,9 @@ class FlowGraphTest {
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1::collect );
 
+
         jlegmed.newFlowGraph("FlowGraphTest2")
+
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
@@ -84,7 +102,6 @@ class FlowGraphTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
         await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
     }
 
 

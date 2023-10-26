@@ -14,9 +14,10 @@ class GenericProcessorsTest {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(GenericProcessorsTest.class);
-        jlegmed.newFlowGraph("Incrementer")
-                .each(10, MILLISECONDS)
 
+        jlegmed.newFlowGraph("Incrementer")
+
+                .each(10, MILLISECONDS)
                 .receive(Integer.class).from( () -> 1)
 
                 .andProcessWith( GenericProcessors::incrementer )

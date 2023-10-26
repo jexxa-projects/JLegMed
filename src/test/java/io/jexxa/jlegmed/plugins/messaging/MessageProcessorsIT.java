@@ -18,7 +18,9 @@ class MessageProcessorsIT {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
         var jlegmed = new JLegMed(MessageProcessorsIT.class);
+
         jlegmed.newFlowGraph("MessageSender")
+
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 

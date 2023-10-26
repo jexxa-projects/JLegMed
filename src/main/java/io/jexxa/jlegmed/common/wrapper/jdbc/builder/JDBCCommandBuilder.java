@@ -46,6 +46,16 @@ public class JDBCCommandBuilder<T extends Enum<T>> extends JDBCBuilder<T>
         return this;
     }
 
+    public JDBCCommandBuilder<T> insertInto(String table)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.INSERT_INTO)
+                .append(table)
+                .append(SQLSyntax.BLANK);
+
+        return this;
+    }
+
     public JDBCCommandBuilder<T> insertInto(Class<?> clazz)
     {
         getStatementBuilder()

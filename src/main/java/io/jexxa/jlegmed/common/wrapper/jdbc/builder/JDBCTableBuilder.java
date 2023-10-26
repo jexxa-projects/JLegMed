@@ -25,6 +25,16 @@ public class JDBCTableBuilder<T extends Enum<T>> extends JDBCBuilder<T>
         return create();
     }
 
+    public JDBCCommand dropTableIfExists(String table)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.DROP_TABLE)
+                .append(SQLSyntax.IF_EXISTS)
+                .append(table);
+
+        return create();
+    }
+
     public JDBCCommand dropTableIfExists(Class<?> clazz)
     {
         getStatementBuilder()
@@ -61,6 +71,16 @@ public class JDBCTableBuilder<T extends Enum<T>> extends JDBCBuilder<T>
                 .append(SQLSyntax.CREATE_TABLE)
                 .append(SQLSyntax.IF_NOT_EXISTS)
                 .append(clazz.getSimpleName());
+
+        return new JDBCColumnBuilder<>(this);
+    }
+
+    public JDBCColumnBuilder<T> createTableIfNotExists(String tableName)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.CREATE_TABLE)
+                .append(SQLSyntax.IF_NOT_EXISTS)
+                .append(tableName);
 
         return new JDBCColumnBuilder<>(this);
     }

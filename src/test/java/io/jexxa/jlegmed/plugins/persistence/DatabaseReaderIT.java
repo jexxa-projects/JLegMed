@@ -41,6 +41,7 @@ class DatabaseReaderIT {
 
     @Test
     void writeToDatabase() {
+        System.out.println();
         //Arrange
         var messageCollector = new MessageCollector<TestData>();
 
@@ -60,6 +61,8 @@ class DatabaseReaderIT {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+
+        jlegmed.stop();
     }
 
 
@@ -91,6 +94,7 @@ class DatabaseReaderIT {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+        jlegmed.stop();
     }
 
     private record TestData(int index, String message){}

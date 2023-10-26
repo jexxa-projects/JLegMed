@@ -98,6 +98,25 @@ public final <S extends Enum<S>> JDBCQueryBuilder<T> select(Class<S> clazz, S el
         return this;
     }
 
+    public JDBCQueryBuilder<T> selectMax(T element)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.SELECT_MAX)
+                .append("( ")
+                .append(element.name())
+                .append(")");
+        return this;
+    }
+    public JDBCQueryBuilder<T> selectMin(T element)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.SELECT_MIN)
+                .append("( ")
+                .append(element.name())
+                .append(")");
+        return this;
+    }
+
     public JDBCQueryBuilder<T> from(T element)
     {
         getStatementBuilder()

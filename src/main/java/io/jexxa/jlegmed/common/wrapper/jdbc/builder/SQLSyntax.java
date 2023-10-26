@@ -7,6 +7,8 @@ public class SQLSyntax
     static final String DELETE = "DELETE ";
     static final String INSERT_INTO = "INSERT INTO ";
     static final String SELECT_COUNT = "SELECT COUNT";
+    static final String SELECT_MAX = "SELECT MAX";
+    static final String SELECT_MIN = "SELECT MIN";
 
     static final String DROP_TABLE = "DROP TABLE ";
     static final String IF_EXISTS = "IF EXISTS ";

@@ -156,13 +156,8 @@ class DatabaseReaderIT {
             }
 
             @Override
-            protected TestData readAs(ResultSet resultSet) {
-                try {
-                    return new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name()));
-                } catch (SQLException e)
-                {
-                    throw new IllegalArgumentException(e);
-                }
+            protected TestData readAs(ResultSet resultSet) throws SQLException {
+                return new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name()));
             }
         };
     }

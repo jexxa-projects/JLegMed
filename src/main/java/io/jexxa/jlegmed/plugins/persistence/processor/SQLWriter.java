@@ -5,6 +5,8 @@ import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 
+import java.util.function.Function;
+
 public abstract class SQLWriter<T> extends Processor<T, T> {
 
 
@@ -21,4 +23,18 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
+
+
+    public static <T> SQLWriter<T> insert(String table, Function<T, Object[]> objectMapper)
+    {
+        return new SQLWriter<>() {
+            @Override
+            protected void executeCommand(JDBCConnection jdbcConnection, T element) {
+                jdbcConnection.createCommand().
+                        insertInto(table).values(objectMapper.apply(element))
+                        .create()
+                        .asUpdate();
+            }
+        };
+    }
 }

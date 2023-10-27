@@ -205,6 +205,11 @@ public class JDBCConnection implements AutoCloseable
         return new JDBCCommandBuilder<>(this::validateConnection);
     }
 
+    public <T extends Enum<T>> JDBCCommandBuilder<T> createCommand()
+    {
+        return new JDBCCommandBuilder<>(this::validateConnection);
+    }
+
     public <T extends Enum<T>> JDBCTableBuilder<T> createTableCommand(Class<T> schema)
     {
         Objects.requireNonNull(schema);

@@ -25,6 +25,7 @@ import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_STRING_DATA;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
 import static org.awaitility.Awaitility.await;
 
 class DatabaseReaderIT {
@@ -54,7 +55,7 @@ class DatabaseReaderIT {
 
                 .andProcessWith( data -> new TestData(data, "Hello World " + data))
                 .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith( testJDBCWriter()).useProperties("test-jdbc-connection")
+                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
                 .andProcessWith(messageCollector::collect);
         //Act
         jlegmed.start();
@@ -65,7 +66,30 @@ class DatabaseReaderIT {
         jlegmed.stop();
     }
 
+    @Test
+    void asInsert() {
+        //Arrange
+        var messageCollector = new MessageCollector<TestData>();
 
+        var jlegmed = new JLegMed(DatabaseReaderIT.class);
+
+        jlegmed.newFlowGraph("HelloWorld")
+
+                .each(10, MILLISECONDS)
+                .receive(Integer.class).from(GenericProducer::counter)
+
+                .andProcessWith( data -> new TestData(data, "Hello World " + data))
+                .andProcessWith(GenericProcessors::consoleLogger)
+                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
+                .andProcessWith(messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+
+        jlegmed.stop();
+    }
 
     @Test
     void readWriteToDatabase() {
@@ -80,7 +104,7 @@ class DatabaseReaderIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .andProcessWith( data -> new TestData(data, "Hello World " + data))
-                .andProcessWith( testJDBCWriter()).useProperties("test-jdbc-connection");
+                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection");
 
         jlegmed.newFlowGraph("readFromDatabase")
 
@@ -123,18 +147,6 @@ class DatabaseReaderIT {
 
     }
 
-    static  SQLWriter<TestData> testJDBCWriter()
-    {
-        return new SQLWriter<>() {
-            @Override
-            protected void executeCommand(JDBCConnection jdbcConnection, TestData element) {
-                jdbcConnection.createCommand(DBSchema.class).
-                        insertInto("DATABASE_READER_IT").values(new Object[]{element.index, element.message})
-                        .create()
-                        .asUpdate();
-            }
-        };
-    }
 
     static SQLReader<TestData> testDataSQLReader()
     {

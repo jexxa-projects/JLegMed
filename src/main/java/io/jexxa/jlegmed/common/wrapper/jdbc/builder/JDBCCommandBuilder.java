@@ -26,6 +26,15 @@ public class JDBCCommandBuilder<T extends Enum<T>> extends JDBCBuilder<T>
         return this;
     }
 
+    public JDBCCommandBuilder<T> update(String table)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.UPDATE)
+                .append(table)
+                .append(SQLSyntax.BLANK);
+
+        return this;
+    }
     public JDBCCommandBuilder<T> update(Class<?> clazz)
     {
         getStatementBuilder()
@@ -180,6 +189,16 @@ public class JDBCCommandBuilder<T extends Enum<T>> extends JDBCBuilder<T>
         getStatementBuilder()
                 .append(SQLSyntax.WHERE)
                 .append(element.name())
+                .append(SQLSyntax.BLANK);
+
+        return new JDBCCondition<>(this);
+    }
+
+    public JDBCCondition<T, JDBCCommandBuilder<T>> where(String element)
+    {
+        getStatementBuilder()
+                .append(SQLSyntax.WHERE)
+                .append(element)
                 .append(SQLSyntax.BLANK);
 
         return new JDBCCondition<>(this);

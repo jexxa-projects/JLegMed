@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.core.filter.Context.contextID;
+import static io.jexxa.jlegmed.core.filter.Context.stateID;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledActiveProducer.activeProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -108,9 +108,9 @@ class FlowGraphTest {
 
     private static <T> T skipEachSecondMessage(T data, Context context)
     {
-        var contextID = contextID(FlowGraphTest.class, "skipEachSecondMessage");
-        int currentCounter = context.get(contextID, Integer.class).orElse(1);
-        context.update(contextID, currentCounter+1);
+        var stateID = stateID(FlowGraphTest.class, "skipEachSecondMessage");
+        int currentCounter = context.getState(stateID, Integer.class).orElse(1);
+        context.updateState(stateID, currentCounter+1);
 
         if (currentCounter % 2 == 0) {
             SLF4jLogger.getLogger(FlowGraphTest.class).info("Skip Message");

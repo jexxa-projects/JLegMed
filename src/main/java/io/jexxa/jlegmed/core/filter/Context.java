@@ -4,9 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-
+/**
+ *  A context provides the following information:
+ *  - State information used by internal filters
+ *  - Properties of the main application
+ *  - FilterConfig of the current executed filter
+ */
 public class Context {
-    private final HashMap<String, Object> contextData = new HashMap<>();
+    private final HashMap<String, Object> contextState = new HashMap<>();
     private final Properties properties;
     private FilterConfig filterConfig;
 
@@ -15,15 +20,26 @@ public class Context {
         this.properties = properties;
     }
 
-    public <T> Optional<T> get(String id, Class<T> clazz)
+    public Optional<PropertiesConfig> getPropertiesConfig()
     {
-        return Optional.ofNullable(clazz.cast(contextData.get(id)));
+        if (filterConfig != null)
+        {
+            return Optional.ofNullable(filterConfig.getPropertiesConfig());
+        }
+
+        return Optional.empty();
     }
 
-    @SuppressWarnings("unused")
-    public Properties getProperties()
-    {
-        return properties;
+    /**
+     * Returns the properties of current filter
+     */
+    public Optional<Properties> getProperties() {
+        if (filterConfig != null && filterConfig.getPropertiesConfig() != null)
+        {
+            return getProperties(filterConfig.getPropertiesConfig().properties());
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Properties> getProperties(String propertiesPrefix)
@@ -55,30 +71,7 @@ public class Context {
     {
         this.filterConfig = filterConfig;
     }
-    public FilterConfig getFilterConfig()
-    {
-        return filterConfig;
-    }
 
-    public Optional<PropertiesConfig> getPropertiesConfig()
-    {
-        if (filterConfig != null)
-        {
-            return Optional.ofNullable(filterConfig.getPropertiesConfig());
-        }
-
-        return Optional.empty();
-    }
-
-    public <T> T update(String id, T data) {
-        contextData.put(id, data);
-        return data;
-    }
-
-    public static String contextID(Class<?> type, String id)
-    {
-        return type.getSimpleName() + id;
-    }
 
     public boolean isProcessingFinished() {
         return !filterConfig.isProcessedAgain();
@@ -89,12 +82,18 @@ public class Context {
         filterConfig.processAgain();
     }
 
-    public Optional<Properties> getFilterProperties() {
-        if (filterConfig != null && filterConfig.getPropertiesConfig() != null)
-        {
-            return getProperties(filterConfig.getPropertiesConfig().properties());
-        }
 
-        return Optional.empty();
+    public <T> Optional<T> getState(String id, Class<T> clazz)
+    {
+        return Optional.ofNullable(clazz.cast(contextState.get(id)));
+    }
+
+    public <T> T updateState(String id, T data) {
+        contextState.put(id, data);
+        return data;
+    }
+    public static String stateID(Class<?> type, String id)
+    {
+        return type.getSimpleName() + id;
     }
 }

@@ -107,7 +107,6 @@ public class ProcessorBinding<T> {
 
     public <U> ProcessorBinding<T> configureWith(String propertiesPrefix, U filterConfig)
     {
-        filterConfig(filterConfig);
-        return useProperties(propertiesPrefix);
+        return configureWith(new PropertiesConfig(propertiesPrefix), filterConfig);
     }
 }

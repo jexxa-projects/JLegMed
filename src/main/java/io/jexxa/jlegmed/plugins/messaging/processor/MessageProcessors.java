@@ -12,7 +12,7 @@ public class MessageProcessors {
     public static <T> T sendAsJSON(T content, Context context)
     {
         var messageConfiguration = context.getFilterConfig(MessageConfiguration.class);
-        var properties = context.getFilterProperties().orElse(new Properties()); // Empty properties is a valid configuration
+        var properties = context.getProperties().orElse(new Properties()); // Empty properties is a valid configuration
 
         var connectionName = context.getPropertiesConfig().orElse(properties("unnamed")).properties();
 

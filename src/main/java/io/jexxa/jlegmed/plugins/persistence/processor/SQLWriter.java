@@ -12,7 +12,7 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
 
     protected T doProcess(T content, Context context)
     {
-        var databaseProperties = context.getFilterProperties().orElseThrow(() -> new IllegalArgumentException("No valid database connection defined in properties"));
+        var databaseProperties = context.getProperties().orElseThrow(() -> new IllegalArgumentException("No valid database connection defined in properties"));
         var jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);
 
 

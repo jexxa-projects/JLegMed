@@ -53,6 +53,11 @@ public abstract class ScheduledActiveProducer<T> extends Producer<T> implements 
         return this;
     }
 
+    public record ScheduledActiveProducerConfig(int fixedRate, TimeUnit timeUnit)
+    {
+
+    }
+
 
     public static <T> ScheduledActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
         return new ScheduledActiveProducer<>() {
@@ -78,5 +83,10 @@ public abstract class ScheduledActiveProducer<T> extends Producer<T> implements 
                 return contextSupplier.get();
             }
         };
+    }
+
+    public static ScheduledActiveProducerConfig activeProducerConfig(int fixedRate, TimeUnit timeUnit)
+    {
+        return new ScheduledActiveProducerConfig(fixedRate, timeUnit);
     }
 }

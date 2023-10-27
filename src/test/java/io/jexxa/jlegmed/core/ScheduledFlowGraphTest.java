@@ -311,12 +311,12 @@ class ScheduledFlowGraphTest {
     }
 
     public static Integer duplicateProducer(Context context) {
-        var contextID = Context.contextID(ScheduledFlowGraphTest.class, "duplicateProducer");
-        var currentCounter = context.get(contextID, Integer.class).orElse(0);
+        var contextID = Context.stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
+        var currentCounter = context.getState(contextID, Integer.class).orElse(0);
 
         if (context.isProcessingFinished()) {
             context.processAgain();
-            return context.update(contextID, currentCounter+1);
+            return context.updateState(contextID, currentCounter+1);
         }
 
         return currentCounter;

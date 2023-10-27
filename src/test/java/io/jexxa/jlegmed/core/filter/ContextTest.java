@@ -20,7 +20,7 @@ class ContextTest {
 
 
         //Act
-        var result = objectUnderTest.getFilterProperties();
+        var result = objectUnderTest.getProperties();
 
         //Assert
         assertTrue(result.isPresent());

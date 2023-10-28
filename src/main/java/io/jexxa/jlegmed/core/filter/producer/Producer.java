@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -23,6 +24,12 @@ public abstract class Producer<T> extends Filter {
         this.context = context;
     }
 
+    @Override
+    public void init()
+    {
+        Objects.requireNonNull(context);
+        Objects.requireNonNull(producingType);
+    }
 
     protected Class<T> getType()
     {
@@ -37,16 +44,6 @@ public abstract class Producer<T> extends Filter {
     protected Context getContext()
     {
         return context;
-    }
-
-    protected <R> Optional<R> getFilterConfig(Class<R> configType)
-    {
-        try {
-            return Optional.ofNullable(getFilterConfig().getConfig(configType));
-        } catch (ClassCastException e)
-        {
-            return Optional.empty();
-        }
     }
 
     protected Optional<Properties> getFilterProperties()

@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.plugins.html;
+package io.jexxa.jlegmed.plugins.http;
 
-public final class HTMLProperties {
+public final class HTTPProperties {
     public static final String HTTP_PROXY_HOST = "http.proxy.host";
     public static final String HTTP_PROXY_PORT = "http.proxy.port";
     public static final String HTTP_PROXY_USERNAME = "http.proxy.username";
@@ -8,6 +8,6 @@ public final class HTMLProperties {
     public static final String HTTP_PROXY_FILE_USERNAME = "http.proxy.file.username";
     public static final String HTTP_PROXY_FILE_PASSWORD = "http.proxy.file.password";
 
-    private HTMLProperties()
+    private HTTPProperties()
     {}
 }

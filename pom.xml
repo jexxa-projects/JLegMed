@@ -504,6 +504,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/jexxa-projects/JLegMed</url>
+    </repository>
+  </distributionManagement>
+
   <profiles>
     <profile>
       <id>integrationTests</id>

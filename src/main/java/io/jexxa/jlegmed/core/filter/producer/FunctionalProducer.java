@@ -8,15 +8,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class FunctionalProducer<T> extends Producer<T> {
+
+    @Override
     public void start()
     {
         produceData();
     }
 
-    public void stop()
-    {
-        //No config steps required
-    }
 
     public void produceData() {
         do {

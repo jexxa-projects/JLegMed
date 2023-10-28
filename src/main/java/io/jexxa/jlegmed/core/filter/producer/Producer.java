@@ -1,24 +1,17 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.FilterConfig;
-import io.jexxa.jlegmed.core.filter.PropertiesConfig;
+import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Optional;
 import java.util.Properties;
 
-public abstract class Producer<T> {
+public abstract class Producer<T> extends Filter {
 
     private Class<T> producingType;
     private Context context;
-    private final FilterConfig filterConfig = new FilterConfig();
-
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
-
-    public abstract void start();
-
-    public abstract void stop();
 
     public void setType(Class<T> producingType)
     {
@@ -28,10 +21,6 @@ public abstract class Producer<T> {
     public void setContext(Context context)
     {
         this.context = context;
-    }
-
-    public <U> void setConfiguration(U configuration) {
-        this.filterConfig.setConfig(configuration);
     }
 
 
@@ -50,31 +39,22 @@ public abstract class Producer<T> {
         return context;
     }
 
-    protected FilterConfig getFilterConfig()
-    {
-        return filterConfig;
-    }
-
     protected <R> Optional<R> getFilterConfig(Class<R> configType)
     {
         try {
-            return Optional.ofNullable(filterConfig.getConfig(configType));
+            return Optional.ofNullable(getFilterConfig().getConfig(configType));
         } catch (ClassCastException e)
         {
             return Optional.empty();
         }
     }
 
-    public void setProperties(PropertiesConfig propertiesConfig) {
-        filterConfig.setProperties(propertiesConfig);
-    }
-
     protected Optional<Properties> getFilterProperties()
     {
-        if ( filterConfig.getPropertiesConfig() == null)
+        if ( getFilterConfig().getPropertiesConfig() == null)
         {
             return Optional.empty();
         }
-        return context.getProperties(filterConfig.getPropertiesConfig().properties());
+        return context.getProperties(getFilterConfig().getPropertiesConfig().properties());
     }
 }

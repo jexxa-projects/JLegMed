@@ -1,8 +1,7 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
 import io.jexxa.jlegmed.core.filter.Context;
-import io.jexxa.jlegmed.core.filter.FilterConfig;
-import io.jexxa.jlegmed.core.filter.PropertiesConfig;
+import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
@@ -10,9 +9,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class Processor<T, R> {
-    private final FilterConfig filterConfig = new FilterConfig();
-
+public abstract class Processor<T, R>  extends Filter {
     private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
 
@@ -29,19 +26,15 @@ public abstract class Processor<T, R> {
     public void process(T content, Context context) {
 
         do {
-            filterConfig.decreaseProcessCounter();
-            context.setFilterConfig(filterConfig);
+            getFilterConfig().decreaseProcessCounter();
+            context.setFilterConfig(getFilterConfig());
 
             Optional.ofNullable(doProcess(content, context))
                     .ifPresent(result -> getOutputPipe().forward(result, context));
 
-            filterConfig.resetRepeatActive();
+            getFilterConfig().resetRepeatActive();
 
-        } while (filterConfig.isProcessedAgain());
-    }
-
-    public <U> void setConfiguration(U configuration) {
-        this.filterConfig.setConfig(configuration);
+        } while (getFilterConfig().isProcessedAgain());
     }
 
     protected abstract R doProcess(T content, Context context);
@@ -64,9 +57,5 @@ public abstract class Processor<T, R> {
                 return processFunction.apply(data);
             }
         };
-    }
-
-    public void setProperties(PropertiesConfig propertiesConfig) {
-        this.filterConfig.setProperties(propertiesConfig);
     }
 }

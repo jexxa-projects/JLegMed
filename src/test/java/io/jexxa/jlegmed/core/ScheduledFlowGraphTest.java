@@ -313,9 +313,10 @@ class ScheduledFlowGraphTest {
     public static Integer duplicateProducer(Context context) {
         var contextID = Context.stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
         var currentCounter = context.getState(contextID, Integer.class).orElse(0);
+        var filterState = context.getFilterContext().filterState();
 
-        if (context.isProcessingFinished()) {
-            context.processAgain();
+        if (!filterState.isProcessedAgain()) {
+            filterState.processAgain();
             return context.updateState(contextID, currentCounter+1);
         }
 

@@ -10,7 +10,12 @@ public class RepositoryProcessor {
 
     public static <T extends AbstractAggregate<T, ?>> T persist(T data, Context context)
     {
-        var properties = context.getProperties().orElse(new Properties());
+        var properties = new Properties();
+        if (context.getFilterContext().filterProperties().isPresent())
+        {
+            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
+        }
+
         var repository = getRepository(data.getAggregateType(), data.getKeyFunction(), properties);
         repository.add(data);
         return data;
@@ -18,7 +23,12 @@ public class RepositoryProcessor {
 
     public static <T extends AbstractAggregate<T, ?>> T update(T data, Context context)
     {
-        var properties = context.getProperties().orElse(new Properties());
+        var properties = new Properties();
+        if (context.getFilterContext().filterProperties().isPresent())
+        {
+            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
+        }
+
         var repository = getRepository(data.getAggregateType(), data.getKeyFunction(), properties );
         repository.update(data);
         return data;

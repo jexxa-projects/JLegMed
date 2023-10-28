@@ -5,16 +5,19 @@ import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.core.filter.PropertiesConfig.properties;
 import static io.jexxa.jlegmed.common.component.messaging.send.MessageFactory.DestinationType.TOPIC;
 
 public class MessageProcessors {
     public static <T> T sendAsJSON(T content, Context context)
     {
-        var messageConfiguration = context.getFilterConfig(MessageConfiguration.class);
-        var properties = context.getProperties().orElse(new Properties()); // Empty properties is a valid configuration
-
-        var connectionName = context.getPropertiesConfig().orElse(properties("unnamed")).properties();
+        var messageConfiguration = context.getFilterContext().getConfig(MessageConfiguration.class);
+        var properties = new Properties();
+        var connectionName = "message-logger";
+        if ( context.getFilterContext().filterProperties().isPresent())
+        {
+            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
+            connectionName = context.getFilterContext().filterProperties().orElseThrow().configName();
+        }
 
         var messageSender = MessagingManager.getMessageSender(connectionName, properties);
 

@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.filter;
 
+import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -69,25 +70,25 @@ public class ProcessorBinding<T> {
     {
         if (predecessorProcessor != null)
         {
-            predecessorProcessor.setConfiguration(configuration);
+            predecessorProcessor.setConfig(configuration);
         }
         if (predecessorProducer != null)
         {
-            predecessorProducer.setConfiguration(configuration);
+            predecessorProducer.setConfig(configuration);
         }
 
         return this;
     }
 
-    public ProcessorBinding<T> useProperties(PropertiesConfig propertiesConfig)
+    public ProcessorBinding<T> useProperties(FilterProperties filterProperties)
     {
         if (predecessorProcessor != null)
         {
-            predecessorProcessor.setProperties(propertiesConfig);
+            predecessorProcessor.setProperties(filterProperties);
         }
         if (predecessorProducer != null)
         {
-            predecessorProducer.setProperties(propertiesConfig);
+            predecessorProducer.setProperties(filterProperties);
         }
 
         return this;
@@ -97,24 +98,24 @@ public class ProcessorBinding<T> {
     {
         if (predecessorProcessor != null)
         {
-            predecessorProcessor.setProperties(new PropertiesConfig(propertiesPrefix));
+            predecessorProcessor.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)));
         }
         if (predecessorProducer != null)
         {
-            predecessorProducer.setProperties(new PropertiesConfig(propertiesPrefix));
+            predecessorProducer.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)));
         }
 
         return this;
     }
 
-    public <U> ProcessorBinding<T> configureWith(PropertiesConfig propertiesConfig, U filterConfig)
+    public <U> ProcessorBinding<T> configureWith(FilterProperties filterProperties, U filterConfig)
     {
         filterConfig(filterConfig);
-        return useProperties(propertiesConfig);
+        return useProperties(filterProperties);
     }
 
     public <U> ProcessorBinding<T> configureWith(String propertiesPrefix, U filterConfig)
     {
-        return configureWith(new PropertiesConfig(propertiesPrefix), filterConfig);
+        return configureWith(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)), filterConfig);
     }
 }

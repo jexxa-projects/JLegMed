@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.core.filter;
 
-public class FilterConfig {
+public class FilterState {
     private int processCounter = 0;
     private boolean processAgain;
     private Object config;
-    private PropertiesConfig propertiesConfig;
+    private FilterProperties filterProperties;
 
     public boolean isProcessedAgain() {
         return processCounter > 0 || processAgain;
@@ -44,12 +44,12 @@ public class FilterConfig {
         return configType.cast(config);
     }
 
-    public void setProperties(PropertiesConfig propertiesConfig) {
-        this.propertiesConfig = propertiesConfig;
+    public void setProperties(FilterProperties filterProperties) {
+        this.filterProperties = filterProperties;
     }
 
-    public PropertiesConfig getPropertiesConfig()
+    public FilterProperties getPropertiesConfig()
     {
-        return propertiesConfig;
+        return filterProperties;
     }
 }

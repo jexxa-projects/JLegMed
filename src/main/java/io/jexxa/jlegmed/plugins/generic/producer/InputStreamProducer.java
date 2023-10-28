@@ -21,7 +21,7 @@ public class InputStreamProducer<T> extends FunctionalProducer<T> {
 
     @Override
     protected T doProduce() {
-        ProducerMode producerMode = getFilterConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
+        ProducerMode producerMode = getConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
         var result = gson.fromJson(new InputStreamReader(inputStream), getType());
 
         try {

@@ -5,15 +5,25 @@ import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 
+import java.util.Properties;
 import java.util.function.Function;
 
 public abstract class SQLWriter<T> extends Processor<T, T> {
 
+    private Properties properties;
+    @Override
+    public void init()
+    {
+        super.init();
+
+        this.properties = getProperties()
+                .orElseThrow( () -> new IllegalArgumentException("No properties for database connection defined -> Define properties of SQLWriter in your main"))
+                .properties();
+    }
 
     protected T doProcess(T content, Context context)
     {
-        var databaseProperties = context.getProperties().orElseThrow(() -> new IllegalArgumentException("No valid database connection defined in properties"));
-        var jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);
+        var jdbcConnection = JDBCConnectionPool.getConnection(properties, this);
 
 
         executeCommand(jdbcConnection, content);
@@ -34,6 +44,28 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
                         insertInto(table).values(objectMapper.apply(element))
                         .create()
                         .asUpdate();
+            }
+        };
+    }
+
+    public static <T> SQLWriter<T> createTable(String table, Function<T, Object[]> objectMapper) {
+        return new SQLWriter<>() {
+            private boolean initialized = false;
+            @Override
+            protected void executeCommand(JDBCConnection connection, T element) {
+
+                if (!initialized) {
+                    connection.autocreateDatabase(getState().getPropertiesConfig().properties());
+
+               /*     connection.createTableCommand(DBSchema.class)
+                            .createTableIfNotExists(tableName)
+                            .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
+                            .addColumn(DBSchema.DB_STRING_DATA, SQLDataType.VARCHAR)
+                            .create()
+                            .asIgnore();
+*/
+                    this.initialized = true;
+                }
             }
         };
     }

@@ -5,8 +5,8 @@ import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCQuery;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCTableBuilder;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.SQLDataType;
+import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -34,8 +34,7 @@ class DatabaseReaderIT {
     void beforeEach()
     {
         JLegMed jLegMed = new JLegMed(DatabaseReaderIT.class);
-        var context = new Context(jLegMed.getProperties());
-        var dbProperties = context.getProperties("test-jdbc-connection").orElseThrow();
+        var dbProperties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
         createDatabase( dbProperties, jLegMed);
         createTable("DATABASE_READER_IT", dbProperties, jLegMed);
     }

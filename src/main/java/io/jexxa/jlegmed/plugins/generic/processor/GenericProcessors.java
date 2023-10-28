@@ -21,8 +21,10 @@ public class GenericProcessors {
 
     public static <T> T duplicate(T data, Context context)
     {
-        if (context.isProcessingFinished()) {
-            context.processAgain();
+        var filterState =context.getFilterContext().filterState();
+
+        if (!filterState.isProcessedAgain()) {
+            filterState.processAgain();
         }
         return data;
     }

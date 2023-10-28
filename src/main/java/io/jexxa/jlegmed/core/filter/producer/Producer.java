@@ -5,8 +5,6 @@ import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
 
 public abstract class Producer<T> extends Filter {
 
@@ -46,12 +44,4 @@ public abstract class Producer<T> extends Filter {
         return context;
     }
 
-    protected Optional<Properties> getFilterProperties()
-    {
-        if ( getFilterConfig().getPropertiesConfig() == null)
-        {
-            return Optional.empty();
-        }
-        return context.getProperties(getFilterConfig().getPropertiesConfig().properties());
-    }
 }

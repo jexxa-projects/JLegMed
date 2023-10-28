@@ -18,15 +18,15 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
 
     public void produceData() {
         do {
-            getFilterConfig().decreaseProcessCounter();
-            getContext().setFilterConfig(getFilterConfig());
+            getState().decreaseProcessCounter();
+            getContext().setFilterContext(new Context.FilterContext(getState(), getProperties(), Optional.ofNullable(getConfig())));
 
             Optional.ofNullable(doProduce())
                     .ifPresent(result -> getOutputPipe().forward(result, getContext()));
 
-            getFilterConfig().resetRepeatActive();
+            getState().resetRepeatActive();
 
-        } while (getFilterConfig().isProcessedAgain());
+        } while (getState().isProcessedAgain());
     }
 
     protected abstract T doProduce();

@@ -26,15 +26,15 @@ public abstract class Processor<T, R>  extends Filter {
     public void process(T content, Context context) {
 
         do {
-            getFilterConfig().decreaseProcessCounter();
-            context.setFilterConfig(getFilterConfig());
+            getState().decreaseProcessCounter();
+            context.setFilterContext(new Context.FilterContext(getState(), getProperties(), getConfig()));
 
             Optional.ofNullable(doProcess(content, context))
                     .ifPresent(result -> getOutputPipe().forward(result, context));
 
-            getFilterConfig().resetRepeatActive();
+            getState().resetRepeatActive();
 
-        } while (getFilterConfig().isProcessedAgain());
+        } while (getState().isProcessedAgain());
     }
 
     protected abstract R doProcess(T content, Context context);

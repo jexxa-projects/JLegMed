@@ -1,33 +1,33 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
+import io.jexxa.jlegmed.common.component.messaging.receive.jms.JMSAdapter;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.JSONMessageListener;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.listener.TypedMessageListener;
 
 public class JMSProducer<T> extends Producer<T> {
 
     private IDrivingAdapter jmsAdapter;
 
     @Override
-    public void start() {
+    public void init() {
+        super.init();
         var configuration = getFilterConfig(MessageConfiguration.class).orElseThrow(() -> new IllegalArgumentException("No MessageConfiguration configuration provided"));
+        var properties = getFilterProperties()
+                .orElseThrow(() -> new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main"));
 
-        if (this.jmsAdapter == null)
-        {
-            var filterProperties = getFilterProperties()
-                    .orElseThrow( () -> new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main"));
 
-            this.jmsAdapter = new JMSAdapter(filterProperties);
+        this.jmsAdapter = new JMSAdapter(properties);
 
-            JSONMessageListener messageListener = new TypedMessageListener<>(
-                    getType(),
-                    getOutputPipe(),
-                    configuration,
-                    getContext());
-            jmsAdapter.register(messageListener);
-        }
+        var messageListener = new JMSProducerListener<>(
+                getType(),
+                getOutputPipe(),
+                configuration,
+                getContext());
+        jmsAdapter.register(messageListener);
+    }
+    @Override
+    public void start() {
         jmsAdapter.start();
     }
 
@@ -37,6 +37,12 @@ public class JMSProducer<T> extends Producer<T> {
         {
             jmsAdapter.stop();
         }
+    }
+
+    @Override
+    public void deInit()
+    {
+        jmsAdapter = null;
     }
 
     public static <T> JMSProducer<T> jmsJSONProducer()

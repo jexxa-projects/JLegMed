@@ -1,8 +1,11 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class FlowGraph<T> {
@@ -10,6 +13,7 @@ public class FlowGraph<T> {
 
     private Producer<T> producer;
     private final String flowGraphID;
+    private final List<Filter> filterList = new ArrayList<>();
 
     public FlowGraph(String flowGraphID, Properties properties)
     {
@@ -27,18 +31,31 @@ public class FlowGraph<T> {
         return context;
     }
 
+    public void init() {
+        filterList.forEach(Filter::init);
+    }
+
     public void start() {
-        producer.start();
+        filterList.forEach(Filter::start);
     }
 
     public void stop() {
-        producer.stop();
+        filterList.forEach(Filter::start);
+    }
+
+    public void deInit() {
+        filterList.forEach(Filter::init);
     }
 
     public void setProducer(Producer<T> producer)
     {
         this.producer = producer;
         producer.setContext(getContext());
+    }
+
+    public void addFilter(Filter filter)
+    {
+        filterList.add(filter);
     }
 
     protected Producer<T> getProducer()

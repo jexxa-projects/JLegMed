@@ -3,8 +3,8 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
-import io.jexxa.jlegmed.common.scheduler.IScheduled;
-import io.jexxa.jlegmed.common.scheduler.Scheduler;
+import io.jexxa.jlegmed.common.component.scheduler.IScheduled;
+import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +25,7 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
     @Override
     public void start()
     {
+        super.start();
         scheduler.register(fixedRateScheduler);
         scheduler.start();
     }
@@ -32,6 +33,7 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
     @Override
     public void stop()
     {
+        super.stop();
         getProducer().stop();
         scheduler.stop();
     }

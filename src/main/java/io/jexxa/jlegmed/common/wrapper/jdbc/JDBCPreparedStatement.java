@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.common.wrapper.jdbc;
 
 
-import io.jexxa.jlegmed.common.annotation.CheckReturnValue;
+import io.jexxa.jlegmed.common.wrapper.utils.annotation.CheckReturnValue;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

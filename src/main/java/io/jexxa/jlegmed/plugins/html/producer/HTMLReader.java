@@ -14,6 +14,12 @@ public class HTMLReader<T> extends FunctionalProducer<T> {
 
 
     @Override
+    public void init() {
+        super.init();
+        //TODO Proxy handling
+    }
+
+    @Override
     protected T doProduce() {
         return Unirest.get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)

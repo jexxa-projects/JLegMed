@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.common.wrapper.jms;
 
 
-import io.jexxa.jlegmed.common.properties.Secret;
+import io.jexxa.jlegmed.common.wrapper.utils.properties.Secret;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;

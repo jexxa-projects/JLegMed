@@ -1,5 +1,8 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
+import io.jexxa.jlegmed.common.component.messaging.send.MessageSender;
+import io.jexxa.jlegmed.common.component.messaging.send.MessageSenderFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

@@ -4,7 +4,7 @@ import io.jexxa.jlegmed.core.filter.Context;
 
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.common.persistence.RepositoryManager.getRepository;
+import static io.jexxa.jlegmed.common.component.persistence.RepositoryManager.getRepository;
 
 public class RepositoryProcessor {
 

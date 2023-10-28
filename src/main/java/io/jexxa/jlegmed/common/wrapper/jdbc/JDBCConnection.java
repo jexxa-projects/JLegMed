@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.common.wrapper.jdbc;
 
-import io.jexxa.jlegmed.common.function.ThrowingConsumer;
+import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingConsumer;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCCommandBuilder;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCQueryBuilder;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCTableBuilder;
-import io.jexxa.jlegmed.common.properties.Secret;
+import io.jexxa.jlegmed.common.wrapper.utils.properties.Secret;
 import org.slf4j.Logger;
 
 import java.sql.Connection;

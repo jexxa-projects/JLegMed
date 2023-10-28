@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.filter;
 
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
@@ -17,20 +18,23 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
  */
 public class ProcessorBinding<T> {
     private final OutputPipe<T> predecessorPipe;
+    private final FlowGraph<?> flowGraph;
     private Processor<?,T> predecessorProcessor;
     private Producer<T> predecessorProducer;
 
 
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, Processor<?,T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, Processor<?,T> predecessor, FlowGraph<?> flowGraph)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProcessor = predecessor;
+        this.flowGraph = flowGraph;
     }
 
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, Producer<T> predecessor)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, Producer<T> predecessor, FlowGraph<?> flowGraph)
     {
         this.predecessorPipe = predecessorPipe;
         this.predecessorProducer = predecessor;
+        this.flowGraph = flowGraph;
     }
 
 
@@ -38,7 +42,9 @@ public class ProcessorBinding<T> {
     {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
-        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
+
+        flowGraph.addFilter(successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor,flowGraph);
     }
 
     public <R> ProcessorBinding<R> andProcessWith(Function<T,R> successorFunction)
@@ -46,14 +52,16 @@ public class ProcessorBinding<T> {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
 
-        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
+        flowGraph.addFilter(successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor, flowGraph);
     }
 
     public <R> ProcessorBinding<R> andProcessWith(Processor<T, R> successor)
     {
         predecessorPipe.connectTo(successor.getInputPipe());
 
-        return new ProcessorBinding<>(successor.getOutputPipe(), successor);
+        flowGraph.addFilter(successor);
+        return new ProcessorBinding<>(successor.getOutputPipe(), successor, flowGraph);
     }
 
 

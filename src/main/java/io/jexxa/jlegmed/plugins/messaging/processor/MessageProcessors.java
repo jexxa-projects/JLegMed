@@ -6,7 +6,7 @@ import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 import java.util.Properties;
 
 import static io.jexxa.jlegmed.core.filter.PropertiesConfig.properties;
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageFactory.DestinationType.TOPIC;
+import static io.jexxa.jlegmed.common.component.messaging.send.MessageFactory.DestinationType.TOPIC;
 
 public class MessageProcessors {
     public static <T> T sendAsJSON(T content, Context context)

@@ -13,7 +13,7 @@ class GenericProcessorsTest {
     void testFlowGraphIncrementer() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(GenericProcessorsTest.class);
+        var jlegmed = new JLegMed(GenericProcessorsTest.class).disableBanner();
 
         jlegmed.newFlowGraph("Incrementer")
 
@@ -21,7 +21,6 @@ class GenericProcessorsTest {
                 .receive(Integer.class).from( () -> 1)
 
                 .and().processWith( GenericProcessors::incrementer )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();

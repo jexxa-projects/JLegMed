@@ -1,6 +1,6 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.builder;
 
-import io.jexxa.jlegmed.core.filter.ProducerBinding;
+import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
@@ -18,10 +18,10 @@ public class FlowGraphBuilder {
         this.jLegMed = jLegMed;
     }
 
-    public <T> ProducerBinding<T> await(Class<T> inputData) {
+    public <T> ProducerBuilder<T> await(Class<T> inputData) {
         var flowGraph = new FlowGraph<T>(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
-        return new ProducerBinding<>(flowGraph, inputData);
+        return new ProducerBuilder<>(flowGraph, inputData);
     }
 
     public FlowGraphBuilder each(int fixedRate, TimeUnit timeUnit)
@@ -32,11 +32,12 @@ public class FlowGraphBuilder {
         return this;
     }
 
-    public <T> ProducerBinding<T> receive(Class<T> expectedData)
+    public <T> ProducerBuilder<T> receive(Class<T> expectedData)
     {
         var eachFlowgraph = new ScheduledFlowGraph<T>(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
         jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
 
-        return new ProducerBinding<>(eachFlowgraph, expectedData);
+        return new ProducerBuilder<>(eachFlowgraph, expectedData);
     }
+
 }

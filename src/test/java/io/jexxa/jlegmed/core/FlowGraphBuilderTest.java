@@ -22,13 +22,13 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class ScheduledFlowGraphTest {
+class FlowGraphBuilderTest {
     private static JLegMed jlegmed;
 
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
     }
 
     @AfterEach
@@ -48,7 +48,6 @@ class ScheduledFlowGraphTest {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -68,7 +67,6 @@ class ScheduledFlowGraphTest {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( content -> content + "-" + content )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -174,7 +172,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("testDuplicateProducer")
 
                 .each(10, MILLISECONDS)
-                .receive(Integer.class).from(ScheduledFlowGraphTest::duplicateProducer)
+                .receive(Integer.class).from(FlowGraphBuilderTest::duplicateProducer)
 
                 .and().processWith( messageCollector::collect);
         //Act
@@ -221,7 +219,6 @@ class ScheduledFlowGraphTest {
                 .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(ONLY_ONCE)
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -271,9 +268,8 @@ class ScheduledFlowGraphTest {
 
                 .receive(NewContract.class).from(GenericProducer::newContract)
 
-                .and().processWith(ScheduledFlowGraphTest::transformToUpdatedContract)
+                .and().processWith(FlowGraphBuilderTest::transformToUpdatedContract)
                 .and().processWith(GenericProcessors::idProcessor)
-                .and().processWith(GenericProcessors::consoleLogger)
                 .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
@@ -292,7 +288,7 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer::newContract)
-                .and().processWith( ScheduledFlowGraphTest::contextTransformer)
+                .and().processWith( FlowGraphBuilderTest::contextTransformer)
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();

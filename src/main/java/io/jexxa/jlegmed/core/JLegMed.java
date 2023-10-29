@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core;
 
 
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.io.FileInputStream;
@@ -9,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,9 @@ public final class JLegMed
     private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
     private final Properties properties;
     private final Class<?> application;
+    private final PropertiesLoader propertiesLoader;
+
+    private boolean enableBanner = true;
 
     public JLegMed(Class<?> application)
     {
@@ -38,7 +43,8 @@ public final class JLegMed
 
     public JLegMed(Class<?> application, Properties properties)
     {
-        this.properties  = new PropertiesLoader(application).createProperties(properties);
+        this.propertiesLoader = new PropertiesLoader(application);
+        this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
     }
 
@@ -48,19 +54,19 @@ public final class JLegMed
     }
 
 
-    void addFlowGraph(String flowGraphID, FlowGraph<?> flowGraph)
+    public void addFlowGraph(String flowGraphID, FlowGraph<?> flowGraph)
     {
         flowGraphs.put(flowGraphID, flowGraph);
     }
 
     public void start()
     {
-        SLF4jLogger.getLogger(JLegMed.class).info("Start application : {}", application.getSimpleName());
-        SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info      : {}", jlegmedInfo());
-        SLF4jLogger.getLogger(JLegMed.class).info("Application Info  : {}", applicationInfo());
+        showPreStartupBanner();
+
         flowGraphs.forEach((key, value) -> value.init());
         flowGraphs.forEach((key, value) -> value.start());
-        SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
+
+        showPostStartupBanner();
     }
 
     public void stop()
@@ -68,6 +74,13 @@ public final class JLegMed
         flowGraphs.forEach((key, value) -> value.stop());
         flowGraphs.forEach((key, value) -> value.deInit());
     }
+
+    public JLegMed disableBanner()
+    {
+        enableBanner = false;
+        return this;
+    }
+
 
     public Properties getProperties()
     {
@@ -93,6 +106,26 @@ public final class JLegMed
     {
         return JLegMedVersion.getVersion();
     }
+
+    private void showPreStartupBanner()
+    {
+        if(enableBanner) {
+            var propertiesFiles = Arrays.toString(propertiesLoader.getPropertiesFiles().toArray());
+
+            SLF4jLogger.getLogger(JLegMed.class).info("Start application      : {}", application.getSimpleName());
+            SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info           : {}", jlegmedInfo());
+            SLF4jLogger.getLogger(JLegMed.class).info("Application Info       : {}", applicationInfo());
+            SLF4jLogger.getLogger(JLegMed.class).info("Used Properties Files  : {}", propertiesFiles);
+        }
+    }
+
+    private void showPostStartupBanner()
+    {
+        if(enableBanner) {
+            SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
+        }
+    }
+
 
     public static class PropertiesLoader {
         private final Class<?> application;

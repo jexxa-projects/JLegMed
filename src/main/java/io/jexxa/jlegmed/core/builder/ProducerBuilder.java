@@ -1,5 +1,6 @@
-package io.jexxa.jlegmed.core.filter;
+package io.jexxa.jlegmed.core.builder;
 
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
@@ -9,12 +10,11 @@ import java.util.function.Supplier;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
-public class ProducerBinding<T> {
+public class ProducerBuilder<T> {
     private final Class<T> sourceType;
     private final FlowGraph<T> flowGraph;
 
-    public ProducerBinding(FlowGraph<T> flowGraph, Class<T> sourceType)
-    {
+    ProducerBuilder(FlowGraph<T> flowGraph, Class<T> sourceType) {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }

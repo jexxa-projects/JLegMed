@@ -17,7 +17,7 @@ class MessageProcessorsIT {
     void testSendMessageToTopic() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(MessageProcessorsIT.class);
+        var jlegmed = new JLegMed(MessageProcessorsIT.class).disableBanner();
 
         jlegmed.newFlowGraph("MessageSender")
 

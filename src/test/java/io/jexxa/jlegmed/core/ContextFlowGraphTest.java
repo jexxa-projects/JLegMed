@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.core;
 
-import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
@@ -22,7 +21,7 @@ class ContextFlowGraphTest {
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(ScheduledFlowGraphTest.class);
+        jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
     }
 
     @AfterEach
@@ -43,7 +42,6 @@ class ContextFlowGraphTest {
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS)).and()
 
                 .processWith( processor(GenericProcessors::idProcessor )).and()
-                .processWith( GenericProcessors::consoleLogger ).and()
                 .processWith( messageCollector::collect );
         //Act
         jlegmed.start();
@@ -64,7 +62,6 @@ class ContextFlowGraphTest {
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
@@ -90,7 +87,6 @@ class ContextFlowGraphTest {
                 // At the end 2nd-4th messages are skipped.
                 .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
                 .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
@@ -115,7 +111,6 @@ class ContextFlowGraphTest {
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
                 .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector1::collect );
 
 
@@ -125,7 +120,6 @@ class ContextFlowGraphTest {
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
                 .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector2::collect );
 
         //Act
@@ -153,7 +147,6 @@ class ContextFlowGraphTest {
         context.updateState(stateID, currentCounter+1);
 
         if (currentCounter % 2 == 0) {
-            SLF4jLogger.getLogger(ContextFlowGraphTest.class).info("Skip Message");
             return null;
         }
         return data;

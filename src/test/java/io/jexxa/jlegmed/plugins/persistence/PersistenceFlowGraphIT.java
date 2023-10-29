@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.plugins.persistence;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.persistence.processor.AbstractAggregate;
 import io.jexxa.jlegmed.plugins.persistence.processor.RepositoryProcessor;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ class PersistenceFlowGraphIT {
     void testFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<TextEntity>();
-        var jlegmed = new JLegMed(PersistenceFlowGraphIT.class);
+        var jlegmed = new JLegMed(PersistenceFlowGraphIT.class).disableBanner();
 
         jlegmed.newFlowGraph("HelloWorld")
 
@@ -29,7 +28,6 @@ class PersistenceFlowGraphIT {
 
                 .and().processWith( data -> new TextEntity(data) )
                 .and().processWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();

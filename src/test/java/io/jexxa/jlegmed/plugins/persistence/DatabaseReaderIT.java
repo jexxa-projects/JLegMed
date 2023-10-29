@@ -9,7 +9,6 @@ import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.persistence.processor.SQLWriter;
 import io.jexxa.jlegmed.plugins.persistence.producer.SQLReader;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,7 @@ class DatabaseReaderIT {
     @BeforeEach
     void beforeEach()
     {
-        JLegMed jLegMed = new JLegMed(DatabaseReaderIT.class);
+        JLegMed jLegMed = new JLegMed(DatabaseReaderIT.class).disableBanner();
         var dbProperties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
         createDatabase( dbProperties, jLegMed);
         createTable("DATABASE_READER_IT", dbProperties, jLegMed);
@@ -44,7 +43,7 @@ class DatabaseReaderIT {
         //Arrange
         var messageCollector = new MessageCollector<TestData>();
 
-        var jlegmed = new JLegMed(DatabaseReaderIT.class);
+        var jlegmed = new JLegMed(DatabaseReaderIT.class).disableBanner();
 
         jlegmed.newFlowGraph("HelloWorld")
 
@@ -52,7 +51,6 @@ class DatabaseReaderIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith(GenericProcessors::consoleLogger)
                 .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
                 .and().processWith(messageCollector::collect);
         //Act
@@ -77,7 +75,6 @@ class DatabaseReaderIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith(GenericProcessors::consoleLogger)
                 .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
                 .and().processWith(messageCollector::collect);
         //Act
@@ -109,7 +106,6 @@ class DatabaseReaderIT {
                 .each(10, MILLISECONDS)
                 .receive(TestData.class).from(testDataSQLReader()).useProperties("test-jdbc-connection")
 
-                .and().processWith(GenericProcessors::consoleLogger)
                 .and().processWith(messageCollector::collect);
 
         //Act

@@ -19,7 +19,7 @@ class MessageReceiverIT {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<>();
-        var jlegmed = new JLegMed(MessageReceiverIT.class);
+        var jlegmed = new JLegMed(MessageReceiverIT.class).disableBanner();
 
         jlegmed.newFlowGraph("MessageSender")
 

@@ -23,7 +23,7 @@ class HTTPReaderTest {
     void testFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<VersionInfo>();
-        var jlegmed = new JLegMed(HTTPReaderTest.class);
+        var jlegmed = new JLegMed(HTTPReaderTest.class).disableBanner();
 
         jlegmed.newFlowGraph("HTMLReader")
 
@@ -47,7 +47,7 @@ class HTTPReaderTest {
     void testFunctionalHTTPReader() {
         //Arrange
         var messageCollector = new MessageCollector<VersionInfo>();
-        var jlegmed = new JLegMed(HTTPReaderTest.class);
+        var jlegmed = new JLegMed(HTTPReaderTest.class).disableBanner();
 
         jlegmed.newFlowGraph("HTMLReader")
 
@@ -55,7 +55,6 @@ class HTTPReaderTest {
                 .receive(VersionInfo.class).from(httpURL(HTTPReaderTest::readHTTPData))
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
 
         //Act

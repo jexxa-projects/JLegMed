@@ -20,18 +20,15 @@ class StreamProducerTest {
 
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(StreamProducerTest.class);
+        var jlegmed = new JLegMed(StreamProducerTest.class).disableBanner();
 
         jlegmed.newFlowGraph("FlowGraphTest1")
-
                 .await(Integer.class)
                 .from(streamProducer(infiniteStream1))
-
                 .and().processWith( messageCollector1::collect );
 
 
         jlegmed.newFlowGraph("FlowGraphTest2")
-
                 .await(Integer.class)
                 .from(streamProducer(infiniteStream2))
                 .and().processWith( messageCollector2::collect );

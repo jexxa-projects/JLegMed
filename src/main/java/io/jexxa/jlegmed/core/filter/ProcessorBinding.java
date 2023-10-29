@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.core.filter;
 
 import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
@@ -20,24 +19,15 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 public class ProcessorBinding<T> {
     private final OutputPipe<T> predecessorPipe;
     private final FlowGraph<?> flowGraph;
-    private Processor<?,T> predecessorProcessor;
-    private Producer<T> predecessorProducer;
+    private final Filter predecessor;
 
 
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, Processor<?,T> predecessor, FlowGraph<?> flowGraph)
+    public ProcessorBinding(OutputPipe<T> predecessorPipe, Filter predecessor, FlowGraph<?> flowGraph)
     {
         this.predecessorPipe = predecessorPipe;
-        this.predecessorProcessor = predecessor;
+        this.predecessor = predecessor;
         this.flowGraph = flowGraph;
     }
-
-    public ProcessorBinding(OutputPipe<T> predecessorPipe, Producer<T> predecessor, FlowGraph<?> flowGraph)
-    {
-        this.predecessorPipe = predecessorPipe;
-        this.predecessorProducer = predecessor;
-        this.flowGraph = flowGraph;
-    }
-
 
     public <R> ProcessorBinding<R> andProcessWith(BiFunction<T, FilterContext, R> successorFunction)
     {
@@ -68,42 +58,22 @@ public class ProcessorBinding<T> {
 
     public <U> ProcessorBinding<T> filterConfig(U configuration)
     {
-        if (predecessorProcessor != null)
-        {
-            predecessorProcessor.config(configuration);
-        }
-        if (predecessorProducer != null)
-        {
-            predecessorProducer.config(configuration);
-        }
-
+        predecessor.config(configuration);
         return this;
     }
 
     public ProcessorBinding<T> useProperties(FilterProperties filterProperties)
     {
-        if (predecessorProcessor != null)
-        {
-            predecessorProcessor.properties(filterProperties);
-        }
-        if (predecessorProducer != null)
-        {
-            predecessorProducer.properties(filterProperties);
-        }
-
+        predecessor.properties(filterProperties);
         return this;
     }
 
     public ProcessorBinding<T> useProperties(String propertiesPrefix)
     {
-        if (predecessorProcessor != null)
-        {
-            predecessorProcessor.properties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)));
-        }
-        if (predecessorProducer != null)
-        {
-            predecessorProducer.properties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)));
-        }
+        predecessor.properties(new FilterProperties(
+                propertiesPrefix,
+                PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix))
+        );
 
         return this;
     }

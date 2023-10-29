@@ -18,7 +18,7 @@ public class ProducerBinding<T> {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }
-    public ProcessorBinding<T> from(Function<Context, T> function) {
+    public ProcessorBinding<T> from(Function<FilterContext, T> function) {
         var typedProducer = producer(function);
         typedProducer.setType(sourceType);
         flowGraph.setProducer(typedProducer);
@@ -27,7 +27,7 @@ public class ProducerBinding<T> {
         return new ProcessorBinding<>(typedProducer.getOutputPipe(), typedProducer, flowGraph);
     }
 
-    public ProcessorBinding<T> from(BiFunction<Context, Class<T>, T> biFunction) {
+    public ProcessorBinding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
         var typedProducer = producer(biFunction);
         typedProducer.setType(sourceType);
         flowGraph.setProducer(typedProducer);

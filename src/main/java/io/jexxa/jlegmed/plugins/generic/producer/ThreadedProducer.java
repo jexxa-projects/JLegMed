@@ -39,7 +39,7 @@ public abstract class ThreadedProducer<T> extends Producer<T> {
 
     private void internalForwardData(T data)
     {
-        getOutputPipe().forward(data, getContext());
+        getOutputPipe().forward(data);
     }
     protected abstract void produceData();
 }

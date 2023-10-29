@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.core.pipes;
 
-import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 
 public class InputPipe<T> {
@@ -11,8 +10,8 @@ public class InputPipe<T> {
     {
         this.processor = processor;
     }
-    public void receive(T content, Context context) {
-        processor.process(content, context);
+    public void receive(T content) {
+        processor.process(content);
     }
 
 }

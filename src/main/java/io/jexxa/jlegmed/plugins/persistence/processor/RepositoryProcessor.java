@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Properties;
 
@@ -8,12 +8,12 @@ import static io.jexxa.jlegmed.common.component.persistence.RepositoryManager.ge
 
 public class RepositoryProcessor {
 
-    public static <T extends AbstractAggregate<T, ?>> T persist(T data, Context context)
+    public static <T extends AbstractAggregate<T, ?>> T persist(T data, FilterContext context)
     {
         var properties = new Properties();
-        if (context.getFilterContext().filterProperties().isPresent())
+        if (context.filterProperties().isPresent())
         {
-            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
+            properties = context.filterProperties().orElseThrow().properties();
         }
 
         var repository = getRepository(data.getAggregateType(), data.getKeyFunction(), properties);
@@ -21,12 +21,12 @@ public class RepositoryProcessor {
         return data;
     }
 
-    public static <T extends AbstractAggregate<T, ?>> T update(T data, Context context)
+    public static <T extends AbstractAggregate<T, ?>> T update(T data, FilterContext context)
     {
         var properties = new Properties();
-        if (context.getFilterContext().filterProperties().isPresent())
+        if (context.filterProperties().isPresent())
         {
-            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
+            properties = context.filterProperties().orElseThrow().properties();
         }
 
         var repository = getRepository(data.getAggregateType(), data.getKeyFunction(), properties );

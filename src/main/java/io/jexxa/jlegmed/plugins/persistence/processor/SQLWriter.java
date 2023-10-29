@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 
 import java.util.Properties;
@@ -21,7 +21,7 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
                 .properties();
     }
 
-    protected T doProcess(T content, Context context)
+    protected T doProcess(T content, FilterContext context)
     {
         var jdbcConnection = JDBCConnectionPool.getConnection(properties, this);
 

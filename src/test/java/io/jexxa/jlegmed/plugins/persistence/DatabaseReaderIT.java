@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.core.filter.Context.stateID;
+import static io.jexxa.jlegmed.core.filter.FilterContext.stateID;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DATABASE_READER_IT;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_STRING_DATA;
@@ -156,8 +156,8 @@ class DatabaseReaderIT {
                 var currentMax = currentMaxStatement.asInt().findFirst().orElseThrow();
 
                 var contextID = stateID(SQLReader.class, TestData.class.getSimpleName());
-                var lastPublishedIndex = getContext().getState(contextID, Integer.class).orElse(0);
-                getContext().updateState(contextID, currentMax);
+                var lastPublishedIndex = getFilterContext().getState(contextID, Integer.class).orElse(0);
+                getFilterContext().updateState(contextID, currentMax);
 
                 return jdbcConnection
                         .createQuery(DBSchema.class)

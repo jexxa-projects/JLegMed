@@ -23,8 +23,7 @@ public class JMSProducer<T> extends Producer<T> {
         var messageListener = new JMSProducerListener<>(
                 getType(),
                 getOutputPipe(),
-                configuration,
-                getContext());
+                configuration);
         jmsAdapter.register(messageListener);
     }
     @Override

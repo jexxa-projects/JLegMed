@@ -1,6 +1,5 @@
-package io.jexxa.jlegmed.core.filter;
+package io.jexxa.jlegmed.common.wrapper.utils.properties;
 
-import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.Test;
 
@@ -10,16 +9,16 @@ import static io.jexxa.jlegmed.common.wrapper.jms.JMSProperties.JNDI_PROVIDER_UR
 import static io.jexxa.jlegmed.common.wrapper.jms.JMSProperties.JNDI_USER_KEY;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ContextTest {
+class PropertiesUtilsTest {
 
     @Test
     void getProperties() {
         //Arrange
-        var jlegmed = new JLegMed(ContextTest.class);
-        var objectUnderTest = new Context(jlegmed.getProperties());
+        var jlegmed = new JLegMed(PropertiesUtilsTest.class);
+        var objectUnderTest = jlegmed.getProperties();
 
         //Act
-        var result = PropertiesUtils.getSubset(objectUnderTest.getProperties(), "test-jms-connection");
+        var result = PropertiesUtils.getSubset(objectUnderTest, "test-jms-connection");
 
         //Assert
         assertTrue(result.containsKey(JNDI_FACTORY_KEY));

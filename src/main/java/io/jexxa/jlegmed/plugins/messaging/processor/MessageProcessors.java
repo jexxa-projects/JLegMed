@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
 import java.util.Properties;
@@ -8,15 +8,16 @@ import java.util.Properties;
 import static io.jexxa.jlegmed.common.component.messaging.send.MessageFactory.DestinationType.TOPIC;
 
 public class MessageProcessors {
-    public static <T> T sendAsJSON(T content, Context context)
+    public static <T> T sendAsJSON(T content, FilterContext context)
     {
-        var messageConfiguration = context.getFilterContext().getConfig(MessageConfiguration.class);
+        var messageConfiguration = context.getConfig(MessageConfiguration.class).orElseThrow();
+
         var properties = new Properties();
         var connectionName = "message-logger";
-        if ( context.getFilterContext().filterProperties().isPresent())
+        if ( context.filterProperties().isPresent())
         {
-            properties = context.getFilterContext().filterProperties().orElseThrow().properties();
-            connectionName = context.getFilterContext().filterProperties().orElseThrow().configName();
+            properties = context.filterProperties().orElseThrow().properties();
+            connectionName = context.filterProperties().orElseThrow().configName();
         }
 
         var messageSender = MessagingManager.getMessageSender(connectionName, properties);

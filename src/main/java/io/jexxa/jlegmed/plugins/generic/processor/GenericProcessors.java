@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.processor;
 
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 
 public class GenericProcessors {
 
@@ -19,9 +19,9 @@ public class GenericProcessors {
         return data;
     }
 
-    public static <T> T duplicate(T data, Context context)
+    public static <T> T duplicate(T data, FilterContext context)
     {
-        var filterState =context.getFilterContext().filterState();
+        var filterState = context.getState();
 
         if (!filterState.isProcessedAgain()) {
             filterState.processAgain();

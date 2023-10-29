@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class FlowGraph<T> {
-    private final Context context;
+    private final Properties properties;
 
     private Producer<T> producer;
     private final String flowGraphID;
@@ -18,7 +17,7 @@ public class FlowGraph<T> {
     public FlowGraph(String flowGraphID, Properties properties)
     {
         this.flowGraphID = flowGraphID;
-        this.context = new Context(properties);
+        this.properties = properties;
     }
 
     public String getFlowGraphID()
@@ -26,9 +25,9 @@ public class FlowGraph<T> {
         return flowGraphID;
     }
 
-    public Context getContext()
+    public Properties getProperties()
     {
-        return context;
+        return properties;
     }
 
     public void init() {
@@ -50,7 +49,6 @@ public class FlowGraph<T> {
     public void setProducer(Producer<T> producer)
     {
         this.producer = producer;
-        producer.setContext(getContext());
     }
 
     public void addFilter(Filter filter)

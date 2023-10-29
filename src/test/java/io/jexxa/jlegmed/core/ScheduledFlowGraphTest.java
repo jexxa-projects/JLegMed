@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 import com.google.gson.Gson;
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
+import static io.jexxa.jlegmed.core.filter.FilterContext.stateID;
 import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.ProducerMode.ONLY_ONCE;
 import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.ProducerMode.UNTIL_STOPPED;
 import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.inputStream;
@@ -95,7 +96,7 @@ class ScheduledFlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals("Hello World - " + Context.class.getSimpleName(), messageCollector.getMessages().get(0));
+        assertEquals("Hello World - " + FilterContext.class.getSimpleName(), messageCollector.getMessages().get(0));
     }
 
 
@@ -116,7 +117,7 @@ class ScheduledFlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals("Hello World - Type:" + String.class.getSimpleName()+ " - " + Context.class.getSimpleName(), messageCollector.getMessages().get(0));
+        assertEquals("Hello World - Type:" + String.class.getSimpleName()+ " - " + FilterContext.class.getSimpleName(), messageCollector.getMessages().get(0));
     }
 
     @Test
@@ -306,14 +307,14 @@ class ScheduledFlowGraphTest {
         return new UpdatedContract(newContract.contractNumber(), "transformToUpdatedContract");
     }
 
-    public static UpdatedContract contextTransformer(NewContract newContract, Context context) {
+    public static UpdatedContract contextTransformer(NewContract newContract, FilterContext context) {
         return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer");
     }
 
-    public static Integer duplicateProducer(Context context) {
-        var contextID = Context.stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
+    public static Integer duplicateProducer(FilterContext context) {
+        var contextID = stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
         var currentCounter = context.getState(contextID, Integer.class).orElse(0);
-        var filterState = context.getFilterContext().filterState();
+        var filterState = context.getState();
 
         if (!filterState.isProcessedAgain()) {
             filterState.processAgain();

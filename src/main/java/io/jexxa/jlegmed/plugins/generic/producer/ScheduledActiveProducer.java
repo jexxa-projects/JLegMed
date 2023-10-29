@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.common.component.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.concurrent.TimeUnit;
@@ -41,7 +41,7 @@ public abstract class ScheduledActiveProducer<T> extends Producer<T> implements 
     @Override
     public void execute()
     {
-        getOutputPipe().forward(produceData(), getContext());
+        getOutputPipe().forward(produceData());
     }
 
     protected abstract T produceData();
@@ -59,19 +59,19 @@ public abstract class ScheduledActiveProducer<T> extends Producer<T> implements 
     }
 
 
-    public static <T> ScheduledActiveProducer<T> activeProducer(BiFunction<Context, Class<T>, T> biFunction) {
+    public static <T> ScheduledActiveProducer<T> activeProducer(BiFunction<FilterContext, Class<T>, T> biFunction) {
         return new ScheduledActiveProducer<>() {
             @Override
             protected T produceData() {
-                return biFunction.apply(getContext(), getType());
+                return biFunction.apply(getFilterContext(), getType());
             }
         };
     }
-    public static <T> ScheduledActiveProducer<T> activeProducer(Function<Context, T> contextFunction) {
+    public static <T> ScheduledActiveProducer<T> activeProducer(Function<FilterContext, T> contextFunction) {
         return new ScheduledActiveProducer<>() {
             @Override
             protected T produceData() {
-                return contextFunction.apply(getContext());
+                return contextFunction.apply(getFilterContext());
             }
         };
     }

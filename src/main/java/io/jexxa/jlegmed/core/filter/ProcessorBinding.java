@@ -39,7 +39,7 @@ public class ProcessorBinding<T> {
     }
 
 
-    public <R> ProcessorBinding<R> andProcessWith(BiFunction<T, Context, R> successorFunction)
+    public <R> ProcessorBinding<R> andProcessWith(BiFunction<T, FilterContext, R> successorFunction)
     {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.getInputPipe());
@@ -98,11 +98,11 @@ public class ProcessorBinding<T> {
     {
         if (predecessorProcessor != null)
         {
-            predecessorProcessor.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)));
+            predecessorProcessor.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)));
         }
         if (predecessorProducer != null)
         {
-            predecessorProducer.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)));
+            predecessorProducer.setProperties(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)));
         }
 
         return this;
@@ -116,6 +116,6 @@ public class ProcessorBinding<T> {
 
     public <U> ProcessorBinding<T> configureWith(String propertiesPrefix, U filterConfig)
     {
-        return configureWith(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getContext().getProperties(), propertiesPrefix)), filterConfig);
+        return configureWith(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)), filterConfig);
     }
 }

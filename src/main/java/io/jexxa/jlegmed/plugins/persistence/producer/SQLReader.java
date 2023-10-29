@@ -34,7 +34,7 @@ public abstract class SQLReader<T> extends Producer<T> {
     {
         getQuery(jdbcConnection)
                 .as(this::readAs)
-                .forEach( element -> getOutputPipe().forward(element, getContext()));
+                .forEach( element -> getOutputPipe().forward(element));
     }
 
 

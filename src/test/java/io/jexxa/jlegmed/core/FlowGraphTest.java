@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.core.filter.Context.stateID;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledActiveProducer.activeProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -106,9 +105,9 @@ class FlowGraphTest {
 
 
 
-    private static <T> T skipEachSecondMessage(T data, Context context)
+    private static <T> T skipEachSecondMessage(T data, FilterContext context)
     {
-        var stateID = stateID(FlowGraphTest.class, "skipEachSecondMessage");
+        var stateID = FilterContext.stateID(FlowGraphTest.class, "skipEachSecondMessage");
         int currentCounter = context.getState(stateID, Integer.class).orElse(1);
         context.updateState(stateID, currentCounter+1);
 

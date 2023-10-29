@@ -6,9 +6,8 @@ import java.util.Optional;
  * A filter is an object that can be used to produce or process the data
  */
 public abstract class Filter {
-    private final FilterState filterState = new FilterState();
-    private FilterProperties filterProperties;
-    private Object filterConfig;
+    private final FilterContext filterContext = new FilterContext();
+
 
     public void init() {}
     public void start() {}
@@ -16,14 +15,14 @@ public abstract class Filter {
     public void deInit() {}
 
     public FilterState getState() {
-        return filterState;
+        return filterContext.getState();
     }
 
 
     protected <R> Optional<R> getConfig(Class<R> configType)
     {
         try {
-            return Optional.ofNullable(configType.cast(filterConfig));
+            return filterContext.getConfig(configType);
         } catch (ClassCastException e)
         {
             return Optional.empty();
@@ -32,19 +31,17 @@ public abstract class Filter {
 
 
     public <U> void setConfig(U configuration) {
-        this.filterConfig = configuration;
+        this.filterContext.setFilterConfig(configuration);
     }
     public void setProperties(FilterProperties filterProperties) {
-        this.filterProperties = filterProperties;
+        this.filterContext.setFilterProperties(filterProperties);
     }
 
     public Optional<FilterProperties> getProperties() {
-        return Optional.ofNullable(filterProperties);
+        return filterContext.filterProperties();
     }
 
-    public Optional<Object> getConfig() {
-        return Optional.ofNullable(filterConfig);
+    protected FilterContext getFilterContext() {
+        return filterContext;
     }
-
-
 }

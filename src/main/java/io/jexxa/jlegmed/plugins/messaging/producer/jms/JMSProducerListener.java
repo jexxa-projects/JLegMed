@@ -4,7 +4,6 @@ import io.jexxa.jlegmed.common.component.messaging.receive.jms.DefaultJMSConfigu
 import io.jexxa.jlegmed.common.component.messaging.receive.jms.JMSConfiguration;
 import io.jexxa.jlegmed.common.component.messaging.receive.jms.listener.TypedMessageListener;
 import io.jexxa.jlegmed.common.component.messaging.send.MessageFactory;
-import io.jexxa.jlegmed.core.filter.Context;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
@@ -13,13 +12,11 @@ import java.util.Objects;
 public class JMSProducerListener<T> extends TypedMessageListener<T> {
     private final OutputPipe<T> outputPipe;
     private final MessageConfiguration configuration;
-    private final Context context;
 
-    public JMSProducerListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageConfiguration configuration, Context context) {
+    public JMSProducerListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageConfiguration configuration) {
         super(clazz);
         this.outputPipe = Objects.requireNonNull(outputPipe);
         this.configuration = configuration;
-        this.context = context;
     }
 
     @SuppressWarnings("unused")
@@ -39,6 +36,6 @@ public class JMSProducerListener<T> extends TypedMessageListener<T> {
 
     @Override
     protected void onMessage(T message) {
-        outputPipe.forward(message, context);
+        outputPipe.forward(message);
     }
 }

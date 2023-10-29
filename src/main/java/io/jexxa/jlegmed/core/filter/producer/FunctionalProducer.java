@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.core.filter.Context;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -19,10 +19,9 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
     public void produceData() {
         do {
             getState().decreaseProcessCounter();
-            getContext().setFilterContext(new Context.FilterContext(getState(), getProperties(), Optional.ofNullable(getConfig())));
 
             Optional.ofNullable(doProduce())
-                    .ifPresent(result -> getOutputPipe().forward(result, getContext()));
+                    .ifPresent(result -> getOutputPipe().forward(result));
 
             getState().resetRepeatActive();
 
@@ -31,22 +30,22 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
 
     protected abstract T doProduce();
 
-    public static <T> FunctionalProducer<T> producer(BiFunction<Context, Class<T>, T> function)
+    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function)
     {
         return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
-                return function.apply(getContext(), getType());
+                return function.apply(getFilterContext(), getType());
             }
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Function<Context, T> function)
+    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function)
     {
         return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
-                return function.apply(getContext());
+                return function.apply(getFilterContext());
             }
         };
     }

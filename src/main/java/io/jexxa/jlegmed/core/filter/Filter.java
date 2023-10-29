@@ -14,34 +14,35 @@ public abstract class Filter {
     public void stop() {}
     public void deInit() {}
 
-    public FilterState getState() {
-        return filterContext.getState();
+    public <U> void config(U configuration) {
+        this.filterContext.filterConfig(configuration);
+    }
+    public void properties(FilterProperties filterProperties) {
+        this.filterContext.filterProperties(filterProperties);
     }
 
-
-    protected <R> Optional<R> getConfig(Class<R> configType)
-    {
-        try {
-            return filterContext.getConfig(configType);
-        } catch (ClassCastException e)
-        {
-            return Optional.empty();
-        }
+    public ProcessingState processingState() {
+        return filterContext.processingState();
     }
 
-
-    public <U> void setConfig(U configuration) {
-        this.filterContext.setFilterConfig(configuration);
-    }
-    public void setProperties(FilterProperties filterProperties) {
-        this.filterContext.setFilterProperties(filterProperties);
-    }
-
-    public Optional<FilterProperties> getProperties() {
+    public Optional<FilterProperties> properties() {
         return filterContext.filterProperties();
     }
 
-    protected FilterContext getFilterContext() {
+    protected FilterContext filterContext() {
         return filterContext;
     }
+
+    protected void startProcessing() {
+        this.filterContext.processingState().start();
+    }
+
+    protected void finishedProcessing() {
+        this.filterContext.processingState().finished();
+    }
+
+    protected boolean processAgain() {
+        return this.filterContext.processingState().isProcessingAgain();
+    }
+
 }

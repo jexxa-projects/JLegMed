@@ -1,12 +1,10 @@
 package io.jexxa.jlegmed.core.filter;
 
-public class FilterState {
+public class ProcessingState {
     private int processCounter = 0;
     private boolean processAgain;
-    private Object config;
-    private FilterProperties filterProperties;
 
-    public boolean isProcessedAgain() {
+    public boolean isProcessingAgain() {
         return processCounter > 0 || processAgain;
     }
 
@@ -16,7 +14,7 @@ public class FilterState {
         processAgain = true; // Set this flag to true so that the scheduled filter/processor knows that it is called again
     }
 
-    public void decreaseProcessCounter()
+    void start()
     {
         if ( processCounter > 0)
         {
@@ -24,7 +22,7 @@ public class FilterState {
         }
     }
 
-    public void resetRepeatActive()
+    void finished()
     {
         // reset the trigger only of the counter is <= 0. This enables the processor
         // 1. to inform a scheduler that the method is called multiple times
@@ -34,22 +32,4 @@ public class FilterState {
         }
     }
 
-    public void setConfig(Object config)
-    {
-        this.config = config;
-    }
-
-    public <T> T getConfig(Class<T> configType)
-    {
-        return configType.cast(config);
-    }
-
-    public void setProperties(FilterProperties filterProperties) {
-        this.filterProperties = filterProperties;
-    }
-
-    public FilterProperties getPropertiesConfig()
-    {
-        return filterProperties;
-    }
 }

@@ -27,9 +27,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 
 public final class JLegMed
 {
-
     private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
-
     private final Properties properties;
     private final Class<?> application;
 

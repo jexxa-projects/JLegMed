@@ -5,20 +5,20 @@ import java.util.Optional;
 
 public class FilterContext {
     private final HashMap<String, Object> dataState = new HashMap<>();
-    private final FilterState filterState = new FilterState();
+    private final ProcessingState processingState = new ProcessingState();
     private FilterProperties filterProperties;
     private Object filterConfig;
 
-    public void setFilterProperties(FilterProperties filterProperties) {
+    public void filterProperties(FilterProperties filterProperties) {
         this.filterProperties = filterProperties;
     }
 
 
-    public void setFilterConfig(Object filterConfig) {
+    public void filterConfig(Object filterConfig) {
         this.filterConfig = filterConfig;
     }
 
-    public <T> Optional<T> getConfig(Class<T> clazz) {
+    public <T> Optional<T> config(Class<T> clazz) {
         return Optional.ofNullable(clazz.cast(filterConfig));
     }
 
@@ -27,11 +27,11 @@ public class FilterContext {
         return Optional.ofNullable(filterProperties);
     }
 
-    public FilterState getState() {
-        return filterState;
+    public ProcessingState processingState() {
+        return processingState;
     }
 
-    public <T> Optional<T> getState(String id, Class<T> clazz)
+    public <T> Optional<T> state(String id, Class<T> clazz)
     {
         return Optional.ofNullable(clazz.cast(dataState.get(id)));
     }

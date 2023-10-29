@@ -16,7 +16,7 @@ public abstract class SQLReader<T> extends Producer<T> {
 
     @Override
     public void start() {
-        this.databaseProperties = getProperties()
+        this.databaseProperties = properties()
                 .orElseThrow(() -> new IllegalArgumentException("No database connection defined in properties"))
                 .properties();
         this.jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);
@@ -34,7 +34,7 @@ public abstract class SQLReader<T> extends Producer<T> {
     {
         getQuery(jdbcConnection)
                 .as(this::readAs)
-                .forEach( element -> getOutputPipe().forward(element));
+                .forEach( element -> outputPipe().forward(element));
     }
 
 

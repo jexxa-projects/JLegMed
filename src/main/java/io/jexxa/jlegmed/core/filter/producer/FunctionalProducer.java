@@ -8,24 +8,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class FunctionalProducer<T> extends Producer<T> {
-
     @Override
     public void start()
     {
         produceData();
     }
 
-
     public void produceData() {
         do {
-            getState().decreaseProcessCounter();
+            startProcessing();
 
             Optional.ofNullable(doProduce())
-                    .ifPresent(result -> getOutputPipe().forward(result));
+                    .ifPresent(result -> outputPipe().forward(result));
 
-            getState().resetRepeatActive();
+            finishedProcessing();
 
-        } while (getState().isProcessedAgain());
+        } while (processAgain());
     }
 
     protected abstract T doProduce();
@@ -35,7 +33,7 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
         return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
-                return function.apply(getFilterContext(), getType());
+                return function.apply(filterContext(), producingType());
             }
         };
     }
@@ -45,7 +43,7 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
         return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
-                return function.apply(getFilterContext());
+                return function.apply(filterContext());
             }
         };
     }

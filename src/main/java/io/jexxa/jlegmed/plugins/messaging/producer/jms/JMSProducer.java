@@ -12,8 +12,8 @@ public class JMSProducer<T> extends Producer<T> {
     @Override
     public void init() {
         super.init();
-        var configuration = getConfig(MessageConfiguration.class).orElseThrow(() -> new IllegalArgumentException("No MessageConfiguration configuration provided"));
-        var properties = getProperties()
+        var configuration = filterContext().config(MessageConfiguration.class).orElseThrow(() -> new IllegalArgumentException("No MessageConfiguration configuration provided"));
+        var properties = properties()
                 .orElseThrow(() -> new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main"))
                 .properties();
 
@@ -21,8 +21,8 @@ public class JMSProducer<T> extends Producer<T> {
         this.jmsAdapter = new JMSAdapter(properties);
 
         var messageListener = new JMSProducerListener<>(
-                getType(),
-                getOutputPipe(),
+                producingType(),
+                outputPipe(),
                 configuration);
         jmsAdapter.register(messageListener);
     }

@@ -13,12 +13,12 @@ public abstract class Processor<T, R>  extends Filter {
     private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
 
-    public InputPipe<T> getInputPipe()
+    public InputPipe<T> inputPipe()
     {
         return inputPipe;
     }
 
-    public OutputPipe<R> getOutputPipe()
+    public OutputPipe<R> outputPipe()
     {
         return outputPipe;
     }
@@ -26,14 +26,14 @@ public abstract class Processor<T, R>  extends Filter {
     public void process(T content) {
 
         do {
-            getState().decreaseProcessCounter();
+            startProcessing();
 
-            Optional.ofNullable(doProcess(content, getFilterContext()))
-                    .ifPresent(result -> getOutputPipe().forward(result));
+            Optional.ofNullable(doProcess(content, filterContext()))
+                    .ifPresent(result -> outputPipe().forward(result));
 
-            getState().resetRepeatActive();
+            finishedProcessing();
 
-        } while (getState().isProcessedAgain());
+        } while (processAgain());
     }
 
     protected abstract R doProcess(T content, FilterContext context);

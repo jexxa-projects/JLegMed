@@ -19,7 +19,7 @@ public abstract class HTTPReader<T> extends FunctionalProducer<T> {
     public void init() {
         super.init();
         unirestInstance = Unirest.spawnInstance();
-        getProperties().ifPresent( element -> initUnirest(element.properties()));
+        properties().ifPresent(element -> initUnirest(element.properties()));
     }
 
 
@@ -52,7 +52,7 @@ public abstract class HTTPReader<T> extends FunctionalProducer<T> {
             protected T doProduce() {
                 return getUnirest().get(url)
                         .header(CONTENT_TYPE, APPLICATION_TYPE)
-                        .asObject(getType()).getBody();
+                        .asObject(producingType()).getBody();
             }
         };
     }
@@ -63,11 +63,11 @@ public abstract class HTTPReader<T> extends FunctionalProducer<T> {
             @Override
             protected T doProduce() {
                 var properties = new Properties();
-                if (getProperties().isPresent())
+                if (properties().isPresent())
                 {
-                    properties = getProperties().orElseThrow().properties();
+                    properties = properties().orElseThrow().properties();
                 }
-                return function.apply(new HTTPReaderContext<>(getUnirest(), properties, getType()));
+                return function.apply(new HTTPReaderContext<>(getUnirest(), properties, producingType()));
             }
         };
     }

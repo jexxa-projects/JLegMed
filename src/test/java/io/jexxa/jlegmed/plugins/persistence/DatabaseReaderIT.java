@@ -156,8 +156,8 @@ class DatabaseReaderIT {
                 var currentMax = currentMaxStatement.asInt().findFirst().orElseThrow();
 
                 var contextID = stateID(SQLReader.class, TestData.class.getSimpleName());
-                var lastPublishedIndex = getFilterContext().getState(contextID, Integer.class).orElse(0);
-                getFilterContext().updateState(contextID, currentMax);
+                var lastPublishedIndex = filterContext().state(contextID, Integer.class).orElse(0);
+                filterContext().updateState(contextID, currentMax);
 
                 return jdbcConnection
                         .createQuery(DBSchema.class)

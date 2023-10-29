@@ -16,7 +16,7 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
     {
         super.init();
 
-        this.properties = getProperties()
+        this.properties = properties()
                 .orElseThrow( () -> new IllegalArgumentException("No properties for database connection defined -> Define properties of SQLWriter in your main"))
                 .properties();
     }
@@ -55,7 +55,7 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
             protected void executeCommand(JDBCConnection connection, T element) {
 
                 if (!initialized) {
-                    connection.autocreateDatabase(getState().getPropertiesConfig().properties());
+                    //connection.autocreateDatabase(state().getPropertiesConfig().properties());
 
                /*     connection.createTableCommand(DBSchema.class)
                             .createTableIfNotExists(tableName)

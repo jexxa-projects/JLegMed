@@ -6,15 +6,8 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import java.util.Objects;
 
 public abstract class Producer<T> extends Filter {
-
     private Class<T> producingType;
-
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
-
-    public void setType(Class<T> producingType)
-    {
-        this.producingType = producingType;
-    }
 
     @Override
     public void init()
@@ -22,15 +15,17 @@ public abstract class Producer<T> extends Filter {
         Objects.requireNonNull(producingType);
     }
 
-    protected Class<T> getType()
+    public void producingType(Class<T> producingType)
+    {
+        this.producingType = producingType;
+    }
+    protected Class<T> producingType()
     {
         return producingType;
     }
 
-    public OutputPipe<T> getOutputPipe()
+    public OutputPipe<T> outputPipe()
     {
         return outputPipe;
     }
-
-
 }

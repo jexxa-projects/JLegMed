@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 
 import static io.jexxa.jlegmed.core.filter.FilterContext.stateID;
-import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.ProducerMode.ONLY_ONCE;
-import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.ProducerMode.UNTIL_STOPPED;
-import static io.jexxa.jlegmed.plugins.generic.producer.InputStreamProducer.inputStream;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.inputStream;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -313,10 +313,10 @@ class ScheduledFlowGraphTest {
 
     public static Integer duplicateProducer(FilterContext context) {
         var contextID = stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
-        var currentCounter = context.getState(contextID, Integer.class).orElse(0);
-        var filterState = context.getState();
+        var currentCounter = context.state(contextID, Integer.class).orElse(0);
+        var filterState = context.processingState();
 
-        if (!filterState.isProcessedAgain()) {
+        if (!filterState.isProcessingAgain()) {
             filterState.processAgain();
             return context.updateState(contextID, currentCounter+1);
         }

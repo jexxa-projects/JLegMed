@@ -15,7 +15,7 @@ public final class JLegMedProperties
     public static final String JLEGMED_APPLICATION_REPOSITORY = "jlegmed.application.repository";
 
     /** Defines the build timestamp of the context. This is typically set via maven */
-    public static final String JLEGMED_APPLICATION_BUILD_TIMESTAMP = "jlegmed.appliation.build.timestamp";
+    public static final String JLEGMED_APPLICATION_BUILD_TIMESTAMP = "jlegmed.application.build.timestamp";
 
     /** Configures the global system property user.timezone to define the timezone used by the application */
     public static final String JLEGMED_USER_TIMEZONE = "jlegmed.user.timezone";

@@ -7,12 +7,10 @@ import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 import java.util.concurrent.TimeUnit;
 
 public class FlowGraphBuilder {
-
     private final String flowGraphID;
     private final JLegMed jLegMed;
     private int fixedInterval;
     private TimeUnit timeUnit;
-
 
     public FlowGraphBuilder(String flowGraphID, JLegMed jLegMed)
     {
@@ -41,6 +39,4 @@ public class FlowGraphBuilder {
 
         return new ProducerBinding<>(eachFlowgraph, expectedData);
     }
-
-
 }

@@ -55,8 +55,9 @@ public final class JLegMed
 
     public void start()
     {
-        SLF4jLogger.getLogger(JLegMed.class).info("Start application {}", application.getSimpleName());
-        SLF4jLogger.getLogger(JLegMed.class).info("{}", applicationInfo());
+        SLF4jLogger.getLogger(JLegMed.class).info("Start application : {}", application.getSimpleName());
+        SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info      : {}", jlegmedInfo());
+        SLF4jLogger.getLogger(JLegMed.class).info("Application Info  : {}", applicationInfo());
         flowGraphs.forEach((key, value) -> value.init());
         flowGraphs.forEach((key, value) -> value.start());
         SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
@@ -86,6 +87,11 @@ public final class JLegMed
                 .buildTimestamp(properties.getProperty(JLEGMED_APPLICATION_BUILD_TIMESTAMP, ""))
                 .projectName(properties.getProperty(JLEGMED_APPLICATION_NAME, ""))
                 .create();
+    }
+
+    public VersionInfo jlegmedInfo()
+    {
+        return JLegMedVersion.getVersion();
     }
 
     public static class PropertiesLoader {

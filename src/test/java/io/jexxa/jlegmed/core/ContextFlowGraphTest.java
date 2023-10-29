@@ -14,8 +14,9 @@ import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.active
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FlowGraphTest {
+class ContextFlowGraphTest {
     private static JLegMed jlegmed;
 
     @BeforeEach
@@ -31,13 +32,14 @@ class FlowGraphTest {
     }
 
     @Test
-    void testSingleFlowGraph() {
+    void testConfigureProducer() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
 
-        jlegmed.newFlowGraph("FlowGraphTest")
+        jlegmed.newFlowGraph("testConfigureProducer")
 
                 .await(Integer.class)
+                // Here we configure a producer that produces a counter in a specific interval
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
                 .andProcessWith( processor(GenericProcessors::idProcessor ))
@@ -51,7 +53,31 @@ class FlowGraphTest {
     }
 
     @Test
-    void testContextFlowGraph() {
+    void testFilterContext() {
+        //Arrange
+        var messageCollector = new MessageCollector<Integer>();
+
+        jlegmed.newFlowGraph("testFilterContext")
+
+                .await(Integer.class)
+                .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
+
+                //Here we configure a processor that uses FilterContext to skip the second message
+                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .andProcessWith( GenericProcessors::consoleLogger )
+                .andProcessWith( messageCollector::collect );
+        //Act
+        jlegmed.start();
+
+        //Assert - That each second message is skipped
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        assertEquals(1, messageCollector.getMessages().get(0));
+        assertEquals(3, messageCollector.getMessages().get(1));
+        assertEquals(5, messageCollector.getMessages().get(2));
+    }
+
+    @Test
+    void testFilterContextTwice() {
         //Arrange
         var messageCollector = new MessageCollector<Integer>();
 
@@ -60,7 +86,10 @@ class FlowGraphTest {
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
-                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
+                // Here we configure two processors of the sam type. Each of them uses its own FilterContext to skip each second message
+                // At the end 2nd-4th messages are skipped.
+                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector::collect );
         //Act
@@ -68,10 +97,14 @@ class FlowGraphTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        assertEquals(1, messageCollector.getMessages().get(0));
+        assertEquals(5, messageCollector.getMessages().get(1));
+        assertEquals(9, messageCollector.getMessages().get(2));
     }
 
+
     @Test
-    void testMultipleContextFlowGraph() {
+    void testMultipleFlowGraphsWithFilterContext() {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<Integer>();
@@ -81,7 +114,7 @@ class FlowGraphTest {
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
-                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
+                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector1::collect );
 
@@ -91,7 +124,7 @@ class FlowGraphTest {
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
-                .andProcessWith( FlowGraphTest::skipEachSecondMessage )
+                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
                 .andProcessWith( GenericProcessors::consoleLogger )
                 .andProcessWith( messageCollector2::collect );
 
@@ -101,18 +134,26 @@ class FlowGraphTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector1.getNumberOfReceivedMessages() >= 3);
         await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
+
+        assertEquals(1, messageCollector1.getMessages().get(0));
+        assertEquals(3, messageCollector1.getMessages().get(1));
+        assertEquals(5, messageCollector1.getMessages().get(2));
+
+        assertEquals(1, messageCollector2.getMessages().get(0));
+        assertEquals(3, messageCollector2.getMessages().get(1));
+        assertEquals(5, messageCollector2.getMessages().get(2));
     }
 
 
 
     private static <T> T skipEachSecondMessage(T data, FilterContext context)
     {
-        var stateID = FilterContext.stateID(FlowGraphTest.class, "skipEachSecondMessage");
+        var stateID = "skipEachSecondMessage";
         int currentCounter = context.state(stateID, Integer.class).orElse(1);
         context.updateState(stateID, currentCounter+1);
 
         if (currentCounter % 2 == 0) {
-            SLF4jLogger.getLogger(FlowGraphTest.class).info("Skip Message");
+            SLF4jLogger.getLogger(ContextFlowGraphTest.class).info("Skip Message");
             return null;
         }
         return data;

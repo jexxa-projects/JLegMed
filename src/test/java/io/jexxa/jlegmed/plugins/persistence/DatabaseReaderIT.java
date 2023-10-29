@@ -19,7 +19,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static io.jexxa.jlegmed.core.filter.FilterContext.stateID;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DATABASE_READER_IT;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_STRING_DATA;
@@ -152,12 +151,15 @@ class DatabaseReaderIT {
         return new SQLReader<>() {
             @Override
             protected JDBCQuery getQuery(JDBCConnection jdbcConnection) {
-                var currentMaxStatement = jdbcConnection.createQuery(DBSchema.class).selectMax(DB_INDEX).from(DATABASE_READER_IT).create();
-                var currentMax = currentMaxStatement.asInt().findFirst().orElseThrow();
+                var currentMax = jdbcConnection
+                        .createQuery(DBSchema.class)
+                        .selectMax(DB_INDEX).from(DATABASE_READER_IT).create()
+                        .asInt().findFirst()
+                        .orElse(0);
 
-                var contextID = stateID(SQLReader.class, TestData.class.getSimpleName());
-                var lastPublishedIndex = filterContext().state(contextID, Integer.class).orElse(0);
-                filterContext().updateState(contextID, currentMax);
+                var stateID = "sqlIndex";
+                var lastPublishedIndex = filterContext().state(stateID, Integer.class).orElse(0);
+                filterContext().updateState(stateID, currentMax);
 
                 return jdbcConnection
                         .createQuery(DBSchema.class)

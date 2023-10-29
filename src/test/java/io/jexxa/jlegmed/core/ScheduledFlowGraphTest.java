@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static io.jexxa.jlegmed.core.filter.FilterContext.stateID;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.inputStream;
@@ -312,13 +311,13 @@ class ScheduledFlowGraphTest {
     }
 
     public static Integer duplicateProducer(FilterContext context) {
-        var contextID = stateID(ScheduledFlowGraphTest.class, "duplicateProducer");
-        var currentCounter = context.state(contextID, Integer.class).orElse(0);
+        var stateID = "duplicateProducer";
+        var currentCounter = context.state(stateID, Integer.class).orElse(0);
         var filterState = context.processingState();
 
         if (!filterState.isProcessingAgain()) {
             filterState.processAgain();
-            return context.updateState(contextID, currentCounter+1);
+            return context.updateState(stateID, currentCounter+1);
         }
 
         return currentCounter;

@@ -19,7 +19,7 @@ For this purpose, we focus on the following aspects:
 
 Refer to the following tests to get an idea how this library works
 * [ScheduledFlowgraph](src/test/java/io/jexxa/jlegmed/core/ScheduledFlowGraphTest.java) 
-* [ActiveFlowgraph](src/test/java/io/jexxa/jlegmed/core/FlowGraphTest.java)
+* [ActiveFlowgraph](src/test/java/io/jexxa/jlegmed/core/ContextFlowGraphTest.java)
 
 
 ## Build the library

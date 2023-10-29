@@ -40,9 +40,5 @@ public class FilterContext {
         dataState.put(id, data);
         return data;
     }
-    public static String stateID(Class<?> type, String id)
-    {
-        return type.getSimpleName() + id;
-    }
 
 }

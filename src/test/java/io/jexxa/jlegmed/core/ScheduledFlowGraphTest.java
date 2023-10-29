@@ -47,9 +47,29 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+    }
+
+    @Test
+    void testFlowGraph2() {
+        //Arrange
+        var messageCollector = new MessageCollector<String>();
+
+        jlegmed.newFlowGraph("HelloWorld")
+
+                .each(10, MILLISECONDS)
+                .receive(String.class).from(() -> "Hello World").and()
+
+                .processWith( GenericProcessors::idProcessor ).and()
+                .processWith( GenericProcessors::consoleLogger ).and()
+                .processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -67,9 +87,9 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .andProcessWith( content -> content + "-" + content )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( content -> content + "-" + content )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -88,8 +108,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(String.class).from((context) -> "Hello World - " + context.getClass().getSimpleName())
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -109,8 +129,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(String.class).from((context, type) -> "Hello World - Type:" + type.getSimpleName() + " - " + context.getClass().getSimpleName())
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -129,8 +149,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -152,8 +172,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith( GenericProcessors::duplicate)
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::duplicate)
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -176,7 +196,7 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(ScheduledFlowGraphTest::duplicateProducer)
 
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -200,8 +220,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(UNTIL_STOPPED)
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -220,9 +240,9 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(ONLY_ONCE)
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -242,8 +262,8 @@ class ScheduledFlowGraphTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector1::collect);
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(messageCollector1::collect);
 
 
         jlegmed.newFlowGraph("flowGraph2")
@@ -251,8 +271,8 @@ class ScheduledFlowGraphTest {
                 .each(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(messageCollector2::collect);
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(messageCollector2::collect);
 
         //Act
         jlegmed.start();
@@ -271,10 +291,10 @@ class ScheduledFlowGraphTest {
 
                 .receive(NewContract.class).from(GenericProducer::newContract)
 
-                .andProcessWith(ScheduledFlowGraphTest::transformToUpdatedContract)
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith(messageCollector::collect);
+                .and().processWith(ScheduledFlowGraphTest::transformToUpdatedContract)
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(GenericProcessors::consoleLogger)
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -292,8 +312,8 @@ class ScheduledFlowGraphTest {
         jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(GenericProducer::newContract)
-                .andProcessWith( ScheduledFlowGraphTest::contextTransformer)
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( ScheduledFlowGraphTest::contextTransformer)
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 

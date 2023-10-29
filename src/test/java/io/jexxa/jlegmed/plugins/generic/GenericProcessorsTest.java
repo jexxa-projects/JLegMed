@@ -20,9 +20,9 @@ class GenericProcessorsTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from( () -> 1)
 
-                .andProcessWith( GenericProcessors::incrementer )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::incrementer )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 

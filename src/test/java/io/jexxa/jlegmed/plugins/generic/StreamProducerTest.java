@@ -27,14 +27,14 @@ class StreamProducerTest {
                 .await(Integer.class)
                 .from(streamProducer(infiniteStream1))
 
-                .andProcessWith( messageCollector1::collect );
+                .and().processWith( messageCollector1::collect );
 
 
         jlegmed.newFlowGraph("FlowGraphTest2")
 
                 .await(Integer.class)
                 .from(streamProducer(infiniteStream2))
-                .andProcessWith( messageCollector2::collect );
+                .and().processWith( messageCollector2::collect );
 
         //Act
         jlegmed.start();

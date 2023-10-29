@@ -18,39 +18,40 @@ public class ProducerBinding<T> {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }
-    public ProcessorBinding<T> from(Function<FilterContext, T> function) {
+
+    public Binding<T> from(Function<FilterContext, T> function) {
         var typedProducer = producer(function);
         typedProducer.producingType(sourceType);
         flowGraph.setProducer(typedProducer);
 
         flowGraph.addFilter(typedProducer);
-        return new ProcessorBinding<>(typedProducer.outputPipe(), typedProducer, flowGraph);
+        return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
-    public ProcessorBinding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
+    public Binding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
         var typedProducer = producer(biFunction);
         typedProducer.producingType(sourceType);
         flowGraph.setProducer(typedProducer);
 
         flowGraph.addFilter(typedProducer);
-        return new ProcessorBinding<>(typedProducer.outputPipe(), typedProducer, flowGraph);
+        return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
-    public ProcessorBinding<T> from(Supplier<T> supplier) {
+    public Binding<T> from(Supplier<T> supplier) {
         var typedProducer = producer(supplier);
         typedProducer.producingType(sourceType);
         flowGraph.setProducer(typedProducer);
 
         flowGraph.addFilter(typedProducer);
-        return new ProcessorBinding<>(typedProducer.outputPipe(), typedProducer, flowGraph);
+        return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
-    public ProcessorBinding<T> from(Producer<T> producer) {
+    public Binding<T> from(Producer<T> producer) {
         producer.producingType(sourceType);
         flowGraph.setProducer(producer);
 
         flowGraph.addFilter(producer);
-        return new ProcessorBinding<>(producer.outputPipe(), producer, flowGraph);
+        return new Binding<>(producer, producer.outputPipe(), flowGraph);
     }
 
 }

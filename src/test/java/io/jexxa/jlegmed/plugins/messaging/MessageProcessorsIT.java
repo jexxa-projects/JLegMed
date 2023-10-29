@@ -24,9 +24,9 @@ class MessageProcessorsIT {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).configureWith("test-jms-connection", topic("MyTopic"))
-                .andProcessWith(messageCollector::collect);
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(MessageProcessors::sendAsJSON).configureWith("test-jms-connection", topic("MyTopic"))
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 

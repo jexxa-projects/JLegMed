@@ -51,10 +51,10 @@ class DatabaseReaderIT {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith( data -> new TestData(data, "Hello World " + data))
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
-                .andProcessWith(messageCollector::collect);
+                .and().processWith( data -> new TestData(data, "Hello World " + data))
+                .and().processWith(GenericProcessors::consoleLogger)
+                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -76,10 +76,10 @@ class DatabaseReaderIT {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith( data -> new TestData(data, "Hello World " + data))
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
-                .andProcessWith(messageCollector::collect);
+                .and().processWith( data -> new TestData(data, "Hello World " + data))
+                .and().processWith(GenericProcessors::consoleLogger)
+                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -101,15 +101,16 @@ class DatabaseReaderIT {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith( data -> new TestData(data, "Hello World " + data))
-                .andProcessWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection");
+                .and().processWith( data -> new TestData(data, "Hello World " + data))
+                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection");
 
         jlegmed.newFlowGraph("readFromDatabase")
 
                 .each(10, MILLISECONDS)
                 .receive(TestData.class).from(testDataSQLReader()).useProperties("test-jdbc-connection")
-                .andProcessWith(GenericProcessors::consoleLogger)
-                .andProcessWith(messageCollector::collect);
+
+                .and().processWith(GenericProcessors::consoleLogger)
+                .and().processWith(messageCollector::collect);
 
         //Act
         jlegmed.start();

@@ -27,10 +27,10 @@ class PersistenceFlowGraphIT {
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .andProcessWith( data -> new TextEntity(data) )
-                .andProcessWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect );
+                .and().processWith( data -> new TextEntity(data) )
+                .and().processWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
 

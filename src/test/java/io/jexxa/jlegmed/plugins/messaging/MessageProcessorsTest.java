@@ -26,9 +26,9 @@ class MessageProcessorsTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).filterConfig(topic("MyTopic"))
-                .andProcessWith(messageCollector::collect);
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(MessageProcessors::sendAsJSON).filterConfig(topic("MyTopic"))
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -49,9 +49,9 @@ class MessageProcessorsTest {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .andProcessWith(GenericProcessors::idProcessor)
-                .andProcessWith(MessageProcessors::sendAsJSON).filterConfig(queue("MyQueue"))
-                .andProcessWith(messageCollector::collect);
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().processWith(MessageProcessors::sendAsJSON).filterConfig(queue("MyQueue"))
+                .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
 

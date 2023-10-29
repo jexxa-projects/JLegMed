@@ -40,11 +40,11 @@ class ContextFlowGraphTest {
 
                 .await(Integer.class)
                 // Here we configure a producer that produces a counter in a specific interval
-                .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
+                .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS)).and()
 
-                .andProcessWith( processor(GenericProcessors::idProcessor ))
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect );
+                .processWith( processor(GenericProcessors::idProcessor )).and()
+                .processWith( GenericProcessors::consoleLogger ).and()
+                .processWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -63,9 +63,9 @@ class ContextFlowGraphTest {
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect );
+                .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -88,10 +88,10 @@ class ContextFlowGraphTest {
 
                 // Here we configure two processors of the sam type. Each of them uses its own FilterContext to skip each second message
                 // At the end 2nd-4th messages are skipped.
-                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect );
+                .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -114,9 +114,9 @@ class ContextFlowGraphTest {
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
-                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector1::collect );
+                .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector1::collect );
 
 
         jlegmed.newFlowGraph("FlowGraphTest2")
@@ -124,9 +124,9 @@ class ContextFlowGraphTest {
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
-                .andProcessWith( ContextFlowGraphTest::skipEachSecondMessage )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector2::collect );
+                .and().processWith( ContextFlowGraphTest::skipEachSecondMessage )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector2::collect );
 
         //Act
         jlegmed.start();

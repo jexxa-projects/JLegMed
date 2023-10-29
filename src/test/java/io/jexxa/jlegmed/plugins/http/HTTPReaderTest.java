@@ -30,9 +30,9 @@ class HTTPReaderTest {
                 .each(50, MILLISECONDS)
                 .receive(VersionInfo.class).from(httpURL("http://localhost:7070/"))
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
 
         //Act
         jlegmed.start();
@@ -54,9 +54,9 @@ class HTTPReaderTest {
                 .each(50, MILLISECONDS)
                 .receive(VersionInfo.class).from(httpURL(HTTPReaderTest::readHTTPData))
 
-                .andProcessWith( GenericProcessors::idProcessor )
-                .andProcessWith( GenericProcessors::consoleLogger )
-                .andProcessWith( messageCollector::collect);
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
 
         //Act
         jlegmed.start();

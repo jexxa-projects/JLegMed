@@ -1,26 +1,22 @@
 package io.jexxa.jlegmed.plugins.persistence;
 
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
-import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCQuery;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCTableBuilder;
 import io.jexxa.jlegmed.common.wrapper.jdbc.builder.SQLDataType;
-import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.persistence.processor.JDBCContext;
 import io.jexxa.jlegmed.plugins.persistence.processor.SQLWriter;
 import io.jexxa.jlegmed.plugins.persistence.producer.SQLReader;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
-import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DATABASE_READER_IT;
-import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_INDEX;
-import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DBSchema.DB_STRING_DATA;
+import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DatabaseMethods.DBSchema.DB_INDEX;
+import static io.jexxa.jlegmed.plugins.persistence.DatabaseReaderIT.DatabaseMethods.DBSchema.DB_STRING_DATA;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
@@ -28,20 +24,11 @@ import static org.awaitility.Awaitility.await;
 
 class DatabaseReaderIT {
 
-    @BeforeEach
-    void beforeEach()
-    {
-        JLegMed jLegMed = new JLegMed(DatabaseReaderIT.class).disableBanner();
-        var dbProperties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
-        createDatabase( dbProperties, jLegMed);
-        createTable("DATABASE_READER_IT", dbProperties, jLegMed);
-    }
-
     @Test
     void writeToDatabase() {
-        System.out.println();
         //Arrange
         var messageCollector = new MessageCollector<TestData>();
+        var database = new DatabaseMethods();
 
         var jlegmed = new JLegMed(DatabaseReaderIT.class).disableBanner();
 
@@ -51,7 +38,10 @@ class DatabaseReaderIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
+
+                .and().processWith( SQLWriter.execute(database::initDatabase)).useProperties("test-jdbc-connection")
+                .and().processWith( SQLWriter.execute(database::insertData )).useProperties("test-jdbc-connection")
+
                 .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
@@ -66,8 +56,9 @@ class DatabaseReaderIT {
     void asInsert() {
         //Arrange
         var messageCollector = new MessageCollector<TestData>();
+        var database = new DatabaseMethods();
 
-        var jlegmed = new JLegMed(DatabaseReaderIT.class);
+        var jlegmed = new JLegMed(DatabaseReaderIT.class).disableBanner();
 
         jlegmed.newFlowGraph("HelloWorld")
 
@@ -75,7 +66,8 @@ class DatabaseReaderIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection")
+                .and().processWith( SQLWriter.execute( database::initDatabase )).useProperties("test-jdbc-connection")
+                .and().processWith( SQLWriter.execute( database::insertData )).useProperties("test-jdbc-connection")
                 .and().processWith(messageCollector::collect);
         //Act
         jlegmed.start();
@@ -91,18 +83,18 @@ class DatabaseReaderIT {
         //Arrange
         var messageCollector = new MessageCollector<TestData>();
 
-        var jlegmed = new JLegMed(DatabaseReaderIT.class);
+        var jlegmed = new JLegMed(DatabaseReaderIT.class).disableBanner();
+        var database = new DatabaseMethods();
 
         jlegmed.newFlowGraph("writeToDatabase")
-
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( SQLWriter.insert( "DATABASE_READER_IT", data -> toArray(data.index, data.message)) ).useProperties("test-jdbc-connection");
+                .and().processWith( SQLWriter.execute( database::initDatabase )).useProperties("test-jdbc-connection")
+                .and().processWith( SQLWriter.execute( database::insertData )).useProperties("test-jdbc-connection");
 
         jlegmed.newFlowGraph("readFromDatabase")
-
                 .each(10, MILLISECONDS)
                 .receive(TestData.class).from(testDataSQLReader()).useProperties("test-jdbc-connection")
 
@@ -116,31 +108,7 @@ class DatabaseReaderIT {
         jlegmed.stop();
     }
 
-    private record TestData(int index, String message){}
-
-    static void createDatabase(Properties properties, JLegMed jLegMed)
-    {
-        var connection = JDBCConnectionPool.getConnection(properties, jLegMed);
-        connection.autocreateDatabase(properties);
-    }
-
-
-
-    static void createTable(String tableName, Properties properties, JLegMed jLegMed)
-    {
-        var connection = JDBCConnectionPool.getConnection(properties, jLegMed);
-        connection.createTableCommand(DBSchema.class)
-                .dropTableIfExists(tableName)
-                .asIgnore();
-
-        connection.createTableCommand(DBSchema.class)
-                .createTableIfNotExists(tableName )
-                .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
-                .addColumn(DBSchema.DB_STRING_DATA, SQLDataType.VARCHAR)
-                .create()
-                .asIgnore();
-
-    }
+    public record TestData(int index, String message){}
 
 
     static SQLReader<TestData> testDataSQLReader()
@@ -149,8 +117,8 @@ class DatabaseReaderIT {
             @Override
             protected JDBCQuery getQuery(JDBCConnection jdbcConnection) {
                 var currentMax = jdbcConnection
-                        .createQuery(DBSchema.class)
-                        .selectMax(DB_INDEX).from(DATABASE_READER_IT).create()
+                        .createQuery(DatabaseMethods.DBSchema.class)
+                        .selectMax(DB_INDEX).from(DatabaseMethods.DBSchema.DATABASE_READER_IT).create()
                         .asInt().findFirst()
                         .orElse(0);
 
@@ -159,8 +127,8 @@ class DatabaseReaderIT {
                 filterContext().updateState(stateID, currentMax);
 
                 return jdbcConnection
-                        .createQuery(DBSchema.class)
-                        .selectAll().from(DBSchema.DATABASE_READER_IT)
+                        .createQuery(DatabaseMethods.DBSchema.class)
+                        .selectAll().from(DatabaseMethods.DBSchema.DATABASE_READER_IT)
                         .where(DB_INDEX).isGreaterThan(lastPublishedIndex).and(DB_INDEX).isLessOrEqual(currentMax)
                         .create();
             }
@@ -172,10 +140,52 @@ class DatabaseReaderIT {
         };
     }
 
-    enum DBSchema {
-        DB_INDEX,
-        DB_STRING_DATA,
+    public static class DatabaseMethods {
+        private boolean databaseInitialized = false;
+        enum DBSchema {
+            DB_INDEX,
+            DB_STRING_DATA,
 
-        DATABASE_READER_IT
+            DATABASE_READER_IT
+        }
+
+        synchronized public void initDatabase(JDBCContext jdbcContext) {
+            if (!databaseInitialized) {
+                createDatabase(jdbcContext);
+                createTable(jdbcContext);
+                databaseInitialized = true;
+            }
+        }
+        synchronized private void createTable(JDBCContext jdbcContext)
+        {
+            if (!databaseInitialized) {
+                jdbcContext.jdbcConnection().createTableCommand(DatabaseMethods.DBSchema.class)
+                        .dropTableIfExists(DBSchema.DATABASE_READER_IT)
+                        .asIgnore();
+
+                jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
+                        .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
+                        .addColumn(DBSchema.DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
+                        .addColumn(DBSchema.DB_STRING_DATA, SQLDataType.VARCHAR)
+                        .create()
+                        .asIgnore();
+                databaseInitialized = true;
+            }
+        }
+
+        synchronized private void createDatabase(JDBCContext jdbcContext)
+        {
+            if (!databaseInitialized) {
+                jdbcContext.jdbcConnection().autocreateDatabase(jdbcContext.filterContext().filterProperties().orElseThrow().properties());
+            }
+        }
+
+        synchronized public void insertData(JDBCContext jdbcContext, TestData data)
+        {
+            jdbcContext.jdbcConnection().createCommand(DatabaseMethods.DBSchema.class).
+                    insertInto(DBSchema.DATABASE_READER_IT).values(toArray(data.index, data.message))
+                    .create()
+                    .asUpdate();
+        }
     }
 }

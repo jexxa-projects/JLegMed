@@ -6,7 +6,8 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 
 import java.util.Properties;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public abstract class SQLWriter<T> extends Processor<T, T> {
 
@@ -33,40 +34,24 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
-
-
-    public static <T> SQLWriter<T> insert(String table, Function<T, Object[]> objectMapper)
-    {
+    public static <T> SQLWriter<T> execute(Consumer<JDBCContext> consumer) {
         return new SQLWriter<>() {
-            @Override
-            protected void executeCommand(JDBCConnection jdbcConnection, T element) {
-                jdbcConnection.createCommand().
-                        insertInto(table).values(objectMapper.apply(element))
-                        .create()
-                        .asUpdate();
-            }
-        };
-    }
-
-    public static <T> SQLWriter<T> createTable(String table, Function<T, Object[]> objectMapper) {
-        return new SQLWriter<>() {
-            private boolean initialized = false;
             @Override
             protected void executeCommand(JDBCConnection connection, T element) {
-
-                if (!initialized) {
-                    //connection.autocreateDatabase(state().getPropertiesConfig().properties());
-
-               /*     connection.createTableCommand(DBSchema.class)
-                            .createTableIfNotExists(tableName)
-                            .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
-                            .addColumn(DBSchema.DB_STRING_DATA, SQLDataType.VARCHAR)
-                            .create()
-                            .asIgnore();
-*/
-                    this.initialized = true;
-                }
+                consumer.accept(new JDBCContext(connection, filterContext()));
             }
         };
     }
+
+    public static <T> SQLWriter<T> execute(BiConsumer<JDBCContext, T> biConsumer) {
+        return new SQLWriter<>() {
+            @Override
+            protected void executeCommand(JDBCConnection connection, T data) {
+                biConsumer.accept(new JDBCContext(connection, filterContext()), data);
+            }
+        };
+    }
+
+
+
 }

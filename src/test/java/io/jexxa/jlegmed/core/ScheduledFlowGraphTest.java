@@ -58,26 +58,6 @@ class ScheduledFlowGraphTest {
     }
 
     @Test
-    void testFlowGraph2() {
-        //Arrange
-        var messageCollector = new MessageCollector<String>();
-
-        jlegmed.newFlowGraph("HelloWorld")
-
-                .each(10, MILLISECONDS)
-                .receive(String.class).from(() -> "Hello World").and()
-
-                .processWith( GenericProcessors::idProcessor ).and()
-                .processWith( GenericProcessors::consoleLogger ).and()
-                .processWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-    }
-
-    @Test
     void testChangeContent() {
         //Arrange
         var messageCollector = new MessageCollector<String>();

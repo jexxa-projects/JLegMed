@@ -30,21 +30,24 @@ public class Binding<T> {
     }
 
     public Binding<T> useProperties(String propertiesPrefix) {
-        predecessor.properties(new FilterProperties(
-                propertiesPrefix,
-                PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix))
-        );
+        var properties = PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix);
+        if (properties.isEmpty()) {
+            throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
+        }
+        predecessor.properties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
     }
 
+    @SuppressWarnings("unused")
     public <U> Binding<T> configureWith(FilterProperties filterProperties, U filterConfig) {
         filterConfig(filterConfig);
         return useProperties(filterProperties);
     }
 
     public <U> Binding<T> configureWith(String propertiesPrefix, U filterConfig) {
-        return configureWith(new FilterProperties(propertiesPrefix, PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix)), filterConfig);
+        useProperties(propertiesPrefix);
+        return filterConfig(filterConfig);
     }
 
     public ProcessorBuilder<T> and() {

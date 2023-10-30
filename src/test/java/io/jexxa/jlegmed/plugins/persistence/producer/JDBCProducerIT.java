@@ -20,11 +20,9 @@ class JDBCProducerIT {
     void readWriteToDatabase() {
         //Arrange
         var messageCollectorWriter = new MessageCollector<TestData>();
-
         var messageCollectorReader = new MessageCollector<TestData>();
-
-        var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
         var jdbc = new JDBCStatementsForTestData();
+        var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
 
         jlegmed.newFlowGraph("writeToDatabase")
                 .each(10, MILLISECONDS)
@@ -54,6 +52,4 @@ class JDBCProducerIT {
 
         jlegmed.stop();
     }
-
-
 }

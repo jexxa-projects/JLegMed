@@ -34,40 +34,38 @@ public class JDBCStatementsForTestData {
         initDatabaseIfRequired(jdbcContext);
 
         var latestIndex = getLatestIndex(jdbcContext);
-        getLatestData(jdbcContext, latestIndex)
-                .forEach(element -> jdbcContext.outputPipe().accept(element));
+        var latestData = getLatestData(jdbcContext, latestIndex);
+        latestData.forEach(element -> jdbcContext.outputPipe().accept(element));
         this.lastForwardedIndex = latestIndex;
     }
 
     synchronized private void initDatabaseIfRequired(JDBCContext<TestData> jdbcContext) {
         if (!databaseInitialized) {
             createDatabase(jdbcContext);
+            dropTable(jdbcContext);
             createTable(jdbcContext);
             databaseInitialized = true;
         }
     }
 
-    synchronized private void createTable(JDBCContext<TestData> jdbcContext) {
-        if (!databaseInitialized) {
-            jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
-                    .dropTableIfExists(DBSchema.DATABASE_READER_IT)
-                    .asIgnore();
+    synchronized private void dropTable(JDBCContext<TestData> jdbcContext) {
+        jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
+                .dropTableIfExists(DBSchema.DATABASE_READER_IT)
+                .asIgnore();
+    }
 
-            jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
-                    .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
-                    .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
-                    .addColumn(DB_STRING_DATA, SQLDataType.VARCHAR)
-                    .create()
-                    .asIgnore();
-            databaseInitialized = true;
-        }
+    synchronized private void createTable(JDBCContext<TestData> jdbcContext) {
+        jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
+                .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
+                .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
+                .addColumn(DB_STRING_DATA, SQLDataType.VARCHAR)
+                .create()
+                .asIgnore();
     }
 
     synchronized private void createDatabase(JDBCContext<TestData> jdbcContext) {
-        if (!databaseInitialized) {
-            var filterProperties = jdbcContext.filterContext().filterProperties().orElseThrow(() -> new IllegalStateException("No properties configured to access a database"));
-            jdbcContext.jdbcConnection().autocreateDatabase(filterProperties.properties());
-        }
+        var filterProperties = jdbcContext.filterContext().filterProperties().orElseThrow(() -> new IllegalStateException("No properties configured to access a database"));
+        jdbcContext.jdbcConnection().autocreateDatabase(filterProperties.properties());
     }
 
     private int getLatestIndex(JDBCContext<TestData> jdbcContext) {
@@ -79,7 +77,6 @@ public class JDBCStatementsForTestData {
     }
 
     private Stream<TestData> getLatestData(JDBCContext<TestData> jdbcContext, int maxIndex) {
-
         return jdbcContext.jdbcConnection()
                 .createQuery(DBSchema.class)
                 .selectAll().from(DBSchema.DATABASE_READER_IT)
@@ -88,5 +85,4 @@ public class JDBCStatementsForTestData {
 
                 .as(resultSet -> new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name())));
     }
-
 }

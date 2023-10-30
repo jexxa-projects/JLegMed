@@ -5,11 +5,11 @@ import io.jexxa.jlegmed.common.wrapper.jdbc.builder.SQLDataType;
 
 import java.util.stream.Stream;
 
-import static io.jexxa.jlegmed.plugins.persistence.DatabaseTestData.DBSchema.DB_INDEX;
-import static io.jexxa.jlegmed.plugins.persistence.DatabaseTestData.DBSchema.DB_STRING_DATA;
+import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_INDEX;
+import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_STRING_DATA;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
-public class DatabaseTestData {
+public class JDBCStatementsForTestData {
     private boolean databaseInitialized = false;
     private int lastForwardedIndex = 0;
 
@@ -21,7 +21,7 @@ public class DatabaseTestData {
     }
 
 
-    synchronized public void insertTestData(JDBCContext<DatabaseReaderIT.TestData> jdbcContext, DatabaseReaderIT.TestData data) {
+    synchronized public void insertTestData(JDBCContext<TestData> jdbcContext, TestData data) {
         initDatabaseIfRequired(jdbcContext);
 
         jdbcContext.jdbcConnection().createCommand(DBSchema.class).
@@ -30,7 +30,7 @@ public class DatabaseTestData {
                 .asUpdate();
     }
 
-    synchronized public void readTestData(JDBCContext<DatabaseReaderIT.TestData> jdbcContext) {
+    synchronized public void readTestData(JDBCContext<TestData> jdbcContext) {
         initDatabaseIfRequired(jdbcContext);
 
         var latestIndex = getLatestIndex(jdbcContext);
@@ -39,7 +39,7 @@ public class DatabaseTestData {
         this.lastForwardedIndex = latestIndex;
     }
 
-    synchronized private void initDatabaseIfRequired(JDBCContext<DatabaseReaderIT.TestData> jdbcContext) {
+    synchronized private void initDatabaseIfRequired(JDBCContext<TestData> jdbcContext) {
         if (!databaseInitialized) {
             createDatabase(jdbcContext);
             createTable(jdbcContext);
@@ -47,7 +47,7 @@ public class DatabaseTestData {
         }
     }
 
-    synchronized private void createTable(JDBCContext<DatabaseReaderIT.TestData> jdbcContext) {
+    synchronized private void createTable(JDBCContext<TestData> jdbcContext) {
         if (!databaseInitialized) {
             jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
                     .dropTableIfExists(DBSchema.DATABASE_READER_IT)
@@ -63,13 +63,14 @@ public class DatabaseTestData {
         }
     }
 
-    synchronized private void createDatabase(JDBCContext<DatabaseReaderIT.TestData> jdbcContext) {
+    synchronized private void createDatabase(JDBCContext<TestData> jdbcContext) {
         if (!databaseInitialized) {
-            jdbcContext.jdbcConnection().autocreateDatabase(jdbcContext.filterContext().filterProperties().orElseThrow().properties());
+            var filterProperties = jdbcContext.filterContext().filterProperties().orElseThrow(() -> new IllegalStateException("No properties configured to access a database"));
+            jdbcContext.jdbcConnection().autocreateDatabase(filterProperties.properties());
         }
     }
 
-    private int getLatestIndex(JDBCContext<DatabaseReaderIT.TestData> jdbcContext) {
+    private int getLatestIndex(JDBCContext<TestData> jdbcContext) {
         return jdbcContext.jdbcConnection()
                 .createQuery(DBSchema.class)
                 .selectMax(DB_INDEX).from(DBSchema.DATABASE_READER_IT).create()
@@ -77,7 +78,7 @@ public class DatabaseTestData {
                 .orElse(0);
     }
 
-    private Stream<DatabaseReaderIT.TestData> getLatestData(JDBCContext<DatabaseReaderIT.TestData> jdbcContext, int maxIndex) {
+    private Stream<TestData> getLatestData(JDBCContext<TestData> jdbcContext, int maxIndex) {
 
         return jdbcContext.jdbcConnection()
                 .createQuery(DBSchema.class)
@@ -85,7 +86,7 @@ public class DatabaseTestData {
                 .where(DB_INDEX).isGreaterThan(this.lastForwardedIndex).and(DB_INDEX).isLessOrEqual(maxIndex)
                 .create()
 
-                .as(resultSet -> new DatabaseReaderIT.TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name())));
+                .as(resultSet -> new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name())));
     }
 
 }

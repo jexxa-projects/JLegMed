@@ -1,9 +1,7 @@
-package io.jexxa.jlegmed.plugins.persistence;
+package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
-import io.jexxa.jlegmed.plugins.persistence.processor.AbstractAggregate;
-import io.jexxa.jlegmed.plugins.persistence.processor.RepositoryProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -13,13 +11,13 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-class PersistenceFlowGraphIT {
+class RepositoryProcessorIT {
 
     @Test
     void testFlowGraph() {
         //Arrange
         var messageCollector = new MessageCollector<TextEntity>();
-        var jlegmed = new JLegMed(PersistenceFlowGraphIT.class).disableBanner();
+        var jlegmed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
 
         jlegmed.newFlowGraph("HelloWorld")
 

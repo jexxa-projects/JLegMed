@@ -66,7 +66,7 @@ public abstract class HTTPReader<T> extends Producer<T> {
         };
     }
 
-    public static <T> HTTPReader<T> httpReader(Consumer<HTTPReaderContext<T>> function)
+    public static <T> HTTPReader<T> http(Consumer<HTTPReaderContext<T>> function)
     {
         return new HTTPReader<>() {
             @Override

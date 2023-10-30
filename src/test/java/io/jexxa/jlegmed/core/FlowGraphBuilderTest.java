@@ -38,7 +38,7 @@ class FlowGraphBuilderTest {
     }
 
     @Test
-    void testFlowGraph() {
+    void testScheduledProcessing() {
         //Arrange
         var messageCollector = new MessageCollector<String>();
 

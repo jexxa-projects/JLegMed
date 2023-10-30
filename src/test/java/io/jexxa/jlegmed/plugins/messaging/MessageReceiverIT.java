@@ -15,7 +15,7 @@ import static org.awaitility.Awaitility.await;
 
 class MessageReceiverIT {
     @Test
-    void testReceiveFromTopic() {
+    void testAsyncProcessing() {
         //Arrange
         var messageCollector1 = new MessageCollector<Integer>();
         var messageCollector2 = new MessageCollector<>();
@@ -31,7 +31,7 @@ class MessageReceiverIT {
                 .and().processWith(messageCollector1::collect);
 
 
-        jlegmed.newFlowGraph("MessageReceiver")
+        jlegmed.newFlowGraph("Async MessageReceiver")
 
                 .await(Integer.class).from(jmsJSONProducer()).configureWith("test-jms-connection", topic("MyTopic"))
 

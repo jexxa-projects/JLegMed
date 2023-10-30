@@ -5,14 +5,11 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
 import io.jexxa.jlegmed.plugins.generic.MessageCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
-import io.jexxa.jlegmed.plugins.http.producer.HTTPReaderContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.APPLICATION_TYPE;
-import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.CONTENT_TYPE;
-import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpReader;
+import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.http;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpURL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -48,15 +45,16 @@ class HTTPReaderTest {
     void testFunctionalHTTPReader() {
         //Arrange
         var messageCollector = new MessageCollector<VersionInfo>();
+        var versionInfo = new VersionInfoReader("http://localhost:7070/");
         var jlegmed = new JLegMed(HTTPReaderTest.class).disableBanner();
 
         jlegmed.newFlowGraph("HTMLReader")
 
                 .each(50, MILLISECONDS)
-                .receive(VersionInfo.class).from(httpReader(HTTPReaderTest::readHTTPData))
+                .receive(VersionInfo.class).from(http(versionInfo::read))
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
+                .and().processWith( messageCollector::collect );
 
         //Act
         jlegmed.start();
@@ -66,15 +64,7 @@ class HTTPReaderTest {
         jlegmed.stop();
     }
 
-    private static <T> void readHTTPData(HTTPReaderContext<T> readerContext)
-    {
-        var result = readerContext.unirest().get("http://localhost:7070/")
-                .header(CONTENT_TYPE, APPLICATION_TYPE)
-                .asObject(readerContext.type())
-                .getBody();
 
-        readerContext.outputPipe().accept(result);
-    }
 
     @BeforeAll
     static void startWebservice() {

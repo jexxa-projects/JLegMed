@@ -37,7 +37,7 @@ public abstract class JDBCProducer<T> extends Producer<T> {
 
 
 
-    public static <T> JDBCProducer<T> jdbcReader(Consumer<JDBCContext<T>> consumer) {
+    public static <T> JDBCProducer<T> jdbcProducer(Consumer<JDBCContext<T>> consumer) {
         return new JDBCProducer<>() {
             @Override
             protected void executeCommand() {
@@ -46,7 +46,8 @@ public abstract class JDBCProducer<T> extends Producer<T> {
         };
     }
 
-    public static <T> JDBCProducer<T> execute(Consumer<JDBCContext<T>> consumer) {
+    @SuppressWarnings("unused")
+    public static <T> JDBCProducer<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
         return new JDBCProducer<>() {
 
             @Override

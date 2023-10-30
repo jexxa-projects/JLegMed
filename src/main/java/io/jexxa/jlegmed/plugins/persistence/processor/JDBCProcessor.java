@@ -35,6 +35,7 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
+    @SuppressWarnings("unused")
     public static <T> JDBCProcessor<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
         return new JDBCProcessor<>() {
             @Override

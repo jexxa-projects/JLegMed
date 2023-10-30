@@ -4,12 +4,13 @@ import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public abstract class SQLWriter<T> extends Processor<T, T> {
+public abstract class JDBCProcessor<T> extends Processor<T, T> {
 
     private Properties properties;
     @Override
@@ -34,20 +35,20 @@ public abstract class SQLWriter<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
-    public static <T> SQLWriter<T> execute(Consumer<JDBCContext> consumer) {
-        return new SQLWriter<>() {
+    public static <T> JDBCProcessor<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
+        return new JDBCProcessor<>() {
             @Override
             protected void executeCommand(JDBCConnection connection, T element) {
-                consumer.accept(new JDBCContext(connection, filterContext()));
+                consumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()::forward));
             }
         };
     }
 
-    public static <T> SQLWriter<T> execute(BiConsumer<JDBCContext, T> biConsumer) {
-        return new SQLWriter<>() {
+    public static <T> JDBCProcessor<T> jdbcProcessor(BiConsumer<JDBCContext<T>, T> biConsumer) {
+        return new JDBCProcessor<>() {
             @Override
             protected void executeCommand(JDBCConnection connection, T data) {
-                biConsumer.accept(new JDBCContext(connection, filterContext()), data);
+                biConsumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()::forward), data);
             }
         };
     }

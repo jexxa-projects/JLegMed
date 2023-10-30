@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.APPLICATION_TYPE;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.CONTENT_TYPE;
+import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpReader;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpURL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -52,7 +53,7 @@ class HTTPReaderTest {
         jlegmed.newFlowGraph("HTMLReader")
 
                 .each(50, MILLISECONDS)
-                .receive(VersionInfo.class).from(httpURL(HTTPReaderTest::readHTTPData))
+                .receive(VersionInfo.class).from(httpReader(HTTPReaderTest::readHTTPData))
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().processWith( messageCollector::collect);
@@ -65,12 +66,14 @@ class HTTPReaderTest {
         jlegmed.stop();
     }
 
-    private static <T> T readHTTPData(HTTPReaderContext<T> readerContext)
+    private static <T> void readHTTPData(HTTPReaderContext<T> readerContext)
     {
-        return readerContext.unirest().get("http://localhost:7070/")
+        var result = readerContext.unirest().get("http://localhost:7070/")
                 .header(CONTENT_TYPE, APPLICATION_TYPE)
                 .asObject(readerContext.type())
                 .getBody();
+
+        readerContext.outputPipe().accept(result);
     }
 
     @BeforeAll

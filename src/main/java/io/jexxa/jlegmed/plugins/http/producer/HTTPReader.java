@@ -23,7 +23,7 @@ public abstract class HTTPReader<T> extends Producer<T> {
             throw new IllegalArgumentException("Producing type is not configured for " + HTTPReader.class.getSimpleName() + "! -> Configure filter with Producer::producingType<Class<T>>!");
         }
         unirestInstance = Unirest.spawnInstance();
-        properties().ifPresent(element -> initUnirest(element.properties()));
+        filterProperties().ifPresent(element -> initUnirest(element.properties()));
     }
 
 

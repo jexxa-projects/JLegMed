@@ -20,12 +20,12 @@ public class Binding<T> {
 
 
     public <U> Binding<T> filterConfig(U configuration) {
-        predecessor.config(configuration);
+        predecessor.filterConfig(configuration);
         return this;
     }
 
     public Binding<T> useProperties(FilterProperties filterProperties) {
-        predecessor.properties(filterProperties);
+        predecessor.filterProperties(filterProperties);
         return this;
     }
 
@@ -34,7 +34,7 @@ public class Binding<T> {
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
         }
-        predecessor.properties(new FilterProperties(propertiesPrefix, properties));
+        predecessor.filterProperties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
     }

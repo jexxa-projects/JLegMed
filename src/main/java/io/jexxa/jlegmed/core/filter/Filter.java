@@ -26,10 +26,10 @@ public abstract class Filter {
         deInit();
     }
 
-    public <U> void config(U configuration) {
+    public <U> void filterConfig(U configuration) {
         this.filterContext.filterConfig(configuration);
     }
-    public void properties(FilterProperties filterProperties) {
+    public void filterProperties(FilterProperties filterProperties) {
         this.filterContext.filterProperties(filterProperties);
     }
 
@@ -37,7 +37,7 @@ public abstract class Filter {
         return filterContext.processingState();
     }
 
-    public Optional<FilterProperties> properties() {
+    public Optional<FilterProperties> filterProperties() {
         return filterContext.filterProperties();
     }
 

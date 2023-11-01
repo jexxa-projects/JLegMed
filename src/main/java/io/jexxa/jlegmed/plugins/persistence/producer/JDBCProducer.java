@@ -16,7 +16,7 @@ public abstract class JDBCProducer<T> extends Producer<T> {
     @Override
     public void init()
     {
-        this.databaseProperties = properties()
+        this.databaseProperties = filterProperties()
                 .orElseThrow(() -> new IllegalArgumentException("No database connection defined in properties -> Define a database connection in main using 'useProperties()' "))
                 .properties();
         this.jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);

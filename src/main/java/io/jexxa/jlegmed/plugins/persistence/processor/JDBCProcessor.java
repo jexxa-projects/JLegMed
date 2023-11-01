@@ -18,7 +18,7 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
     {
         super.init();
 
-        this.properties = properties()
+        this.properties = filterProperties()
                 .orElseThrow( () -> new IllegalArgumentException("No properties for database connection defined -> Define properties of SQLWriter in your main"))
                 .properties();
     }

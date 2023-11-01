@@ -10,10 +10,10 @@ public class OutputPipe<T> {
         this.inputPipe = inputPipe;
     }
 
-    public void forward(T content) {
+    public void forward(T data) {
         if (inputPipe != null)
         {
-            inputPipe.receive(content);
+            inputPipe.receive(data);
         } else {
             SLF4jLogger.getLogger(OutputPipe.class).debug("No input pipe connected");
         }

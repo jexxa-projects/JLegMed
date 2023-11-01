@@ -8,7 +8,7 @@ public class InputPipe<T> {
     {
         this.processor = processor;
     }
-    public void receive(T content) {
-        processor.process(content);
+    public void receive(T data) {
+        processor.process(data);
     }
 }

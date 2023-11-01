@@ -23,12 +23,12 @@ public abstract class Processor<T, R>  extends Filter {
         return outputPipe;
     }
 
-    public void process(T content) {
+    public void process(T data) {
 
         do {
             startProcessing();
 
-            Optional.ofNullable(doProcess(content, filterContext()))
+            Optional.ofNullable(doProcess(data, filterContext()))
                     .ifPresent(result -> outputPipe().forward(result));
 
             finishedProcessing();
@@ -36,7 +36,7 @@ public abstract class Processor<T, R>  extends Filter {
         } while (processAgain());
     }
 
-    protected abstract R doProcess(T content, FilterContext context);
+    protected abstract R doProcess(T data, FilterContext context);
 
     public static  <T, R> Processor<T, R> processor(BiFunction<T, FilterContext, R> processFunction)
     {

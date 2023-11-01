@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -16,7 +16,7 @@ class RepositoryProcessorIT {
     @Test
     void testFlowGraph() {
         //Arrange
-        var messageCollector = new MessageCollector<TextEntity>();
+        var messageCollector = new GenericCollector<TextEntity>();
         var jlegmed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
 
         jlegmed.newFlowGraph("HelloWorld")

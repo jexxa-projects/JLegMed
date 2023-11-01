@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.persistence.producer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData;
 import io.jexxa.jlegmed.plugins.persistence.TestData;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,8 @@ class JDBCProducerIT {
     @Test
     void readWriteToDatabase() {
         //Arrange
-        var messageCollectorWriter = new MessageCollector<TestData>();
-        var messageCollectorReader = new MessageCollector<TestData>();
+        var messageCollectorWriter = new GenericCollector<TestData>();
+        var messageCollectorReader = new GenericCollector<TestData>();
         var jdbc = new JDBCStatementsForTestData();
         var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
 

@@ -13,15 +13,21 @@ public class JSONReader<T> extends FunctionalProducer<T> {
     private final Gson gson = new Gson();
 
     public enum ProducerMode{ONLY_ONCE, UNTIL_STOPPED}
-
+    private ProducerMode producerMode;
     private JSONReader(InputStream inputStreamReader)
     {
         this.inputStream = inputStreamReader;
     }
 
     @Override
+    public void init()
+    {
+        super.init();
+        producerMode = filterContext().getFilterConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
+    }
+
+    @Override
     protected T doProduce() {
-        ProducerMode producerMode = filterContext().config(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
         var result = gson.fromJson(new InputStreamReader(inputStream), producingType());
 
         try {

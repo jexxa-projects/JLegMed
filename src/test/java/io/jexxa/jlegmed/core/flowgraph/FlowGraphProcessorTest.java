@@ -1,34 +1,29 @@
-package io.jexxa.jlegmed.core;
+package io.jexxa.jlegmed.core.flowgraph;
 
-import com.google.gson.Gson;
+import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.dto.incoming.NewContract;
 import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-
-import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
-import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
-import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.inputStream;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class FlowGraphBuilderTest {
+class FlowGraphProcessorTest {
     private static JLegMed jlegmed;
 
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        jlegmed = new JLegMed(FlowGraphProcessorTest.class).disableBanner();
     }
 
     @AfterEach
@@ -40,7 +35,7 @@ class FlowGraphBuilderTest {
     @Test
     void testScheduledProcessing() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("HelloWorld")
 
@@ -59,12 +54,14 @@ class FlowGraphBuilderTest {
     @Test
     void testChangeContent() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new GenericCollector<String>();
+        var inputData = "Hello World";
+        var expectedResult  = inputData + "-" + inputData;
 
         jlegmed.newFlowGraph("HelloWorld")
 
                 .each(10, MILLISECONDS)
-                .receive(String.class).from(() -> "Hello World")
+                .receive(String.class).from(() -> inputData)
 
                 .and().processWith( content -> content + "-" + content )
                 .and().processWith( messageCollector::collect);
@@ -73,13 +70,13 @@ class FlowGraphBuilderTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals("Hello World-Hello World", messageCollector.getMessages().get(0));
+        assertEquals(expectedResult, messageCollector.getMessages().get(0));
     }
 
     @Test
-    void testUseContext() {
+    void tesProcessorUsesContext() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("HelloWorld")
 
@@ -98,9 +95,9 @@ class FlowGraphBuilderTest {
 
 
     @Test
-    void testUseTypeInformation() {
+    void tesProcessorUsesTypeInformation() {
         //Arrange
-        var messageCollector = new MessageCollector<String>();
+        var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("TypedSource")
 
@@ -117,33 +114,11 @@ class FlowGraphBuilderTest {
         assertEquals("Hello World - Type:" + String.class.getSimpleName()+ " - " + FilterContext.class.getSimpleName(), messageCollector.getMessages().get(0));
     }
 
-    @Test
-    void testProducerWithContext() {
-        //Arrange
-        var messageCollector = new MessageCollector<Integer>();
-
-        jlegmed.newFlowGraph("ProducerWithContext")
-
-                .each(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert - We expect a counting value
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-
-        assertEquals(1, messageCollector.getMessages().get(0));
-        assertEquals(2, messageCollector.getMessages().get(1));
-        assertEquals(3, messageCollector.getMessages().get(2));
-    }
 
     @Test
     void testProcessorGeneratesMoreOutputDataForASingleInput() {
         //Arrange
-        var messageCollector = new MessageCollector<Integer>();
+        var messageCollector = new GenericCollector<Integer>();
 
         jlegmed.newFlowGraph("DuplicateMessage")
 
@@ -164,75 +139,12 @@ class FlowGraphBuilderTest {
         assertEquals(2, messageCollector.getMessages().get(3));
     }
 
-    @Test
-    void testProducerGeneratesMoreOutputDataPerIteration() {
-        //Arrange
-        var messageCollector = new MessageCollector<Integer>();
-
-        jlegmed.newFlowGraph("testDuplicateProducer")
-
-                .each(10, MILLISECONDS)
-                .receive(Integer.class).from(FlowGraphBuilderTest::duplicateProducer)
-
-                .and().processWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
-
-        assertEquals(1, messageCollector.getMessages().get(0));
-        assertEquals(1, messageCollector.getMessages().get(1));
-        assertEquals(2, messageCollector.getMessages().get(2));
-        assertEquals(2, messageCollector.getMessages().get(3));
-    }
-
-    @Test
-    void testFilterConfigUntilStopped() {
-        //Arrange
-        var messageCollector = new MessageCollector<NewContract>();
-        var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
-
-        jlegmed.newFlowGraph("ProducerURL")
-
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(UNTIL_STOPPED)
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert - We must receive > 1 messages
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() > 1);
-    }
-
-    @Test
-    void testFilterConfigOnlyOnce() {
-        //Arrange
-        var messageCollector = new MessageCollector<>();
-        var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
-
-        jlegmed.newFlowGraph("ProducerURLOnlyOnce")
-
-                .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(ONLY_ONCE)
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert - We receive only a single message
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() == 1);
-        assertEquals(1, messageCollector.getNumberOfReceivedMessages());
-    }
 
     @Test
     void testMultipleFlowGraphs() {
         //Arrange
-        var messageCollector1 = new MessageCollector<Integer>();
-        var messageCollector2 = new MessageCollector<Integer>();
+        var messageCollector1 = new GenericCollector<Integer>();
+        var messageCollector2 = new GenericCollector<Integer>();
 
         jlegmed.newFlowGraph("flowGraph1")
 
@@ -262,13 +174,13 @@ class FlowGraphBuilderTest {
     @Test
     void testTransformData() {
         //Arrange
-        var messageCollector = new MessageCollector<UpdatedContract>();
+        var messageCollector = new GenericCollector<UpdatedContract>();
         jlegmed.newFlowGraph("transformData")
                 .each(10, MILLISECONDS)
 
-                .receive(NewContract.class).from(GenericProducer::newContract)
+                .receive(NewContract.class).from(TestFilter::newContract)
 
-                .and().processWith(FlowGraphBuilderTest::transformToUpdatedContract)
+                .and().processWith(TestFilter::transformToUpdatedContract)
                 .and().processWith(GenericProcessors::idProcessor)
                 .and().processWith(messageCollector::collect);
         //Act
@@ -283,40 +195,18 @@ class FlowGraphBuilderTest {
     @Test
     void testTransformDataWithContext() {
         //Arrange
-        var messageCollector = new MessageCollector<UpdatedContract>();
+        var messageCollector = new GenericCollector<UpdatedContract>();
 
         jlegmed.newFlowGraph("transformDataWithContext")
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(GenericProducer::newContract)
-                .and().processWith( FlowGraphBuilderTest::contextTransformer)
+                .receive(NewContract.class).from(TestFilter::newContract)
+                .and().processWith( TestFilter::contextTransformer)
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-    }
-
-
-    public static UpdatedContract transformToUpdatedContract(NewContract newContract) {
-        return new UpdatedContract(newContract.contractNumber(), "transformToUpdatedContract");
-    }
-
-    public static UpdatedContract contextTransformer(NewContract newContract, FilterContext context) {
-        return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer");
-    }
-
-    public static Integer duplicateProducer(FilterContext context) {
-        var stateID = "duplicateProducer";
-        var currentCounter = context.state(stateID, Integer.class).orElse(0);
-        var filterState = context.processingState();
-
-        if (!filterState.isProcessingAgain()) {
-            filterState.processAgain();
-            return context.updateState(stateID, currentCounter+1);
-        }
-
-        return currentCounter;
     }
 
 }

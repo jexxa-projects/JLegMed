@@ -18,6 +18,16 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
 
 
     @Override
+    public void init() {
+        var filterConfig = filterContext().getFilterConfig(Schedule.class);
+        if ( filterConfig.isPresent()) {
+            var schedule = filterConfig.get();
+            fixedRate = schedule.fixedRate();
+            timeUnit = schedule.timeUnit();
+        }
+    }
+
+    @Override
     public void start() {
         scheduler.register(this);
         scheduler.start();
@@ -53,10 +63,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
         return this;
     }
 
-    public record ScheduledActiveProducerConfig(int fixedRate, TimeUnit timeUnit)
-    {
-
-    }
+    public record Schedule(int fixedRate, TimeUnit timeUnit){}
 
 
     public static <T> ScheduledProducer<T> activeProducer(BiFunction<FilterContext, Class<T>, T> biFunction) {
@@ -85,8 +92,8 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
         };
     }
 
-    public static ScheduledActiveProducerConfig activeProducerConfig(int fixedRate, TimeUnit timeUnit)
+    public static Schedule schedule(int fixedRate, TimeUnit timeUnit)
     {
-        return new ScheduledActiveProducerConfig(fixedRate, timeUnit);
+        return new Schedule(fixedRate, timeUnit);
     }
 }

@@ -10,7 +10,7 @@ import static io.jexxa.jlegmed.common.component.messaging.send.MessageFactory.De
 public class MessageProcessors {
     public static <T> T sendAsJSON(T content, FilterContext context)
     {
-        var messageConfiguration = context.config(MessageConfiguration.class).orElseThrow();
+        var messageConfiguration = context.getFilterConfig(MessageConfiguration.class).orElseThrow();
 
         var properties = new Properties();
         var connectionName = "message-logger";

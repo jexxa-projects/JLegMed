@@ -12,7 +12,7 @@ public class JMSProducer<T> extends Producer<T> {
     @Override
     public void init() {
         super.init();
-        var configuration = filterContext().config(MessageConfiguration.class).orElseThrow(() -> new IllegalArgumentException("No MessageConfiguration configuration provided"));
+        var configuration = filterContext().getFilterConfig(MessageConfiguration.class).orElseThrow(() -> new IllegalArgumentException("No MessageConfiguration configuration provided"));
         var properties = properties()
                 .orElseThrow(() -> new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main"))
                 .properties();

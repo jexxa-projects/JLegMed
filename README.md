@@ -18,9 +18,8 @@ For this purpose, we focus on the following aspects:
 ## Example 
 
 Refer to the following tests to get an idea how this library works
-* [Manual flow graph setup](src/test/java/io/jexxa/jlegmed/core/ManualFlowgraphTest.java) 
-* [Scheduled processing](src/test/java/io/jexxa/jlegmed/core/FlowGraphBuilderTest.java) using FlowGraphBuilder
-* [Async processing](src/test/java/io/jexxa/jlegmed/plugins/messaging/MessageReceiverIT.java) using FlowGraphBuilder
+* [Manual flow graph setup](src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
+* [Data processing](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using FlowGraphBuilder
 
 
 ## Build the library

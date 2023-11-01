@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.MessageCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ class MessageReceiverIT {
     @Test
     void testAsyncProcessing() {
         //Arrange
-        var messageCollector1 = new MessageCollector<Integer>();
-        var messageCollector2 = new MessageCollector<>();
+        var messageCollector1 = new GenericCollector<Integer>();
+        var messageCollector2 = new GenericCollector<>();
         var jlegmed = new JLegMed(MessageReceiverIT.class).disableBanner();
 
         jlegmed.newFlowGraph("MessageSender")

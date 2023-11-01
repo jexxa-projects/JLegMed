@@ -1,67 +1,62 @@
 package io.jexxa.jlegmed.plugins.http;
 
 import io.javalin.Javalin;
-import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.plugins.generic.MessageCollector;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.http;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpURL;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HTTPReaderTest {
     private static Javalin javalin;
+
     @Test
-    void testFlowGraph() {
+    void testHttpURL()
+    {
         //Arrange
-        var messageCollector = new MessageCollector<VersionInfo>();
-        var jlegmed = new JLegMed(HTTPReaderTest.class).disableBanner();
+        var expectedResult = new VersionInfo("a","b", "s", "d" );
+        var receivingPipe = new CollectingInputPipe<VersionInfo>();
 
-        jlegmed.newFlowGraph("HTMLReader")
-
-                .each(50, MILLISECONDS)
-                .receive(VersionInfo.class).from(httpURL("http://localhost:7070/"))
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().processWith( messageCollector::collect);
+        Producer<VersionInfo> objectUnderTest = httpURL("http://localhost:7070/");
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.producingType(VersionInfo.class);
 
         //Act
-        jlegmed.start();
+        objectUnderTest.reachStarted();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(expectedResult, receivingPipe.getCollectedData().get(0));
+
+        objectUnderTest.reachDeInit();
     }
 
 
     @Test
     void testFunctionalHTTPReader() {
         //Arrange
-        var messageCollector = new MessageCollector<VersionInfo>();
+        var expectedResult = new VersionInfo("a","b", "s", "d" );
+        var receivingPipe = new CollectingInputPipe<VersionInfo>();
         var versionInfo = new VersionInfoReader("http://localhost:7070/");
-        var jlegmed = new JLegMed(HTTPReaderTest.class).disableBanner();
 
-        jlegmed.newFlowGraph("HTMLReader")
+        var objectUnderTest = http(versionInfo::read);
+        objectUnderTest.producingType(VersionInfo.class);
 
-                .each(50, MILLISECONDS)
-                .receive(VersionInfo.class).from(http(versionInfo::read))
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect );
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
 
         //Act
-        jlegmed.start();
+        objectUnderTest.reachStarted();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(expectedResult, receivingPipe.getCollectedData().get(0));
+
+        objectUnderTest.reachDeInit();
     }
 
 

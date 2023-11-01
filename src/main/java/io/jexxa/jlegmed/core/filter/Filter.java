@@ -14,6 +14,18 @@ public abstract class Filter {
     public void stop() {}
     public void deInit() {}
 
+    public void reachStarted()
+    {
+        init();
+        start();
+    }
+
+    public void reachDeInit()
+    {
+        stop();
+        deInit();
+    }
+
     public <U> void config(U configuration) {
         this.filterContext.filterConfig(configuration);
     }

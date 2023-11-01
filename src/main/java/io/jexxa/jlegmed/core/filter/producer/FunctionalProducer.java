@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -31,6 +32,11 @@ public abstract class FunctionalProducer<T> extends Producer<T> {
     public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function)
     {
         return new FunctionalProducer<>() {
+            @Override
+            public void init()
+            {
+                Objects.requireNonNull(producingType());
+            }
             @Override
             protected T doProduce() {
                 return function.apply(filterContext(), producingType());

@@ -14,10 +14,14 @@ public class VersionInfoReader {
 
     public void read(HTTPReaderContext<VersionInfo> readerContext)
     {
+        System.out.println("READ " + url);
+
         var result = readerContext.unirest().get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)
                 .asObject(readerContext.type())
                 .getBody();
+
+        System.out.println(result);
 
         readerContext.outputPipe().accept(result);
     }

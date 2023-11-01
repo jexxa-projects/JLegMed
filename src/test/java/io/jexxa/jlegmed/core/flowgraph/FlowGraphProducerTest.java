@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.dto.incoming.NewContract;
-import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
+import io.jexxa.jlegmed.dto.NewContract;
+import io.jexxa.jlegmed.dto.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;

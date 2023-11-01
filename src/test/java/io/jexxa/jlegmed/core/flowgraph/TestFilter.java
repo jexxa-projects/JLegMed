@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.dto.incoming.NewContract;
-import io.jexxa.jlegmed.dto.incoming.UpdatedContract;
+import io.jexxa.jlegmed.dto.NewContract;
+import io.jexxa.jlegmed.dto.UpdatedContract;
 
 public class TestFilter {
     public static NewContract newContract(FilterContext context) {

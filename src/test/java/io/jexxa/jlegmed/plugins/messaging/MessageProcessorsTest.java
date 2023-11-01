@@ -1,64 +1,46 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
-import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessors;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Stream;
+
+import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageProcessorsTest {
 
-    @Test
-    void testSendMessageToTopic() {
+
+    @ParameterizedTest
+    @MethodSource("provideMessageConfiguration")
+    void testSendAsJSON(MessageConfiguration messageConfiguration)
+    {
         //Arrange
-        var messageCollector = new GenericCollector<Integer>();
-        var jlegmed = new JLegMed(MessageProcessorsTest.class).disableBanner();
+        var inputData = "Hello World!";
+        var receivingPipe = new CollectingInputPipe<String>();
 
-        jlegmed.newFlowGraph("MessageSender")
+        Processor<String, String> objectUnderTest = processor(MessageProcessors::sendAsJSON);
+        objectUnderTest.filterConfig(messageConfiguration);
 
-                .each(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.reachStarted();
 
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().processWith(MessageProcessors::sendAsJSON).filterConfig(topic("MyTopic"))
-                .and().processWith(messageCollector::collect);
         //Act
-        jlegmed.start();
+        objectUnderTest.process(inputData);
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(inputData, receivingPipe.getCollectedData().get(0));
+        objectUnderTest.reachDeInit();
     }
 
-
-    @Test
-    void testSendMessageToQueue() {
-        //Arrange
-        var messageCollector = new GenericCollector<Integer>();
-        var jlegmed = new JLegMed(MessageProcessorsTest.class).disableBanner();
-
-        jlegmed.newFlowGraph("MessageSender")
-
-                .each(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
-
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().processWith(MessageProcessors::sendAsJSON).filterConfig(queue("MyQueue"))
-                .and().processWith(messageCollector::collect);
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
+    private static Stream<MessageConfiguration> provideMessageConfiguration()
+    {
+        return Stream.of(queue(("MyQueue")), topic(("MyTopic")));
     }
-
-
 }

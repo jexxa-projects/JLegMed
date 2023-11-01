@@ -33,7 +33,7 @@ public abstract class Filter {
         this.filterContext.filterProperties(filterProperties);
     }
 
-    public ProcessingState processingState() {
+    protected ProcessingState processingState() {
         return filterContext.processingState();
     }
 
@@ -44,17 +44,20 @@ public abstract class Filter {
     protected FilterContext filterContext() {
         return filterContext;
     }
+    protected <U> Optional<U> filterConfigAs(Class<U> clazz) {
+        return filterContext().filterConfigAs(clazz);
+    }
 
     protected void startProcessing() {
-        this.filterContext.processingState().start();
+        processingState().start();
     }
 
     protected void finishedProcessing() {
-        this.filterContext.processingState().finished();
+        processingState().finished();
     }
 
     protected boolean processAgain() {
-        return this.filterContext.processingState().isProcessingAgain();
+        return processingState().isProcessingAgain();
     }
 
 }

@@ -33,6 +33,7 @@ class GenericProcessorsTest {
         var inputData = 1;
         var expectedResult = 2;
         var receivingPipe = new CollectingInputPipe<Integer>();
+
         Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::incrementer);
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.reachStarted();
@@ -51,6 +52,7 @@ class GenericProcessorsTest {
     {
         var inputData = "Hello World!";
         var receivingPipe = new CollectingInputPipe<String>();
+
         Processor<String, String> objectUnderTest = processor(GenericProcessors::consoleLogger);
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.reachStarted();
@@ -70,6 +72,7 @@ class GenericProcessorsTest {
         var inputData = 1;
         var expectedSize = 2;
         var receivingPipe = new CollectingInputPipe<Integer>();
+
         Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::duplicate);
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.reachStarted();

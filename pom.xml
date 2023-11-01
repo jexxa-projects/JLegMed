@@ -55,7 +55,6 @@
     <junit.jupiter.engine.version>5.10.0</junit.jupiter.engine.version>
     <junit.jupiter.params.version>5.10.0</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <unirest.java.version>3.14.1</unirest.java.version>
     <jackson.databind.version>2.15.3</jackson.databind.version>
     <apache.commons.lang3>3.13.0</apache.commons.lang3>
 
@@ -126,7 +125,7 @@
 
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
+      <artifactId>slf4j-api</artifactId>
       <version>${slf4j.simple.version}</version>
     </dependency>
     <dependency>
@@ -150,7 +149,12 @@
       <version>${junit.platform.launcher.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.simple.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -207,6 +211,7 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>${jackson.databind.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
@@ -214,6 +219,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-xml</artifactId>
       <version>11.0.16</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

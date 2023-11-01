@@ -18,7 +18,7 @@ public class FilterContext {
         this.filterConfig = filterConfig;
     }
 
-    public <T> Optional<T> getFilterConfig(Class<T> clazz) {
+    public <T> Optional<T> filterConfigAs(Class<T> clazz) {
         return Optional.ofNullable(clazz.cast(filterConfig));
     }
 

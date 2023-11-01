@@ -23,7 +23,7 @@ public class JSONReader<T> extends FunctionalProducer<T> {
     public void init()
     {
         super.init();
-        producerMode = filterContext().getFilterConfig(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
+        producerMode = filterConfigAs(ProducerMode.class).orElse(ProducerMode.ONLY_ONCE);
     }
 
     @Override

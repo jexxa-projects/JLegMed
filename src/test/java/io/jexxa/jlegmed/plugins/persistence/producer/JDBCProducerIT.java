@@ -19,8 +19,10 @@ class JDBCProducerIT {
     @Test
     void readWriteToDatabase() {
         //Arrange
-        var messageCollectorWriter = new GenericCollector<TestData>();
-        var messageCollectorReader = new GenericCollector<TestData>();
+        var writerCollector = new GenericCollector<TestData>();
+        var readerCollectorPreparedStatement = new GenericCollector<TestData>();
+        var readerCollectorQueryBuilder = new GenericCollector<TestData>();
+
         var jdbc = new JDBCStatementsForTestData();
         var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
 
@@ -30,25 +32,37 @@ class JDBCProducerIT {
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
                 .and().processWith( jdbcProcessor( jdbc::insertTestData )).useProperties("test-jdbc-connection")
-                .and().processWith(messageCollectorWriter::collect);
+                .and().processWith(writerCollector::collect);
 
-        jlegmed.newFlowGraph("readFromDatabase")
+        jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .each(10, MILLISECONDS)
-                .receive(TestData.class).from(jdbcProducer(jdbc::readTestData)).useProperties("test-jdbc-connection")
+                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
 
-                .and().processWith(messageCollectorReader::collect);
+                .and().processWith(readerCollectorPreparedStatement::collect);
+
+
+        jlegmed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
+                .each(10, MILLISECONDS)
+                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataQueryBuilder)).useProperties("test-jdbc-connection")
+
+                .and().processWith(readerCollectorQueryBuilder::collect);
 
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollectorReader.getNumberOfReceivedMessages() >= 10
-                && messageCollectorWriter.getNumberOfReceivedMessages() >= 10);
+        await().atMost(3, SECONDS).until(() -> readerCollectorPreparedStatement.getNumberOfReceivedMessages() >= 10
+                && writerCollector.getNumberOfReceivedMessages() >= 10);
 
-        assertEquals(messageCollectorWriter.getMessages().get(0), messageCollectorReader.getMessages().get(0));
-        assertEquals(messageCollectorWriter.getMessages().get(1), messageCollectorReader.getMessages().get(1));
-        assertEquals(messageCollectorWriter.getMessages().get(2), messageCollectorReader.getMessages().get(2));
-        assertEquals(messageCollectorWriter.getMessages().get(3), messageCollectorReader.getMessages().get(3));
+        assertEquals(writerCollector.getMessages().get(0), readerCollectorPreparedStatement.getMessages().get(0));
+        assertEquals(writerCollector.getMessages().get(1), readerCollectorPreparedStatement.getMessages().get(1));
+        assertEquals(writerCollector.getMessages().get(2), readerCollectorPreparedStatement.getMessages().get(2));
+        assertEquals(writerCollector.getMessages().get(3), readerCollectorPreparedStatement.getMessages().get(3));
+
+        assertEquals(writerCollector.getMessages().get(0), readerCollectorQueryBuilder.getMessages().get(0));
+        assertEquals(writerCollector.getMessages().get(1), readerCollectorQueryBuilder.getMessages().get(1));
+        assertEquals(writerCollector.getMessages().get(2), readerCollectorQueryBuilder.getMessages().get(2));
+        assertEquals(writerCollector.getMessages().get(3), readerCollectorQueryBuilder.getMessages().get(3));
 
         jlegmed.stop();
     }

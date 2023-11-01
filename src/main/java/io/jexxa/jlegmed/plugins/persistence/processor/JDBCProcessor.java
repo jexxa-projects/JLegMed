@@ -40,7 +40,7 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
         return new JDBCProcessor<>() {
             @Override
             protected void executeCommand(JDBCConnection connection, T element) {
-                consumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()::forward));
+                consumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()));
             }
         };
     }
@@ -49,7 +49,7 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
         return new JDBCProcessor<>() {
             @Override
             protected void executeCommand(JDBCConnection connection, T data) {
-                biConsumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()::forward), data);
+                biConsumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()), data);
             }
         };
     }

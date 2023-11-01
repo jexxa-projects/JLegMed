@@ -14,17 +14,21 @@ public abstract class JDBCProducer<T> extends Producer<T> {
     private JDBCConnection jdbcConnection;
 
     @Override
-    public void start() {
+    public void init()
+    {
         this.databaseProperties = properties()
-                .orElseThrow(() -> new IllegalArgumentException("No database connection defined in properties"))
+                .orElseThrow(() -> new IllegalArgumentException("No database connection defined in properties -> Define a database connection in main using 'useProperties()' "))
                 .properties();
         this.jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);
+    }
 
+    @Override
+    public void start() {
         executeCommand();
     }
 
     @Override
-    public void stop() {
+    public void deInit() {
         jdbcConnection = null;
         databaseProperties = null;
     }
@@ -41,7 +45,7 @@ public abstract class JDBCProducer<T> extends Producer<T> {
         return new JDBCProducer<>() {
             @Override
             protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()::forward));
+                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
             }
         };
     }
@@ -52,7 +56,7 @@ public abstract class JDBCProducer<T> extends Producer<T> {
 
             @Override
             protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()::forward));
+                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
             }
         };
     }

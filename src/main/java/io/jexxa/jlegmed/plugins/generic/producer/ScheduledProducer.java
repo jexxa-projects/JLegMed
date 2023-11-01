@@ -19,7 +19,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
 
     @Override
     public void init() {
-        var filterConfig = filterContext().getFilterConfig(Schedule.class);
+        var filterConfig = filterContext().filterConfigAs(Schedule.class);
         if ( filterConfig.isPresent()) {
             var schedule = filterConfig.get();
             fixedRate = schedule.fixedRate();

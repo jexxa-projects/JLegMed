@@ -14,11 +14,16 @@ import java.util.stream.Stream;
 public class JDBCQuery extends JDBCPreparedStatement
 {
     private static final String INVALID_QUERY = "Invalid query or type conversion: ";
-
     @FunctionalInterface
     public interface CheckedFunction<T, R> {
         R apply(T t) throws SQLException;
     }
+
+    @FunctionalInterface
+    public interface CheckedConsumer<T> {
+        void accept(T t) throws SQLException;
+    }
+
 
     /**
      * Creates a JDBC query
@@ -98,6 +103,22 @@ public class JDBCQuery extends JDBCPreparedStatement
                 result.add(function.apply(resultSet));
             }
             return result.stream();
+        }
+        catch (SQLException e)
+        {
+            throw new IllegalStateException(INVALID_QUERY + getSQLStatement(), e);
+        }
+    }
+
+    public void processWith(CheckedConsumer<ResultSet> processor)
+    {
+        try (   var preparedStatement = createPreparedStatement();
+                var resultSet = preparedStatement.executeQuery() )
+        {
+            while ( resultSet.next() )
+            {
+                processor.accept(resultSet);
+            }
         }
         catch (SQLException e)
         {

@@ -23,14 +23,14 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
                 .properties();
     }
 
-    protected T doProcess(T content, FilterContext context)
+    protected T doProcess(T data, FilterContext context)
     {
         var jdbcConnection = JDBCConnectionPool.getConnection(properties, this);
 
 
-        executeCommand(jdbcConnection, content);
+        executeCommand(jdbcConnection, data);
 
-        return content;
+        return data;
     }
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);

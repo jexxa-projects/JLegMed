@@ -1,33 +1,79 @@
 package io.jexxa.jlegmed.plugins.generic;
 
-import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
+import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GenericProcessorsTest {
     @Test
-    void testFlowGraphIncrementer() {
+    void testIdProcessor() {
         //Arrange
-        var messageCollector = new MessageCollector<Integer>();
-        var jlegmed = new JLegMed(GenericProcessorsTest.class).disableBanner();
+        var inputData = 1;
+        var receivingPipe = new CollectingInputPipe<Integer>();
+        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::idProcessor);
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
 
-        jlegmed.newFlowGraph("Incrementer")
-
-                .each(10, MILLISECONDS)
-                .receive(Integer.class).from( () -> 1)
-
-                .and().processWith( GenericProcessors::incrementer )
-                .and().processWith( messageCollector::collect);
         //Act
-        jlegmed.start();
+        objectUnderTest.process(inputData);
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(inputData, receivingPipe.getCollectedData().get(0));
+    }
+
+    @Test
+    void testIncrementer() {
+        //Arrange
+        var inputData = 1;
+        var expectedResult = 2;
+        var receivingPipe = new CollectingInputPipe<Integer>();
+        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::incrementer);
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+
+        //Act
+        objectUnderTest.process(inputData);
+
+        //Assert
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(expectedResult, receivingPipe.getCollectedData().get(0));
+    }
+
+    @Test
+    void testConsoleLogger()
+    {
+        var inputData = "Hello World!";
+        var receivingPipe = new CollectingInputPipe<String>();
+        Processor<String, String> objectUnderTest = processor(GenericProcessors::consoleLogger);
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+
+        //Act
+        objectUnderTest.process(inputData);
+
+        //Assert
+        assertEquals(1, receivingPipe.getCollectedData().size());
+        assertEquals(inputData, receivingPipe.getCollectedData().get(0));
+    }
+
+    @Test
+    void testDuplicator() {
+        //Arrange
+        var inputData = 1;
+        var expectedSize = 2;
+        var receivingPipe = new CollectingInputPipe<Integer>();
+        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::duplicate);
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+
+        //Act
+        objectUnderTest.process(inputData);
+
+        //Assert
+        assertEquals(expectedSize, receivingPipe.getCollectedData().size());
+        assertEquals(inputData, receivingPipe.getCollectedData().get(0));
+        assertEquals(inputData, receivingPipe.getCollectedData().get(1));
     }
 
 }

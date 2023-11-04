@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.persistence.TestData;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.jdbcProcessor;
+import static io.jexxa.jlegmed.core.filter.FilterProperties.filterPropertiesOf;
+import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.dropTable;
+import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.jdbcExecutor;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -24,6 +25,14 @@ class RepositoryProcessorIT {
     @BeforeEach
     void init() {
         jLegMed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
+
+        //Drop existing table
+        var properties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
+
+        jdbcExecutor(dropTable(TestData.class))
+                .useProperties(filterPropertiesOf("test-jdbc-connection", properties))
+                .reachStarted()
+                .reachDeInit();
     }
 
     @AfterEach
@@ -38,10 +47,6 @@ class RepositoryProcessorIT {
     void testFlowGraph() {
         //Arrange
         var messageCollector = new GenericCollector<TextEntity>();
-        var properties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
-        var resetDB = jdbcProcessor((jdbcContext, data) -> jdbcContext.jdbcConnection().createTableCommand().dropTableIfExists(TestData.class));
-        resetDB.filterProperties(new FilterProperties("test-jdbc-connection", properties));
-        resetDB.reachStarted();
 
         jLegMed.newFlowGraph("HelloWorld")
 
@@ -95,4 +100,5 @@ class RepositoryProcessorIT {
             return aggregateID + ":" + data;
         }
     }
+
 }

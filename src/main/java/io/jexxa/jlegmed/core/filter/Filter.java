@@ -14,10 +14,11 @@ public abstract class Filter {
     public void stop() {}
     public void deInit() {}
 
-    public void reachStarted()
+    public Filter reachStarted()
     {
         init();
         start();
+        return this;
     }
 
     public void reachDeInit()
@@ -26,11 +27,12 @@ public abstract class Filter {
         deInit();
     }
 
-    public <U> void filterConfig(U configuration) {
+    public <U> void useConfig(U configuration) {
         this.filterContext.filterConfig(configuration);
     }
-    public void filterProperties(FilterProperties filterProperties) {
+    public Filter useProperties(FilterProperties filterProperties) {
         this.filterContext.filterProperties(filterProperties);
+        return this;
     }
 
     protected ProcessingState processingState() {

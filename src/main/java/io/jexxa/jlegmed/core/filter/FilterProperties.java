@@ -8,4 +8,8 @@ public record FilterProperties(String configName, Properties properties) {
         Objects.requireNonNull(configName);
         Objects.requireNonNull(properties);
     }
+
+    public static FilterProperties filterPropertiesOf(String configName, Properties properties) {
+        return new FilterProperties(configName, properties);
+    }
 }

@@ -47,7 +47,7 @@ class FlowGraphConfigurationTest {
 
                 .await(Integer.class)
                 // Here we configure a producer that produces a counter in a specific interval
-                .from(activeProducer(GenericProducer::counter)).filterConfig(schedule(50, MILLISECONDS)).and()
+                .from(activeProducer(GenericProducer::counter)).useConfig(schedule(50, MILLISECONDS)).and()
 
                 .processWith( processor(GenericProcessors::idProcessor )).and()
                 .processWith( messageCollector::collect );
@@ -66,7 +66,7 @@ class FlowGraphConfigurationTest {
         jlegmed.newFlowGraph("ProducerURL")
 
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(UNTIL_STOPPED)
+                .receive(NewContract.class).from(inputStream(inputStream)).useConfig(UNTIL_STOPPED)
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().processWith( messageCollector::collect);
@@ -87,7 +87,7 @@ class FlowGraphConfigurationTest {
         jlegmed.newFlowGraph("ProducerURLOnlyOnce")
 
                 .each(10, MILLISECONDS)
-                .receive(NewContract.class).from(inputStream(inputStream)).filterConfig(ONLY_ONCE)
+                .receive(NewContract.class).from(inputStream(inputStream)).useConfig(ONLY_ONCE)
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().processWith( messageCollector::collect);

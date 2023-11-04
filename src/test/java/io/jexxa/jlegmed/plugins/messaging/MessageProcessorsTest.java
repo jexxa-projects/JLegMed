@@ -25,7 +25,7 @@ class MessageProcessorsTest {
         var receivingPipe = new CollectingInputPipe<String>();
 
         Processor<String, String> objectUnderTest = processor(MessageProcessors::sendAsJSON);
-        objectUnderTest.filterConfig(messageConfiguration);
+        objectUnderTest.useConfig(messageConfiguration);
 
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.reachStarted();

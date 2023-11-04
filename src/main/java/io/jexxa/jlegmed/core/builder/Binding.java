@@ -19,13 +19,8 @@ public class Binding<T> {
     }
 
 
-    public <U> Binding<T> filterConfig(U configuration) {
-        predecessor.filterConfig(configuration);
-        return this;
-    }
-
-    public Binding<T> useProperties(FilterProperties filterProperties) {
-        predecessor.filterProperties(filterProperties);
+    public <U> Binding<T> useConfig(U configuration) {
+        predecessor.useConfig(configuration);
         return this;
     }
 
@@ -34,20 +29,14 @@ public class Binding<T> {
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
         }
-        predecessor.filterProperties(new FilterProperties(propertiesPrefix, properties));
+        predecessor.useProperties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
     }
 
-    @SuppressWarnings("unused")
-    public <U> Binding<T> configureWith(FilterProperties filterProperties, U filterConfig) {
-        filterConfig(filterConfig);
-        return useProperties(filterProperties);
-    }
-
     public <U> Binding<T> configureWith(String propertiesPrefix, U filterConfig) {
         useProperties(propertiesPrefix);
-        return filterConfig(filterConfig);
+        return useConfig(filterConfig);
     }
 
     public ProcessorBuilder<T> and() {

@@ -1,6 +1,8 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.adapterapi.invocation.transaction.TransactionManager;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -29,6 +31,8 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 
 public final class JLegMed
 {
+    private boolean isRunning = false;
+    private boolean isWaiting = false;
     private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
     private final Properties properties;
     private final Class<?> application;
@@ -59,7 +63,7 @@ public final class JLegMed
         flowGraphs.put(flowGraphID, flowGraph);
     }
 
-    public void start()
+    public synchronized void start()
     {
         showPreStartupBanner();
 
@@ -67,18 +71,64 @@ public final class JLegMed
         flowGraphs.forEach((key, value) -> value.start());
 
         showPostStartupBanner();
+        isRunning = true;
     }
 
-    public void stop()
+    public void run()
     {
-        flowGraphs.forEach((key, value) -> value.stop());
-        flowGraphs.forEach((key, value) -> value.deInit());
+        start();
+        waitForShutdown();
+        stop();
+    }
+
+    public synchronized void stop()
+    {
+        try {
+            //TODO: Check if stopping/deInit should be within the transaction.
+
+            flowGraphs.forEach((key, value) -> value.stop());
+            flowGraphs.forEach((key, value) -> value.deInit());
+            TransactionManager.initTransaction();
+            JexxaContext.cleanup();
+            isRunning = false;
+
+            TransactionManager.closeTransaction();
+        } catch (RuntimeException e) {
+            TransactionManager.rollback();
+            TransactionManager.closeTransaction();
+            isRunning = false;
+            throw new IllegalStateException("Could not proper stop JLegMedMain. ", e);
+        }
+
     }
 
     public JLegMed disableBanner()
     {
         enableBanner = false;
         return this;
+    }
+
+    synchronized void waitForShutdown()
+    {
+        if (!isRunning)
+        {
+            return;
+        }
+
+        setupSignalHandler();
+        isWaiting = true;
+
+        try
+        {
+            while ( isWaiting ) {
+                this.wait();
+            }
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
     }
 
 
@@ -107,6 +157,13 @@ public final class JLegMed
         return JLegMedVersion.getVersion();
     }
 
+    private void setupSignalHandler() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            getLogger(JLegMed.class).info("Shutdown signal received ...");
+            this.internalShutdown();
+        }));
+    }
+
     private void showPreStartupBanner()
     {
         if(enableBanner) {
@@ -125,6 +182,16 @@ public final class JLegMed
             SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
         }
     }
+
+    private synchronized void internalShutdown()
+    {
+        if ( isWaiting )
+        {
+            isWaiting = false;
+            notifyAll();
+        }
+    }
+
 
 
     public static class PropertiesLoader {

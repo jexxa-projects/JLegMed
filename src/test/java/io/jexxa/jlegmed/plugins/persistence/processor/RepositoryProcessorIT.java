@@ -1,25 +1,50 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
+import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
+import io.jexxa.jlegmed.plugins.persistence.TestData;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 import java.util.function.Function;
 
+import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.jdbcProcessor;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class RepositoryProcessorIT {
 
+    private static JLegMed jLegMed;
+
+    @BeforeEach
+    void init() {
+        jLegMed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
+    }
+
+    @AfterEach
+    void deInit() {
+        if (jLegMed != null)
+        {
+            jLegMed.stop();
+        }
+    }
+
     @Test
     void testFlowGraph() {
         //Arrange
         var messageCollector = new GenericCollector<TextEntity>();
-        var jlegmed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
+        var properties = PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection");
+        var resetDB = jdbcProcessor((jdbcContext, data) -> jdbcContext.jdbcConnection().createTableCommand().dropTableIfExists(TestData.class));
+        resetDB.filterProperties(new FilterProperties("test-jdbc-connection", properties));
+        resetDB.reachStarted();
 
-        jlegmed.newFlowGraph("HelloWorld")
+        jLegMed.newFlowGraph("HelloWorld")
 
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
@@ -28,11 +53,10 @@ class RepositoryProcessorIT {
                 .and().processWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
                 .and().processWith( messageCollector::collect );
         //Act
-        jlegmed.start();
+        jLegMed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        jlegmed.stop();
     }
 
 

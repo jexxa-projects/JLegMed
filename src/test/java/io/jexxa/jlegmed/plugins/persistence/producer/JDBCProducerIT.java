@@ -37,14 +37,12 @@ class JDBCProducerIT {
         jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .each(10, MILLISECONDS)
                 .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
-
                 .and().processWith(readerCollectorPreparedStatement::collect);
 
 
         jlegmed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .each(10, MILLISECONDS)
                 .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataQueryBuilder)).useProperties("test-jdbc-connection")
-
                 .and().processWith(readerCollectorQueryBuilder::collect);
 
         //Act

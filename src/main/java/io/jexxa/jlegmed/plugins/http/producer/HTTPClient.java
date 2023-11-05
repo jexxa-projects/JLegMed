@@ -50,7 +50,13 @@ public abstract class HTTPClient<T> extends Producer<T> {
     private void initUnirest(Properties properties)
     {
         var host = properties.getProperty(HTTPProperties.HTTP_PROXY_HOST, "");
-        var port = Integer.parseInt(properties.getProperty(HTTPProperties.HTTP_PROXY_PORT, "0"));
+        var port = 0;
+        try {
+            port = Integer.parseInt(properties.getProperty(HTTPProperties.HTTP_PROXY_PORT, "0"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid port specified. '" + properties.getProperty(HTTPProperties.HTTP_PROXY_PORT) +"' can not be converted to int", e);
+        }
+
 
         Secret username = new Secret(properties, HTTPProperties.HTTP_PROXY_USERNAME, HTTPProperties.HTTP_PROXY_FILE_USERNAME);
         Secret password = new Secret(properties, HTTPProperties.HTTP_PROXY_PASSWORD, HTTPProperties.HTTP_PROXY_FILE_PASSWORD);

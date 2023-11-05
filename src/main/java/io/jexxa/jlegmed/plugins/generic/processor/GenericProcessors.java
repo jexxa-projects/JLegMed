@@ -30,7 +30,7 @@ public class GenericProcessors {
     }
 
     @SuppressWarnings("java:S1172")
-    public static <T> T devNull(T data) {
+    public static <T> T devNull(T ignoredData) {
         return null;
     }
 

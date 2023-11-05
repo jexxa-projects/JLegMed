@@ -17,7 +17,7 @@ public class MessageProcessors {
         if ( context.filterProperties().isPresent())
         {
             properties = context.filterProperties().orElseThrow().properties();
-            connectionName = context.filterProperties().orElseThrow().configName();
+            connectionName = context.filterProperties().orElseThrow().propertiesName();
         }
 
         var messageSender = MessagingManager.getMessageSender(connectionName, properties);

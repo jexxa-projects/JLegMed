@@ -1,8 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.dto.NewContract;
-import io.jexxa.jlegmed.dto.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -125,11 +123,11 @@ class FlowGraphBuilderTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var messageCollector = new GenericCollector<UpdatedContract>();
+        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
         jlegmed.newFlowGraph("ChangeDataType")
                 .each(10, MILLISECONDS)
 
-                .receive(NewContract.class).from(TestFilter::newContract)
+                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
                 .and().processWith(TestFilter::transformToUpdatedContract)
                 .and().processWith(GenericProcessors::idProcessor)
@@ -146,12 +144,12 @@ class FlowGraphBuilderTest {
     @Test
     void testTransformDataWithFilterState() {
         //Arrange
-        var messageCollector = new GenericCollector<UpdatedContract>();
+        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
 
         jlegmed.newFlowGraph("TransformDataWithFilterState")
                 .each(10, MILLISECONDS)
                 //TestFilter::newContract uses FilterContext to manage its state information
-                .receive(NewContract.class).from(TestFilter::newContract)
+                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
                 .and().processWith( TestFilter::contextTransformer)
                 .and().processWith( messageCollector::collect);

@@ -19,7 +19,8 @@ For this purpose, we focus on the following aspects:
 
 Refer to the following tests to get an idea how this library works
 * [Manual flow graph setup](src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
-* [Data processing](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using FlowGraphBuilder
+* [Data processing](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using `FlowGraphBuilder`
+* [Configuration of a flowgraph](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
 
 
 ## Build the library

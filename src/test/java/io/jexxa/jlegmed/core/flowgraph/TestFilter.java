@@ -1,8 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.dto.NewContract;
-import io.jexxa.jlegmed.dto.UpdatedContract;
 
 public class TestFilter {
     public static NewContract newContract(FilterContext context) {
@@ -20,20 +18,6 @@ public class TestFilter {
         return new UpdatedContract(newContract.contractNumber(), "propertiesTransformer" + context.getClass().getSimpleName());
     }
 
-    public static Integer duplicateProducer(FilterContext context) {
-        var stateID = "duplicateProducer";
-        var currentCounter = context.state(stateID, Integer.class).orElse(0);
-        var filterState = context.processingState();
-
-        if (!filterState.isProcessingAgain()) {
-            filterState.processAgain();
-            return context.updateState(stateID, currentCounter+1);
-        }
-
-        return currentCounter;
-    }
-
-
     public static <T> T skipEachSecondMessage(T data, FilterContext context)
     {
         var stateID = "skipEachSecondMessage";
@@ -46,4 +30,14 @@ public class TestFilter {
         return data;
     }
 
+    public record NewContract(int contractNumber)
+    {
+        public static NewContract newContract(int contractNumber)
+        {
+            return new NewContract(contractNumber);
+        }
+    }
+
+    public record UpdatedContract(int contract, String updateInformation) {
+    }
 }

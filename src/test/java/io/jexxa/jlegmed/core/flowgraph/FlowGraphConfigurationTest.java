@@ -43,7 +43,7 @@ class FlowGraphConfigurationTest {
         //Arrange
         var messageCollector = new GenericCollector<Integer>();
 
-        jlegmed.newFlowGraph("testConfigureProducer")
+        jlegmed.newFlowGraph("ConfigureProducer")
 
                 .await(Integer.class)
                 // Here we configure a producer that produces a counter in a specific interval
@@ -63,7 +63,7 @@ class FlowGraphConfigurationTest {
         var messageCollector = new GenericCollector<NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
-        jlegmed.newFlowGraph("ProducerURL")
+        jlegmed.newFlowGraph("FilterConfigUntilStopped")
 
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStream(inputStream)).useConfig(UNTIL_STOPPED)
@@ -84,7 +84,7 @@ class FlowGraphConfigurationTest {
         var messageCollector = new GenericCollector<>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(new NewContract(1)).getBytes());
 
-        jlegmed.newFlowGraph("ProducerURLOnlyOnce")
+        jlegmed.newFlowGraph("FilterConfigOnlyOnce")
 
                 .each(10, MILLISECONDS)
                 .receive(NewContract.class).from(inputStream(inputStream)).useConfig(ONLY_ONCE)

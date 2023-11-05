@@ -33,12 +33,11 @@ class FlowGraphBuilderTest {
     }
 
     @Test
-    void testScheduledProcessing() {
+    void testHelloWorld() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("HelloWorld")
-
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
@@ -57,8 +56,7 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new GenericCollector<Integer>();
 
-        jlegmed.newFlowGraph("testFilterContext")
-
+        jlegmed.newFlowGraph("ActiveFlowGraph")
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
 
@@ -75,18 +73,17 @@ class FlowGraphBuilderTest {
         assertEquals(5, messageCollector.getMessages().get(2));
     }
     @Test
-    void testChangeContent() {
+    void testChangeData() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
         var inputData = "Hello World";
         var expectedResult  = inputData + "-" + inputData;
 
-        jlegmed.newFlowGraph("HelloWorld")
-
+        jlegmed.newFlowGraph("ChangeData")
                 .each(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().processWith( content -> content + "-" + content )
+                .and().processWith( data -> data + "-" + data )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
@@ -102,8 +99,7 @@ class FlowGraphBuilderTest {
         var messageCollector1 = new GenericCollector<Integer>();
         var messageCollector2 = new GenericCollector<Integer>();
 
-        jlegmed.newFlowGraph("flowGraph1")
-
+        jlegmed.newFlowGraph("FlowGraph1")
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
@@ -111,8 +107,7 @@ class FlowGraphBuilderTest {
                 .and().processWith(messageCollector1::collect);
 
 
-        jlegmed.newFlowGraph("flowGraph2")
-
+        jlegmed.newFlowGraph("FlowGraph2")
                 .each(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
@@ -128,10 +123,10 @@ class FlowGraphBuilderTest {
     }
 
     @Test
-    void testTransformData() {
+    void testChangeDataType() {
         //Arrange
         var messageCollector = new GenericCollector<UpdatedContract>();
-        jlegmed.newFlowGraph("transformData")
+        jlegmed.newFlowGraph("ChangeDataType")
                 .each(10, MILLISECONDS)
 
                 .receive(NewContract.class).from(TestFilter::newContract)
@@ -149,13 +144,15 @@ class FlowGraphBuilderTest {
 
 
     @Test
-    void testTransformDataWithContext() {
+    void testTransformDataWithFilterState() {
         //Arrange
         var messageCollector = new GenericCollector<UpdatedContract>();
 
-        jlegmed.newFlowGraph("transformDataWithContext")
+        jlegmed.newFlowGraph("TransformDataWithFilterState")
                 .each(10, MILLISECONDS)
+                //TestFilter::newContract uses FilterContext to manage its state information
                 .receive(NewContract.class).from(TestFilter::newContract)
+
                 .and().processWith( TestFilter::contextTransformer)
                 .and().processWith( messageCollector::collect);
         //Act
@@ -164,5 +161,4 @@ class FlowGraphBuilderTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
     }
-
 }

@@ -1,8 +1,6 @@
 package io.jexxa.jlegmed.core;
 
 
-import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.adapterapi.invocation.transaction.TransactionManager;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -32,7 +30,6 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 public final class JLegMed
 {
     private boolean isRunning = false;
-    private boolean isWaiting = false;
     private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
     private final Properties properties;
     private final Class<?> application;
@@ -83,23 +80,10 @@ public final class JLegMed
 
     public synchronized void stop()
     {
-        try {
-            //TODO: Check if stopping/deInit should be within the transaction.
+        isRunning = false;
 
-            flowGraphs.forEach((key, value) -> value.stop());
-            flowGraphs.forEach((key, value) -> value.deInit());
-            TransactionManager.initTransaction();
-            JexxaContext.cleanup();
-            isRunning = false;
-
-            TransactionManager.closeTransaction();
-        } catch (RuntimeException e) {
-            TransactionManager.rollback();
-            TransactionManager.closeTransaction();
-            isRunning = false;
-            throw new IllegalStateException("Could not proper stop JLegMedMain. ", e);
-        }
-
+        flowGraphs.forEach((key, value) -> value.stop());
+        flowGraphs.forEach((key, value) -> value.deInit());
     }
 
     public JLegMed disableBanner()
@@ -110,17 +94,11 @@ public final class JLegMed
 
     synchronized void waitForShutdown()
     {
-        if (!isRunning)
-        {
-            return;
-        }
-
         setupSignalHandler();
-        isWaiting = true;
 
         try
         {
-            while ( isWaiting ) {
+            while ( isRunning ) {
                 this.wait();
             }
         }
@@ -185,11 +163,8 @@ public final class JLegMed
 
     private synchronized void internalShutdown()
     {
-        if ( isWaiting )
-        {
-            isWaiting = false;
-            notifyAll();
-        }
+        isRunning = false;
+        notifyAll();
     }
 
 

@@ -56,7 +56,7 @@ public class JMSProducer<T> extends Producer<T> {
 
     public static <T> JMSProducer<T> jmsTopic(String topicName, BiConsumer<String, JMSProducer.JMSProducerContext<T>> consumer)
     {
-        return new JMSProducer<>(new JMSProducerListener<T>(topic(topicName)) {
+        return new JMSProducer<>(new JMSProducerListener<>(topic(topicName)) {
             @Override
             public void onMessage(String message, JMSProducerContext<T> context) {
                 consumer.accept(message, context);
@@ -68,7 +68,7 @@ public class JMSProducer<T> extends Producer<T> {
     {
         return new JMSProducer<>(new JMSProducerListener<T>(queue(queueName)) {
             @Override
-            public void onMessage(String message, JMSProducerContext<T> context) {
+            public void onMessage(String message, JMSProducerContext<> context) {
                 consumer.accept(message, context);
             }
         });

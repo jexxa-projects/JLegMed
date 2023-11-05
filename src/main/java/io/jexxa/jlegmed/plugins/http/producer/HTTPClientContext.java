@@ -5,5 +5,9 @@ import kong.unirest.UnirestInstance;
 
 import java.util.function.Consumer;
 
-public record HTTPReaderContext<T>(UnirestInstance unirest, FilterContext filterContext, Class<T> type, Consumer<T> outputPipe) {
-}
+public record HTTPClientContext<T>(
+        UnirestInstance unirest,
+        FilterContext filterContext,
+        Class<T> dataType,
+        Consumer<T> outputPipe)
+{}

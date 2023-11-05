@@ -9,7 +9,7 @@ import kong.unirest.UnirestInstance;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public abstract class HTTPReader<T> extends Producer<T> {
+public abstract class HTTPClient<T> extends Producer<T> {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_TYPE = "application/json";
     private UnirestInstance unirestInstance;
@@ -20,7 +20,7 @@ public abstract class HTTPReader<T> extends Producer<T> {
         super.init();
         if(producingType() == null)
         {
-            throw new IllegalArgumentException("Producing type is not configured for " + HTTPReader.class.getSimpleName() + "! -> Configure filter with Producer::producingType<Class<T>>!");
+            throw new IllegalArgumentException("Producing dataType is not configured for " + HTTPClient.class.getSimpleName() + "! -> Configure filter with Producer::producingType<Class<T>>!");
         }
         unirestInstance = Unirest.spawnInstance();
         filterProperties().ifPresent(element -> initUnirest(element.properties()));
@@ -58,8 +58,8 @@ public abstract class HTTPReader<T> extends Producer<T> {
         unirestInstance.config().proxy(host, port, username.getSecret(), password.getSecret());
     }
 
-    public static <T> HTTPReader<T> httpURL(String url) {
-        return new HTTPReader<>(){
+    public static <T> HTTPClient<T> httpClient(String url) {
+        return new HTTPClient<>(){
             @Override
             protected void produceData() {
                 var result = getUnirest().get(url)
@@ -70,12 +70,12 @@ public abstract class HTTPReader<T> extends Producer<T> {
         };
     }
 
-    public static <T> HTTPReader<T> http(Consumer<HTTPReaderContext<T>> function)
+    public static <T> HTTPClient<T> httpClient(Consumer<HTTPClientContext<T>> function)
     {
-        return new HTTPReader<>() {
+        return new HTTPClient<>() {
             @Override
             protected void produceData() {
-                function.accept(new HTTPReaderContext<>(getUnirest(), filterContext(), producingType(), outputPipe()::forward));
+                function.accept(new HTTPClientContext<>(getUnirest(), filterContext(), producingType(), outputPipe()::forward));
             }
         };
     }

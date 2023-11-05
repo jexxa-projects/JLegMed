@@ -1,18 +1,23 @@
 package io.jexxa.jlegmed.plugins.http;
 
 import io.javalin.Javalin;
+import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
+import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.http;
-import static io.jexxa.jlegmed.plugins.http.producer.HTTPReader.httpURL;
+import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.httpClient;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HTTPReaderTest {
+class HTTPClientTest {
     private static Javalin javalin;
 
     @Test
@@ -22,7 +27,7 @@ class HTTPReaderTest {
         var expectedResult = new VersionInfo("a","b", "s", "d" );
         var receivingPipe = new CollectingInputPipe<VersionInfo>();
 
-        Producer<VersionInfo> objectUnderTest = httpURL("http://localhost:7070/");
+        Producer<VersionInfo> objectUnderTest = httpClient("http://localhost:7070/");
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.producingType(VersionInfo.class);
 
@@ -44,7 +49,7 @@ class HTTPReaderTest {
         var receivingPipe = new CollectingInputPipe<VersionInfo>();
         var versionInfo = new VersionInfoReader("http://localhost:7070/");
 
-        var objectUnderTest = http(versionInfo::read);
+        var objectUnderTest = httpClient(versionInfo::read);
         objectUnderTest.producingType(VersionInfo.class);
 
         objectUnderTest.outputPipe().connectTo(receivingPipe);
@@ -59,7 +64,29 @@ class HTTPReaderTest {
         objectUnderTest.reachDeInit();
     }
 
+    @Test
+    void testHTTPClientFlowGraph() {
+        //Arrange
+        var expectedResult = new VersionInfo("a","b", "s", "d" );
+        var messageCollector = new GenericCollector<VersionInfo>();
+        JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
 
+        jLegMed.newFlowGraph("HTTPClientFlowGraph")
+                .each(10, MILLISECONDS)
+                .receive(VersionInfo.class).from(httpClient("http://localhost:7070/"))
+
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( messageCollector::collect);
+        //Act
+        jLegMed.start();
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jLegMed.stop();
+
+        //Assert
+        assertEquals(expectedResult, messageCollector.getMessages().get(0));
+        assertEquals(expectedResult, messageCollector.getMessages().get(1));
+        assertEquals(expectedResult, messageCollector.getMessages().get(2));
+    }
 
     @BeforeAll
     static void startWebservice() {

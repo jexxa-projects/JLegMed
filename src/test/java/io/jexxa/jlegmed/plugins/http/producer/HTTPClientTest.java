@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.http;
+package io.jexxa.jlegmed.plugins.http.producer;
 
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;

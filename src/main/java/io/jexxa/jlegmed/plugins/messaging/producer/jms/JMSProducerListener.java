@@ -2,21 +2,28 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.jlegmed.common.component.messaging.receive.jms.DefaultJMSConfiguration;
 import io.jexxa.jlegmed.common.component.messaging.receive.jms.JMSConfiguration;
-import io.jexxa.jlegmed.common.component.messaging.receive.jms.listener.TypedMessageListener;
+import io.jexxa.jlegmed.common.component.messaging.receive.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.common.component.messaging.send.MessageFactory;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
-import java.util.Objects;
-
-public class JMSProducerListener<T> extends TypedMessageListener<T> {
-    private final OutputPipe<T> outputPipe;
+public abstract class JMSProducerListener<T> extends JSONMessageListener {
+    private OutputPipe<T> outputPipe;
+    private Class<T> typeInformation;
     private final MessageConfiguration configuration;
 
-    public JMSProducerListener(Class<T> clazz, OutputPipe<T> outputPipe, MessageConfiguration configuration) {
-        super(clazz);
-        this.outputPipe = Objects.requireNonNull(outputPipe);
+    protected JMSProducerListener(MessageConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    public void outputPipe(OutputPipe<T> outputPipe)
+    {
+        this.outputPipe = outputPipe;
+    }
+
+    public void typeInformation(Class<T> typeInformation)
+    {
+        this.typeInformation = typeInformation;
     }
 
     @SuppressWarnings("unused")
@@ -35,7 +42,9 @@ public class JMSProducerListener<T> extends TypedMessageListener<T> {
     }
 
     @Override
-    protected void onMessage(T message) {
-        outputPipe.forward(message);
+    public void onMessage(String message) {
+        onMessage(message, new JMSProducer.JMSProducerContext<>(typeInformation, outputPipe));
     }
+
+    public abstract void onMessage(String message, JMSProducer.JMSProducerContext<T> context);
 }

@@ -11,20 +11,20 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class ScheduledProducer<T> extends Producer<T> implements IScheduled {
-    private int fixedRate = 5;
-    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private final int fixedRate;
+    private final TimeUnit timeUnit;
 
     private final Scheduler scheduler = new Scheduler();
 
+    protected ScheduledProducer(Schedule  schedule)
+    {
+        this.fixedRate = schedule.fixedRate;
+        this.timeUnit = schedule.timeUnit;
+    }
 
-    @Override
-    public void init() {
-        var filterConfig = filterContext().filterConfigAs(Schedule.class);
-        if ( filterConfig.isPresent()) {
-            var schedule = filterConfig.get();
-            fixedRate = schedule.fixedRate();
-            timeUnit = schedule.timeUnit();
-        }
+    protected ScheduledProducer()
+    {
+        this(schedule(10, TimeUnit.MILLISECONDS));
     }
 
     @Override
@@ -56,13 +56,6 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
 
     protected abstract T produceData();
 
-    public ScheduledProducer<T> withInterval(int fixedRate, TimeUnit timeUnit)
-    {
-        this.fixedRate = fixedRate;
-        this.timeUnit = timeUnit;
-        return this;
-    }
-
     public record Schedule(int fixedRate, TimeUnit timeUnit){}
 
 
@@ -85,6 +78,35 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
 
     public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier) {
         return new ScheduledProducer<>() {
+            @Override
+            protected T produceData() {
+                return contextSupplier.get();
+            }
+        };
+    }
+
+    public static <T> ScheduledProducer<T> activeProducer(
+            BiFunction<FilterContext, Class<T>, T> biFunction, Schedule schedule
+    ) {
+        return new ScheduledProducer<>(schedule) {
+            @Override
+            protected T produceData() {
+                return biFunction.apply(filterContext(), producingType());
+            }
+        };
+    }
+
+    public static <T> ScheduledProducer<T> activeProducer(Function<FilterContext, T> contextFunction,Schedule schedule) {
+        return new ScheduledProducer<>(schedule) {
+            @Override
+            protected T produceData() {
+                return contextFunction.apply(filterContext());
+            }
+        };
+    }
+
+    public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier, Schedule schedule) {
+        return new ScheduledProducer<>(schedule) {
             @Override
             protected T produceData() {
                 return contextSupplier.get();

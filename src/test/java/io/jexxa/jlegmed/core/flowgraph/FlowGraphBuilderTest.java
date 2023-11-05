@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -34,18 +35,23 @@ class FlowGraphBuilderTest {
     void testHelloWorld() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
+        var message = "Hello World";
 
         jlegmed.newFlowGraph("HelloWorld")
                 .each(10, MILLISECONDS)
-                .receive(String.class).from(() -> "Hello World")
+                .receive(String.class).from(() -> message)
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().processWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
-        //Assert
+        //Assert - We expect at least three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+
+        assertEquals(message, messageCollector.getMessages().get(0));
+        assertEquals(message, messageCollector.getMessages().get(1));
+        assertEquals(message, messageCollector.getMessages().get(2));
     }
 
 
@@ -56,7 +62,8 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("ActiveFlowGraph")
                 .await(Integer.class)
-                .from(activeProducer(GenericProducer::counter).withInterval(50, MILLISECONDS))
+                .from(activeProducer(GenericProducer::counter, schedule(50, MILLISECONDS)))
+
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( TestFilter::skipEachSecondMessage )

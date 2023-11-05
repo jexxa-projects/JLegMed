@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import com.google.gson.Gson;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
@@ -16,7 +15,6 @@ import static io.jexxa.jlegmed.core.flowgraph.TestFilter.NewContract.newContract
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStreamOnlyOnce;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStreamUntilStopped;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -68,21 +66,27 @@ class FlowGraphBuilderConfigurationTest {
     @Test
     void testUseConfig() {
         //Arrange
-        var messageCollector = new GenericCollector<Integer>();
+        var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("UseConfig")
 
-                .await(Integer.class)
+                .await(String.class)
                 // Here we configure a producer that produces a counter in a specific interval
-                .from(activeProducer(GenericProducer::counter)).useConfig(schedule(50, MILLISECONDS)).and()
+                .from(activeProducer(
+                        (context) -> "Hello World" + context.filterConfigAs(String.class).orElseThrow())
+                ).useConfig(" with useConfig")
 
-                .processWith( processor(GenericProcessors::idProcessor )).and()
-                .processWith( messageCollector::collect );
+                .and().processWith( processor(GenericProcessors::idProcessor ))
+                .and().processWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+
+        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(0));
+        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(1));
+        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(2));
     }
 
     @Test

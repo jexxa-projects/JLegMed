@@ -14,8 +14,6 @@ public class VersionInfoReader {
 
     public void read(HTTPClientContext<VersionInfo> readerContext)
     {
-        System.out.println("READ " + url);
-
         var result = readerContext.unirest().get(url)
                 .header(CONTENT_TYPE, APPLICATION_TYPE)
                 .asObject(readerContext.dataType())

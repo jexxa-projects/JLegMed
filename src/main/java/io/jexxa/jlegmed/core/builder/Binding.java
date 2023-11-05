@@ -25,7 +25,7 @@ public class Binding<T> {
     }
 
     public Binding<T> useProperties(String propertiesPrefix) {
-        var properties = PropertiesUtils.getSubset(flowGraph.getProperties(), propertiesPrefix);
+        var properties = PropertiesUtils.getSubset(flowGraph.properties(), propertiesPrefix);
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
         }

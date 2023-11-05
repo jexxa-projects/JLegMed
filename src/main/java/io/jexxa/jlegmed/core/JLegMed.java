@@ -64,8 +64,7 @@ public final class JLegMed
     {
         showPreStartupBanner();
 
-        flowGraphs.forEach((key, value) -> value.init());
-        flowGraphs.forEach((key, value) -> value.start());
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
 
         showPostStartupBanner();
         isRunning = true;
@@ -82,8 +81,7 @@ public final class JLegMed
     {
         isRunning = false;
 
-        flowGraphs.forEach((key, value) -> value.stop());
-        flowGraphs.forEach((key, value) -> value.deInit());
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
     }
 
     public JLegMed disableBanner()

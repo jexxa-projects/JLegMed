@@ -20,46 +20,37 @@ public class FlowGraph<T> {
         this.properties = properties;
     }
 
-    public String getFlowGraphID()
+    public String flowGraphID()
     {
         return flowGraphID;
     }
 
-    public Properties getProperties()
+    public Properties properties()
     {
         return properties;
     }
 
-    public void init() {
-        filterList.forEach(Filter::init);
-    }
-
     public void start() {
+        filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
     }
 
     public void stop() {
-        filterList.forEach(Filter::start);
+        filterList.forEach(Filter::stop);
+        filterList.forEach(Filter::deInit);
     }
 
-    public void deInit() {
-        filterList.forEach(Filter::init);
-    }
-
-    public void setProducer(Producer<T> producer)
+    public void producer(Producer<T> producer)
     {
         this.producer = producer;
+    }
+    protected Producer<T> producer()
+    {
+        return producer;
     }
 
     public void addFilter(Filter filter)
     {
         filterList.add(filter);
     }
-
-    protected Producer<T> getProducer()
-    {
-        return producer;
-    }
-
-
 }

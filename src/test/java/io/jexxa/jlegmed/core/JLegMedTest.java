@@ -20,4 +20,20 @@ class JLegMedTest {
         assertFalse(result.projectName().isEmpty());
         assertFalse(result.repository().isEmpty());
     }
+
+    @Test
+    void testUncaughtException()
+    {
+        //Arrange
+        var objectUnderTest= new JLegMed(JLegMedTest.class);
+        var jexxaException = new JLegMed.JexxaExceptionHandler(objectUnderTest);
+
+        //Act
+        objectUnderTest.start();
+        jexxaException.uncaughtException(Thread.currentThread(), new IllegalStateException("Test Exception Handler", new Throwable("Test Exception Handler as part of Unit tests")));
+
+        //Assert
+        assertFalse(objectUnderTest.isRunning());
+    }
+
 }

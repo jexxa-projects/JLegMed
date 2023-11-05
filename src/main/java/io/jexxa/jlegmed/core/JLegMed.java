@@ -47,6 +47,7 @@ public final class JLegMed
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
+        setExceptionHandler();
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
@@ -90,7 +91,7 @@ public final class JLegMed
         return this;
     }
 
-    synchronized void waitForShutdown()
+    private synchronized void waitForShutdown()
     {
         setupSignalHandler();
 
@@ -133,6 +134,13 @@ public final class JLegMed
         return JLegMedVersion.getVersion();
     }
 
+    private void setExceptionHandler()
+    {
+        if (Thread.getDefaultUncaughtExceptionHandler() == null)
+        {
+            Thread.setDefaultUncaughtExceptionHandler(new JexxaExceptionHandler(this));
+        }
+    }
     private void setupSignalHandler() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             getLogger(JLegMed.class).info("Shutdown signal received ...");
@@ -163,6 +171,62 @@ public final class JLegMed
     {
         isRunning = false;
         notifyAll();
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+
+    record JexxaExceptionHandler(JLegMed jLegMed) implements Thread.UncaughtExceptionHandler {
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            var errorMessage = getOutputMessage(e);
+            //Show startup banner if enabled and jexxa not started
+            if ( jLegMed.enableBanner &&
+                    !jLegMed.isRunning)
+            {
+                jLegMed.showPreStartupBanner();
+            }
+
+            getLogger(JLegMed.class).error("Could not startup JLegMed! {}", errorMessage);
+            getLogger(JLegMed.class).debug("Stack Trace: ", e);
+
+            jLegMed.stop();
+        }
+
+        String getOutputMessage(Throwable e) {
+            var stringBuilder = new StringBuilder();
+            var jLegMedMessage = e.getMessage();
+
+            Throwable rootCause = e;
+            Throwable rootCauseWithMessage = null;
+            if (rootCause.getMessage() != null) {
+                rootCauseWithMessage = rootCause;
+            }
+
+            while (rootCause.getCause() != null && !rootCause.getCause().equals(rootCause)) {
+                rootCause = rootCause.getCause();
+
+                if (rootCause.getMessage() != null && !rootCause.getMessage().isEmpty()) {
+                    rootCauseWithMessage = rootCause;
+                }
+            }
+
+            var detailedMessage = ""; // Create a potential reason in from of "lastMessage -> lastException" or just "lastMessage"
+            if (rootCauseWithMessage != null && !rootCauseWithMessage.equals(rootCause)) {
+                detailedMessage = rootCauseWithMessage.getClass().getSimpleName() + ": " + rootCauseWithMessage.getMessage() + " -> Exception: " + rootCause.getClass().getSimpleName();
+            } else {
+                detailedMessage = rootCause.getMessage();
+            }
+
+            stringBuilder.append("\n* JLegMed-Message   : ").append(jLegMedMessage);
+            stringBuilder.append("\n* Detailed-Message  : ").append(detailedMessage);
+            stringBuilder.append("\n* 1st trace element : ").append(rootCause.getStackTrace()[0]);
+
+            return stringBuilder.toString();
+        }
     }
 
 
@@ -256,6 +320,5 @@ public final class JLegMed
                 }
             }
         }
-
     }
 }

@@ -29,6 +29,11 @@ public class GenericProcessors {
         return data;
     }
 
+    @SuppressWarnings("java:S1172")
+    public static <T> T devNull(T data) {
+        return null;
+    }
+
     private GenericProcessors()
     {
       //Private constructor

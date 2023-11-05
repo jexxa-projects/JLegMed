@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GenericProcessorsTest {
     @Test
@@ -87,4 +88,20 @@ class GenericProcessorsTest {
         objectUnderTest.reachDeInit();
     }
 
+    @Test
+    void testDevNull() {
+        //Arrange
+        var inputData = 1;
+        var receivingPipe = new CollectingInputPipe<Integer>();
+
+        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::devNull);
+        objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.reachStarted();
+
+        //Act
+        objectUnderTest.process(inputData);
+
+        //Assert
+        assertTrue(receivingPipe.getCollectedData().isEmpty());
+    }
 }

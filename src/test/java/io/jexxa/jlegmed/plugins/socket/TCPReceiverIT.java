@@ -27,7 +27,7 @@ class TCPReceiverIT {
                     try {
                         return bufferedReader.readLine();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        return null;
                     }
                 }))
                 .and().processWith( GenericProcessors::consoleLogger )
@@ -36,15 +36,43 @@ class TCPReceiverIT {
         jLegMed.start();
 
         var tcpClient = new TCPClient();
-        tcpClient.start();
+        tcpClient.run();
 
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
         jLegMed.stop();
     }
 
-    private static class TCPClient extends Thread
+
+    @Test
+    void testTCPReceiverOneMessagePerConnection() {
+        var messageCollector = new GenericCollector<String>();
+        JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
+        var tcpClient = new TCPClientOneMessage();
+
+        jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
+                .await(String.class)
+                .from(createTCPReceiver( 6666, (bufferedReader, bufferedWriter) -> {
+                    try {
+                        return bufferedReader.readLine();
+                    } catch (IOException e) {
+                        return null;
+                    }
+                }))
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().processWith( messageCollector::collect);
+        //Act
+        jLegMed.start();
+        for (int i = 0; i < 3; ++i) {
+            tcpClient.run();
+        }
+
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        jLegMed.stop();
+    }
+
+
+    private static class TCPClient
     {
-        @Override
         public void run()
         {
             try {
@@ -56,6 +84,24 @@ class TCPReceiverIT {
                 bufferedWriter.flush();
                 bufferedWriter.close();
                 clientSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static class TCPClientOneMessage
+    {
+        public void run()
+        {
+            try {
+                var clientSocket = new Socket("localhost", 6666);
+                var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+                bufferedWriter.write("Hello World1\n");
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                clientSocket.close();
+                System.out.println("Message sent. Close Client Socket");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

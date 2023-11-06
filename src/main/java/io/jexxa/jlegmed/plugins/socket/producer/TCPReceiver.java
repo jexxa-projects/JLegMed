@@ -11,8 +11,6 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiFunction;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
@@ -22,7 +20,6 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
     private boolean isListening = false;
     private final int port;
     private ServerSocket serverSocket;
-    private final List<TCPListener<T>> listeners = new ArrayList<>();
 
     protected TCPReceiver(int port)
     {
@@ -43,8 +40,6 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
     @Override
     public synchronized void stop() {
         isListening = false;
-        listeners.forEach(TCPListener::stopRunning);
-        listeners.clear();
         try {
             serverSocket.close();
         } catch (IOException e) {
@@ -59,9 +54,6 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
             while (isListening) {
                 var clientSocket = serverSocket.accept();
                 var listener = new TCPListener<>(clientSocket, this);
-                synchronized (listeners) {
-                    listeners.add(listener);
-                }
                 listener.start();
             }
         } catch (SocketException e){
@@ -72,21 +64,18 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
         }
     }
 
-    synchronized void removeListener(TCPListener<T> listener) {
-        listeners.remove(listener);
-    }
-
-
-    synchronized void processMessage(BufferedReader bufferedReader, BufferedWriter bufferedWriter)
+    synchronized T processMessage(BufferedReader bufferedReader, BufferedWriter bufferedWriter)
     {
         try {
             T message = readMessage(bufferedReader, bufferedWriter);
             if (message != null) {
                 forwardData(message);
             }
+            return message;
         } catch (IOException e) {
             SLF4jLogger.getLogger(TCPReceiver.class).error("Could not process message.", e);
         }
+        return null;
     }
 
     abstract T readMessage(BufferedReader bufferedReader, BufferedWriter bufferedWriter) throws IOException;
@@ -94,16 +83,11 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
 
     public static class TCPListener<T> extends Thread {
         private final Socket clientSocket;
-        private boolean isRunning = true;
         private final TCPReceiver<T> receiver;
 
         protected TCPListener(Socket clientSocket, TCPReceiver<T> receiver) {
             this.clientSocket = clientSocket;
             this.receiver = receiver;
-        }
-
-        public synchronized void stopRunning() {
-            isRunning = false;
         }
 
         @Override
@@ -112,8 +96,11 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
-                while (isRunning) {
-                    receiver.processMessage(bufferedReader, bufferedWriter);
+                while (clientSocket.isConnected()) {
+                    var result = receiver.processMessage(bufferedReader, bufferedWriter);
+                    if (result == null) {
+                        break;
+                    }
                 }
 
                 bufferedReader.close();
@@ -121,7 +108,6 @@ public abstract class TCPReceiver<T> extends ThreadedProducer<T> {
             } catch (IOException e) {
                 SLF4jLogger.getLogger(TCPListener.class).error("Connection closed.", e);
             }
-            receiver.removeListener(this);
         }
     }
 

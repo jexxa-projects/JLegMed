@@ -29,7 +29,7 @@ public final class HelloJLegMed
     public static void main(String[] args)    {
         var jLegMed = new JLegMed(HelloJLegMed.class);
 
-        jLegMed.newFlowGraph("HelloWorldFlow")
+        jLegMed.newFlowGraph("HelloWorld")
                 .each(1, TimeUnit.SECONDS)
 
                 .receive(String.class).from( () -> "Hello" )

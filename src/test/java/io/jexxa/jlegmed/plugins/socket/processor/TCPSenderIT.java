@@ -5,11 +5,6 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-
 import static io.jexxa.jlegmed.plugins.socket.processor.TCPSender.createTCPSender;
 import static io.jexxa.jlegmed.plugins.socket.producer.TCPReceiver.createTCPReceiver;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

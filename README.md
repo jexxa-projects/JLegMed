@@ -73,9 +73,9 @@ compile "org.slf4j:slf4j-simple:2.0.9"
 ## Example 
 
 Refer to the following tests to get an idea how this library works
-* [Manual flow graph setup](src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
-* [Data processing](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using `FlowGraphBuilder`
-* [Configuration of a flowgraph](src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
+* [Manual flow graph setup](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
+* [Data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using `FlowGraphBuilder`
+* [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
 
 
 ## Build the library

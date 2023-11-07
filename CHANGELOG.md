@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - New plugin TCPSender to send messages via TCP connection
 
+### Changed 
+- To multi-maven project 
+- Renamed jar to jlegmed-core as a preparation to separate plugins based on dependencies and technologies
+
 ## \[0.4.0] - 2023-11-07
 ### Added
 - FlowGraphBuilder provides methods consumeWith that accept Consumer as an argument

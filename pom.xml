@@ -3,15 +3,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-
-  <name>JLegMed</name>
   <groupId>io.jexxa.jlegmed</groupId>
   <artifactId>jlegmed</artifactId>
   <version>0.4.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-  <url>https://www.jexxa.io</url>
+  <!-- Project Information -->
+  <name>JLegMed</name>
+  <url>https://github.com/jexxa-projects/JLegMed</url>
 
-  <description>JLegMed - GitHub related maven template </description>
+  <description>JLegMed - Connect the Past with the Future </description>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -510,13 +511,6 @@
     </plugins>
   </build>
 
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/jexxa-projects/JLegMed</url>
-    </repository>
-  </distributionManagement>
 
   <profiles>
     <profile>
@@ -674,5 +668,22 @@
       </build>
     </profile>
   </profiles>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>oss.sonatype.org</id>
+      <name>JLegMed snapshot</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+    <repository>
+      <id>oss.sonatype.org</id>
+      <name>Jexxa Maven Packages</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <uniqueVersion>true</uniqueVersion>
+    </repository>
+  </distributionManagement>
 
+  <modules>
+    <module>jlegmed-core</module>
+  </modules>
 </project>

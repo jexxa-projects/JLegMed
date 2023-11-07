@@ -18,12 +18,6 @@ public class Binding<T> {
         this.outputPipe = outputPipe;
     }
 
-
-    public <U> Binding<T> useConfig(U configuration) {
-        predecessor.useConfig(configuration);
-        return this;
-    }
-
     public Binding<T> useProperties(String propertiesPrefix) {
         var properties = PropertiesUtils.getSubset(flowGraph.properties(), propertiesPrefix);
         if (properties.isEmpty()) {
@@ -32,11 +26,6 @@ public class Binding<T> {
         predecessor.useProperties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
-    }
-
-    public <U> Binding<T> configureWith(String propertiesPrefix, U filterConfig) {
-        useProperties(propertiesPrefix);
-        return useConfig(filterConfig);
     }
 
     public ProcessorBuilder<T> and() {

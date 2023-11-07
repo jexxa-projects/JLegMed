@@ -7,19 +7,9 @@ public class FilterContext {
     private final HashMap<String, Object> dataState = new HashMap<>();
     private final ProcessingState processingState = new ProcessingState();
     private FilterProperties filterProperties;
-    private Object filterConfig;
 
     public void filterProperties(FilterProperties filterProperties) {
         this.filterProperties = filterProperties;
-    }
-
-
-    public void filterConfig(Object filterConfig) {
-        this.filterConfig = filterConfig;
-    }
-
-    public <T> Optional<T> filterConfigAs(Class<T> clazz) {
-        return Optional.ofNullable(clazz.cast(filterConfig));
     }
 
     public Optional<FilterProperties> filterProperties()

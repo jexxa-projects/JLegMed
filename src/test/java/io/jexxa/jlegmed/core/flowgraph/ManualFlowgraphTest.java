@@ -18,9 +18,9 @@ class ManualFlowgraphTest {
         GenericCollector<String> genericCollector = new GenericCollector<>();
 
         //Create a source and producers
-        FunctionalProducer<String> sourceFilter = producer( () -> "Hello World");
+        FunctionalProducer<String> sourceFilter = producer( () -> "Hello World" );
         Processor<String, String> idProcessor = processor(data -> data );
-        Processor<String, String> logProcessor = processor( data -> {SLF4jLogger.getLogger(ManualFlowgraphTest.class).info(data); return data;} );
+        Processor<String, String> logProcessor = processor( data -> {SLF4jLogger.getLogger(ManualFlowgraphTest.class).info(data); return data;});
         Processor<String, String> sinkFilter = processor(genericCollector::collect);
 
         //Connect all filters
@@ -28,8 +28,11 @@ class ManualFlowgraphTest {
         idProcessor.outputPipe().connectTo(logProcessor.inputPipe());
         logProcessor.outputPipe().connectTo(sinkFilter.inputPipe());
 
-        //Act
-        sourceFilter.start();
+        //Act - start filters in reverse order so that they are ready if the predecessors start sending data
+        sinkFilter.reachStarted();
+        logProcessor.reachStarted();
+        idProcessor.reachStarted();
+        sourceFilter.reachStarted();
 
         //Assert
         assertEquals(1, genericCollector.getNumberOfReceivedMessages());

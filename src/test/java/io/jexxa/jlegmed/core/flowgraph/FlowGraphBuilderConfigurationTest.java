@@ -47,7 +47,7 @@ class FlowGraphBuilderConfigurationTest {
                 .await(String.class)
                 // Here we configure a producer that produces a counter in a specific interval
                 .from(activeProducer(
-                        filterContext -> "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName())
+                        context -> "Hello World" + context.filterProperties().orElseThrow().propertiesName())
                 ).useProperties(propertiesPrefix).and()
 
                 .processWith( processor(GenericProcessors::idProcessor )).and()
@@ -60,33 +60,6 @@ class FlowGraphBuilderConfigurationTest {
         assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(0));
         assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(1));
         assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(2));
-    }
-
-
-    @Test
-    void testUseConfig() {
-        //Arrange
-        var messageCollector = new GenericCollector<String>();
-
-        jlegmed.newFlowGraph("UseConfig")
-
-                .await(String.class)
-                // Here we configure a producer that produces a counter in a specific interval
-                .from(activeProducer(
-                        (context) -> "Hello World" + context.filterConfigAs(String.class).orElseThrow())
-                ).useConfig(" with useConfig")
-
-                .and().processWith( processor(GenericProcessors::idProcessor ))
-                .and().processWith( messageCollector::collect );
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-
-        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(0));
-        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(1));
-        assertEquals("Hello World" + " with useConfig", messageCollector.getMessages().get(2));
     }
 
     @Test

@@ -63,8 +63,7 @@ class FlowGraphBuilderTest {
         jlegmed.newFlowGraph("ActiveFlowGraph")
                 .await(Integer.class)
                 .from(activeProducer(GenericProducer::counter, schedule(50, MILLISECONDS)))
-
-
+                
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( TestFilter::skipEachSecondMessage )
                 .and().processWith( messageCollector::collect );

@@ -27,9 +27,6 @@ public abstract class Filter {
         deInit();
     }
 
-    public <U> void useConfig(U configuration) {
-        this.filterContext.filterConfig(configuration);
-    }
     public Filter useProperties(FilterProperties filterProperties) {
         this.filterContext.filterProperties(filterProperties);
         return this;
@@ -45,9 +42,6 @@ public abstract class Filter {
 
     protected FilterContext filterContext() {
         return filterContext;
-    }
-    protected <U> Optional<U> filterConfigAs(Class<U> clazz) {
-        return filterContext().filterConfigAs(clazz);
     }
 
     protected void startProcessing() {

@@ -42,7 +42,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> message)
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -88,7 +88,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> inputData)
 
                 .and().processWith( data -> data + "-" + data )
-                .and().consumeWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -108,7 +108,7 @@ class FlowGraphBuilderTest {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith(messageCollector1::collect);
+                .and().consumeWith( messageCollector1::collect );
 
 
         jlegmed.newFlowGraph("FlowGraph2")
@@ -116,7 +116,7 @@ class FlowGraphBuilderTest {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith(messageCollector2::collect);
+                .and().consumeWith( messageCollector2::collect );
 
         //Act
         jlegmed.start();
@@ -137,13 +137,13 @@ class FlowGraphBuilderTest {
 
                 .and().processWith(TestFilter::transformToUpdatedContract)
                 .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith(messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertFalse(messageCollector.getMessages().isEmpty());
+        assertFalse( messageCollector.getMessages().isEmpty());
     }
 
 
@@ -158,7 +158,7 @@ class FlowGraphBuilderTest {
                 .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
                 .and().processWith( TestFilter::contextTransformer)
-                .and().consumeWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 

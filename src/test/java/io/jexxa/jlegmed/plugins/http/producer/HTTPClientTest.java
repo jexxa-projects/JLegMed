@@ -76,7 +76,7 @@ class HTTPClientTest {
                 .receive(VersionInfo.class).from(httpClient("http://localhost:7070/"))
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);

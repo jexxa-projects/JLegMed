@@ -4,7 +4,7 @@ import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
-import io.jexxa.jlegmed.plugins.socket.TCPContext;
+import io.jexxa.jlegmed.plugins.socket.SocketContext;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,23 +14,26 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends Producer<T> {
 
     private ExecutorService executorService;
 
     private boolean isListening = false;
-    private final int port;
+    private int port = -1;
     private ServerSocket serverSocket;
 
     protected TCPReceiver(int port)  {
         this.port = port;
     }
+    protected TCPReceiver()  { }
 
     @Override
     public void start() {
@@ -43,6 +46,16 @@ public abstract class TCPReceiver<T> extends Producer<T> {
         }
         isListening = true;
         executorService.execute(this::startListening);
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+        properties().ifPresent(this::setPort);
+        if (port == -1) {
+            throw new IllegalArgumentException("Port must be set");
+        }
     }
 
     @Override
@@ -69,6 +82,13 @@ public abstract class TCPReceiver<T> extends Producer<T> {
         executorService = null;
     }
 
+    private void setPort(Properties properties) {
+        if (properties.containsKey(TCP_PORT)) {
+            port = Integer.parseInt(properties.getProperty(TCP_PORT));
+        }
+    }
+
+
     private void startListening() {
         try {
             while (isListening) {
@@ -90,7 +110,7 @@ public abstract class TCPReceiver<T> extends Producer<T> {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
             while (clientSocket.isConnected()) {
-                T message = receiveMessage(new TCPContext(bufferedReader, bufferedWriter));
+                T message = receiveMessage(new SocketContext(bufferedReader, bufferedWriter, filterContext()));
                 if (message == null) {
                     break;
                 }
@@ -106,12 +126,26 @@ public abstract class TCPReceiver<T> extends Producer<T> {
     }
 
 
-    abstract T receiveMessage(TCPContext tcpContext) throws IOException;
+    abstract T receiveMessage(SocketContext socketContext) throws IOException;
 
-    public static <T> TCPReceiver<T> createTCPReceiver(int port, ThrowingFunction<TCPContext, T, IOException> consumer) {
+    public static <T> TCPReceiver<T> tcpReceiver(int port, ThrowingFunction<SocketContext, T, IOException> consumer) {
         return new TCPReceiver<>(port) {
             @Override
-            protected T receiveMessage(TCPContext context) {
+            protected T receiveMessage(SocketContext context) {
+                try {
+                    return consumer.apply(context);
+                } catch (IOException e) {
+                    SLF4jLogger.getLogger(TCPReceiver.class).error("Could not read message.", e);
+                    return null;
+                }
+            }
+        };
+    }
+
+    public static <T> TCPReceiver<T> tcpReceiver(ThrowingFunction<SocketContext, T, IOException> consumer) {
+        return new TCPReceiver<>() {
+            @Override
+            protected T receiveMessage(SocketContext context) {
                 try {
                     return consumer.apply(context);
                 } catch (IOException e) {

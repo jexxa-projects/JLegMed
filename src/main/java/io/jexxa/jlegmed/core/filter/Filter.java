@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.filter;
 
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * A filter is an object that can be used to produce or process the data
@@ -38,6 +39,17 @@ public abstract class Filter {
 
     public Optional<FilterProperties> filterProperties() {
         return filterContext.filterProperties();
+    }
+
+    /**
+     * Returns the properties included in the filterProperties() if available
+     *
+     * @return Properties included in {@link #filterProperties()} if available
+     */
+    protected Optional<Properties> properties() {
+        return filterContext
+                .filterProperties()
+                .map(FilterProperties::properties);
     }
 
     protected FilterContext filterContext() {

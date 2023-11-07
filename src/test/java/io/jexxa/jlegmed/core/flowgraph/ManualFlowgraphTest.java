@@ -21,7 +21,7 @@ class ManualFlowgraphTest {
         FunctionalProducer<String> sourceFilter = producer( () -> "Hello World" );
         Processor<String, String> idProcessor = processor(data -> data );
         Processor<String, String> logProcessor = processor( data -> {SLF4jLogger.getLogger(ManualFlowgraphTest.class).info(data); return data;});
-        Processor<String, String> sinkFilter = processor(genericCollector::collect);
+        Processor<String, String> sinkFilter = processor(genericCollector::collect );
 
         //Connect all filters
         sourceFilter.outputPipe().connectTo(idProcessor.inputPipe());

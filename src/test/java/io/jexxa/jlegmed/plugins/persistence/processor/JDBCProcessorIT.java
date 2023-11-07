@@ -42,7 +42,7 @@ class JDBCProcessorIT {
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
                 .and().processWith( jdbcProcessor(database::insertTestData)).useProperties("test-jdbc-connection")
-                .and().processWith(messageCollector::collect);
+                .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();
 

@@ -34,11 +34,11 @@ class MessagingTestIT {
                 .each(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().processWith(senderReceiver.getLeft()).useProperties("test-jms-connection")
-                .and().processWith(messageCollector1::collect);
+                .and().consumeWith( messageCollector1::collect );
 
         jlegmed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from(senderReceiver.getRight()).useProperties("test-jms-connection")
-                .and().processWith(messageCollector2::collect);
+                .and().consumeWith( messageCollector2::collect );
 
         //Act
         jlegmed.start();

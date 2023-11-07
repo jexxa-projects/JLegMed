@@ -55,7 +55,7 @@ class RepositoryProcessorIT {
 
                 .and().processWith( data -> new TextEntity(data) )
                 .and().processWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
-                .and().processWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();
 

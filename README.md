@@ -43,7 +43,7 @@ public final class HelloJLegMed
 
 ### Add Dependencies
 Whenever possible, JLegMed is developed against standard APIs. This allows an application to use the preferred
-technology stacks. Therefore, our `HelloJexxa` application needs two dependencies: `jlegmed-core` and a logger that fulfills
+technology stacks. Therefore, our application needs two dependencies: `jlegmed` and a logger that fulfills
 your requirements, such as `slf4j-simple`.
 
 Maven:

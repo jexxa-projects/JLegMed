@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.socket;
+package io.jexxa.jlegmed.plugins.socket.producer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;

@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
+import io.jexxa.jlegmed.plugins.socket.TCPContext;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,7 +46,7 @@ public abstract class TCPReceiver<T> extends Producer<T> {
     }
 
     @Override
-    public synchronized void stop() {
+    public void stop() {
         isListening = false;
         try {
             serverSocket.close();
@@ -89,7 +90,7 @@ public abstract class TCPReceiver<T> extends Producer<T> {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
             while (clientSocket.isConnected()) {
-                T message = readMessage(new TCPContext(bufferedReader, bufferedWriter));
+                T message = receiveMessage(new TCPContext(bufferedReader, bufferedWriter));
                 if (message == null) {
                     break;
                 }
@@ -97,6 +98,7 @@ public abstract class TCPReceiver<T> extends Producer<T> {
             }
 
             bufferedReader.close();
+            bufferedWriter.close();
             clientSocket.close();
         } catch (IOException e) {
             SLF4jLogger.getLogger(TCPReceiver.class).error("Connection closed.", e);
@@ -104,14 +106,12 @@ public abstract class TCPReceiver<T> extends Producer<T> {
     }
 
 
-    abstract T readMessage(TCPContext tcpContext) throws IOException;
-
-    public record TCPContext(BufferedReader bufferedReader, BufferedWriter bufferedWriter) {}
+    abstract T receiveMessage(TCPContext tcpContext) throws IOException;
 
     public static <T> TCPReceiver<T> createTCPReceiver(int port, ThrowingFunction<TCPContext, T, IOException> consumer) {
         return new TCPReceiver<>(port) {
             @Override
-            protected T readMessage(TCPContext context) {
+            protected T receiveMessage(TCPContext context) {
                 try {
                     return consumer.apply(context);
                 } catch (IOException e) {

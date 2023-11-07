@@ -1,6 +1,7 @@
-[![Maven Test Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
-[![New Release](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.jexxa/jlegmed)](https://maven-badges.herokuapp.com/maven-central/io.jexxa/jlegmed/) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+[![Maven Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
+[![CodeQL](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml)
 # JLegMed—Connect the Past with the Future
 
 This library is intended to build bridges between legacy and new systems. Goal is to ensure that a new system can use a greenfield approach without considering the behavior or technical aspects of a legacy system.  

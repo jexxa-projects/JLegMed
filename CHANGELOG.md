@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[0.4.0] - 2023-11-07
+### Added
+- FlowGraphBuilder provides methods consumeWith that accept Consumer as an argument
+- New plugin TCPReceiver to receive messages via TCP connection 
+
 ## \[0.3.0] - 2023-11-05
 ### Added
 - JLegMed provides more sophisticated error handling for uncaught exceptions 

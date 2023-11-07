@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[0.5.0] - 2023-11-07
+### Added
+- New plugin TCPSender to send messages via TCP connection
+
 ## \[0.4.0] - 2023-11-07
 ### Added
 - FlowGraphBuilder provides methods consumeWith that accept Consumer as an argument

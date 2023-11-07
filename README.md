@@ -1,7 +1,8 @@
 [![Maven Test Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
 [![New Release](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/newRelease.yml)
 
-# JLegMed
+# JLegMed—Connect the Past with the Future
+
 This library is intended to build bridges between legacy and new systems. Goal is to ensure that a new system can use a greenfield approach without considering the behavior or technical aspects of a legacy system.  
 
 For this purpose, we focus on the following aspects:  
@@ -51,7 +52,7 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </dependency>
     
     <dependency>
@@ -62,19 +63,10 @@ Maven:
 </dependencies>
 ```
 
-Note: During the beta phase, the library is released on GitHub. Therefore, you need to add the following repository to your pom.xml file.
-```xml
-  <repositories>
-    <repository>
-      <id>github</id>
-      <url>https://maven.pkg.github.com/jexxa-projects/*</url>
-    </repository>
-  </repositories>
-```
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed:0.4.0"
+compile "io.jexxa:jlegmed:0.5.0"
 compile "org.slf4j:slf4j-simple:2.0.9"
 ``` 
 

@@ -87,7 +87,7 @@
     <maven.versions.plugin>2.16.1</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.5.1</maven.shade.plugin>
-    <maven.templating.plugin>1.0.0</maven.templating.plugin>
+    <maven.templating.plugin>3.0.0</maven.templating.plugin>
 
     <!-- sonar configuration  -->
     <sonar.organization>jexxa-projects</sonar.organization>

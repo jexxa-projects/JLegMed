@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +30,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 public final class JLegMed
 {
     private boolean isRunning = false;
-    private final Map<String, FlowGraph<?>> flowGraphs = new HashMap<>();
+    private final Map<String, FlowGraph<?>> flowGraphs = new LinkedHashMap<>();
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;

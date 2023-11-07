@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.http.producer;
 
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.plugins.http.producer.HTTPClientContext;
 
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.APPLICATION_TYPE;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.CONTENT_TYPE;

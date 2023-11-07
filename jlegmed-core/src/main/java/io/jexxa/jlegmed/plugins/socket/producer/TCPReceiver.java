@@ -84,7 +84,12 @@ public abstract class TCPReceiver<T> extends Producer<T> {
 
     private void setPort(Properties properties) {
         if (properties.containsKey(TCP_PORT)) {
-            port = Integer.parseInt(properties.getProperty(TCP_PORT));
+            try {
+                port = Integer.parseInt(properties.getProperty(TCP_PORT));
+            } catch (NumberFormatException e)
+            {
+                throw new IllegalArgumentException("Port must be an integer");
+            }
         }
     }
 

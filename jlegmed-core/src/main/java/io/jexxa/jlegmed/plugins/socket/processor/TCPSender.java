@@ -85,7 +85,12 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
 
     private void setAddress(Properties properties) {
         if (properties.containsKey(TCP_PORT)) {
-            port = Integer.parseInt(properties.getProperty(TCP_PORT));
+            try {
+                port = Integer.parseInt(properties.getProperty(TCP_PORT));
+            } catch (NumberFormatException e)
+            {
+                throw new IllegalArgumentException("Port must be an integer");
+            }
         }
         if (properties.containsKey(TCP_ADDRESS)) {
             ipAddress = properties.getProperty(TCP_ADDRESS);

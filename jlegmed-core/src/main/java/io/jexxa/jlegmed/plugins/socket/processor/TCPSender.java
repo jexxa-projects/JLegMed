@@ -71,7 +71,7 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
         clientSocket = null;
     }
 
-
+    @Override
     protected R doProcess(T data, FilterContext context) {
         try {
             R result = sendMessage(data, new SocketContext(bufferedReader, bufferedWriter, filterContext()));

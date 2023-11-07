@@ -6,7 +6,9 @@ import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class Processor<T, R>  extends Filter {
@@ -54,6 +56,28 @@ public abstract class Processor<T, R>  extends Filter {
             @Override
             protected R doProcess(T data, FilterContext context) {
                 return processFunction.apply(data);
+            }
+        };
+    }
+
+    public static  <T> Processor<T, T> consumer(BiConsumer<T, FilterContext> processFunction)
+    {
+        return new Processor<>() {
+            @Override
+            protected T doProcess(T data, FilterContext context) {
+                processFunction.accept(data, context);
+                return null;
+            }
+        };
+    }
+
+    public static  <T> Processor<T, T> consumer(Consumer<T> processFunction)
+    {
+        return new Processor<>() {
+            @Override
+            protected T doProcess(T data, FilterContext context) {
+                processFunction.accept(data);
+                return null;
             }
         };
     }

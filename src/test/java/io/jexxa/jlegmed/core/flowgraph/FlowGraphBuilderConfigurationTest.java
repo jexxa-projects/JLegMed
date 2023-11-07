@@ -51,7 +51,7 @@ class FlowGraphBuilderConfigurationTest {
                 ).useProperties(propertiesPrefix).and()
 
                 .processWith( processor(GenericProcessors::idProcessor )).and()
-                .processWith( messageCollector::collect );
+                .consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
@@ -75,7 +75,7 @@ class FlowGraphBuilderConfigurationTest {
                 .receive(TestFilter.NewContract.class).from(jsonStreamUntilStopped(inputStream))
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect);
         //Act
         jlegmed.start();
 
@@ -97,7 +97,7 @@ class FlowGraphBuilderConfigurationTest {
                 .receive(TestFilter.NewContract.class).from(jsonStreamOnlyOnce(inputStream))
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect);
         //Act
         jlegmed.start();
 

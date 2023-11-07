@@ -25,6 +25,5 @@ class PropertiesUtilsTest {
         assertTrue(result.containsKey(JNDI_PROVIDER_URL_KEY));
         assertTrue(result.containsKey(JNDI_USER_KEY));
         assertTrue(result.containsKey(JNDI_PASSWORD_KEY));
-
     }
 }

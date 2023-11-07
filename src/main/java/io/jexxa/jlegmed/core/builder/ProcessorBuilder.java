@@ -5,9 +5,12 @@ import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 
 /**
@@ -40,6 +43,22 @@ public class ProcessorBuilder<T> {
 
         flowGraph.addFilter(successor);
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
+    }
+
+    public Binding<Void> consumeWith(Consumer<T> successorFunction) {
+        var successor = consumer(successorFunction);
+        predecessorPipe.connectTo(successor.inputPipe());
+
+        flowGraph.addFilter(successor);
+        return new Binding<>(successor, null, flowGraph);
+    }
+
+    public Binding<Void> consumeWith(BiConsumer<T, FilterContext> successorFunction) {
+        var successor = consumer(successorFunction);
+        predecessorPipe.connectTo(successor.inputPipe());
+
+        flowGraph.addFilter(successor);
+        return new Binding<>(successor, null, flowGraph);
     }
 
     public <R> Binding<R> processWith(Processor<T, R> successor) {

@@ -15,6 +15,69 @@ For this purpose, we focus on the following aspects:
 *   Java 17+ installed
 *   IDE with maven support 
 
+
+## Quickstart
+
+### Start programming
+
+Below, you see a simple ``Hello World`` example:
+
+```java     
+public final class HelloJLegMed
+{
+    public static void main(String[] args)    {
+        var jLegMed = new JLegMed(HelloJLegMed.class);
+
+        jLegMed.newFlowGraph("HelloWorldFlow")
+                .each(1, TimeUnit.SECONDS)
+
+                .receive(String.class).from( () -> "Hello" )
+                .and().processWith(data -> data + " World" )
+                .and().consumeWith(data -> getLogger(JLegMedTest.class).info(data));
+
+        jLegMed.run();
+    }
+}
+```    
+
+### Add Dependencies
+Whenever possible, JLegMed is developed against standard APIs. This allows an application to use the preferred
+technology stacks. Therefore, our `HelloJexxa` application needs two dependencies: `jlegmed-core` and a logger that fulfills
+your requirements, such as `slf4j-simple`.
+
+Maven:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>io.jexxa.jlegmed</groupId>
+        <artifactId>jlegmed</artifactId>
+        <version>0.4.0</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>2.0.9</version>
+    </dependency>
+</dependencies>
+```
+
+Note: During the beta phase, the library is released on GitHub. Therefore, you need to add the following repository to your pom.xml file.
+```xml
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/jexxa-projects/*</url>
+    </repository>
+  </repositories>
+```
+Gradle:
+
+```groovy
+compile "io.jexxa:jlegmed:0.4.0"
+compile "org.slf4j:slf4j-simple:2.0.9"
+``` 
+
 ## Example 
 
 Refer to the following tests to get an idea how this library works

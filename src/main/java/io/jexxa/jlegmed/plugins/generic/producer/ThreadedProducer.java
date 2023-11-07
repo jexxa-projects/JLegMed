@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.concurrent.ExecutorService;
@@ -31,15 +30,5 @@ public abstract class ThreadedProducer<T> extends Producer<T> {
         }
     }
 
-    protected void forwardData(T data)
-    {
-        var invocationHandler = InvocationManager.getInvocationHandler(this);
-        invocationHandler.invoke(this, this::internalForwardData, data);
-    }
-
-    private void internalForwardData(T data)
-    {
-        outputPipe().forward(data);
-    }
     protected abstract void produceData();
 }

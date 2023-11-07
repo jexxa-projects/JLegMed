@@ -23,13 +23,7 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from(createTCPReceiver( 6666, (bufferedReader, bufferedWriter) -> {
-                    try {
-                        return bufferedReader.readLine();
-                    } catch (IOException e) {
-                        return null;
-                    }
-                }))
+                .from(createTCPReceiver( 6666, context -> context.bufferedReader().readLine()))
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().processWith( messageCollector::collect);
         //Act
@@ -51,15 +45,9 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
-                .from(createTCPReceiver( 6666, (bufferedReader, bufferedWriter) -> {
-                    try {
-                        return bufferedReader.readLine();
-                    } catch (IOException e) {
-                        return null;
-                    }
-                }))
+                .from(createTCPReceiver( 6666, context -> context.bufferedReader().readLine()))
                 .and().processWith( GenericProcessors::consoleLogger )
-                .and().processWith( messageCollector::collect);
+                .and().consumeWith( messageCollector::collect);
         //Act
         jLegMed.start();
         for (int i = 0; i < 3; ++i) {

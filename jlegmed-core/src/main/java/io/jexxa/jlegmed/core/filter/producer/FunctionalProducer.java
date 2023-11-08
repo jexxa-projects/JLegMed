@@ -9,18 +9,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class FunctionalProducer<T> extends Producer<T> {
-    @Override
-    public void start()
-    {
-        produceData();
-    }
-
     public void produceData() {
         do {
             startProcessing();
 
             Optional.ofNullable(doProduce())
-                    .ifPresent(result -> outputPipe().forward(result));
+                    .ifPresent(data -> outputPipe().forward(data));
 
             finishedProcessing();
 

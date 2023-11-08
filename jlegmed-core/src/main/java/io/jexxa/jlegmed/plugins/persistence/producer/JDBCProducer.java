@@ -23,7 +23,7 @@ public abstract class JDBCProducer<T> extends Producer<T> {
     }
 
     @Override
-    public void start() {
+    public void produceData() {
         executeCommand();
     }
 

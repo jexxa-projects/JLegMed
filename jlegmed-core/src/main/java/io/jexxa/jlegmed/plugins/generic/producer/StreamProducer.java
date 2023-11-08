@@ -8,8 +8,8 @@ public class StreamProducer {
         return new ThreadedProducer<>()
         {
             @Override
-            protected void produceData() {
-                stream.forEach(this::forwardData);
+            public void produceData() {
+                stream.forEach(outputPipe()::forward);
             }
         };
     }

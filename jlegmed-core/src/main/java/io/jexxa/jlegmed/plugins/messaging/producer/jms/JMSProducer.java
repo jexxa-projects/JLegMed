@@ -41,6 +41,11 @@ public class JMSProducer<T> extends Producer<T> {
     }
 
     @Override
+    public void produceData() {
+        //We will be triggered
+    }
+
+    @Override
     public void stop() {
         if (jmsAdapter != null)
         {

@@ -13,7 +13,9 @@ public class OutputPipe<T> {
     public void forward(T data) {
         if (inputPipe != null)
         {
-            inputPipe.receive(data);
+            if (data != null) {
+                inputPipe.receive(data);
+            }
         } else {
             SLF4jLogger.getLogger(OutputPipe.class).debug("No input pipe connected");
         }

@@ -28,11 +28,14 @@ class ManualFlowgraphTest {
         idProcessor.outputPipe().connectTo(logProcessor.inputPipe());
         logProcessor.outputPipe().connectTo(sinkFilter.inputPipe());
 
-        //Act - start filters in reverse order so that they are ready if the predecessors start sending data
-        sinkFilter.reachStarted();
-        logProcessor.reachStarted();
-        idProcessor.reachStarted();
+        //Start filters
         sourceFilter.reachStarted();
+        idProcessor.reachStarted();
+        logProcessor.reachStarted();
+        sinkFilter.reachStarted();
+
+        //Act
+        sourceFilter.produceData();
 
         //Assert
         assertEquals(1, genericCollector.getNumberOfReceivedMessages());

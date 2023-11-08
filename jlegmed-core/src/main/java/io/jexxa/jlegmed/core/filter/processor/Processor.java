@@ -5,7 +5,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -30,8 +29,7 @@ public abstract class Processor<T, R>  extends Filter {
         do {
             startProcessing();
 
-            Optional.ofNullable(doProcess(data, filterContext()))
-                    .ifPresent(result -> outputPipe().forward(result));
+            outputPipe().forward(doProcess(data, filterContext()));
 
             finishedProcessing();
 

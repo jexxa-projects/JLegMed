@@ -39,7 +39,7 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
 
     private void iterateFlowGraph()
     {
-        producer().start();
+        producer().produceData();
     }
 
     private record FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled

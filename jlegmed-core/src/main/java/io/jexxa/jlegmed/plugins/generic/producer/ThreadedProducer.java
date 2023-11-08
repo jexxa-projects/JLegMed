@@ -30,5 +30,4 @@ public abstract class ThreadedProducer<T> extends Producer<T> {
         }
     }
 
-    protected abstract void produceData();
 }

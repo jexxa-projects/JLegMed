@@ -41,8 +41,6 @@ public abstract class HTTPClient<T> extends Producer<T> {
         produceData();
     }
 
-    protected abstract void produceData();
-
     protected UnirestInstance getUnirest()
     {
         return unirestInstance;
@@ -67,7 +65,7 @@ public abstract class HTTPClient<T> extends Producer<T> {
     public static <T> HTTPClient<T> httpClient(String url) {
         return new HTTPClient<>(){
             @Override
-            protected void produceData() {
+            public void produceData() {
                 var result = getUnirest().get(url)
                         .header(CONTENT_TYPE, APPLICATION_TYPE)
                         .asObject(producingType()).getBody();
@@ -80,7 +78,7 @@ public abstract class HTTPClient<T> extends Producer<T> {
     {
         return new HTTPClient<>() {
             @Override
-            protected void produceData() {
+            public void produceData() {
                 function.accept(new HTTPClientContext<>(getUnirest(), filterContext(), producingType(), outputPipe()::forward));
             }
         };

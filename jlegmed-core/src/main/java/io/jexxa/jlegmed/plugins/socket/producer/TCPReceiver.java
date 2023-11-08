@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.socket.producer;
 
+import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
@@ -58,6 +59,13 @@ public abstract class TCPReceiver<T> extends Producer<T> {
         }
     }
 
+    @Override
+    public void produceData()
+    {
+        if (!isListening) {
+            start();
+        }
+    }
     @Override
     public void stop() {
         isListening = false;
@@ -119,7 +127,9 @@ public abstract class TCPReceiver<T> extends Producer<T> {
                 if (message == null) {
                     break;
                 }
-                forwardData(message);
+                InvocationManager
+                        .getInvocationHandler(TCPReceiver.class)
+                        .invoke(this, outputPipe()::forward, message);
             }
 
             bufferedReader.close();

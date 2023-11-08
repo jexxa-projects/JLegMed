@@ -51,10 +51,17 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     @Override
     public void execute()
     {
-        outputPipe().forward(produceData());
+        produceData();
     }
 
-    protected abstract T produceData();
+    @Override
+    public void produceData()
+    {
+        outputPipe().forward(generateData());
+    }
+
+
+    protected abstract T generateData();
 
     public record Schedule(int fixedRate, TimeUnit timeUnit){}
 
@@ -62,7 +69,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     public static <T> ScheduledProducer<T> activeProducer(BiFunction<FilterContext, Class<T>, T> biFunction) {
         return new ScheduledProducer<>() {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return biFunction.apply(filterContext(), producingType());
             }
         };
@@ -70,7 +77,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     public static <T> ScheduledProducer<T> activeProducer(Function<FilterContext, T> contextFunction) {
         return new ScheduledProducer<>() {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return contextFunction.apply(filterContext());
             }
         };
@@ -79,7 +86,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier) {
         return new ScheduledProducer<>() {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return contextSupplier.get();
             }
         };
@@ -90,7 +97,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     ) {
         return new ScheduledProducer<>(schedule) {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return biFunction.apply(filterContext(), producingType());
             }
         };
@@ -99,7 +106,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     public static <T> ScheduledProducer<T> activeProducer(Function<FilterContext, T> contextFunction,Schedule schedule) {
         return new ScheduledProducer<>(schedule) {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return contextFunction.apply(filterContext());
             }
         };
@@ -108,7 +115,7 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
     public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier, Schedule schedule) {
         return new ScheduledProducer<>(schedule) {
             @Override
-            protected T produceData() {
+            protected T generateData() {
                 return contextSupplier.get();
             }
         };

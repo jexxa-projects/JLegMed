@@ -21,10 +21,10 @@ class FunctionalProducerTest {
         Producer<String> objectUnderTest = producer(() -> "Hello World");
         objectUnderTest.outputPipe().connectTo(inputPipe);
 
-        objectUnderTest.init();
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.start();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(1, inputPipe.getCollectedData().size());
@@ -43,9 +43,10 @@ class FunctionalProducerTest {
 
         objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
         objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.reachStarted();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(1, inputPipe.getCollectedData().size());
@@ -65,9 +66,10 @@ class FunctionalProducerTest {
         objectUnderTest.producingType(String.class);
         objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
         objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.reachStarted();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(1, inputPipe.getCollectedData().size());
@@ -88,9 +90,10 @@ class FunctionalProducerTest {
         });
 
         objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.reachStarted();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(2, inputPipe.getCollectedData().size());
@@ -107,8 +110,9 @@ class FunctionalProducerTest {
                 "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName()
         );
         objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.reachStarted();
 
         //Act / Assert
-        assertThrows(NoSuchElementException.class, objectUnderTest::reachStarted);
+        assertThrows(NoSuchElementException.class, objectUnderTest::produceData);
     }
 }

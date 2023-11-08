@@ -4,7 +4,6 @@ import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,12 +31,8 @@ public class FlowGraph<T> {
     }
 
     public void start() {
-        //We iterate in reverse order to ensure that filters are started before producer/predecessors
-        var reverseOrderOfFilters = filterList;
-        Collections.reverse(reverseOrderOfFilters);
-
-        reverseOrderOfFilters.forEach(Filter::init);
-        reverseOrderOfFilters.forEach(Filter::start);
+        filterList.forEach(Filter::init);
+        filterList.forEach(Filter::start);
     }
 
     public void stop() {

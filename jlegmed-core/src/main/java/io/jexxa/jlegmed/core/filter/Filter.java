@@ -9,7 +9,6 @@ import java.util.Properties;
 public abstract class Filter {
     private final FilterContext filterContext = new FilterContext();
 
-
     public void init() {}
     public void start() {}
     public void stop() {}

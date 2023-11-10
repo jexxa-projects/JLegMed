@@ -91,6 +91,18 @@ public final class JLegMed
         return this;
     }
 
+    public JLegMed monitorWith(String flowGraphID, FlowGraphMonitor flowGraphMonitor)
+    {
+        if( !flowGraphs.containsKey(flowGraphID) )
+        {
+            throw new IllegalStateException("FlowGraph with ID " + flowGraphID + " does not exist");
+        }
+
+        flowGraphMonitor.setFlowGraph(flowGraphs.get(flowGraphID));
+
+        return this;
+    }
+
     private synchronized void waitForShutdown()
     {
         setupSignalHandler();
@@ -107,7 +119,6 @@ public final class JLegMed
             throw new IllegalStateException(e);
         }
     }
-
 
     public Properties getProperties()
     {

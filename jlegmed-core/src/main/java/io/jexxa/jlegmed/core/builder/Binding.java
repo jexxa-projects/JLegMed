@@ -8,12 +8,12 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 public class Binding<T> {
 
-    private final Filter predecessor;
+    private final Filter filter;
     private final FlowGraph<?> flowGraph;
     private final OutputPipe<T> outputPipe;
 
     public Binding(Filter filter, OutputPipe<T> outputPipe, FlowGraph<?> flowGraph) {
-        this.predecessor = filter;
+        this.filter = filter;
         this.flowGraph = flowGraph;
         this.outputPipe = outputPipe;
     }
@@ -23,7 +23,7 @@ public class Binding<T> {
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
         }
-        predecessor.useProperties(new FilterProperties(propertiesPrefix, properties));
+        filter.useProperties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
     }

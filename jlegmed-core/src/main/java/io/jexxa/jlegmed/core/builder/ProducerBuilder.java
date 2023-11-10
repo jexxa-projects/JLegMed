@@ -24,7 +24,6 @@ public class ProducerBuilder<T> {
         typedProducer.producingType(sourceType);
         flowGraph.producer(typedProducer);
 
-        flowGraph.addFilter(typedProducer);
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
@@ -33,7 +32,6 @@ public class ProducerBuilder<T> {
         typedProducer.producingType(sourceType);
         flowGraph.producer(typedProducer);
 
-        flowGraph.addFilter(typedProducer);
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
@@ -42,7 +40,6 @@ public class ProducerBuilder<T> {
         typedProducer.producingType(sourceType);
         flowGraph.producer(typedProducer);
 
-        flowGraph.addFilter(typedProducer);
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
@@ -50,7 +47,6 @@ public class ProducerBuilder<T> {
         producer.producingType(sourceType);
         flowGraph.producer(producer);
 
-        flowGraph.addFilter(producer);
         return new Binding<>(producer, producer.outputPipe(), flowGraph);
     }
 

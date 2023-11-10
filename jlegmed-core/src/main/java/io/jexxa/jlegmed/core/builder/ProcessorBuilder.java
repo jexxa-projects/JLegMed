@@ -33,7 +33,7 @@ public class ProcessorBuilder<T> {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
@@ -41,7 +41,7 @@ public class ProcessorBuilder<T> {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
@@ -49,7 +49,7 @@ public class ProcessorBuilder<T> {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, null, flowGraph);
     }
 
@@ -57,20 +57,20 @@ public class ProcessorBuilder<T> {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, null, flowGraph);
     }
 
     public <R> Binding<Void> consumeWith(Processor<T, R> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, null, flowGraph);
     }
     public <R> Binding<R> processWith(Processor<T, R> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addFilter(successor);
+        flowGraph.addProcessor(successor);
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 }

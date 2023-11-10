@@ -10,6 +10,11 @@ public final class SLF4jLogger
         return LoggerFactory.getLogger(clazz);
     }
 
+    public static Logger getLogger(String prefix)
+    {
+        return LoggerFactory.getLogger(prefix);
+    }
+
     private SLF4jLogger()
     {
         //Private constructor

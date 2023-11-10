@@ -4,6 +4,7 @@ package io.jexxa.jlegmed.core;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraphMonitor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -26,7 +26,7 @@ public class LogMonitor extends FlowGraphMonitor {
     }
     public void intercept(OutputPipe<?> outputPipe, Object data)
     {
-        if (producerOutputPipe() == outputPipe && !iterationData.isEmpty())
+        if (isProducerOutputPipe(outputPipe) && !iterationData.isEmpty())
         {
             iterationLogger.run();
             ++iterationCounter;

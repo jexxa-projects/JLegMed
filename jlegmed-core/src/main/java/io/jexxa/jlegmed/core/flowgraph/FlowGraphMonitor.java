@@ -1,9 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-import java.util.List;
 import java.util.Objects;
 
 
@@ -20,14 +18,9 @@ public abstract class FlowGraphMonitor {
 
     public abstract void intercept(OutputPipe<?> outputPipe, Object data);
 
-    protected OutputPipe<?> producerOutputPipe()
+    protected boolean isProducerOutputPipe(OutputPipe<?> outputPipe)
     {
-        return producerOutputPipe;
-    }
-
-    protected List<Processor<?,?>> processorList()
-    {
-        return flowGraph.processorList();
+        return this.producerOutputPipe == outputPipe;
     }
 
     private void registerMonitor()

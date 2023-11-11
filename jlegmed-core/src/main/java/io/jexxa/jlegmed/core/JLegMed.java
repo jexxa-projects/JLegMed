@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraphMonitor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,6 +72,7 @@ public final class JLegMed
         isRunning = true;
     }
 
+    @SuppressWarnings("unused")
     public void run()
     {
         start();
@@ -92,16 +93,14 @@ public final class JLegMed
         return this;
     }
 
-    public JLegMed monitorWith(String flowGraphID, FlowGraphMonitor flowGraphMonitor)
+    public void monitorPipes(String flowGraphID, BeforeInterceptor interceptor)
     {
         if( !flowGraphs.containsKey(flowGraphID) )
         {
             throw new IllegalStateException("FlowGraph with ID " + flowGraphID + " does not exist");
         }
 
-        flowGraphMonitor.setFlowGraph(flowGraphs.get(flowGraphID));
-
-        return this;
+        flowGraphs.get(flowGraphID).monitorPipes(interceptor);
     }
 
     private synchronized void waitForShutdown()

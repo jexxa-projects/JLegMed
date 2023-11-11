@@ -43,7 +43,7 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorWith("HelloWorld", logBindings());
+        jlegmed.monitorPipes("HelloWorld", logBindings()::intercept);
 
         //Act
         jlegmed.start();
@@ -71,7 +71,7 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorWith("HelloWorld", logFilter());
+        jlegmed.monitorPipes("HelloWorld", logFilter()::intercept);
 
         //Act
         jlegmed.start();

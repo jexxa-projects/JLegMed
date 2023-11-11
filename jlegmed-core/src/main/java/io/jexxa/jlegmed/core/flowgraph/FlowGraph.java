@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
@@ -7,6 +8,8 @@ import io.jexxa.jlegmed.core.filter.producer.Producer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import static io.jexxa.adapterapi.invocation.InvocationManager.getRootInterceptor;
 
 public class FlowGraph<T> {
     private final Properties properties;
@@ -59,8 +62,12 @@ public class FlowGraph<T> {
         processorList.add(processor);
     }
 
-    public List<Processor<?,?>> processorList()
+    public void monitorPipes(BeforeInterceptor interceptor)
     {
-        return processorList;
+        getRootInterceptor(producer.outputPipe()).registerBefore(interceptor);
+
+        processorList.stream()
+                .map(Processor::outputPipe)
+                .forEach( element -> getRootInterceptor(element).registerBefore(interceptor));
     }
 }

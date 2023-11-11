@@ -33,8 +33,8 @@ public final class HelloJLegMed
         jLegMed.newFlowGraph("HelloWorld")
                 .each(1, TimeUnit.SECONDS)
 
-                .receive(String.class).from( () -> "Hello" )
-                .and().processWith(data -> data + " World" )
+                .receive(String.class).from( () -> "Hello " )
+                .and().processWith(data -> data + "World" )
                 .and().consumeWith(data -> getLogger(JLegMedTest.class).info(data));
 
         jLegMed.run();

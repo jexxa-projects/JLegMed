@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
+import io.jexxa.adapterapi.invocation.InvocationContext;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraphMonitor;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +24,15 @@ public class LogMonitor extends FlowGraphMonitor {
             iterationLogger = this::logIterationFilterStyle;
         }
     }
-    public void intercept(OutputPipe<?> outputPipe, Object data)
+    public void intercept(InvocationContext invocationContext)
     {
-        if (isProducerOutputPipe(outputPipe) && !iterationData.isEmpty())
+        if (isProducerOutputPipe(invocationContext.getTarget()) && !iterationData.isEmpty())
         {
             iterationLogger.run();
             ++iterationCounter;
             iterationData.clear();
         }
-        iterationData.add(data);
+        iterationData.add(invocationContext.getArgs()[0]);
     }
 
 

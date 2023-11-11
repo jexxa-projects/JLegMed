@@ -1,8 +1,12 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.adapterapi.invocation.InvocationContext;
+import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.Objects;
+
+import static io.jexxa.adapterapi.invocation.InvocationManager.getRootInterceptor;
 
 
 public abstract class FlowGraphMonitor {
@@ -16,19 +20,20 @@ public abstract class FlowGraphMonitor {
         registerMonitor();
     }
 
-    public abstract void intercept(OutputPipe<?> outputPipe, Object data);
+    public abstract void intercept(InvocationContext invocationContext);
 
-    protected boolean isProducerOutputPipe(OutputPipe<?> outputPipe)
+    protected boolean isProducerOutputPipe(Object outputPipe)
     {
         return this.producerOutputPipe == outputPipe;
     }
 
     private void registerMonitor()
     {
-       var processorList = flowGraph.processorList();
+        producerOutputPipe = flowGraph.producer().outputPipe();
+        getRootInterceptor(producerOutputPipe).registerBefore(this::intercept);
 
-       processorList.forEach( processor -> processor.outputPipe().interceptBefore(this::intercept));
-       producerOutputPipe = flowGraph.producer().outputPipe();
-       producerOutputPipe.interceptBefore(this::intercept);
+        flowGraph.processorList().stream()
+               .map(Processor::outputPipe)
+               .forEach( element -> getRootInterceptor(element).registerBefore(this::intercept));
     }
 }

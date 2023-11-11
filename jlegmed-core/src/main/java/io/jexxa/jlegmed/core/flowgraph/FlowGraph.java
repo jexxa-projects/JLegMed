@@ -22,6 +22,7 @@ public class FlowGraph<T> {
         this.properties = properties;
     }
 
+    @SuppressWarnings("unused")
     public String flowGraphID()
     {
         return flowGraphID;
@@ -35,10 +36,6 @@ public class FlowGraph<T> {
     public void start() {
         filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
-    }
-    public List<Filter> getFilterList()
-    {
-        return filterList;
     }
 
     public void stop() {

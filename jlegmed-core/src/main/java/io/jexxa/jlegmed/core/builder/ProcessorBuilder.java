@@ -21,10 +21,10 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
  */
 public class ProcessorBuilder<T> {
     private final OutputPipe<T> predecessorPipe;
-    private final FlowGraph<?> flowGraph;
+    private final FlowGraph flowGraph;
 
 
-    ProcessorBuilder(OutputPipe<T> predecessorPipe, FlowGraph<?> flowGraph) {
+    ProcessorBuilder(OutputPipe<T> predecessorPipe, FlowGraph flowGraph) {
         this.predecessorPipe = predecessorPipe;
         this.flowGraph = flowGraph;
     }

@@ -12,9 +12,9 @@ import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
 public class ProducerBuilder<T> {
     private final Class<T> sourceType;
-    private final FlowGraph<T> flowGraph;
+    private final FlowGraph flowGraph;
 
-    ProducerBuilder(FlowGraph<T> flowGraph, Class<T> sourceType) {
+    ProducerBuilder(FlowGraph flowGraph, Class<T> sourceType) {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }

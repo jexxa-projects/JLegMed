@@ -31,7 +31,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 public final class JLegMed
 {
     private boolean isRunning = false;
-    private final Map<String, FlowGraph<?>> flowGraphs = new LinkedHashMap<>();
+    private final Map<String, FlowGraph> flowGraphs = new LinkedHashMap<>();
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;
@@ -57,7 +57,7 @@ public final class JLegMed
     }
 
 
-    public void addFlowGraph(String flowGraphID, FlowGraph<?> flowGraph)
+    public void addFlowGraph(String flowGraphID, FlowGraph flowGraph)
     {
         flowGraphs.put(flowGraphID, flowGraph);
     }

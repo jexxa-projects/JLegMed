@@ -11,9 +11,12 @@ import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
-public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
+public final class ScheduledFlowGraph extends FlowGraph {
     private final Scheduler scheduler = new Scheduler();
     private final FixedRateScheduler fixedRateScheduler;
+
+    private int maxIterationCount = -1;
+    private int currentIterationCount = 0;
 
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
     {
@@ -39,10 +42,16 @@ public final class ScheduledFlowGraph<T> extends FlowGraph<T> {
 
     private void iterateFlowGraph()
     {
-        producer().produceData();
+        if ( maxIterationCount > 0 && currentIterationCount >= maxIterationCount )
+        {
+            stop();
+            return;
+        }
+        produceData();
+        ++currentIterationCount;
     }
 
-    private record FixedRateScheduler(ScheduledFlowGraph<?> flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled
+    private record FixedRateScheduler(ScheduledFlowGraph flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled
     {
         @Override
         public void execute() {

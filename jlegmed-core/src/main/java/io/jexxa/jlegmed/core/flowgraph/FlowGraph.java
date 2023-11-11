@@ -11,10 +11,10 @@ import java.util.Properties;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getRootInterceptor;
 
-public class FlowGraph<T> {
+public class FlowGraph {
     private final Properties properties;
 
-    private Producer<T> producer;
+    private Producer<?> producer;
     private final String flowGraphID;
     private final List<Filter> filterList = new ArrayList<>();
     private final List<Processor<?,?>> processorList = new ArrayList<>();
@@ -46,14 +46,14 @@ public class FlowGraph<T> {
         filterList.forEach(Filter::deInit);
     }
 
-    public void producer(Producer<T> producer)
+    public void producer(Producer<?> producer)
     {
         this.producer = producer;
         filterList.add(producer);
     }
-    public Producer<T> producer()
+    public void produceData()
     {
-        return producer;
+         producer.produceData();
     }
 
     public void addProcessor(Processor<?,?> processor)

@@ -19,7 +19,7 @@ public class FlowGraphBuilder {
     }
 
     public <T> ProducerBuilder<T> await(Class<T> inputData) {
-        var flowGraph = new FlowGraph<T>(flowGraphID, jLegMed.getProperties());
+        var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraphID, flowGraph);
         return new ProducerBuilder<>(flowGraph, inputData);
     }
@@ -34,7 +34,7 @@ public class FlowGraphBuilder {
 
     public <T> ProducerBuilder<T> receive(Class<T> expectedData)
     {
-        var eachFlowgraph = new ScheduledFlowGraph<T>(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
+        var eachFlowgraph = new ScheduledFlowGraph(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
         jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
 
         return new ProducerBuilder<>(eachFlowgraph, expectedData);

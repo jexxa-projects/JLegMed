@@ -9,10 +9,10 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 public class Binding<T> {
 
     private final Filter filter;
-    private final FlowGraph<?> flowGraph;
+    private final FlowGraph flowGraph;
     private final OutputPipe<T> outputPipe;
 
-    public Binding(Filter filter, OutputPipe<T> outputPipe, FlowGraph<?> flowGraph) {
+    public Binding(Filter filter, OutputPipe<T> outputPipe, FlowGraph flowGraph) {
         this.filter = filter;
         this.flowGraph = flowGraph;
         this.outputPipe = outputPipe;

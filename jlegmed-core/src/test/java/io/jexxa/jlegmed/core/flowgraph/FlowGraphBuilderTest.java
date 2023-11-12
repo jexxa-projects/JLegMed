@@ -63,7 +63,7 @@ class FlowGraphBuilderTest {
         var messageCollector = new GenericCollector<String>();
         var message = "Hello World";
 
-        var flowGraph = jlegmed.newFlowGraph("HelloWorld")
+        jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> message)
 

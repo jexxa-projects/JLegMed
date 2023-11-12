@@ -47,16 +47,11 @@ public class FlowGraph {
     public FlowGraph start() {
         filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
-        if (flowGraphScheduler != null) {
-            flowGraphScheduler.start();
-        }
+
         return this;
     }
 
     public void stop() {
-        if (flowGraphScheduler != null) {
-            flowGraphScheduler.stop();
-        }
         filterList.forEach(Filter::stop);
         filterList.forEach(Filter::deInit);
     }

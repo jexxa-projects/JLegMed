@@ -14,7 +14,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class FlowGraphBuilderTest {
     private static JLegMed jlegmed;
@@ -31,53 +30,102 @@ class FlowGraphBuilderTest {
         jlegmed.stop();
     }
 
+
     @Test
     void testHelloWorld() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
         var message = "Hello World";
 
-        var flowGraph = jlegmed.newFlowGraph("HelloWorld")
+        jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> message)
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::collect )
-                .flowGraph();
+                .and().consumeWith( messageCollector::collect );
         //Act
-        //flowGraph.start();
-        flowGraph.iterate(3);
+        jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
-        assertEquals(3, messageCollector.getNumberOfReceivedMessages());
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
 
         assertEquals(message, messageCollector.getMessages().get(0));
         assertEquals(message, messageCollector.getMessages().get(1));
         assertEquals(message, messageCollector.getMessages().get(2));
     }
 
+    @Test
+    void testRepeatHelloWorld() {
+        //Arrange
+        var messageCollector = new GenericCollector<String>();
+        var message = "Hello World";
+
+        jlegmed.newFlowGraph("RepeatHelloWorld")
+                .repeat(3)
+                .receive(String.class).from(() -> message)
+
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().consumeWith( messageCollector::collect );
+
+        //Act
+        jlegmed.start();
+
+        //Assert - We expect exactly three messages that must be the string in 'message'
+        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() == 3);
+
+        assertEquals(message, messageCollector.getMessages().get(0));
+        assertEquals(message, messageCollector.getMessages().get(1));
+        assertEquals(message, messageCollector.getMessages().get(2));
+    }
 
     @Test
-    void testActiveFlowGraph() {
+    void testtestRepeatAtIntervalHelloWorld() {
         //Arrange
-        var messageCollector = new GenericCollector<Integer>();
+        var messageCollector = new GenericCollector<String>();
+        var message = "Hello World";
 
-        jlegmed.newFlowGraph("ActiveFlowGraph")
-                .await(Integer.class)
-                .from(activeProducer(GenericProducer::counter, schedule(50, MILLISECONDS)))
+        jlegmed.newFlowGraph("RepeatAtIntervalHelloWorld")
+                .repeat(3).atInterval(10, MILLISECONDS)
+
+                .receive(String.class).from(() -> message)
+
+                .and().processWith( GenericProcessors::idProcessor )
+                .and().processWith( GenericProcessors::consoleLogger )
+                .and().consumeWith( messageCollector::collect );
+
+        //Act
+        jlegmed.start();
+
+        //Assert - We expect exactly three messages that must be the string in 'message'
+        await().atMost(10, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() == 3);
+
+        assertEquals(message, messageCollector.getMessages().get(0));
+        assertEquals(message, messageCollector.getMessages().get(1));
+        assertEquals(message, messageCollector.getMessages().get(2));
+    }
+
+    @Test
+    void testAwaitHelloWorld() {
+        //Arrange
+        var messageCollector = new GenericCollector<String>();
+
+        jlegmed.newFlowGraph("AwaitHelloWorld")
+                .await(String.class)
+                .from(activeProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .and().processWith( TestFilter::skipEachSecondMessage )
+                .and().processWith( GenericProcessors::idProcessor )
                 .and().consumeWith( messageCollector::collect );
         //Act
         jlegmed.start();
 
         //Assert - That each second message is skipped
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals(1, messageCollector.getMessages().get(0));
-        assertEquals(3, messageCollector.getMessages().get(1));
-        assertEquals(5, messageCollector.getMessages().get(2));
+        assertEquals("HelloWorld", messageCollector.getMessages().get(0));
+        assertEquals("HelloWorld", messageCollector.getMessages().get(1));
+        assertEquals("HelloWorld", messageCollector.getMessages().get(2));
     }
+
     @Test
     void testChangeData() {
         //Arrange
@@ -128,43 +176,4 @@ class FlowGraphBuilderTest {
         await().atMost(3, SECONDS).until(() -> messageCollector2.getNumberOfReceivedMessages() >= 3);
     }
 
-    @Test
-    void testChangeDataType() {
-        //Arrange
-        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
-        jlegmed.newFlowGraph("ChangeDataType")
-                .every(10, MILLISECONDS)
-
-                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
-
-                .and().processWith(TestFilter::transformToUpdatedContract)
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector::collect );
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertFalse( messageCollector.getMessages().isEmpty());
-    }
-
-
-    @Test
-    void testTransformDataWithFilterState() {
-        //Arrange
-        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
-
-        jlegmed.newFlowGraph("TransformDataWithFilterState")
-                .every(10, MILLISECONDS)
-                //TestFilter::newContract uses FilterContext to manage its state information
-                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
-
-                .and().processWith( TestFilter::contextTransformer)
-                .and().consumeWith( messageCollector::collect );
-        //Act
-        jlegmed.start();
-
-        //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-    }
 }

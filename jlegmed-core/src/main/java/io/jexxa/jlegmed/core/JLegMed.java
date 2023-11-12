@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
+import io.jexxa.jlegmed.core.flowgraph.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 

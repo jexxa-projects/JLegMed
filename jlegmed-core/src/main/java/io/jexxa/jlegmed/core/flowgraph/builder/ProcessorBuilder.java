@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.builder;
+package io.jexxa.jlegmed.core.flowgraph.builder;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;

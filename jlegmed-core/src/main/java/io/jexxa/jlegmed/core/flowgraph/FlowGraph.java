@@ -25,6 +25,11 @@ public class FlowGraph {
         this.properties = properties;
     }
 
+    public FlowGraph(String flowGraphID)
+    {
+        this(flowGraphID, new Properties());
+    }
+
     @SuppressWarnings("unused")
     public String flowGraphID()
     {
@@ -36,9 +41,10 @@ public class FlowGraph {
         return properties;
     }
 
-    public void start() {
+    public FlowGraph start() {
         filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
+        return this;
     }
 
     public void stop() {
@@ -46,29 +52,51 @@ public class FlowGraph {
         filterList.forEach(Filter::deInit);
     }
 
-    public void producer(Producer<?> producer)
+    public void setProducer(Producer<?> producer)
     {
         this.producer = producer;
         filterList.add(producer);
     }
-    public void iterate()
+
+    public void addProcessor(Processor<?,?> processor)
     {
-         iterate(1);
+        if (!processorList.contains(processor)) {
+            filterList.add(processor);
+            processorList.add(processor);
+        }
     }
 
-    public void iterate(int iterationCount)
+    public FlowGraph iterate()
+    {
+         return iterate(1);
+    }
+
+    public FlowGraph iterate(int iterationCount)
     {
         for (int i = 0; i < iterationCount; i++) {
             producer.produceData();
         }
+        return this;
     }
 
-    public void addProcessor(Processor<?,?> processor)
+    public <T, U> FlowGraph connect(Producer<T> producer, Processor<T,U> processor)
     {
-        filterList.add(processor);
-        processorList.add(processor);
+        producer.outputPipe().connectTo(processor.inputPipe());
+
+        setProducer(producer);
+        addProcessor(processor);
+
+        return this;
     }
 
+    public <T, U, V> FlowGraph connect(Processor<T, U> predecessor, Processor<U,V> processor)
+    {
+        predecessor.outputPipe().connectTo(processor.inputPipe());
+        addProcessor(predecessor);
+        addProcessor(processor);
+
+        return this;
+    }
     public void monitorPipes(BeforeInterceptor interceptor)
     {
         getRootInterceptor(producer.outputPipe()).registerBefore(interceptor);

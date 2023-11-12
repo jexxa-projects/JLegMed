@@ -22,7 +22,7 @@ public class ProducerBuilder<T> {
     public Binding<T> from(Function<FilterContext, T> function) {
         var typedProducer = producer(function);
         typedProducer.producingType(sourceType);
-        flowGraph.producer(typedProducer);
+        flowGraph.setProducer(typedProducer);
 
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
@@ -30,7 +30,7 @@ public class ProducerBuilder<T> {
     public Binding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
         var typedProducer = producer(biFunction);
         typedProducer.producingType(sourceType);
-        flowGraph.producer(typedProducer);
+        flowGraph.setProducer(typedProducer);
 
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
@@ -38,14 +38,14 @@ public class ProducerBuilder<T> {
     public Binding<T> from(Supplier<T> supplier) {
         var typedProducer = producer(supplier);
         typedProducer.producingType(sourceType);
-        flowGraph.producer(typedProducer);
+        flowGraph.setProducer(typedProducer);
 
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
     public Binding<T> from(Producer<T> producer) {
         producer.producingType(sourceType);
-        flowGraph.producer(producer);
+        flowGraph.setProducer(producer);
 
         return new Binding<>(producer, producer.outputPipe(), flowGraph);
     }

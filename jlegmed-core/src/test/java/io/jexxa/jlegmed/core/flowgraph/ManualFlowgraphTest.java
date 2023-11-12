@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
+import io.jexxa.jlegmed.core.filter.producer.Producer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ManualFlowgraphTest {
     
     @Test
-    void manualFlowgraphTest() {
+    void manualFilterSetupTest() {
         //Arrange
         var result = new ArrayList<String>();
 
-        //Create a source and producers
-        FunctionalProducer<String> sourceFilter = producer( () -> "Hello " );
+        //Create a source and producers with the desired producing/processing functions
+        Producer<String> sourceFilter = producer( () -> "Hello " );
         Processor<String, String> processorFilter = processor(data -> data + "World" );
         Processor<String, String> sinkFilter = consumer( data -> result.add(data) );
 
@@ -34,6 +35,31 @@ class ManualFlowgraphTest {
 
         //Act
         sourceFilter.produceData();
+
+        //Assert
+        assertEquals(1, result.size());
+        assertEquals("Hello World", result.get(0));
+    }
+
+    @Test
+    void manualFlowgraphTest() {
+        //Arrange
+        var result = new ArrayList<String>();
+        FlowGraph flowGraph = new FlowGraph("ManualFlowgraphTest");
+
+        //Create a source and producers
+        FunctionalProducer<String> sourceFilter = producer( () -> "Hello " );
+        Processor<String, String> processorFilter = processor(data -> data + "World" );
+        Processor<String, String> sinkFilter = consumer( data -> result.add(data) );
+
+        //Connect all filters
+        flowGraph.connect(sourceFilter, processorFilter)
+                .connect(processorFilter, sinkFilter)
+                .start();
+
+        //Act
+        flowGraph.iterate()
+                .stop();
 
         //Assert
         assertEquals(1, result.size());

@@ -53,7 +53,7 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed-core</artifactId>
-        <version>0.5.1</version>
+        <version>0.6.0</version>
     </dependency>
     
     <dependency>
@@ -67,7 +67,7 @@ Maven:
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed-core:0.5.1"
+compile "io.jexxa:jlegmed-core:0.6.0"
 compile "org.slf4j:slf4j-simple:2.0.9"
 ``` 
 
@@ -77,7 +77,7 @@ Refer to the following tests to get an idea how this library works
 * [Manual flow graph setup](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
 * [Data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using `FlowGraphBuilder`
 * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
-
+* [Data transformation](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/TransformDataTest.java) using `FlowGraphBuilder`
 
 ## Build the library
 

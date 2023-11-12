@@ -9,8 +9,6 @@ import java.util.concurrent.TimeUnit;
 public class FlowGraphBuilder {
     private final String flowGraphID;
     private final JLegMed jLegMed;
-    private int fixedInterval;
-    private TimeUnit timeUnit;
 
     public FlowGraphBuilder(String flowGraphID, JLegMed jLegMed)
     {
@@ -24,24 +22,34 @@ public class FlowGraphBuilder {
         return new ProducerBuilder<>(flowGraph, inputData);
     }
 
-    public FlowGraphBuilder every(int fixedRate, TimeUnit timeUnit)
+    public FixedRateBuilder every(int fixedRate, TimeUnit timeUnit)
     {
-        this.fixedInterval = fixedRate;
-        this.timeUnit = timeUnit;
-
-        return this;
+        return new FixedRateBuilder(new FixedRateScheduler(fixedRate, timeUnit), flowGraphID, jLegMed);
     }
 
-    public <T> ProducerBuilder<T> receive(Class<T> expectedData)
+
+    public static class FixedRateBuilder
     {
-        var scheduler = new FixedRateScheduler(fixedInterval, timeUnit);
-        var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
+        private final FixedRateScheduler scheduler;
+        private final String flowGraphID;
+        private final JLegMed jLegMed;
+        public FixedRateBuilder(FixedRateScheduler scheduler, String flowGraphID, JLegMed jLegMed)
+        {
+            this.scheduler = scheduler;
+            this.flowGraphID = flowGraphID;
+            this.jLegMed = jLegMed;
+        }
 
-        scheduler.register(flowGraph);
+        public <T> ProducerBuilder<T> receive(Class<T> expectedData)
+        {
+            var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
 
-        jLegMed.addFlowGraph(flowGraph, scheduler);
+            scheduler.register(flowGraph);
 
-        return new ProducerBuilder<>(flowGraph, expectedData);
+            jLegMed.addFlowGraph(flowGraph, scheduler);
+
+            return new ProducerBuilder<>(flowGraph, expectedData);
+        }
     }
 
 }

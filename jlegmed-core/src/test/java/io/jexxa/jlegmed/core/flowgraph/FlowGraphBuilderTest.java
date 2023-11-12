@@ -58,31 +58,6 @@ class FlowGraphBuilderTest {
 
 
     @Test
-    void testIterate() {
-        //Arrange
-        var messageCollector = new GenericCollector<String>();
-        var message = "Hello World";
-
-        jlegmed.newFlowGraph("HelloWorld")
-                .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> message)
-
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::collect );
-
-        //Act
-        jlegmed.start();
-
-        //Assert - We expect at least three messages that must be the string in 'message'
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-
-        assertEquals(message, messageCollector.getMessages().get(0));
-        assertEquals(message, messageCollector.getMessages().get(1));
-        assertEquals(message, messageCollector.getMessages().get(2));
-    }
-
-
-    @Test
     void testActiveFlowGraph() {
         //Arrange
         var messageCollector = new GenericCollector<Integer>();

@@ -15,8 +15,6 @@ public final class ScheduledFlowGraph extends FlowGraph {
     private final Scheduler scheduler = new Scheduler();
     private final FixedRateScheduler fixedRateScheduler;
 
-    private int maxIterationCount = -1;
-    private int currentIterationCount = 0;
 
     public ScheduledFlowGraph(String flowGraphID, Properties properties, int fixedRate, TimeUnit timeUnit)
     {
@@ -42,13 +40,7 @@ public final class ScheduledFlowGraph extends FlowGraph {
 
     private void iterateFlowGraph()
     {
-        if ( maxIterationCount > 0 && currentIterationCount >= maxIterationCount )
-        {
-            stop();
-            return;
-        }
-        produceData();
-        ++currentIterationCount;
+        iterate();
     }
 
     private record FixedRateScheduler(ScheduledFlowGraph flowGraph, int fixedRate, TimeUnit timeUnit) implements IScheduled

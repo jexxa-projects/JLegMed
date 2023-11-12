@@ -50,7 +50,7 @@ class RepositoryProcessorIT {
 
         jLegMed.newFlowGraph("HelloWorld")
 
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data) )

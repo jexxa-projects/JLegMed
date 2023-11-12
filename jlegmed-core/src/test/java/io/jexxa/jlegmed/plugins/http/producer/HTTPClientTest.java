@@ -72,7 +72,7 @@ class HTTPClientTest {
         JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
 
         jLegMed.newFlowGraph("HTTPClientFlowGraph")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(VersionInfo.class).from(httpClient("http://localhost:7070/"))
 
                 .and().processWith( GenericProcessors::idProcessor )

@@ -26,7 +26,7 @@ class TCPSenderIT {
 
 
         jLegMed.newFlowGraph("testTCPSender")
-                .each(500, MILLISECONDS)
+                .every(500, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World\n")
 
                 .and().consumeWith(tcpSender((data, context) -> context.bufferedWriter().write(data) )).useProperties("test-tcp-sender");

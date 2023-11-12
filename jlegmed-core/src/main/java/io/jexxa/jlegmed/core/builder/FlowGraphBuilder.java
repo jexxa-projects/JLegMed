@@ -24,7 +24,7 @@ public class FlowGraphBuilder {
         return new ProducerBuilder<>(flowGraph, inputData);
     }
 
-    public FlowGraphBuilder each(int fixedRate, TimeUnit timeUnit)
+    public FlowGraphBuilder every(int fixedRate, TimeUnit timeUnit)
     {
         this.fixedInterval = fixedRate;
         this.timeUnit = timeUnit;

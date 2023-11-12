@@ -51,9 +51,16 @@ public class FlowGraph {
         this.producer = producer;
         filterList.add(producer);
     }
-    public void produceData()
+    public void iterate()
     {
-         producer.produceData();
+         iterate(1);
+    }
+
+    public void iterate(int iterationCount)
+    {
+        for (int i = 0; i < iterationCount; i++) {
+            producer.produceData();
+        }
     }
 
     public void addProcessor(Processor<?,?> processor)

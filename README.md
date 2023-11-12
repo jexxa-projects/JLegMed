@@ -31,7 +31,7 @@ public final class HelloJLegMed
         var jLegMed = new JLegMed(HelloJLegMed.class);
 
         jLegMed.newFlowGraph("HelloWorld")
-                .each(1, TimeUnit.SECONDS)
+                .every(1, TimeUnit.SECONDS)
 
                 .receive(String.class).from( () -> "Hello " )
                 .and().processWith(data -> data + "World" )

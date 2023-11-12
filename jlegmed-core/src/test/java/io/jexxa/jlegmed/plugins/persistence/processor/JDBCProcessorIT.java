@@ -37,7 +37,7 @@ class JDBCProcessorIT {
 
         jLegMed.newFlowGraph("HelloWorld")
 
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))

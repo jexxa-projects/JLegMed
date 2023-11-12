@@ -27,7 +27,7 @@ class JDBCProducerIT {
         var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
 
         jlegmed.newFlowGraph("writeToDatabase")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
@@ -35,13 +35,13 @@ class JDBCProducerIT {
                 .and().processWith(writerCollector::collect );
 
         jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
                 .and().processWith(readerCollectorPreparedStatement::collect );
 
 
         jlegmed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataQueryBuilder)).useProperties("test-jdbc-connection")
                 .and().processWith(readerCollectorQueryBuilder::collect );
 

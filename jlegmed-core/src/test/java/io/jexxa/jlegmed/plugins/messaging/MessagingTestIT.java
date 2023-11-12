@@ -31,7 +31,7 @@ class MessagingTestIT {
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
         jlegmed.newFlowGraph("MessageSender")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().processWith(senderReceiver.getLeft()).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector1::collect );

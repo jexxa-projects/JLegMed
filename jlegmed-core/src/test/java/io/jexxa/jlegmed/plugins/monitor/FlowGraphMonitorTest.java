@@ -35,7 +35,7 @@ class FlowGraphMonitorTest {
         var message = "Hello World with JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
@@ -63,7 +63,7 @@ class FlowGraphMonitorTest {
         var message = "Hello World with JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )

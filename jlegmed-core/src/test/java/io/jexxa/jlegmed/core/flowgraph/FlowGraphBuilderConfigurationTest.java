@@ -70,7 +70,7 @@ class FlowGraphBuilderConfigurationTest {
 
         jlegmed.newFlowGraph("testFactoryMethodUntilStopped")
 
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 // Here we configure a producer using a factory method telling us the configuration mode
                 .receive(TestFilter.NewContract.class).from(jsonStreamUntilStopped(inputStream))
 
@@ -92,7 +92,7 @@ class FlowGraphBuilderConfigurationTest {
 
         jlegmed.newFlowGraph("FilterConfigOnlyOnce")
 
-                .each(10, MILLISECONDS)
+                .every(10, MILLISECONDS)
                 // Here we configure a producer using a factory method telling us the configuration mode
                 .receive(TestFilter.NewContract.class).from(jsonStreamOnlyOnce(inputStream))
 

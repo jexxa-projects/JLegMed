@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class FunctionalProducer<T> extends Producer<T> {
+    @Override
     public void produceData() {
         do {
             startProcessing();

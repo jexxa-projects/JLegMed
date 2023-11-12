@@ -26,6 +26,8 @@ public class FixedRateScheduler implements FlowGraphScheduler, IScheduled {
     {
         this.flowGraph = flowGraph;
     }
+
+    @Override
     public void start()
     {
         scheduler.register(this);
@@ -33,6 +35,7 @@ public class FixedRateScheduler implements FlowGraphScheduler, IScheduled {
         scheduler.start();
     }
 
+    @Override
     public void stop()
     {
         scheduler.stop();

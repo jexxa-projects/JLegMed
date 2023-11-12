@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.core.builder;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.flowgraph.FixedRateScheduler;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.ScheduledFlowGraph;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ public class FlowGraphBuilder {
 
     public <T> ProducerBuilder<T> await(Class<T> inputData) {
         var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
-        jLegMed.addFlowGraph(flowGraphID, flowGraph);
+        jLegMed.addFlowGraph(flowGraph);
         return new ProducerBuilder<>(flowGraph, inputData);
     }
 
@@ -34,10 +34,14 @@ public class FlowGraphBuilder {
 
     public <T> ProducerBuilder<T> receive(Class<T> expectedData)
     {
-        var eachFlowgraph = new ScheduledFlowGraph(flowGraphID, jLegMed.getProperties(), fixedInterval, timeUnit);
-        jLegMed.addFlowGraph(flowGraphID, eachFlowgraph);
+        var scheduler = new FixedRateScheduler(fixedInterval, timeUnit);
+        var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
 
-        return new ProducerBuilder<>(eachFlowgraph, expectedData);
+        scheduler.register(flowGraph);
+
+        jLegMed.addFlowGraph(flowGraph, scheduler);
+
+        return new ProducerBuilder<>(flowGraph, expectedData);
     }
 
 }

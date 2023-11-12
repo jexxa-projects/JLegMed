@@ -58,7 +58,8 @@ class ManualFlowgraphTest {
                 .start();
 
         //Act
-        flowGraph.iterate()
+        flowGraph
+                .iterate()
                 .stop();
 
         //Assert

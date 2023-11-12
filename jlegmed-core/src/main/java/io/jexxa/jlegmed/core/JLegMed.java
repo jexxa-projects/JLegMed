@@ -5,6 +5,7 @@ import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.builder.FlowGraphBuilder;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +32,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 public final class JLegMed
 {
     private boolean isRunning = false;
-    private final Map<String, FlowGraph> flowGraphs = new LinkedHashMap<>();
+    private final Map<String, FlowGraphContext> flowGraphs = new LinkedHashMap<>();
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;
@@ -57,9 +58,14 @@ public final class JLegMed
     }
 
 
-    public void addFlowGraph(String flowGraphID, FlowGraph flowGraph)
+    public void addFlowGraph(FlowGraph flowGraph)
     {
-        flowGraphs.put(flowGraphID, flowGraph);
+        flowGraphs.put(flowGraph.flowGraphID(), new FlowGraphContext(flowGraph));
+    }
+
+    public void addFlowGraph(FlowGraph flowGraph, FlowGraphScheduler scheduler)
+    {
+        flowGraphs.put(flowGraph.flowGraphID(), new FlowGraphContext(flowGraph, scheduler));
     }
 
     public synchronized void start()
@@ -100,7 +106,7 @@ public final class JLegMed
             throw new IllegalStateException("FlowGraph with ID " + flowGraphID + " does not exist");
         }
 
-        flowGraphs.get(flowGraphID).monitorPipes(interceptor);
+        flowGraphs.get(flowGraphID).flowGraph().monitorPipes(interceptor);
     }
 
     private synchronized void waitForShutdown()
@@ -330,6 +336,28 @@ public final class JLegMed
                     throw new IllegalArgumentException("Properties file " + resource + " not available. Please check the filename!", f);
                 }
             }
+        }
+    }
+
+    record FlowGraphContext(FlowGraph flowGraph, FlowGraphScheduler scheduler) {
+
+        public FlowGraphContext(FlowGraph flowGraph) {
+            this(flowGraph, null);
+        }
+
+        public void start() {
+            flowGraph.start();
+            if (scheduler != null )
+            {
+                scheduler.start();
+            }
+        }
+        public void stop() {
+            if (scheduler != null )
+            {
+                scheduler.stop();
+            }
+            flowGraph.stop();
         }
     }
 }

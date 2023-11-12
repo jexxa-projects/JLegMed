@@ -24,11 +24,12 @@ public final class ScheduledFlowGraph extends FlowGraph {
 
 
     @Override
-    public void start()
+    public FlowGraph start()
     {
         super.start();
         scheduler.register(fixedRateScheduler);
         scheduler.start();
+        return this;
     }
 
     @Override

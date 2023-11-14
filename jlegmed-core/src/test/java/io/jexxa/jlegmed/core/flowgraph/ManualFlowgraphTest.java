@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ class ManualFlowgraphTest {
         var result = new ArrayList<String>();
 
         //Create a source and producers with the desired producing/processing functions
-        Producer<String> sourceFilter = producer( () -> "Hello " );
+        FunctionalProducer<String> sourceFilter = producer( () -> "Hello " );
         Processor<String, String> processorFilter = processor(data -> data + "World" );
         Processor<String, String> sinkFilter = consumer( data -> result.add(data) );
 

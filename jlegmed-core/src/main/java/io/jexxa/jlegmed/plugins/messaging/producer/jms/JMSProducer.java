@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.jlegmed.common.component.messaging.receive.jms.JMSAdapter;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiConsumer;
@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
 
-public class JMSProducer<T> extends Producer<T> {
+public class JMSProducer<T> extends ActiveProducer<T> {
 
     private IDrivingAdapter jmsAdapter;
     private final JMSProducerListener<T> messageListener;
@@ -40,10 +40,6 @@ public class JMSProducer<T> extends Producer<T> {
         jmsAdapter.start();
     }
 
-    @Override
-    public void produceData() {
-        //We will be triggered
-    }
 
     @Override
     public void stop() {

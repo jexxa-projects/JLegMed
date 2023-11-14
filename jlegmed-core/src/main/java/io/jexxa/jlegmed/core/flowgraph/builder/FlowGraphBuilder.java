@@ -17,10 +17,10 @@ public class FlowGraphBuilder {
         this.jLegMed = jLegMed;
     }
 
-    public <T> ProducerBuilder<T> await(Class<T> inputData) {
+    public <T> ActiveProducerBuilder<T> await(Class<T> inputData) {
         var flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
         jLegMed.addFlowGraph(flowGraph);
-        return new ProducerBuilder<>(flowGraph, inputData);
+        return new ActiveProducerBuilder<>(flowGraph, inputData);
     }
 
     public FixedRateBuilder every(int fixedRate, TimeUnit timeUnit)

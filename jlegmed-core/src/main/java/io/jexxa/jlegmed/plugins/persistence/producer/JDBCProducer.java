@@ -2,13 +2,13 @@ package io.jexxa.jlegmed.plugins.persistence.producer;
 
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public abstract class JDBCProducer<T> extends Producer<T> {
+public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     private Properties databaseProperties;
     private JDBCConnection jdbcConnection;

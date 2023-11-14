@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.function.BiFunction;
@@ -43,7 +43,7 @@ public class ProducerBuilder<T> {
         return new Binding<>(typedProducer, typedProducer.outputPipe(), flowGraph);
     }
 
-    public Binding<T> from(Producer<T> producer) {
+    public Binding<T> from(PassiveProducer<T> producer) {
         producer.producingType(sourceType);
         flowGraph.setProducer(producer);
 

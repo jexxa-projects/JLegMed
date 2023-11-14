@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.http.producer;
 
 import io.jexxa.jlegmed.common.wrapper.utils.properties.Secret;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.plugins.http.HTTPProperties;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestInstance;
@@ -9,7 +9,7 @@ import kong.unirest.UnirestInstance;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public abstract class HTTPClient<T> extends Producer<T> {
+public abstract class HTTPClient<T> extends PassiveProducer<T> {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_TYPE = "application/json";
     private UnirestInstance unirestInstance;

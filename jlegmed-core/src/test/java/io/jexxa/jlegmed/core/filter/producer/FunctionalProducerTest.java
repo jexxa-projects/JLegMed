@@ -18,7 +18,7 @@ class FunctionalProducerTest {
     {
         //Arrange
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(() -> "Hello World");
+        var objectUnderTest = producer(() -> "Hello World");
         objectUnderTest.outputPipe().connectTo(inputPipe);
 
         objectUnderTest.reachStarted();
@@ -37,7 +37,7 @@ class FunctionalProducerTest {
         //Arrange
         var propertiesName = "someProperties";
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext ->
+        var objectUnderTest = producer(filterContext ->
                 "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName()
         );
 
@@ -59,7 +59,7 @@ class FunctionalProducerTest {
         //Arrange
         var propertiesName = "someProperties";
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer( (filterContext, dataType) ->
+        FunctionalProducer<String> objectUnderTest = producer( (filterContext, dataType) ->
                 "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName() + dataType.getSimpleName()
         );
 
@@ -81,7 +81,7 @@ class FunctionalProducerTest {
     {
         //Arrange
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext -> {
+        FunctionalProducer<String> objectUnderTest = producer(filterContext -> {
             // Here we tell the producer that we must be called again
             if (!filterContext.processingState().isProcessingAgain()) {
                 filterContext.processingState().processAgain();
@@ -106,7 +106,7 @@ class FunctionalProducerTest {
     {
         //Arrange - Without properties so that our producer throws an exception
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext ->
+        FunctionalProducer<String> objectUnderTest = producer(filterContext ->
                 "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName()
         );
         objectUnderTest.outputPipe().connectTo(inputPipe);

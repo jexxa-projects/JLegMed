@@ -12,8 +12,6 @@ public abstract class Producer<T> extends Filter {
         this.producingType = producingType;
     }
 
-    public abstract void produceData();
-
     protected Class<T> producingType()
     {
         return producingType;

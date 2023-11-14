@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.plugins.socket.producer;
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingFunction;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
 import io.jexxa.jlegmed.plugins.socket.SocketContext;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
-public abstract class TCPReceiver<T> extends Producer<T> {
+public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     private ExecutorService executorService;
 
@@ -59,13 +59,6 @@ public abstract class TCPReceiver<T> extends Producer<T> {
         }
     }
 
-    @Override
-    public void produceData()
-    {
-        if (!isListening) {
-            start();
-        }
-    }
     @Override
     public void stop() {
         isListening = false;

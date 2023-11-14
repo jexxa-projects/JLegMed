@@ -4,11 +4,17 @@ import io.jexxa.adapterapi.invocation.InvocationContext;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogMonitor {
+    private int filterCounter = 0;
     private int iterationCounter = 0;
-    private final List<Object> iterationData = new ArrayList<>();
+    private final Map<Object, FilterDescription> filterDescription = new LinkedHashMap<>();
+
+    private final List<IterationEntry> iterationData = new ArrayList<>();
+
     private Object producerOutputPipe;
 
     private final Runnable iterationLogger;
@@ -26,40 +32,56 @@ public class LogMonitor {
     }
     public void intercept(InvocationContext invocationContext)
     {
-        initProducerOutputPipe(invocationContext);
+        initFilter(invocationContext);
+        addIterationData(invocationContext);
         logIteration(invocationContext);
-        iterationData.add(invocationContext.getArgs()[0]);
     }
 
-    private void initProducerOutputPipe(InvocationContext invocationContext)
+    private void initFilter(InvocationContext invocationContext)
     {
         if (producerOutputPipe == null)
         {
             this.producerOutputPipe = invocationContext.getTarget();
         }
+        filterDescription.computeIfAbsent(invocationContext.getTarget(), this::createFilterDescription);
     }
 
     private void logIteration(InvocationContext invocationContext)
     {
-        if (producerOutputPipe == invocationContext.getTarget() && !iterationData.isEmpty())
+        if (invocationContext.getArgs()[0] == null)
         {
             iterationLogger.run();
-            ++iterationCounter;
             iterationData.clear();
         }
+
+        if (invocationContext.getTarget() == producerOutputPipe) {
+            ++iterationCounter;
+        }
+
     }
 
+    private void addIterationData(InvocationContext context)
+    {
+        iterationData.add(new IterationEntry(context.getTarget(), context.getArgs()[0]));
+    }
+
+    private FilterDescription createFilterDescription(Object object)
+    {
+        var description = new FilterDescription(filterCounter, object);
+        ++filterCounter;
+        return description;
+    }
 
     private void logIterationBindingStyle()
     {
         // Build a list of messages for each iteration
-        iterationData.remove(iterationData.size() - 1); // data from the last output pipe are not required
+        filterDescription.remove(filterDescription.size() - 1); // data from the last output pipe are not required
         StringBuilder sb = new StringBuilder();
         sb.append("Iteration ")
                 .append(iterationCounter)
                 .append(" : ");
 
-        iterationData.forEach( data -> sb.append(data).append( " -> " ));
+        iterationData.forEach( entry -> sb.append("[Binding ").append(getIndex(entry.outputPipe())).append("] ").append(entry.producedData()).append( " -> " ));
         sb.append( "finish " );
 
         var iterationDataString = sb.toString();
@@ -72,22 +94,35 @@ public class LogMonitor {
         StringBuilder sb = new StringBuilder();
         sb.append("Iteration ")
                 .append(iterationCounter)
-                .append(" : ")
+                .append(" (FilterStyle) : ")
+                .append( " [Binding " ).append(getIndex(iterationData.get(0).outputPipe())).append( "] ")
                 .append( " () -> " )
-                .append(iterationData.get(0));
+                .append(iterationData.get(0).producedData());
 
-        for (int i = 0; i < iterationData.size() - 2 ; i++)
+        for (int i = 0; i < iterationData.size() - 1 ; i++)
         {
             sb.append(" | ")
-                    .append(iterationData.get(i))
+                    .append( " [Binding " ).append(getIndex(iterationData.get(i+1).outputPipe())).append( "] ")
+                    .append(iterationData.get(i).producedData())
                     .append( " -> " )
-                    .append(iterationData.get(i+1));
+                    .append(iterationData.get(i+1).producedData());
         }
 
         var iterationDataString = sb.toString();
 
         SLF4jLogger.getLogger(LogMonitor.class.getSimpleName()).info(iterationDataString);
     }
+
+    int getIndex(Object outputPipe)
+    {
+        if (filterDescription.containsKey(outputPipe)) {
+            return filterDescription.get(outputPipe).index();
+        } else {
+            return -1;
+        }
+    }
+
+
 
     public static LogMonitor logBindings()
     {
@@ -98,4 +133,24 @@ public class LogMonitor {
     {
         return new LogMonitor(LogStyle.FILTER_STYLE);
     }
+
+    private static class FilterDescription
+    {
+        private final int index;
+        private Object outputPipe;
+
+
+        public FilterDescription(int index, Object outputPipe)
+        {
+            this.index = index;
+            this.outputPipe = outputPipe;
+        }
+
+        public int index()
+        {
+            return index;
+        }
+    }
+
+    record IterationEntry(Object outputPipe, Object producedData){}
 }

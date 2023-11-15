@@ -18,13 +18,11 @@ class AwaitFlowGraphTest {
         //Arrange
         var jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
 
-        var activeProducer = activeProducer(() -> "Hello ", schedule(500, MILLISECONDS));
-
         var messageCollector = new GenericCollector<String>();
 
         jlegmed.newFlowGraph("ReceiveHelloWorld")
                 .await(String.class)
-                .from( activeProducer )
+                .from( activeProducer(() -> "Hello ", schedule(500, MILLISECONDS)) )
 
                 .and().processWith( data -> data + "World")
                 .and().processWith( messageCollector::collect )

@@ -74,10 +74,12 @@ compile "org.slf4j:slf4j-simple:2.0.9"
 ## Example 
 
 Refer to the following tests to get an idea how this library works
-* [Manual flow graph setup](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ManualFlowgraphTest.java) 
-* [Data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderTest.java) using `FlowGraphBuilder`
+* Typical use cases using `HelloWorld` as an example:
+  * [Data processing with a fixed number of iterations (e.g., for testing)](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/RepeatFlowGraphTest.java)
+  * [Data processing at a specific interval](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ReceiveFlowGraphTest.java) 
+  * [Await data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/AwaitFlowGraphTest.java)
+
 * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
-* [Data transformation](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/TransformDataTest.java) using `FlowGraphBuilder`
 
 ## Build the library
 

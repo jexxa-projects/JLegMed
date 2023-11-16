@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[0.7.0] - 2023-11-16
+### Changed
+- Added Active/PassiveSource base classes to avoid potential misuse of the API  
+- Updated filter accordingly 
+ 
 ## \[0.6.0] - 2023-11-12
 ### Changed
 - Fluent API to improve readability and avoid wrong usage

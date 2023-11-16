@@ -11,8 +11,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements IScheduled {
-    private final int fixedRate;
-    private final TimeUnit timeUnit;
+    private int fixedRate;
+    private TimeUnit timeUnit;
 
     private final Scheduler scheduler = new Scheduler();
 
@@ -31,6 +31,13 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements 
     public void start() {
         scheduler.register(this);
         scheduler.start();
+    }
+
+    public ScheduledProducer<T> fixedRate(int fixedRate, TimeUnit timeUnit)
+    {
+        this.fixedRate = fixedRate;
+        this.timeUnit = timeUnit;
+        return this;
     }
 
     @Override

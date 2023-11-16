@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logBindings;
-import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFilter;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logDataFlowStyle;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -43,7 +43,7 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorPipes("HelloWorld", logBindings()::intercept);
+        jlegmed.monitorPipes("HelloWorld", logDataFlowStyle());
 
         //Act
         jlegmed.start();
@@ -71,7 +71,7 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorPipes("HelloWorld", logFilter()::intercept);
+        jlegmed.monitorPipes("HelloWorld", logFunctionStyle());
 
         //Act
         jlegmed.start();

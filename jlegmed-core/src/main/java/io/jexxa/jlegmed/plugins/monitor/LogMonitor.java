@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
+import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.adapterapi.invocation.InvocationContext;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 
@@ -19,11 +20,11 @@ public class LogMonitor {
 
     private final Runnable iterationLogger;
 
-    public enum LogStyle{BINDING_STYLE, FILTER_STYLE}
+    public enum LogStyle{DATAFLOW_STYLE, FUNCTION_STYLE}
 
     public LogMonitor(LogStyle logStyle)
     {
-        if (logStyle == LogStyle.BINDING_STYLE)
+        if (logStyle == LogStyle.DATAFLOW_STYLE)
         {
             iterationLogger = this::logIterationBindingStyle;
         } else {
@@ -67,7 +68,7 @@ public class LogMonitor {
 
     private FilterDescription createFilterDescription(Object object)
     {
-        var description = new FilterDescription(filterCounter, object);
+        var description = new FilterDescription(filterCounter);
         ++filterCounter;
         return description;
     }
@@ -124,32 +125,17 @@ public class LogMonitor {
 
 
 
-    public static LogMonitor logBindings()
+    public static BeforeInterceptor logDataFlowStyle()
     {
-        return new LogMonitor(LogStyle.BINDING_STYLE);
+        return new LogMonitor(LogStyle.DATAFLOW_STYLE)::intercept;
     }
 
-    public static LogMonitor logFilter()
+    public static BeforeInterceptor logFunctionStyle()
     {
-        return new LogMonitor(LogStyle.FILTER_STYLE);
+        return new LogMonitor(LogStyle.FUNCTION_STYLE)::intercept;
     }
 
-    private static class FilterDescription
-    {
-        private final int index;
-        private Object outputPipe;
-
-
-        public FilterDescription(int index, Object outputPipe)
-        {
-            this.index = index;
-            this.outputPipe = outputPipe;
-        }
-
-        public int index()
-        {
-            return index;
-        }
+    private record FilterDescription(int index) {
     }
 
     record IterationEntry(Object outputPipe, Object producedData){}

@@ -1,12 +1,12 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -14,27 +14,32 @@ import static org.awaitility.Awaitility.await;
 class AwaitFlowGraphTest {
 
     @Test
-    void testReceiveHelloWorld() {
+    void testAwaitHelloWorld() {
         //Arrange
+        var flowGraphID = "AwaitHelloWorld";
         var jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        var result = new ArrayList<String>();
 
-        var messageCollector = new GenericCollector<String>();
-
-        jlegmed.newFlowGraph("ReceiveHelloWorld")
+        // Define the flow graph:
+        jlegmed.newFlowGraph(flowGraphID)
+                // Await enables the producer to decide when to start data processing
                 .await(String.class)
-                .from( activeProducer(() -> "Hello ", schedule(500, MILLISECONDS)) )
 
+                // We start with "Hello ", extend it with "World" and store the result in a list
+                .from( activeProducer(() -> "Hello ").fixedRate(500, MILLISECONDS) )
                 .and().processWith( data -> data + "World")
-                .and().processWith( messageCollector::collect )
-                .and().consumeWith( data -> SLF4jLogger.getLogger("RepeatFlowGraphTest").info(data) );
+                .and().consumeWith( data -> result.add(data) );
+
+        // For better understanding, we log the data flow
+        jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
 
         //Act
         jlegmed.start();
 
         //Assert - We expect exactly three messages that must be the string in 'message'
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> result.size() >= 3);
 
-        jlegmed.start();
+        jlegmed.stop();
     }
 
 }

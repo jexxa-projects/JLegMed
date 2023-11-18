@@ -50,15 +50,5 @@ public abstract class JDBCProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    @SuppressWarnings("unused")
-    public static <T> JDBCProducer<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
-        return new JDBCProducer<>() {
-
-            @Override
-            protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
-            }
-        };
-    }
 
 }

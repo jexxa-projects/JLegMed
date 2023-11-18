@@ -28,10 +28,6 @@ public class Binding<T> {
         return this;
     }
 
-    public FlowGraph flowGraph() {
-        return flowGraph;
-    }
-
     public ProcessorBuilder<T> and() {
         return new ProcessorBuilder<>(outputPipe, flowGraph);
     }

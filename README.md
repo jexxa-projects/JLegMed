@@ -81,6 +81,9 @@ Refer to the following tests to get an idea how this library works
 
 * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
 
+## Build an Application  
+* [A template](https://github.com/jexxa-projects/JexxaArchetypes) for your first JLegMed application
+
 ## Build the library
 
 *   Checkout the new project in your favorite IDE

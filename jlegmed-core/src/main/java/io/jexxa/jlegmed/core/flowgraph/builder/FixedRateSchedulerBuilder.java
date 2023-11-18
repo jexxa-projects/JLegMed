@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.jlegmed.core.flowgraph.scheduler.FixedRateScheduler;
+import io.jexxa.jlegmed.core.filter.scheduler.FixedRateScheduler;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.concurrent.TimeUnit;

@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
+import io.jexxa.jlegmed.core.filter.FilterScheduler;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
@@ -20,7 +21,7 @@ public class FlowGraph {
     private final String flowGraphID;
     private final List<Filter> filterList = new ArrayList<>();
     private final List<Processor<?,?>> processorList = new ArrayList<>();
-    private FlowGraphScheduler scheduler;
+    private FilterScheduler scheduler;
 
 
     public FlowGraph(String flowGraphID)
@@ -89,7 +90,7 @@ public class FlowGraph {
         }
     }
 
-    public void scheduler(FlowGraphScheduler scheduler)
+    public void scheduler(FilterScheduler scheduler)
     {
         this.scheduler = scheduler;
     }

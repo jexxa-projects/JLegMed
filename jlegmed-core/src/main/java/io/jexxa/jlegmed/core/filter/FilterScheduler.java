@@ -1,8 +1,7 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.filter;
 
-public interface FlowGraphScheduler {
+public interface FilterScheduler {
     void start();
     void stop();
-
     void schedule(Runnable passiveProducer);
 }

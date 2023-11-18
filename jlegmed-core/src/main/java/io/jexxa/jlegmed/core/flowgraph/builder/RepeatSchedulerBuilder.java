@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
-import io.jexxa.jlegmed.core.flowgraph.scheduler.RepeatScheduler;
+import io.jexxa.jlegmed.core.filter.scheduler.RepeatScheduler;
 
 import java.util.concurrent.TimeUnit;
 

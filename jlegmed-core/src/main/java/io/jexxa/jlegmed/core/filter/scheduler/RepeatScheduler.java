@@ -1,9 +1,9 @@
-package io.jexxa.jlegmed.core.flowgraph.scheduler;
+package io.jexxa.jlegmed.core.filter.scheduler;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
 import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
+import io.jexxa.jlegmed.core.filter.FilterScheduler;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
-public class RepeatScheduler implements FlowGraphScheduler {
+public class RepeatScheduler implements FilterScheduler {
     private final int times;
     private Runnable passiveProducer;
 

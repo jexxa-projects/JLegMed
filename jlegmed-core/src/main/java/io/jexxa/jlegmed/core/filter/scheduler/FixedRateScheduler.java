@@ -1,16 +1,16 @@
-package io.jexxa.jlegmed.core.flowgraph.scheduler;
+package io.jexxa.jlegmed.core.filter.scheduler;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
 import io.jexxa.jlegmed.common.component.scheduler.IScheduled;
 import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
-import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
+import io.jexxa.jlegmed.core.filter.FilterScheduler;
 
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
-public class FixedRateScheduler implements FlowGraphScheduler, IScheduled {
+public class FixedRateScheduler implements FilterScheduler, IScheduled {
     private final Scheduler scheduler = new Scheduler();
     private final int fixedRate;
     private final TimeUnit timeUnit;

@@ -16,13 +16,11 @@ import static io.jexxa.adapterapi.invocation.InvocationManager.getRootIntercepto
 
 public class FlowGraph {
     private final Properties properties;
-
-    private ActiveProducer<?> activeProducer;
-    private PassiveProducer<?> passiveProducer;
     private Producer<?> producer;
     private final String flowGraphID;
     private final List<Filter> filterList = new ArrayList<>();
     private final List<Processor<?,?>> processorList = new ArrayList<>();
+    private FlowGraphScheduler scheduler;
 
 
     public FlowGraph(String flowGraphID)
@@ -52,10 +50,19 @@ public class FlowGraph {
         filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
 
+        if (scheduler != null)
+        {
+            scheduler.start();
+        }
+
         return this;
     }
 
     public void stop() {
+        if (scheduler != null)
+        {
+            scheduler.stop();
+        }
         filterList.forEach(Filter::stop);
         filterList.forEach(Filter::deInit);
     }
@@ -63,14 +70,14 @@ public class FlowGraph {
     public void setProducer(ActiveProducer<?> producer)
     {
         this.producer = producer;
-        this.activeProducer = producer;
         filterList.add(producer);
     }
 
     public void setProducer(PassiveProducer<?> producer)
     {
+        Objects.requireNonNull(scheduler);
+        scheduler.schedule(producer::produceData);
         this.producer = producer;
-        this.passiveProducer = producer;
         filterList.add(producer);
     }
 
@@ -82,33 +89,13 @@ public class FlowGraph {
         }
     }
 
-    public FlowGraph iterate()
+    public void scheduler(FlowGraphScheduler scheduler)
     {
-         return iterate(1);
-    }
-
-    public FlowGraph iterate(int iterationCount)
-    {
-        for (int i = 0; i < iterationCount; i++) {
-            passiveProducer.produceData();
-        }
-        return this;
-    }
-
-    public <T, U> FlowGraph connect(ActiveProducer<T> producer, Processor<T,U> processor)
-    {
-        activeProducer = producer;
-        return internalConnect(producer, processor);
-    }
-
-    public <T, U> FlowGraph connect(PassiveProducer<T> producer, Processor<T,U> processor)
-    {
-        passiveProducer = producer;
-        return internalConnect(producer, processor);
+        this.scheduler = scheduler;
     }
 
 
-    private <T, U> FlowGraph internalConnect(Producer<T> producer, Processor<T,U> processor)
+    public <T, U> FlowGraph connect(Producer<T> producer, Processor<T,U> processor)
     {
         producer.outputPipe().connectTo(processor.inputPipe());
 

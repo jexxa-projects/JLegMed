@@ -57,9 +57,9 @@ class ManualFlowgraphTest {
                 .start();
 
         //Act
-        flowGraph
-                .iterate()
-                .stop();
+        sourceFilter.produceData();
+
+        flowGraph.stop();
 
         //Assert
         assertEquals(1, result.size());

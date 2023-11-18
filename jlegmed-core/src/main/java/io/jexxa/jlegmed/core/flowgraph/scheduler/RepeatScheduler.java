@@ -1,9 +1,9 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.core.flowgraph.scheduler;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
-import io.jexxa.adapterapi.invocation.function.SerializableRunnable;
 import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 
-public class RepeatScheduler implements FlowGraphScheduler{
+public class RepeatScheduler implements FlowGraphScheduler {
     private final int times;
-    private FlowGraph flowGraph;
+    private Runnable passiveProducer;
 
     int fixedRate = 0;
     TimeUnit timeUnit = TimeUnit.MILLISECONDS;
@@ -31,9 +31,6 @@ public class RepeatScheduler implements FlowGraphScheduler{
         this.timeUnit = timeUnit;
     }
 
-    public void register(FlowGraph flowGraph) {
-        this.flowGraph = flowGraph;
-    }
 
     @Override
     public void start() {
@@ -53,8 +50,8 @@ public class RepeatScheduler implements FlowGraphScheduler{
             }
 
             InvocationManager
-                    .getInvocationHandler(flowGraph)
-                    .invoke(flowGraph, (SerializableRunnable) flowGraph::iterate);
+                    .getInvocationHandler(passiveProducer)
+                    .invoke(passiveProducer, passiveProducer::run);
             ++iterationCounter;
         } catch (InvocationTargetRuntimeException e) {
             getLogger(this.getClass()).error(e.getTargetException().getMessage());
@@ -70,8 +67,8 @@ public class RepeatScheduler implements FlowGraphScheduler{
         try {
             while (iterationCounter < times) {
                 InvocationManager
-                        .getInvocationHandler(flowGraph)
-                        .invoke(flowGraph, (SerializableRunnable) flowGraph::iterate);
+                        .getInvocationHandler(passiveProducer)
+                        .invoke(passiveProducer, passiveProducer::run);
                 ++iterationCounter;
             }
 
@@ -100,6 +97,11 @@ public class RepeatScheduler implements FlowGraphScheduler{
             getLogger(Scheduler.class).warn("ExecutorService could not be stopped -> Force shutdown.", e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public void schedule(Runnable passiveProducer) {
+        this.passiveProducer = passiveProducer;
     }
 
 

@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
-public class ProducerBuilder<T> {
+public class PassiveProducerBuilder<T> {
     private final Class<T> sourceType;
     private final FlowGraph flowGraph;
 
-    ProducerBuilder(FlowGraph flowGraph, Class<T> sourceType) {
+    PassiveProducerBuilder(FlowGraph flowGraph, Class<T> sourceType) {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }

@@ -42,4 +42,4 @@ jobs:
       - name: sonarqube update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -Dsonar.login=${{ secrets.SONAR_TOKEN }} sonar:sonar
+        run: mvn -Dsonar.token=${{ secrets.SONAR_TOKEN }} sonar:sonar

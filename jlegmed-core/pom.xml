@@ -19,11 +19,6 @@
     </license>
   </licenses>
 
-  <properties>
-    <sonar.projectKey>repplix_Jexxa</sonar.projectKey>
-  </properties>
-
-
   <build>
     <plugins>
       <plugin>

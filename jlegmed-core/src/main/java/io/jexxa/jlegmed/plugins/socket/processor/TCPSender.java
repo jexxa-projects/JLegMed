@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.socket.processor;
 
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingBiConsumer;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingBiFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
@@ -16,21 +15,19 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Properties;
 
+import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_ADDRESS;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
 public abstract class TCPSender<T, R> extends Processor<T, R> {
+
+    private static final String COULD_NOT_SEND_MESSAGE = "Could not send message.";
     private int port = -1;
     private String ipAddress;
     private Socket clientSocket;
 
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-
-    protected TCPSender(int port, String ipAddress)  {
-        this.port = port;
-        this.ipAddress = ipAddress;
-    }
 
     protected TCPSender()  { }
 
@@ -78,7 +75,7 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
             bufferedWriter.flush();
             return result;
         } catch (IOException e) {
-            SLF4jLogger.getLogger(TCPReceiver.class).error("Could not send message.", e);
+            SLF4jLogger.getLogger(TCPReceiver.class).error(COULD_NOT_SEND_MESSAGE, e);
             return null;
         }
     }
@@ -110,46 +107,28 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
 
     abstract R sendMessage(T data, SocketContext socketContext) throws IOException;
 
-    public static <T, R> TCPSender<T, R> tcpProcessor(int port, String ipAddress, ThrowingBiFunction<T, SocketContext, R, IOException> consumer) {
-        return new TCPSender<>(port, ipAddress) {
+    public static <T, R> TCPSender<T, R> tcpSender(ThrowingBiFunction<T, SocketContext, R, IOException> consumer) {
+        return new TCPSender<>() {
             @Override
             protected R sendMessage(T message, SocketContext context) {
                 try {
                     return consumer.apply(message, context);
                 } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not send message.", e);
+                    SLF4jLogger.getLogger(TCPSender.class).error(COULD_NOT_SEND_MESSAGE, e);
                     return null;
                 }
             }
         };
     }
 
-    public static <T, R> TCPSender<T, R> tcpSender(int port, String ipAddress, ThrowingBiConsumer<T, SocketContext, IOException> consumer) {
-        return new TCPSender<>(port, ipAddress) {
-            @Override
-            protected R sendMessage(T message, SocketContext context) {
-                try {
-                    consumer.accept(message, context);
-                } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not read message.", e);
-                }
-                return null;
-            }
-        };
+    public static  <T> T sendLine(T data, SocketContext context) throws IOException
+    {
+        context.bufferedWriter().write(data.toString() + "\n");
+        return data;
     }
 
-    public static <T, R> TCPSender<T, R> tcpSender(ThrowingBiConsumer<T, SocketContext, IOException> consumer) {
-        return new TCPSender<>() {
-            @Override
-            protected R sendMessage(T message, SocketContext context) {
-                try {
-                    consumer.accept(message, context);
-                } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not read message.", e);
-                }
-                return null;
-            }
-        };
+    public static  <T> T sendAsJSON(T data, SocketContext context) throws IOException {
+        sendLine(getJSONConverter().toJson(data), context);
+        return data;
     }
-
 }

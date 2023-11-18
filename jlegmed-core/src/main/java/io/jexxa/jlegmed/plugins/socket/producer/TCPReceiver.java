@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.socket.producer;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
+import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingBiFunction;
 import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
@@ -31,9 +33,6 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     private int port = -1;
     private ServerSocket serverSocket;
 
-    protected TCPReceiver(int port)  {
-        this.port = port;
-    }
     protected TCPReceiver()  { }
 
     @Override
@@ -136,19 +135,6 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     abstract T receiveMessage(SocketContext socketContext) throws IOException;
 
-    public static <T> TCPReceiver<T> tcpReceiver(int port, ThrowingFunction<SocketContext, T, IOException> consumer) {
-        return new TCPReceiver<>(port) {
-            @Override
-            protected T receiveMessage(SocketContext context) {
-                try {
-                    return consumer.apply(context);
-                } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPReceiver.class).error("Could not read message.", e);
-                    return null;
-                }
-            }
-        };
-    }
 
     public static <T> TCPReceiver<T> tcpReceiver(ThrowingFunction<SocketContext, T, IOException> consumer) {
         return new TCPReceiver<>() {
@@ -163,4 +149,29 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
             }
         };
     }
+
+    public static <T> TCPReceiver<T> tcpReceiver(ThrowingBiFunction<SocketContext, Class<T>, T, IOException> consumer) {
+        return new TCPReceiver<>() {
+            @Override
+            protected T receiveMessage(SocketContext context) {
+                try {
+                    return consumer.apply(context, producingType());
+                } catch (IOException e) {
+                    SLF4jLogger.getLogger(TCPReceiver.class).error("Could not read message.", e);
+                    return null;
+                }
+            }
+        };
+    }
+
+    public static String receiveLine(SocketContext context) throws IOException
+    {
+        return context.bufferedReader().readLine();
+    }
+
+    public static <T> T receiveAsJSON(SocketContext context, Class<T> dataType) throws IOException
+    {
+        return getJSONConverter().fromJson(receiveLine(context), dataType);
+    }
+
 }

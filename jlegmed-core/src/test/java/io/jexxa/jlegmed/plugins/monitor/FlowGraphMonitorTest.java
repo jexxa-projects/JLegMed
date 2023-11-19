@@ -29,17 +29,16 @@ class FlowGraphMonitorTest {
     }
 
     @Test
-    void testMonitorBindings() {
+    void testMonitorBindingsLogDataFlowStyle() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
-        var message = "Hello World with JLegMed";
+        var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " with" )
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
@@ -57,17 +56,16 @@ class FlowGraphMonitorTest {
     }
 
     @Test
-    void testMonitorFilter() {
+    void testMonitorLogFunctionStyle() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
-        var message = "Hello World with JLegMed";
+        var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " with" )
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 

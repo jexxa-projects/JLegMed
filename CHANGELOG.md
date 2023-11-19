@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[0.8.0] - 2023-11-19 (RC for first major release)
+### Changed
+- Schedulers are now explicit for filters 
+- Cleanup filters 
+- Simplified using filter properties 
+
+### Fixed
+- Updated dependencies
+
 ## \[0.7.0] - 2023-11-16
 ### Changed
 - Added Active/PassiveSource base classes to avoid potential misuse of the API  

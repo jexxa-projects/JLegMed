@@ -35,8 +35,8 @@ public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     protected abstract void executeCommand();
 
-    protected JDBCConnection getJdbcConnection(){
-        return jdbcConnection;
+    protected JDBCConnection jdbcConnection(){
+        return jdbcConnection.validateConnection();
     }
 
 
@@ -45,7 +45,7 @@ public abstract class JDBCProducer<T> extends PassiveProducer<T> {
         return new JDBCProducer<>() {
             @Override
             protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
+                consumer.accept(new JDBCContext<>(jdbcConnection(), filterContext(), outputPipe()));
             }
         };
     }

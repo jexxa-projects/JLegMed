@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Properties;
 
 import static io.jexxa.jlegmed.common.wrapper.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_ADDRESS;
@@ -35,8 +34,11 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
     public void init()
     {
         super.init();
-        properties().ifPresent(this::setAddress);
+        initFilter();
+        validateFilterSettings();
+    }
 
+    private void validateFilterSettings() {
         if (port == -1) {
             throw new IllegalArgumentException("Port must be set");
         }
@@ -44,7 +46,6 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
         if (ipAddress.isEmpty()) {
             throw new IllegalArgumentException("IP address must be set");
         }
-
     }
 
     @Override
@@ -80,17 +81,17 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
         }
     }
 
-    private void setAddress(Properties properties) {
-        if (properties.containsKey(TCP_PORT)) {
+    private void initFilter() {
+        if (properties().containsKey(TCP_PORT)) {
             try {
-                port = Integer.parseInt(properties.getProperty(TCP_PORT));
+                port = Integer.parseInt(properties().getProperty(TCP_PORT));
             } catch (NumberFormatException e)
             {
                 throw new IllegalArgumentException("Port must be an integer");
             }
         }
-        if (properties.containsKey(TCP_ADDRESS)) {
-            ipAddress = properties.getProperty(TCP_ADDRESS);
+        if (properties().containsKey(TCP_ADDRESS)) {
+            ipAddress = properties().getProperty(TCP_ADDRESS);
         }
     }
 

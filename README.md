@@ -86,7 +86,7 @@ Refer to the following tests to get an idea how this library works
   * [Data processing at a specific interval](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ReceiveFlowGraphTest.java) 
   * [Await data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/AwaitFlowGraphTest.java)
 
-* [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphBuilderConfigurationTest.java) using `FlowGraphBuilder`
+* [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphConfigurationTest.java) using `FlowGraphBuilder`
 
 ## Build an Application  
 * [A template](https://github.com/jexxa-projects/JexxaArchetypes) for your first JLegMed application

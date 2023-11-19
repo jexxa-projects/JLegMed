@@ -16,7 +16,6 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +51,11 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     public void init()
     {
         super.init();
-        properties().ifPresent(this::setPort);
+        initFilter();
+        validateFilterSettings();
+    }
+
+    private void validateFilterSettings() {
         if (port == -1) {
             throw new IllegalArgumentException("Port must be set");
         }
@@ -82,10 +85,10 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         executorService = null;
     }
 
-    private void setPort(Properties properties) {
-        if (properties.containsKey(TCP_PORT)) {
+    private void initFilter() {
+        if (properties().containsKey(TCP_PORT)) {
             try {
-                port = Integer.parseInt(properties.getProperty(TCP_PORT));
+                port = Integer.parseInt(properties().getProperty(TCP_PORT));
             } catch (NumberFormatException e)
             {
                 throw new IllegalArgumentException("Port must be an integer");

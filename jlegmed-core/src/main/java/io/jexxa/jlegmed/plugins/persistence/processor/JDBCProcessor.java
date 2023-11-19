@@ -1,35 +1,40 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
-import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
-import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool.getConnection;
+
 public abstract class JDBCProcessor<T> extends Processor<T, T> {
 
-    private Properties properties;
     @Override
     public void init()
     {
         super.init();
 
-        this.properties = filterProperties()
-                .orElseThrow( () -> new IllegalArgumentException("No properties for database connection defined -> Define properties of SQLWriter in your main"))
-                .properties();
+        if (properties().isEmpty())
+        {
+            throw new IllegalArgumentException("No properties for database connection defined -> Define properties of SQLWriter in your main");
+        }
+
+        //Validate if connection can be established
+        jdbcConnection();
+    }
+
+    protected JDBCConnection jdbcConnection()
+    {
+        return getConnection(properties(), this).validateConnection();
     }
 
     @Override
     protected T doProcess(T data, FilterContext context)
     {
-        var jdbcConnection = JDBCConnectionPool.getConnection(properties, this);
-
-
-        executeCommand(jdbcConnection, data);
+        executeCommand(jdbcConnection(), data);
 
         return data;
     }

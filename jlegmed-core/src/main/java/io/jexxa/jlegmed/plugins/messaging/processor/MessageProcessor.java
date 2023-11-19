@@ -6,7 +6,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
-import java.util.Properties;
 import java.util.function.BiConsumer;
 
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
@@ -26,15 +25,16 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
     {
         super.init();
 
-        var properties = new Properties();
-        var connectionName = "message-logger";
-        if ( filterContext().filterProperties().isPresent())
-        {
-            properties = filterContext().filterProperties().orElseThrow().properties();
-            connectionName = filterContext().filterProperties().orElseThrow().propertiesName();
+        var connectionName = "";
+
+        if (!propertiesName().isEmpty()) {
+            connectionName = propertiesName();
+        } else {
+            connectionName = "message-logger";
         }
 
-        messageSender = MessagingManager.getMessageSender(connectionName, properties);
+
+        messageSender = MessagingManager.getMessageSender(connectionName, properties());
     }
 
     @Override

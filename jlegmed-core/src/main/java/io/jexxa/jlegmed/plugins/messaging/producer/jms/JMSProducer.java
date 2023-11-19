@@ -23,12 +23,11 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     @Override
     public void init() {
         super.init();
-        var properties = filterProperties()
-                .orElseThrow(() -> new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main"))
-                .properties();
+        if (properties().isEmpty()) {
+            throw new IllegalArgumentException("PropertiesConfig is missing -> Configure properties of JMSProducer in your main");
+        }
 
-
-        this.jmsAdapter = new JMSAdapter(properties);
+        this.jmsAdapter = new JMSAdapter(properties());
 
         messageListener.outputPipe(outputPipe());
         messageListener.typeInformation(producingType());

@@ -26,8 +26,8 @@ public abstract class HTTPClient<T> extends PassiveProducer<T> {
             throw new IllegalArgumentException("Producing dataType is not configured for " + HTTPClient.class.getSimpleName() + "! -> Configure filter with Producer::producingType<Class<T>>!");
         }
         unirestInstance = Unirest.spawnInstance();
-        filterProperties().ifPresent(element -> initUnirest(element.properties()));
-        filterProperties().ifPresent(element -> initFilter(element.properties()));
+        initUnirest(properties());
+        initFilter(properties());
     }
 
 

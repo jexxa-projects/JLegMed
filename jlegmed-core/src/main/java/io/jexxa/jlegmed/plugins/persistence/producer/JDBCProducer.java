@@ -8,6 +8,8 @@ import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
+
 public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     private Properties databaseProperties;
@@ -24,7 +26,7 @@ public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     @Override
     public void produceData() {
-        executeCommand();
+        getInvocationHandler(this).invoke(this, this::executeCommand);
     }
 
     @Override

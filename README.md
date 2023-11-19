@@ -4,12 +4,19 @@
 [![CodeQL](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml)
 # JLegMed—Connect the Past with the Future
 
-This library is intended to build bridges between legacy and new systems. Goal is to ensure that a new system can use a greenfield approach without considering the behavior or technical aspects of a legacy system.  
+This library is intended to build bridges between systems that do not share the same semantics. 
+For example, this can happen when a legacy application is gradually migrated to a modern system or
+systems from two different domains need to exchange data. 
+
+Goal is to ensure that a new system is not limited by dependencies to another system. 
+In the context of a microservice architecture, this is typically called Anti-Corruption-Layer (ACL).   
 
 For this purpose, we focus on the following aspects:  
-* Simplify translating between different technology stacks
-* Simplify mapping between data sets 
-* Make the data flow and transformation visible in the source code 
+* Represent the data flow and transformation as a first-class object in the source code using [pipes and filters](https://learn.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters) approach.
+* Simplify translating between different technology stacks by 
+  * Providing filters based on Java standard APIs
+  * Easy integration of new technology stacks   
+* Simplify mapping between data sets using a functional style 
 
 
 ## Requirements

@@ -3,7 +3,6 @@ package io.jexxa.jlegmed.plugins.http.producer;
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -27,12 +26,13 @@ class HTTPClientTest {
         var expectedResult = new VersionInfo("a","b", "s", "d" );
         var receivingPipe = new CollectingInputPipe<VersionInfo>();
 
-        Producer<VersionInfo> objectUnderTest = httpClient("http://localhost:7070/");
+        HTTPClient<VersionInfo> objectUnderTest = httpClient("http://localhost:7070/");
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.producingType(VersionInfo.class);
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.reachStarted();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(1, receivingPipe.getCollectedData().size());
@@ -53,9 +53,10 @@ class HTTPClientTest {
         objectUnderTest.producingType(VersionInfo.class);
 
         objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.reachStarted();
 
         //Act
-        objectUnderTest.reachStarted();
+        objectUnderTest.produceData();
 
         //Assert
         assertEquals(1, receivingPipe.getCollectedData().size());

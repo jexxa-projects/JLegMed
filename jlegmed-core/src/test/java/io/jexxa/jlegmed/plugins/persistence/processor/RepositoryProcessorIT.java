@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
-import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
+import io.jexxa.commons.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.persistence.TestData;

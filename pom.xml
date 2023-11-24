@@ -111,6 +111,12 @@
     </dependency>
 
     <dependency>
+      <groupId>io.jexxa.commons</groupId>
+      <artifactId>jexxa-commons</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>${gson.version}</version>

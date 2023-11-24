@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
+import io.jexxa.commons.wrapper.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;

@@ -2,8 +2,8 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 
 
-import io.jexxa.commons.wrapper.component.scheduler.IScheduled;
-import io.jexxa.commons.wrapper.component.scheduler.Scheduler;
+import io.jexxa.commons.component.scheduler.IScheduled;
+import io.jexxa.commons.component.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 

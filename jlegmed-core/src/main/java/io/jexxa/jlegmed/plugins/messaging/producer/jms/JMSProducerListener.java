@@ -2,10 +2,10 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 
 
-import io.jexxa.commons.wrapper.component.messaging.receive.jms.DefaultJMSConfiguration;
-import io.jexxa.commons.wrapper.component.messaging.receive.jms.JMSConfiguration;
-import io.jexxa.commons.wrapper.component.messaging.receive.jms.listener.JSONMessageListener;
-import io.jexxa.commons.wrapper.component.messaging.send.MessageFactory;
+import io.jexxa.commons.component.messaging.receive.jms.DefaultJMSConfiguration;
+import io.jexxa.commons.component.messaging.receive.jms.JMSConfiguration;
+import io.jexxa.commons.component.messaging.receive.jms.listener.JSONMessageListener;
+import io.jexxa.commons.component.messaging.send.MessageFactory;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 

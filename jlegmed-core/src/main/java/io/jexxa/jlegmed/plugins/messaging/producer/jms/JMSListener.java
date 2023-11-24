@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.commons.wrapper.json.JSONManager;
+import io.jexxa.commons.facade.json.JSONManager;
 
 public class JMSListener {
     public static <T>  void asJSON(String message, JMSProducer.JMSProducerContext<T> context)

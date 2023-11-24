@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.pipes;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
-import static io.jexxa.commons.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.commons.facade.logger.SLF4jLogger.getLogger;
 
 public class OutputPipe<T> {
     private InputPipe<T> inputPipe;

@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.http.producer;
 
-import io.jexxa.commons.wrapper.utils.properties.Secret;
+import io.jexxa.commons.facade.utils.properties.Secret;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.plugins.http.HTTPProperties;
 import kong.unirest.Unirest;

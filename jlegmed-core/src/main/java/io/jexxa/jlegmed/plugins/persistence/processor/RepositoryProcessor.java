@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
-import static io.jexxa.commons.wrapper.component.persistence.RepositoryManager.getRepository;
+import static io.jexxa.commons.component.persistence.RepositoryManager.getRepository;
 
 public class RepositoryProcessor {
 

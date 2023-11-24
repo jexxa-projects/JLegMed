@@ -2,8 +2,8 @@ package io.jexxa.jlegmed.plugins.messaging.processor;
 
 
 
-import io.jexxa.commons.wrapper.component.messaging.send.MessageFactory;
-import io.jexxa.commons.wrapper.component.messaging.send.MessageSender;
+import io.jexxa.commons.component.messaging.send.MessageFactory;
+import io.jexxa.commons.component.messaging.send.MessageSender;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;

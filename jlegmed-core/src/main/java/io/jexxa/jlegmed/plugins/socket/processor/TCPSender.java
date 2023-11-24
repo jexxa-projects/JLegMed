@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.socket.processor;
 
-import io.jexxa.commons.wrapper.logger.SLF4jLogger;
-import io.jexxa.commons.wrapper.utils.function.ThrowingBiFunction;
+import io.jexxa.commons.facade.logger.SLF4jLogger;
+import io.jexxa.commons.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.socket.SocketContext;
@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import static io.jexxa.commons.wrapper.json.JSONManager.getJSONConverter;
+import static io.jexxa.commons.facade.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_ADDRESS;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 

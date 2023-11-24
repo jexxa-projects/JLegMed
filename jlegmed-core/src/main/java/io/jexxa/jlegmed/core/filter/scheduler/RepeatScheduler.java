@@ -2,14 +2,14 @@ package io.jexxa.jlegmed.core.filter.scheduler;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
-import io.jexxa.commons.wrapper.component.scheduler.Scheduler;
+import io.jexxa.commons.component.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterScheduler;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.commons.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.commons.facade.logger.SLF4jLogger.getLogger;
 
 public class RepeatScheduler implements FilterScheduler {
     private final int times;

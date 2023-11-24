@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.commons.wrapper.component.messaging.receive.jms.JMSAdapter;
+import io.jexxa.commons.component.messaging.receive.jms.JMSAdapter;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 

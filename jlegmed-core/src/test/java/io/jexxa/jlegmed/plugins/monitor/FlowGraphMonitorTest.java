@@ -42,9 +42,12 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
+        //Act - Monitor pipes produces the following output for each iteration
+
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 1 : [Binding 0] Hello -> [Binding 1] Hello World -> [Binding 2] Hello World JLegMed -> [Binding 3] null -> finish
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 2 : [Binding 0] Hello -> [Binding 1] Hello World -> [Binding 2] Hello World JLegMed -> [Binding 3] null -> finish
         jlegmed.monitorPipes("HelloWorld", logDataFlowStyle());
 
-        //Act
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
@@ -69,9 +72,12 @@ class FlowGraphMonitorTest {
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
+
+        //Act - Monitor pipes produces the following output for each iteration
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 1 (FilterStyle) :  [Binding 0]  () -> Hello |  [Binding 1] Hello -> Hello World |  [Binding 2] Hello World -> Hello World JLegMed |  [Binding 3] Hello World JLegMed -> null
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 2 (FilterStyle) :  [Binding 0]  () -> Hello |  [Binding 1] Hello -> Hello World |  [Binding 2] Hello World -> Hello World JLegMed |  [Binding 3] Hello World JLegMed -> null
         jlegmed.monitorPipes("HelloWorld", logFunctionStyle());
 
-        //Act
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'

@@ -1,12 +1,12 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
 
-import io.jexxa.commons.component.messaging.send.MessageFactory;
+import io.jexxa.common.adapter.messaging.DestinationType;
 
-import static io.jexxa.commons.component.messaging.send.MessageFactory.DestinationType.QUEUE;
-import static io.jexxa.commons.component.messaging.send.MessageFactory.DestinationType.TOPIC;
+import static io.jexxa.common.adapter.messaging.DestinationType.QUEUE;
+import static io.jexxa.common.adapter.messaging.DestinationType.TOPIC;
 
-public record MessageConfiguration(MessageFactory.DestinationType destinationType, String destinationName)
+public record MessageConfiguration(DestinationType destinationType, String destinationName)
 {
     public static MessageConfiguration topic(String topicName) {
         return new MessageConfiguration(TOPIC, topicName);

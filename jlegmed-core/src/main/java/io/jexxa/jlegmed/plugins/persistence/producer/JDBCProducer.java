@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.plugins.persistence.producer;
 
-import io.jexxa.commons.facade.jdbc.JDBCConnection;
+import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
 import java.util.function.Consumer;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
-import static io.jexxa.commons.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 
 public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 

@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.socket.producer;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
-import io.jexxa.commons.facade.utils.function.ThrowingBiFunction;
-import io.jexxa.commons.facade.utils.function.ThrowingFunction;
+import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
+import io.jexxa.common.facade.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
 import io.jexxa.jlegmed.plugins.socket.SocketContext;
@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.commons.facade.json.JSONManager.getJSONConverter;
-import static io.jexxa.commons.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
+import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {

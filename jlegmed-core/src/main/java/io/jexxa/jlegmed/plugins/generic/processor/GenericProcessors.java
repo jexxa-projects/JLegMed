@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.processor;
 
-import io.jexxa.commons.facade.logger.SLF4jLogger;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 public class GenericProcessors {

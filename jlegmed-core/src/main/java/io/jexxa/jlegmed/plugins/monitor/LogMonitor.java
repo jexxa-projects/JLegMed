@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.monitor;
 
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.adapterapi.invocation.InvocationContext;
-import io.jexxa.commons.facade.logger.SLF4jLogger;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

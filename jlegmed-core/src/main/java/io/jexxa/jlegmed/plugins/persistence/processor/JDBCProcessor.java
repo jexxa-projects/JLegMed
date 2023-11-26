@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
-import io.jexxa.commons.facade.jdbc.JDBCConnection;
+import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
@@ -8,7 +8,7 @@ import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static io.jexxa.commons.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 
 public abstract class JDBCProcessor<T> extends Processor<T, T> {
 

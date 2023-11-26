@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
 
-import io.jexxa.commons.component.messaging.send.MessageSender;
-import io.jexxa.commons.component.messaging.send.MessageSenderFactory;
+import io.jexxa.common.adapter.messaging.send.MessageSender;
+import io.jexxa.common.adapter.messaging.send.MessageSenderManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class MessagingManager {
     MessageSender getInternalMessageSender(String connectionName, Properties properties)
     {
         messageSenderMap.computeIfAbsent(connectionName,
-                key -> MessageSenderFactory.getMessageSender(MessagingManager.class, properties)
+                key -> MessageSenderManager.getMessageSender(MessagingManager.class, properties)
         );
         return messageSenderMap.get(connectionName);
     }

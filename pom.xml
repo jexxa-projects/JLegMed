@@ -39,7 +39,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.commons.version>0.1.0-SNAPSHOT</jexxa.commons.version>
+    <jexxa.common.adapters.version>0.1.0-SNAPSHOT</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>
@@ -103,9 +103,9 @@
   <dependencies>
     <!-- dependencies for library -->
     <dependency>
-      <groupId>io.jexxa.commons</groupId>
-      <artifactId>jexxa-commons</artifactId>
-      <version>${jexxa.commons.version}</version>
+      <groupId>io.jexxa.common</groupId>
+      <artifactId>common-adapters</artifactId>
+      <version>${jexxa.common.adapters.version}</version>
     </dependency>
 
     <dependency>
@@ -128,6 +128,13 @@
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility-groovy</artifactId>
       <version>${awaitility.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache.commons.lang3}</version>
       <scope>test</scope>
     </dependency>
 

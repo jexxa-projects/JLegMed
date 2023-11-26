@@ -2,13 +2,15 @@ package io.jexxa.jlegmed.core.filter.scheduler;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
-import io.jexxa.jlegmed.common.component.scheduler.IScheduled;
-import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
+
+import io.jexxa.common.adapter.scheduler.IScheduled;
+import io.jexxa.common.adapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterScheduler;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+
 
 public class FixedRateScheduler implements FilterScheduler, IScheduled {
     private final Scheduler scheduler = new Scheduler();

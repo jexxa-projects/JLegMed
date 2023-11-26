@@ -1,9 +1,11 @@
 package io.jexxa.jlegmed.plugins.persistence;
 
-import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCQuery;
-import io.jexxa.jlegmed.common.wrapper.jdbc.builder.JDBCTableBuilder;
-import io.jexxa.jlegmed.common.wrapper.jdbc.builder.SQLDataType;
+
+import io.jexxa.common.facade.jdbc.JDBCQuery;
+import io.jexxa.common.facade.jdbc.builder.JDBCTableBuilder;
+import io.jexxa.common.facade.jdbc.builder.SQLDataType;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

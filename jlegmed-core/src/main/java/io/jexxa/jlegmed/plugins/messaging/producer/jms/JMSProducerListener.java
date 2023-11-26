@@ -1,11 +1,13 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
-import io.jexxa.jlegmed.common.component.messaging.receive.jms.DefaultJMSConfiguration;
-import io.jexxa.jlegmed.common.component.messaging.receive.jms.JMSConfiguration;
-import io.jexxa.jlegmed.common.component.messaging.receive.jms.listener.JSONMessageListener;
-import io.jexxa.jlegmed.common.component.messaging.send.MessageFactory;
+
+import io.jexxa.common.adapter.messaging.receive.jms.DefaultJMSConfiguration;
+import io.jexxa.common.adapter.messaging.receive.jms.JMSConfiguration;
+import io.jexxa.common.adapter.messaging.receive.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
+
+import static io.jexxa.common.adapter.messaging.DestinationType.TOPIC;
 
 public abstract class JMSProducerListener<T> extends JSONMessageListener {
     private OutputPipe<T> outputPipe;
@@ -30,7 +32,7 @@ public abstract class JMSProducerListener<T> extends JSONMessageListener {
     public JMSConfiguration getConfiguration()
     {
         JMSConfiguration.MessagingType messagingType;
-        if (configuration.destinationType() == MessageFactory.DestinationType.TOPIC)
+        if (configuration.destinationType() == TOPIC)
         {
             messagingType = JMSConfiguration.MessagingType.TOPIC;
         } else

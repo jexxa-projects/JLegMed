@@ -6,7 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger.getLogger;
+import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+
 
 public abstract class ThreadedProducer<T> extends ActiveProducer<T> {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();

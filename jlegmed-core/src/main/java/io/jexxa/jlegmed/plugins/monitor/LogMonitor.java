@@ -1,23 +1,30 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
+import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.adapterapi.invocation.InvocationContext;
-import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogMonitor {
+    private int filterCounter = 0;
     private int iterationCounter = 0;
-    private final List<Object> iterationData = new ArrayList<>();
+    private final Map<Object, FilterDescription> filterDescription = new LinkedHashMap<>();
+
+    private final List<IterationEntry> iterationData = new ArrayList<>();
+
     private Object producerOutputPipe;
 
     private final Runnable iterationLogger;
 
-    public enum LogStyle{BINDING_STYLE, FILTER_STYLE}
+    public enum LogStyle{DATAFLOW_STYLE, FUNCTION_STYLE}
 
     public LogMonitor(LogStyle logStyle)
     {
-        if (logStyle == LogStyle.BINDING_STYLE)
+        if (logStyle == LogStyle.DATAFLOW_STYLE)
         {
             iterationLogger = this::logIterationBindingStyle;
         } else {
@@ -26,40 +33,56 @@ public class LogMonitor {
     }
     public void intercept(InvocationContext invocationContext)
     {
-        initProducerOutputPipe(invocationContext);
+        initFilter(invocationContext);
+        addIterationData(invocationContext);
         logIteration(invocationContext);
-        iterationData.add(invocationContext.getArgs()[0]);
     }
 
-    private void initProducerOutputPipe(InvocationContext invocationContext)
+    private void initFilter(InvocationContext invocationContext)
     {
         if (producerOutputPipe == null)
         {
             this.producerOutputPipe = invocationContext.getTarget();
         }
+        filterDescription.computeIfAbsent(invocationContext.getTarget(), this::createFilterDescription);
     }
 
     private void logIteration(InvocationContext invocationContext)
     {
-        if (producerOutputPipe == invocationContext.getTarget() && !iterationData.isEmpty())
+        if (invocationContext.getArgs()[0] == null)
         {
             iterationLogger.run();
-            ++iterationCounter;
             iterationData.clear();
         }
+
+        if (invocationContext.getTarget() == producerOutputPipe) {
+            ++iterationCounter;
+        }
+
     }
 
+    private void addIterationData(InvocationContext context)
+    {
+        iterationData.add(new IterationEntry(context.getTarget(), context.getArgs()[0]));
+    }
+
+    private FilterDescription createFilterDescription(Object object)
+    {
+        var description = new FilterDescription(filterCounter);
+        ++filterCounter;
+        return description;
+    }
 
     private void logIterationBindingStyle()
     {
         // Build a list of messages for each iteration
-        iterationData.remove(iterationData.size() - 1); // data from the last output pipe are not required
+        filterDescription.remove(filterDescription.size() - 1); // data from the last output pipe are not required
         StringBuilder sb = new StringBuilder();
         sb.append("Iteration ")
                 .append(iterationCounter)
                 .append(" : ");
 
-        iterationData.forEach( data -> sb.append(data).append( " -> " ));
+        iterationData.forEach( entry -> sb.append("[Binding ").append(getIndex(entry.outputPipe())).append("] ").append(entry.producedData()).append( " -> " ));
         sb.append( "finish " );
 
         var iterationDataString = sb.toString();
@@ -72,16 +95,18 @@ public class LogMonitor {
         StringBuilder sb = new StringBuilder();
         sb.append("Iteration ")
                 .append(iterationCounter)
-                .append(" : ")
+                .append(" (FilterStyle) : ")
+                .append( " [Binding " ).append(getIndex(iterationData.get(0).outputPipe())).append( "] ")
                 .append( " () -> " )
-                .append(iterationData.get(0));
+                .append(iterationData.get(0).producedData());
 
-        for (int i = 0; i < iterationData.size() - 2 ; i++)
+        for (int i = 0; i < iterationData.size() - 1 ; i++)
         {
             sb.append(" | ")
-                    .append(iterationData.get(i))
+                    .append( " [Binding " ).append(getIndex(iterationData.get(i+1).outputPipe())).append( "] ")
+                    .append(iterationData.get(i).producedData())
                     .append( " -> " )
-                    .append(iterationData.get(i+1));
+                    .append(iterationData.get(i+1).producedData());
         }
 
         var iterationDataString = sb.toString();
@@ -89,13 +114,29 @@ public class LogMonitor {
         SLF4jLogger.getLogger(LogMonitor.class.getSimpleName()).info(iterationDataString);
     }
 
-    public static LogMonitor logBindings()
+    int getIndex(Object outputPipe)
     {
-        return new LogMonitor(LogStyle.BINDING_STYLE);
+        if (filterDescription.containsKey(outputPipe)) {
+            return filterDescription.get(outputPipe).index();
+        } else {
+            return -1;
+        }
     }
 
-    public static LogMonitor logFilter()
+
+
+    public static BeforeInterceptor logDataFlowStyle()
     {
-        return new LogMonitor(LogStyle.FILTER_STYLE);
+        return new LogMonitor(LogStyle.DATAFLOW_STYLE)::intercept;
     }
+
+    public static BeforeInterceptor logFunctionStyle()
+    {
+        return new LogMonitor(LogStyle.FUNCTION_STYLE)::intercept;
+    }
+
+    private record FilterDescription(int index) {
+    }
+
+    record IterationEntry(Object outputPipe, Object producedData){}
 }

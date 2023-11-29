@@ -1,18 +1,20 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.common.component.scheduler.IScheduled;
-import io.jexxa.jlegmed.common.component.scheduler.Scheduler;
+
+
+import io.jexxa.common.adapter.scheduler.IScheduled;
+import io.jexxa.common.adapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ScheduledProducer<T> extends Producer<T> implements IScheduled {
-    private final int fixedRate;
-    private final TimeUnit timeUnit;
+public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements IScheduled {
+    private int fixedRate;
+    private TimeUnit timeUnit;
 
     private final Scheduler scheduler = new Scheduler();
 
@@ -33,6 +35,13 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
         scheduler.start();
     }
 
+    public ScheduledProducer<T> fixedRate(int fixedRate, TimeUnit timeUnit)
+    {
+        this.fixedRate = fixedRate;
+        this.timeUnit = timeUnit;
+        return this;
+    }
+
     @Override
     public void stop() {
         scheduler.stop();
@@ -50,12 +59,6 @@ public abstract class ScheduledProducer<T> extends Producer<T> implements ISched
 
     @Override
     public void execute()
-    {
-        produceData();
-    }
-
-    @Override
-    public void produceData()
     {
         outputPipe().forward(generateData());
     }

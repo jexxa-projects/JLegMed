@@ -1,12 +1,12 @@
 package io.jexxa.jlegmed.plugins.socket.processor;
 
-import io.jexxa.jlegmed.common.wrapper.logger.SLF4jLogger;
-import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingBiConsumer;
-import io.jexxa.jlegmed.common.wrapper.utils.function.ThrowingBiFunction;
+import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.socket.SocketContext;
 import io.jexxa.jlegmed.plugins.socket.producer.TCPReceiver;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,12 +14,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Properties;
 
+import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_ADDRESS;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
 public abstract class TCPSender<T, R> extends Processor<T, R> {
+
+    private static final String COULD_NOT_SEND_MESSAGE = "Could not send message.";
     private int port = -1;
     private String ipAddress;
     private Socket clientSocket;
@@ -27,19 +29,17 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
-    protected TCPSender(int port, String ipAddress)  {
-        this.port = port;
-        this.ipAddress = ipAddress;
-    }
-
     protected TCPSender()  { }
 
     @Override
     public void init()
     {
         super.init();
-        properties().ifPresent(this::setAddress);
+        initFilter();
+        validateFilterSettings();
+    }
 
+    private void validateFilterSettings() {
         if (port == -1) {
             throw new IllegalArgumentException("Port must be set");
         }
@@ -47,7 +47,6 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
         if (ipAddress.isEmpty()) {
             throw new IllegalArgumentException("IP address must be set");
         }
-
     }
 
     @Override
@@ -78,22 +77,22 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
             bufferedWriter.flush();
             return result;
         } catch (IOException e) {
-            SLF4jLogger.getLogger(TCPReceiver.class).error("Could not send message.", e);
+            SLF4jLogger.getLogger(TCPReceiver.class).error(COULD_NOT_SEND_MESSAGE, e);
             return null;
         }
     }
 
-    private void setAddress(Properties properties) {
-        if (properties.containsKey(TCP_PORT)) {
+    private void initFilter() {
+        if (properties().containsKey(TCP_PORT)) {
             try {
-                port = Integer.parseInt(properties.getProperty(TCP_PORT));
+                port = Integer.parseInt(properties().getProperty(TCP_PORT));
             } catch (NumberFormatException e)
             {
                 throw new IllegalArgumentException("Port must be an integer");
             }
         }
-        if (properties.containsKey(TCP_ADDRESS)) {
-            ipAddress = properties.getProperty(TCP_ADDRESS);
+        if (properties().containsKey(TCP_ADDRESS)) {
+            ipAddress = properties().getProperty(TCP_ADDRESS);
         }
     }
 
@@ -110,46 +109,28 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
 
     abstract R sendMessage(T data, SocketContext socketContext) throws IOException;
 
-    public static <T, R> TCPSender<T, R> tcpProcessor(int port, String ipAddress, ThrowingBiFunction<T, SocketContext, R, IOException> consumer) {
-        return new TCPSender<>(port, ipAddress) {
+    public static <T, R> TCPSender<T, R> tcpSender(ThrowingBiFunction<T, SocketContext, R, IOException> consumer) {
+        return new TCPSender<>() {
             @Override
             protected R sendMessage(T message, SocketContext context) {
                 try {
                     return consumer.apply(message, context);
                 } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not send message.", e);
+                    SLF4jLogger.getLogger(TCPSender.class).error(COULD_NOT_SEND_MESSAGE, e);
                     return null;
                 }
             }
         };
     }
 
-    public static <T, R> TCPSender<T, R> tcpSender(int port, String ipAddress, ThrowingBiConsumer<T, SocketContext, IOException> consumer) {
-        return new TCPSender<>(port, ipAddress) {
-            @Override
-            protected R sendMessage(T message, SocketContext context) {
-                try {
-                    consumer.accept(message, context);
-                } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not read message.", e);
-                }
-                return null;
-            }
-        };
+    public static  <T> T sendLine(T data, SocketContext context) throws IOException
+    {
+        context.bufferedWriter().write(data.toString() + "\n");
+        return data;
     }
 
-    public static <T, R> TCPSender<T, R> tcpSender(ThrowingBiConsumer<T, SocketContext, IOException> consumer) {
-        return new TCPSender<>() {
-            @Override
-            protected R sendMessage(T message, SocketContext context) {
-                try {
-                    consumer.accept(message, context);
-                } catch (IOException e) {
-                    SLF4jLogger.getLogger(TCPSender.class).error("Could not read message.", e);
-                }
-                return null;
-            }
-        };
+    public static  <T> T sendAsJSON(T data, SocketContext context) throws IOException {
+        sendLine(getJSONConverter().toJson(data), context);
+        return data;
     }
-
 }

@@ -1,12 +1,13 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
-import io.jexxa.jlegmed.common.component.messaging.send.MessageFactory;
-import io.jexxa.jlegmed.common.component.messaging.send.MessageSender;
+
+
+import io.jexxa.common.adapter.messaging.DestinationType;
+import io.jexxa.common.adapter.messaging.send.MessageSender;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
-import java.util.Properties;
 import java.util.function.BiConsumer;
 
 import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
@@ -26,15 +27,16 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
     {
         super.init();
 
-        var properties = new Properties();
-        var connectionName = "message-logger";
-        if ( filterContext().filterProperties().isPresent())
-        {
-            properties = filterContext().filterProperties().orElseThrow().properties();
-            connectionName = filterContext().filterProperties().orElseThrow().propertiesName();
+        var connectionName = "";
+
+        if (!propertiesName().isEmpty()) {
+            connectionName = propertiesName();
+        } else {
+            connectionName = "message-logger";
         }
 
-        messageSender = MessagingManager.getMessageSender(connectionName, properties);
+
+        messageSender = MessagingManager.getMessageSender(connectionName, properties());
     }
 
     @Override
@@ -70,7 +72,7 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
         var messageFactory = context.messageSender()
                 .send(data)
                 .addHeader("Type", data.getClass().getSimpleName());
-        if (context.messageConfiguration().destinationType().equals(MessageFactory.DestinationType.QUEUE))
+        if (context.messageConfiguration().destinationType().equals(DestinationType.QUEUE))
         {
             messageFactory.toQueue(context.messageConfiguration().destinationName()).asJson();
         } else  {

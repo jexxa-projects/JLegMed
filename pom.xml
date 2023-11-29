@@ -5,7 +5,7 @@
 
   <groupId>io.jexxa.jlegmed</groupId>
   <artifactId>jlegmed</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
+  <version>0.8.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- Project Information -->
@@ -39,16 +39,10 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.adapter.api.version>4.2.3</jexxa.adapter.api.version>
-    <gson.version>2.10.1</gson.version>
+    <jexxa.common.adapters.version>0.1.1</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
-    <javax.jms.version>2.0.1</javax.jms.version>
-    <activemq.artemis.client.version>2.31.2</activemq.artemis.client.version>
-    <postgres.version>42.6.0</postgres.version>
-    <slf4j.simple.version>2.0.9</slf4j.simple.version>
     <unirest.java.version>3.14.5</unirest.java.version>
-    <javalin.version>5.6.3</javalin.version>
 
 
     <!-- version of test dependencies -->
@@ -56,8 +50,12 @@
     <junit.jupiter.engine.version>5.10.1</junit.jupiter.engine.version>
     <junit.jupiter.params.version>5.10.1</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <jackson.databind.version>2.15.3</jackson.databind.version>
-    <apache.commons.lang3>3.13.0</apache.commons.lang3>
+    <jackson.databind.version>2.16.0</jackson.databind.version>
+    <apache.commons.lang3>3.14.0</apache.commons.lang3>
+    <activemq.artemis.client.version>2.31.2</activemq.artemis.client.version>
+    <postgres.version>42.7.0</postgres.version>
+    <slf4j.simple.version>2.0.9</slf4j.simple.version>
+    <javalin.version>5.6.3</javalin.version>
 
 
 
@@ -81,10 +79,10 @@
     <maven.surefire.plugin>3.2.2</maven.surefire.plugin>
     <maven.release.plugin>3.0.1</maven.release.plugin>
     <maven.jacoco.plugin>0.8.11</maven.jacoco.plugin>
-    <maven.reports.plugin>3.4.5</maven.reports.plugin>
+    <maven.reports.plugin>3.5.0</maven.reports.plugin>
     <maven.enforcer.plugin>3.4.1</maven.enforcer.plugin>
     <maven.javadoc.plugin>3.6.2</maven.javadoc.plugin>
-    <maven.versions.plugin>2.16.1</maven.versions.plugin>
+    <maven.versions.plugin>2.16.2</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.5.1</maven.shade.plugin>
     <maven.templating.plugin>3.0.0</maven.templating.plugin>
@@ -93,7 +91,7 @@
     <sonar.organization>jexxa-projects</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-    <sonar.login>${sonar-login}</sonar.login>
+    <sonar.token>${sonar-login}</sonar.token>
     <sonar.projectKey>jexxa-projects_JLegMed</sonar.projectKey>
     <sonar.java.source>1.17</sonar.java.source>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-ut/jacoco.xml,target/site/jacoco-it/jacoco.xml </sonar.coverage.jacoco.xmlReportPaths>
@@ -105,35 +103,24 @@
   <dependencies>
     <!-- dependencies for library -->
     <dependency>
-      <groupId>io.jexxa</groupId>
-      <artifactId>jexxa-adapter-api</artifactId>
-      <version>${jexxa.adapter.api.version}</version>
+      <groupId>io.jexxa.common</groupId>
+      <artifactId>common-adapters</artifactId>
+      <version>${jexxa.common.adapters.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>${gson.version}</version>
-      <scope>compile</scope>
+      <groupId>com.konghq</groupId>
+      <artifactId>unirest-java</artifactId>
+      <version>${unirest.java.version}</version>
+
+      <exclusions>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>javax.jms</groupId>
-      <artifactId>javax.jms-api</artifactId>
-      <version>${javax.jms.version}</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.simple.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${apache.commons.lang3}</version>
-    </dependency>
 
 
     <!-- dependencies for tests -->
@@ -141,6 +128,13 @@
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility-groovy</artifactId>
       <version>${awaitility.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache.commons.lang3}</version>
       <scope>test</scope>
     </dependency>
 
@@ -221,19 +215,6 @@
       <artifactId>jetty-xml</artifactId>
       <version>11.0.16</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.konghq</groupId>
-      <artifactId>unirest-java</artifactId>
-      <version>${unirest.java.version}</version>
-
-      <exclusions>
-        <exclusion>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
   </dependencies>

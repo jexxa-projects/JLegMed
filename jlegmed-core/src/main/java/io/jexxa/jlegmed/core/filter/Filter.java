@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.core.filter;
 
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -36,7 +35,7 @@ public abstract class Filter {
         return filterContext.processingState();
     }
 
-    public Optional<FilterProperties> filterProperties() {
+    public FilterProperties filterProperties() {
         return filterContext.filterProperties();
     }
 
@@ -45,10 +44,16 @@ public abstract class Filter {
      *
      * @return Properties included in {@link #filterProperties()} if available
      */
-    protected Optional<Properties> properties() {
+    protected Properties properties() {
         return filterContext
                 .filterProperties()
-                .map(FilterProperties::properties);
+                .properties();
+    }
+
+    protected String propertiesName() {
+        return filterContext
+                .filterProperties()
+                .propertiesName();
     }
 
     protected FilterContext filterContext() {

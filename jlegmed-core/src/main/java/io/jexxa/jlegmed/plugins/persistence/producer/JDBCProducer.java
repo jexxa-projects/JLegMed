@@ -1,64 +1,47 @@
 package io.jexxa.jlegmed.plugins.persistence.producer;
 
-import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnection;
-import io.jexxa.jlegmed.common.wrapper.jdbc.JDBCConnectionPool;
-import io.jexxa.jlegmed.core.filter.producer.Producer;
+import io.jexxa.common.facade.jdbc.JDBCConnection;
+import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
-import java.util.Properties;
 import java.util.function.Consumer;
 
-public abstract class JDBCProducer<T> extends Producer<T> {
+import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 
-    private Properties databaseProperties;
-    private JDBCConnection jdbcConnection;
+public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     @Override
     public void init()
     {
-        this.databaseProperties = filterProperties()
-                .orElseThrow(() -> new IllegalArgumentException("No database connection defined in properties -> Define a database connection in main using 'useProperties()' "))
-                .properties();
-        this.jdbcConnection = JDBCConnectionPool.getConnection(databaseProperties, this);
+        if (properties().isEmpty()) {
+            throw new IllegalArgumentException("No database connection defined in properties -> Define a database connection in main using 'useProperties()' ");
+        }
+
+        //validate jdbc connection
+        jdbcConnection();
     }
 
     @Override
     public void produceData() {
-        executeCommand();
+        getInvocationHandler(this).invoke(this, this::executeCommand);
     }
 
-    @Override
-    public void deInit() {
-        jdbcConnection = null;
-        databaseProperties = null;
-    }
 
     protected abstract void executeCommand();
 
-    protected JDBCConnection getJdbcConnection(){
-        return jdbcConnection;
+    protected JDBCConnection jdbcConnection(){
+        return getConnection(properties(), this).validateConnection();
     }
-
-
 
     public static <T> JDBCProducer<T> jdbcProducer(Consumer<JDBCContext<T>> consumer) {
         return new JDBCProducer<>() {
             @Override
             protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
+                consumer.accept(new JDBCContext<>(jdbcConnection(), filterContext(), outputPipe()));
             }
         };
     }
 
-    @SuppressWarnings("unused")
-    public static <T> JDBCProducer<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
-        return new JDBCProducer<>() {
-
-            @Override
-            protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(getJdbcConnection(), filterContext(), outputPipe()));
-            }
-        };
-    }
 
 }

@@ -2,20 +2,23 @@ package io.jexxa.jlegmed.core.filter;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Properties;
 
 public class FilterContext {
     private final HashMap<String, Object> dataState = new HashMap<>();
     private final ProcessingState processingState = new ProcessingState();
-    private FilterProperties filterProperties;
+    private FilterProperties filterProperties = new FilterProperties("", new Properties());
 
     public void filterProperties(FilterProperties filterProperties) {
         this.filterProperties = filterProperties;
     }
 
-    public Optional<FilterProperties> filterProperties()
+    public FilterProperties filterProperties()
     {
-        return Optional.ofNullable(filterProperties);
+        return filterProperties;
     }
+    public Properties properties() { return filterProperties.properties(); }
+    public String propertiesName() { return filterProperties.propertiesName(); }
 
     public ProcessingState processingState() {
         return processingState;

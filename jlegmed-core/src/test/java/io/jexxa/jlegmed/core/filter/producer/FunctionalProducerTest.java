@@ -3,13 +3,11 @@ package io.jexxa.jlegmed.core.filter.producer;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import org.junit.jupiter.api.Test;
 
-import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import static io.jexxa.jlegmed.core.filter.FilterProperties.filterPropertiesOf;
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FunctionalProducerTest {
 
@@ -18,7 +16,7 @@ class FunctionalProducerTest {
     {
         //Arrange
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(() -> "Hello World");
+        var objectUnderTest = producer(() -> "Hello World");
         objectUnderTest.outputPipe().connectTo(inputPipe);
 
         objectUnderTest.reachStarted();
@@ -37,9 +35,7 @@ class FunctionalProducerTest {
         //Arrange
         var propertiesName = "someProperties";
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext ->
-                "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName()
-        );
+        var objectUnderTest = producer(context -> "Hello World" + context.propertiesName() );
 
         objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
         objectUnderTest.outputPipe().connectTo(inputPipe);
@@ -59,9 +55,8 @@ class FunctionalProducerTest {
         //Arrange
         var propertiesName = "someProperties";
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer( (filterContext, dataType) ->
-                "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName() + dataType.getSimpleName()
-        );
+        FunctionalProducer<String> objectUnderTest = producer( (filterContext, dataType) ->
+                "Hello World" + filterContext.propertiesName() + dataType.getSimpleName());
 
         objectUnderTest.producingType(String.class);
         objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
@@ -81,7 +76,7 @@ class FunctionalProducerTest {
     {
         //Arrange
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext -> {
+        FunctionalProducer<String> objectUnderTest = producer(filterContext -> {
             // Here we tell the producer that we must be called again
             if (!filterContext.processingState().isProcessingAgain()) {
                 filterContext.processingState().processAgain();
@@ -101,18 +96,4 @@ class FunctionalProducerTest {
         assertEquals("Hello World", inputPipe.getCollectedData().get(1));
     }
 
-    @Test
-    void testFunctionProducerThrowing()
-    {
-        //Arrange - Without properties so that our producer throws an exception
-        CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
-        Producer<String> objectUnderTest = producer(filterContext ->
-                "Hello World" + filterContext.filterProperties().orElseThrow().propertiesName()
-        );
-        objectUnderTest.outputPipe().connectTo(inputPipe);
-        objectUnderTest.reachStarted();
-
-        //Act / Assert
-        assertThrows(NoSuchElementException.class, objectUnderTest::produceData);
-    }
 }

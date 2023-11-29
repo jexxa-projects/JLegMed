@@ -23,7 +23,8 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from(tcpReceiver( 6666, context -> context.bufferedReader().readLine()))
+                .from(tcpReceiver( TCPReceiver::receiveLine)).useProperties("test-tcp-sender")
+
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
         //Act
@@ -42,7 +43,8 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
-                .from(tcpReceiver( 6666, context -> context.bufferedReader().readLine()))
+                .from(tcpReceiver( TCPReceiver::receiveLine) ).useProperties("test-tcp-sender")
+
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
         //Act
@@ -60,7 +62,7 @@ class TCPReceiverIT {
     public static void sendMessageMultipleTimes(String message, int counter)
     {
         try {
-            var clientSocket = new Socket("localhost", 6666);
+            var clientSocket = new Socket("localhost", 6665);
             var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             for (int i = 0; i < counter; ++i) {
                 bufferedWriter.write(message);

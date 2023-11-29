@@ -5,7 +5,7 @@
   <parent>
     <artifactId>jlegmed</artifactId>
     <groupId>io.jexxa.jlegmed</groupId>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.8.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>jlegmed-core</artifactId>
@@ -18,11 +18,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <properties>
-    <sonar.projectKey>repplix_Jexxa</sonar.projectKey>
-  </properties>
-
 
   <build>
     <plugins>

@@ -18,6 +18,6 @@ public class VersionInfoReader {
                 .asObject(readerContext.dataType())
                 .getBody();
 
-        readerContext.outputPipe().accept(result);
+        readerContext.outputPipe().forward(result);
     }
 }

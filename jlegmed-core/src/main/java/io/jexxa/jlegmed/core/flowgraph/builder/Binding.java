@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.jlegmed.common.wrapper.utils.properties.PropertiesUtils;
+import io.jexxa.common.facade.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -26,10 +26,6 @@ public class Binding<T> {
         filter.useProperties(new FilterProperties(propertiesPrefix, properties));
 
         return this;
-    }
-
-    public FlowGraph flowGraph() {
-        return flowGraph;
     }
 
     public ProcessorBuilder<T> and() {

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -106,6 +107,9 @@ class TransformDataTest {
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( GenericProcessors::duplicate )
                 .and().consumeWith( messageCollector::collect );
+
+        jlegmed.monitorPipes("DuplicateData", logFunctionStyle());
+
         //Act
         jlegmed.start();
 

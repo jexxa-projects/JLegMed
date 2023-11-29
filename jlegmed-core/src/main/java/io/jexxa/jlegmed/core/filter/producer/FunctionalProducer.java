@@ -3,19 +3,20 @@ package io.jexxa.jlegmed.core.filter.producer;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class FunctionalProducer<T> extends Producer<T> {
+import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
+
+public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     @Override
     public void produceData() {
         do {
             startProcessing();
 
-            Optional.ofNullable(doProduce())
-                    .ifPresent(data -> outputPipe().forward(data));
+            getInvocationHandler(this)
+                    .invoke(this, () -> outputPipe().forward(doProduce()));
 
             finishedProcessing();
 

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logBindings;
-import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFilter;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logDataFlowStyle;
+import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -29,23 +29,25 @@ class FlowGraphMonitorTest {
     }
 
     @Test
-    void testMonitorBindings() {
+    void testMonitorBindingsLogDataFlowStyle() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
-        var message = "Hello World with JLegMed";
+        var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " with" )
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorPipes("HelloWorld", logBindings()::intercept);
+        //Act - Monitor pipes produces the following output for each iteration
 
-        //Act
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 1 : [Binding 0] Hello -> [Binding 1] Hello World -> [Binding 2] Hello World JLegMed -> [Binding 3] null -> finish
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 2 : [Binding 0] Hello -> [Binding 1] Hello World -> [Binding 2] Hello World JLegMed -> [Binding 3] null -> finish
+        jlegmed.monitorPipes("HelloWorld", logDataFlowStyle());
+
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
@@ -57,23 +59,25 @@ class FlowGraphMonitorTest {
     }
 
     @Test
-    void testMonitorFilter() {
+    void testMonitorLogFunctionStyle() {
         //Arrange
         var messageCollector = new GenericCollector<String>();
-        var message = "Hello World with JLegMed";
+        var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " with" )
                 .and().processWith(data -> data + " JLegMed" )
                 .and().consumeWith(messageCollector::collect);
 
-        jlegmed.monitorPipes("HelloWorld", logFilter()::intercept);
 
-        //Act
+        //Act - Monitor pipes produces the following output for each iteration
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 1 (FilterStyle) :  [Binding 0]  () -> Hello |  [Binding 1] Hello -> Hello World |  [Binding 2] Hello World -> Hello World JLegMed |  [Binding 3] Hello World JLegMed -> null
+        // [pool-1-thread-1] INFO LogMonitor - Iteration 2 (FilterStyle) :  [Binding 0]  () -> Hello |  [Binding 1] Hello -> Hello World |  [Binding 2] Hello World -> Hello World JLegMed |  [Binding 3] Hello World JLegMed -> null
+        jlegmed.monitorPipes("HelloWorld", logFunctionStyle());
+
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'

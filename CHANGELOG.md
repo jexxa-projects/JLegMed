@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[0.8.1] - 2023-11-29 
+### Fixed
+- Updated dependencies
+
 ## \[0.8.0] - 2023-11-19 (RC for first major release)
 ### Changed
 - Schedulers are now explicit for filters 

@@ -1,13 +1,14 @@
 package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 
-import io.jexxa.common.adapter.messaging.receive.jms.DefaultJMSConfiguration;
-import io.jexxa.common.adapter.messaging.receive.jms.JMSConfiguration;
-import io.jexxa.common.adapter.messaging.receive.jms.listener.JSONMessageListener;
+import io.jexxa.common.drivingadapter.messaging.jms.DefaultJMSConfiguration;
+import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
+import io.jexxa.common.drivingadapter.messaging.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
-import static io.jexxa.common.adapter.messaging.DestinationType.TOPIC;
+import static io.jexxa.common.drivenadapter.messaging.DestinationType.TOPIC;
+
 
 public abstract class JMSProducerListener<T> extends JSONMessageListener {
     private OutputPipe<T> outputPipe;

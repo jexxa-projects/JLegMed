@@ -1,8 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
-
-import io.jexxa.common.adapter.messaging.send.MessageSender;
-import io.jexxa.common.adapter.messaging.send.MessageSenderManager;
+import io.jexxa.common.drivenadapter.messaging.MessageSender;
+import io.jexxa.common.drivenadapter.messaging.MessageSenderManager;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
 
-import io.jexxa.common.adapter.messaging.DestinationType;
+import io.jexxa.common.drivenadapter.messaging.DestinationType;
 
-import static io.jexxa.common.adapter.messaging.DestinationType.QUEUE;
-import static io.jexxa.common.adapter.messaging.DestinationType.TOPIC;
+import static io.jexxa.common.drivenadapter.messaging.DestinationType.QUEUE;
+import static io.jexxa.common.drivenadapter.messaging.DestinationType.TOPIC;
 
 public record MessageConfiguration(DestinationType destinationType, String destinationName)
 {

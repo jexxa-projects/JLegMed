@@ -3,8 +3,8 @@ package io.jexxa.jlegmed.core.filter.scheduler;
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.adapterapi.invocation.InvocationTargetRuntimeException;
 
-import io.jexxa.common.adapter.scheduler.IScheduled;
-import io.jexxa.common.adapter.scheduler.Scheduler;
+import io.jexxa.common.drivingadapter.scheduler.IScheduled;
+import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterScheduler;
 
 import java.util.concurrent.TimeUnit;

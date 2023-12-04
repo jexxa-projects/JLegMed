@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 
-
-import io.jexxa.common.drivingadapter.scheduler.IScheduled;
+import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
+import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
 import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements IScheduled {
+public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     private int fixedRate;
     private TimeUnit timeUnit;
 
@@ -31,7 +31,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements 
 
     @Override
     public void start() {
-        scheduler.register(this);
+        scheduler.register(new ScheduledFixedRate(this::execute,0, fixedRate, timeUnit ));
         scheduler.start();
     }
 
@@ -43,26 +43,19 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T> implements 
     }
 
     @Override
+    public IDrivingAdapter drivingAdapter() {
+        return scheduler;
+    }
+
+    @Override
     public void stop() {
         scheduler.stop();
     }
 
-    @Override
-    public int fixedRate() {
-        return fixedRate;
-    }
-
-    @Override
-    public TimeUnit timeUnit() {
-        return timeUnit;
-    }
-
-    @Override
-    public void execute()
+    private void execute()
     {
         outputPipe().forward(generateData());
     }
-
 
     protected abstract T generateData();
 

@@ -16,7 +16,7 @@ class ReceiveFlowGraphTest {
     void testReceiveHelloWorld() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
-        var jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        var jlegmed = new JLegMed(ReceiveFlowGraphTest.class).disableBanner();
         var result = new ArrayList<String>();
 
         // Define the flow graph:

@@ -22,6 +22,7 @@ public abstract class ThreadedProducer<T> extends ActiveProducer<T> {
 
     public abstract void produceData();
 
+    @Override
     public IDrivingAdapter drivingAdapter()
     {
         return threadedAdapter;

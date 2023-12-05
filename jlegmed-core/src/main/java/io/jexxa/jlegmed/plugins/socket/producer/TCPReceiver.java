@@ -60,6 +60,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         }
     }
 
+    @Override
     public IDrivingAdapter drivingAdapter()
     {
         return tcpAdapter;

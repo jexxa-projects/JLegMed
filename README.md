@@ -60,7 +60,7 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed-core</artifactId>
-        <version>0.8.1</version>
+        <version>0.9.0</version>
     </dependency>
     
     <dependency>
@@ -74,7 +74,7 @@ Maven:
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed-core:0.8.1"
+compile "io.jexxa:jlegmed-core:0.9.0"
 compile "org.slf4j:slf4j-simple:2.0.9"
 ``` 
 

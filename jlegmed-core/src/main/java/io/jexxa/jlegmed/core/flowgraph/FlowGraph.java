@@ -72,13 +72,14 @@ public class FlowGraph {
     {
         this.producer = producer;
         this.drivingAdapter = producer.drivingAdapter();
+
         filterList.add(producer);
     }
 
-    public void setProducer(PassiveProducer<?> producer)
+    public void setProducer(PassiveProducer<?> producer, IDrivingAdapter drivingAdapter)
     {
         this.producer = producer;
-        this.drivingAdapter = producer.drivingAdapter().orElseThrow();
+        this.drivingAdapter = drivingAdapter;
         filterList.add(producer);
     }
 

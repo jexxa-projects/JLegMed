@@ -35,29 +35,28 @@ public class ProducerBuilder<T> {
 
 
     public Binding<T> from(Function<FilterContext, T> function) {
-        return configure(producer(function));
+        return configureScheduler(producer(function));
     }
 
     public Binding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
-        return configure(producer(biFunction));
+        return configureScheduler(producer(biFunction, sourceType));
     }
 
     public Binding<T> from(Supplier<T> supplier) {
-        return configure(producer(supplier));
+        return configureScheduler(producer(supplier, sourceType));
     }
 
     public Binding<T> from(PassiveProducer<T> producer) {
-        return configure(producer);
+        producer.producingType(sourceType);
+        return configureScheduler(producer);
     }
 
-    private Binding<T> configure(PassiveProducer<T> producer)
+    private Binding<T> configureScheduler(PassiveProducer<T> producer)
     {
         Scheduler scheduler = new Scheduler();
-
         scheduler.register(createListener(producer));
-        producer.drivingAdapter(scheduler);
-        producer.producingType(sourceType);
-        flowGraph.setProducer(producer);
+
+        flowGraph.setProducer(producer, scheduler);
 
         return new Binding<>(producer, producer.outputPipe(), flowGraph);
     }

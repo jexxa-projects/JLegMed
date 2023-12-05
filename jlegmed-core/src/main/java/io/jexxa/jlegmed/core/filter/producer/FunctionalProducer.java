@@ -10,6 +10,12 @@ import java.util.function.Supplier;
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
+
+    protected FunctionalProducer(){}
+    protected FunctionalProducer(Class<T> sourceType) {
+        producingType(sourceType);
+    }
+
     @Override
     public void produceData() {
         do {
@@ -25,9 +31,9 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
     protected abstract T doProduce();
 
-    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function)
+    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function, Class<T> producingType)
     {
-        return new FunctionalProducer<>() {
+        return new FunctionalProducer<>(producingType) {
             @Override
             public void init()
             {
@@ -40,9 +46,14 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function)
+    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function) {
+        return producer(function, null);
+    }
+
+
+    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function, Class<T> producingType)
     {
-        return new FunctionalProducer<>() {
+        return new FunctionalProducer<>(producingType) {
             @Override
             protected T doProduce() {
                 return function.apply(filterContext());
@@ -50,13 +61,24 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
+    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function) {
+        return  producer(function,null);
+    }
+
+
+    public static <T> FunctionalProducer<T> producer(Supplier<T> function, Class<T> producingType)
     {
-        return new FunctionalProducer<>() {
+        return new FunctionalProducer<>(producingType) {
             @Override
             protected T doProduce() {
                 return function.get();
             }
         };
     }
+
+    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
+    {
+        return producer(function, null);
+    }
+
 }

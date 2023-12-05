@@ -15,18 +15,18 @@ public class FlowGraphBuilder {
         jLegMed.addFlowGraph(flowGraph);
     }
 
-    public <T> ActiveProducerBuilder<T> await(Class<T> inputData) {
-        return new ActiveProducerBuilder<>(flowGraph, inputData);
+    public <T> AwaitBuilder<T> await(Class<T> inputData) {
+        return new AwaitBuilder<>(flowGraph, inputData);
     }
 
-    public FixedRateSchedulerBuilder every(int fixedRate, TimeUnit timeUnit)
+    public EveryBuilder every(int fixedRate, TimeUnit timeUnit)
     {
-        return new FixedRateSchedulerBuilder(flowGraph, fixedRate, timeUnit);
+        return new EveryBuilder(flowGraph, fixedRate, timeUnit);
     }
 
-    public RepeatSchedulerBuilder repeat(int times)
+    public RepeatBuilder repeat(int times)
     {
-        return new RepeatSchedulerBuilder(times, flowGraph);
+        return new RepeatBuilder(times, flowGraph);
     }
 
 }

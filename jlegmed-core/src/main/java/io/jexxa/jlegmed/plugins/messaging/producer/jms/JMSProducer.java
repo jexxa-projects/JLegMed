@@ -74,5 +74,11 @@ public class JMSProducer<T> extends ActiveProducer<T> {
             }
         });
     }
+
+    @Override
+    public IDrivingAdapter drivingAdapter() {
+        return jmsAdapter;
+    }
+
     public record JMSProducerContext<T>(Class<T> typeInformation, OutputPipe<T> outputPipe) {}
 }

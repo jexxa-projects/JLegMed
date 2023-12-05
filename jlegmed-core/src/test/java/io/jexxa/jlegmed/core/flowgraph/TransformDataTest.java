@@ -23,7 +23,7 @@ class TransformDataTest {
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        jlegmed = new JLegMed(TransformDataTest.class).disableBanner();
     }
 
     @AfterEach

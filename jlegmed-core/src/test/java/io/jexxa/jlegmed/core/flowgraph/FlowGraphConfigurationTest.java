@@ -20,7 +20,7 @@ class FlowGraphConfigurationTest {
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        jlegmed = new JLegMed(FlowGraphConfigurationTest.class).disableBanner();
     }
 
     @AfterEach

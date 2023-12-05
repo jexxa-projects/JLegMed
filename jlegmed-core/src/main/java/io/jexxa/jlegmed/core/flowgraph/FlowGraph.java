@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
-import io.jexxa.jlegmed.core.filter.FilterScheduler;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
@@ -21,7 +21,8 @@ public class FlowGraph {
     private final String flowGraphID;
     private final List<Filter> filterList = new ArrayList<>();
     private final List<Processor<?,?>> processorList = new ArrayList<>();
-    private FilterScheduler scheduler;
+
+    private IDrivingAdapter drivingAdapter;
 
 
     public FlowGraph(String flowGraphID)
@@ -50,19 +51,18 @@ public class FlowGraph {
     public FlowGraph start() {
         filterList.forEach(Filter::init);
         filterList.forEach(Filter::start);
-
-        if (scheduler != null)
+        if (drivingAdapter != null )
         {
-            scheduler.start();
+            drivingAdapter.start();
         }
+
 
         return this;
     }
 
     public void stop() {
-        if (scheduler != null)
-        {
-            scheduler.stop();
+        if (drivingAdapter != null ) {
+            drivingAdapter.stop();
         }
         filterList.forEach(Filter::stop);
         filterList.forEach(Filter::deInit);
@@ -71,14 +71,15 @@ public class FlowGraph {
     public void setProducer(ActiveProducer<?> producer)
     {
         this.producer = producer;
+        this.drivingAdapter = producer.drivingAdapter();
+
         filterList.add(producer);
     }
 
-    public void setProducer(PassiveProducer<?> producer)
+    public void setProducer(PassiveProducer<?> producer, IDrivingAdapter drivingAdapter)
     {
-        Objects.requireNonNull(scheduler);
-        scheduler.schedule(producer::produceData);
         this.producer = producer;
+        this.drivingAdapter = drivingAdapter;
         filterList.add(producer);
     }
 
@@ -90,10 +91,6 @@ public class FlowGraph {
         }
     }
 
-    public void scheduler(FilterScheduler scheduler)
-    {
-        this.scheduler = scheduler;
-    }
 
 
     public <T, U> FlowGraph connect(Producer<T> producer, Processor<T,U> processor)

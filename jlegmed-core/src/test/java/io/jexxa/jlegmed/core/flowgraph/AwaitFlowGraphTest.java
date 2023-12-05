@@ -17,7 +17,7 @@ class AwaitFlowGraphTest {
     void testAwaitHelloWorld() {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
-        var jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        var jlegmed = new JLegMed(AwaitFlowGraphTest.class).disableBanner();
         var result = new ArrayList<String>();
 
         // Define the flow graph:

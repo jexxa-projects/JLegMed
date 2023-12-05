@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.socket.producer;
 
+import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.common.facade.utils.function.ThrowingFunction;
@@ -25,26 +26,11 @@ import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
-    private ExecutorService executorService;
-
-    private boolean isListening = false;
     private int port = -1;
-    private ServerSocket serverSocket;
 
     protected TCPReceiver()  { }
 
-    @Override
-    public void start() {
-        super.start();
-        executorService = Executors.newCachedThreadPool();
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not start listening on port " + port, e);
-        }
-        isListening = true;
-        executorService.execute(this::startListening);
-    }
+    private final TCPAdapter tcpAdapter = new TCPAdapter();
 
     @Override
     public void init()
@@ -52,6 +38,8 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         super.init();
         initFilter();
         validateFilterSettings();
+        this.tcpAdapter.setPort(port);
+        this.tcpAdapter.register(this);
     }
 
     private void validateFilterSettings() {
@@ -60,29 +48,6 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         }
     }
 
-    @Override
-    public void stop() {
-        isListening = false;
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            getLogger(TCPReceiver.class).error("Could not proper close listening socket on port {}",port );
-        }
-        serverSocket = null;
-
-        executorService.shutdown();
-
-        try {
-            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-            getLogger(ThreadedProducer.class).warn("ThreadedProducer could not be stopped -> Force shutdown.", e);
-            Thread.currentThread().interrupt();
-        }
-        executorService = null;
-    }
 
     private void initFilter() {
         if (properties().containsKey(TCP_PORT)) {
@@ -95,20 +60,11 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         }
     }
 
-
-    private void startListening() {
-        try {
-            while (isListening) {
-                var clientSocket = serverSocket.accept();
-                executorService.execute(() -> processMessage(clientSocket));
-            }
-        } catch (SocketException e){
-            getLogger(TCPReceiver.class).warn("Connection closed.");
-        }
-        catch (IOException e) {
-            getLogger(TCPReceiver.class).error("Could not accept client connection.", e);
-        }
+    public IDrivingAdapter drivingAdapter()
+    {
+        return tcpAdapter;
     }
+
 
     synchronized void processMessage(Socket clientSocket)
     {
@@ -174,6 +130,80 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     public static <T> T receiveAsJSON(SocketContext context, Class<T> dataType) throws IOException
     {
         return getJSONConverter().fromJson(receiveLine(context), dataType);
+    }
+
+    private static class TCPAdapter implements IDrivingAdapter
+    {
+        private boolean isListening = false;
+        private int port = -1;
+        private ServerSocket serverSocket;
+
+        private ExecutorService executorService;
+
+        private TCPReceiver<?> receiver;
+
+
+        public void setPort(int port)
+        {
+            this.port = port;
+        }
+
+        @Override
+        public void register(Object object) {
+            receiver = (TCPReceiver<?>)(object);
+        }
+
+        @Override
+        public void start() {
+            executorService = Executors.newCachedThreadPool();
+            try {
+                serverSocket = new ServerSocket(port);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not start listening on port " + port, e);
+            }
+            isListening = true;
+            executorService.execute(this::startListening);
+        }
+
+        @Override
+        public void stop() {
+            isListening = false;
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                getLogger(TCPReceiver.class).error("Could not proper close listening socket on port {}",port );
+            }
+            serverSocket = null;
+
+            executorService.shutdown();
+
+            try {
+                if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                getLogger(ThreadedProducer.class).warn("ThreadedProducer could not be stopped -> Force shutdown.", e);
+                Thread.currentThread().interrupt();
+            }
+            executorService = null;
+        }
+
+
+
+        private void startListening() {
+            try {
+                while (isListening) {
+                    var clientSocket = serverSocket.accept();
+                    executorService.execute(() -> receiver.processMessage(clientSocket));
+                }
+            } catch (SocketException e){
+                getLogger(TCPReceiver.class).warn("Connection closed.");
+            }
+            catch (IOException e) {
+                getLogger(TCPReceiver.class).error("Could not accept client connection.", e);
+            }
+        }
     }
 
 }

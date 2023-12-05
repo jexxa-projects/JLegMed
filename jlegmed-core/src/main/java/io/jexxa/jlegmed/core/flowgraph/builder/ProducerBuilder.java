@@ -14,21 +14,21 @@ import java.util.function.Supplier;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
-public class PassiveProducerBuilder<T> {
+public class ProducerBuilder<T> {
     private final Class<T> sourceType;
     private final long fixedRate;
     private final TimeUnit timeUnit;
     private final FlowGraph flowGraph;
     private long maxIteration = -1;
 
-    PassiveProducerBuilder(FlowGraph flowGraph, Class<T> sourceType, long fixedRate, TimeUnit timeUnit) {
+    ProducerBuilder(FlowGraph flowGraph, Class<T> sourceType, long fixedRate, TimeUnit timeUnit) {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
         this.fixedRate = fixedRate;
         this.timeUnit = timeUnit;
     }
 
-    PassiveProducerBuilder(FlowGraph flowGraph, Class<T> sourceType, long fixedRate, TimeUnit timeUnit, long maxIteration) {
+    ProducerBuilder(FlowGraph flowGraph, Class<T> sourceType, long fixedRate, TimeUnit timeUnit, long maxIteration) {
         this(flowGraph, sourceType, fixedRate, timeUnit);
         this.maxIteration = maxIteration;
     }

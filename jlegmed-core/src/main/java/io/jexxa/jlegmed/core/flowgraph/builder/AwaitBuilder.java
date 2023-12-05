@@ -3,11 +3,11 @@ package io.jexxa.jlegmed.core.flowgraph.builder;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
-public class ActiveProducerBuilder<T> {
+public class AwaitBuilder<T> {
     private final Class<T> sourceType;
     private final FlowGraph flowGraph;
 
-    ActiveProducerBuilder(FlowGraph flowGraph, Class<T> sourceType) {
+    AwaitBuilder(FlowGraph flowGraph, Class<T> sourceType) {
         this.flowGraph = flowGraph;
         this.sourceType = sourceType;
     }

@@ -39,7 +39,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.common.adapters.version>0.5.0</jexxa.common.adapters.version>
+    <jexxa.common.adapters.version>1.0.0</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>
@@ -71,12 +71,12 @@
     <maven.clean.plugin>3.3.2</maven.clean.plugin>
     <maven.compiler.plugin>3.11.0</maven.compiler.plugin>
     <maven.deploy.plugin>3.1.1</maven.deploy.plugin>
-    <maven.failsafe.plugin>3.2.2</maven.failsafe.plugin>
+    <maven.failsafe.plugin>3.2.3</maven.failsafe.plugin>
     <maven.install.plugin>3.1.1</maven.install.plugin>
     <maven.jar.plugin>3.3.0</maven.jar.plugin>
     <maven.resources.plugin>3.3.1</maven.resources.plugin>
     <maven.site.plugin>3.12.1</maven.site.plugin>
-    <maven.surefire.plugin>3.2.2</maven.surefire.plugin>
+    <maven.surefire.plugin>3.2.3</maven.surefire.plugin>
     <maven.release.plugin>3.0.1</maven.release.plugin>
     <maven.jacoco.plugin>0.8.11</maven.jacoco.plugin>
     <maven.reports.plugin>3.5.0</maven.reports.plugin>

@@ -50,7 +50,7 @@
     <junit.jupiter.engine.version>5.10.1</junit.jupiter.engine.version>
     <junit.jupiter.params.version>5.10.1</junit.jupiter.params.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <jackson.databind.version>2.16.0</jackson.databind.version>
+    <jackson.databind.version>2.16.1</jackson.databind.version>
     <apache.commons.lang3>3.14.0</apache.commons.lang3>
     <activemq.artemis.client.version>2.31.2</activemq.artemis.client.version>
     <postgres.version>42.7.1</postgres.version>

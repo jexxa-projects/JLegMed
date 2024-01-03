@@ -18,7 +18,8 @@ import static org.awaitility.Awaitility.await;
 class TCPReceiverIT {
 
     @Test
-    void testTCPReceiver() {
+    void testTCPReceiver() throws IOException
+    {
         var messageCollector = new GenericCollector<String>();
         JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
@@ -38,7 +39,8 @@ class TCPReceiverIT {
 
 
     @Test
-    void testTCPReceiverOneMessagePerConnection() {
+    void testTCPReceiverOneMessagePerConnection() throws IOException
+    {
         var messageCollector = new GenericCollector<String>();
         JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
@@ -60,23 +62,19 @@ class TCPReceiverIT {
 
 
 
-    public static void sendMessageMultipleTimes(String message, int counter)
+    public static void sendMessageMultipleTimes(String message, int counter) throws IOException
     {
-        try {
-            var clientSocket = new Socket("localhost", 6665);
-            var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
-            for (int i = 0; i < counter; ++i) {
-                bufferedWriter.write(message);
-            }
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        var clientSocket = new Socket("localhost", 6665);
+        var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
+        for (int i = 0; i < counter; ++i) {
+            bufferedWriter.write(message);
         }
+        bufferedWriter.flush();
+        bufferedWriter.close();
+        clientSocket.close();
     }
 
-    public static void sendMessage(String message)
+    public static void sendMessage(String message) throws IOException
     {
        sendMessageMultipleTimes(message, 1);
     }

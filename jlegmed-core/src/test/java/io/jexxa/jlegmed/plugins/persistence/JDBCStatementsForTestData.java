@@ -32,7 +32,7 @@ public class JDBCStatementsForTestData {
         initDatabaseIfRequired(jdbcContext);
 
         jdbcContext.jdbcConnection().createCommand(DBSchema.class).
-                insertInto(DBSchema.DATABASE_READER_IT).values(toArray(data.index(), data.message()))
+                insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
                 .create()
                 .asUpdate();
     }

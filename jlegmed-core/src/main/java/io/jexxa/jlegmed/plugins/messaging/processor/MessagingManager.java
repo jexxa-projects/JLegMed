@@ -9,7 +9,7 @@ import java.util.Properties;
 
 @SuppressWarnings("java:S6548")
 public class MessagingManager {
-    private static final MessagingManager messageSenderManager = new MessagingManager();
+    private static final MessagingManager MESSAGE_SENDER_MANAGER = new MessagingManager();
 
     private final Map<String, MessageSender> messageSenderMap = new HashMap<>();
 
@@ -28,7 +28,7 @@ public class MessagingManager {
     }
 
     static MessagingManager getInstance() {
-        return messageSenderManager;
+        return MESSAGE_SENDER_MANAGER;
     }
 
     private MessagingManager()

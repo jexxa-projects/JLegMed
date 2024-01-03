@@ -6,6 +6,7 @@ import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class JSONReader<T> extends FunctionalProducer<T> {
 
@@ -23,7 +24,7 @@ public class JSONReader<T> extends FunctionalProducer<T> {
 
     @Override
     protected T doProduce() {
-        var result = gson.fromJson(new InputStreamReader(inputStream), producingType());
+        var result = gson.fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), producingType());
 
         try {
             if (producerMode == ProducerMode.UNTIL_STOPPED) {

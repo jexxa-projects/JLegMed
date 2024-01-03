@@ -10,5 +10,7 @@ public final class HTTPProperties {
     public static final String HTTP_URL = "http.url";
 
     private HTTPProperties()
-    {}
+    {
+        // Private constructor for static properties
+    }
 }

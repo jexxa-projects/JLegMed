@@ -11,7 +11,10 @@ import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHand
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
-    protected FunctionalProducer(){}
+    protected FunctionalProducer(){
+        // Default constructor for filters that do not need type information
+    }
+
     protected FunctionalProducer(Class<T> sourceType) {
         producingType(sourceType);
     }

@@ -28,7 +28,9 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     private int port = -1;
 
-    protected TCPReceiver()  { }
+    protected TCPReceiver()  {
+        //Protected constructor so that only child classes can use them
+    }
 
     private final TCPAdapter tcpAdapter = new TCPAdapter();
 

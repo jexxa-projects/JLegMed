@@ -12,5 +12,7 @@ public class GenericProducer {
     }
 
 
-    private GenericProducer() { }
+    private GenericProducer() {
+        // Private constructor since this class provides just generic producer
+    }
 }

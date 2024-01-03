@@ -8,10 +8,10 @@ import java.util.Properties;
 public abstract class Filter {
     private final FilterContext filterContext = new FilterContext();
 
-    public void init() {}
-    public void start() {}
-    public void stop() {}
-    public void deInit() {}
+    public void init()   { /* Empty default implementation */ }
+    public void start()  { /* Empty default implementation */ }
+    public void stop()   { /* Empty default implementation */ }
+    public void deInit() { /* Empty default implementation */ }
 
     public Filter reachStarted()
     {
@@ -35,6 +35,7 @@ public abstract class Filter {
         return filterContext.processingState();
     }
 
+    @SuppressWarnings("unused")
     public FilterProperties filterProperties() {
         return filterContext.filterProperties();
     }

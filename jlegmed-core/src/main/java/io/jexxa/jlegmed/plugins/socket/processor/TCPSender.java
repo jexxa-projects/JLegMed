@@ -29,7 +29,10 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
-    protected TCPSender()  { }
+    protected TCPSender()
+    {
+        //Protected constructor so that only child classes can use them
+    }
 
     @Override
     public void init()

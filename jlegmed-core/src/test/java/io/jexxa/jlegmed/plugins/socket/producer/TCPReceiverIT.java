@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import static io.jexxa.jlegmed.plugins.socket.producer.TCPReceiver.tcpReceiver;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -63,7 +64,7 @@ class TCPReceiverIT {
     {
         try {
             var clientSocket = new Socket("localhost", 6665);
-            var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
             for (int i = 0; i < counter; ++i) {
                 bufferedWriter.write(message);
             }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 import static io.jexxa.jlegmed.plugins.socket.SocketProperties.TCP_ADDRESS;
@@ -103,8 +104,8 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
     private void initConnection() {
         try {
             clientSocket = new Socket(ipAddress, port);
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
+            bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new IllegalStateException("Could not connect to server.", e);
         }

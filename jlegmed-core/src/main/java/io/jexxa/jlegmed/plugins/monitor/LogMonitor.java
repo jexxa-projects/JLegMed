@@ -44,7 +44,7 @@ public class LogMonitor {
         {
             this.producerOutputPipe = invocationContext.getTarget();
         }
-        filterDescription.computeIfAbsent(invocationContext.getTarget(), this::createFilterDescription);
+        filterDescription.computeIfAbsent(invocationContext.getTarget(), target -> createFilterDescription());
     }
 
     private void logIteration(InvocationContext invocationContext)
@@ -66,7 +66,7 @@ public class LogMonitor {
         iterationData.add(new IterationEntry(context.getTarget(), context.getArgs()[0]));
     }
 
-    private FilterDescription createFilterDescription(Object object)
+    private FilterDescription createFilterDescription()
     {
         var description = new FilterDescription(filterCounter);
         ++filterCounter;

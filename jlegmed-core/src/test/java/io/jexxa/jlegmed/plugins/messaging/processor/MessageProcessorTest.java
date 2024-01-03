@@ -1,8 +1,7 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.processor;
 
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
-import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 

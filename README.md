@@ -7,13 +7,9 @@
 This library is intended to build bridges between systems that do not share the same semantics. 
 For example, this can happen when a legacy application is gradually migrated to a modern system.
 
-Another use case is business applications that have been implemented using domain-driven design (DDD). 
-If they do not share the same ubiquitous language, a so-called context mapping must be implemented. 
-The strategic design of DDD describes various approaches that can be used. A nice summary can be found [here](https://github.com/ddd-crew/context-mapping).  
-
-In all cases, the goal is to ensure that involved systems remain independent of each other. 
-In addition, the transformation logic should be kept as explicit as possible 
-so that it can be easily validated or adapted with the domain experts or teams. 
+Another use case is business applications that are implemented using Domain-Driven Design (DDD).
+As soon as they no longer use the same ubiquitous language, a so-called context mapping must be implemented.
+The strategic design of DDD describes different approaches that can be used. A good summary can be found [here](https://github.com/ddd-crew/context-mapping).
 
 For this purpose, this library focuses on the following aspects:  
 * First-class representation of data flow and transformation using [pipes and filters](https://learn.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters)

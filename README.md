@@ -5,21 +5,21 @@
 # JLegMed—Connect the Past with the Future
 
 This library is intended to build bridges between systems that do not share the same semantics. 
-For example, this can happen when a legacy application is gradually migrated to a modern system or
-systems from two different domains need to exchange data. 
+For example, this can happen when a legacy application is gradually migrated to a modern system.
 
-The goal is to ensure that involved systems remain independent of each other.
-In addition, 
-the transformation logic should be kept as explicit as possible 
-so that it can be easily validated or adapted with the domain experts.  
-In the context of a microservice architecture, this is typically called Anti-Corruption-Layer (ACL).   
+Another use case is business applications that have been implemented using domain-driven design (DDD). 
+If they do not share the same ubiquitous language, a so-called context mapping must be implemented. 
+The strategic design of DDD describes various approaches that can be used. A nice summary can be found [here](https://github.com/ddd-crew/context-mapping).  
 
-For this purpose, we focus on the following aspects:  
-* Represent the data flow and transformation as a first-class object in the source code using [pipes and filters](https://learn.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters) approach.
-* Simplify translating between different technology stacks by 
-  * Providing filters based on Java standard APIs
-  * Easy integration of new technology stacks   
-* Simplify mapping between data sets using a functional style 
+In all cases, the goal is to ensure that involved systems remain independent of each other. 
+In addition, the transformation logic should be kept as explicit as possible 
+so that it can be easily validated or adapted with the domain experts or teams. 
+
+For this purpose, this library focuses on the following aspects:  
+* First-class representation of data flow and transformation using [pipes and filters](https://learn.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters)
+* Use of a functional style to emphasize the WHAT and not the HOW
+* Minimal dependency approach (MDA) by providing filters based on Java standard APIs
+* Easy integration of technology stacks that are required for your project   
 
 
 ## Requirements

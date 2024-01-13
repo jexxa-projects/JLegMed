@@ -86,7 +86,12 @@ Refer to the following examples to get an idea how this library works
   * [Await data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/AwaitFlowGraphTest.java)
 
 * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphConfigurationTest.java) using `FlowGraphBuilder`
+
 * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
+
+* Using Technology Stacks
+  * [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/MessagingTestIT.java)
+  * [Reading and writing data from/to JDBC](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/producer/JDBCProducerIT.java)
 
 ## Ecosystem:
 * [A template](https://github.com/jexxa-projects/JexxaArchetypes) for your first JLegMed application

@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.processor;
 
 
-
 import io.jexxa.common.drivenadapter.messaging.DestinationType;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -47,6 +46,11 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
     protected abstract void doProcess(T data, MessageProcessorContext context);
 
 
+
+    /**
+     * @deprecated Use {@link #jmsTopicSender(String, BiConsumer)} instead
+     */
+    @Deprecated(forRemoval = true, since = "1.0.2")
     public static <T> MessageProcessor<T> sendToTopic(String topicName, BiConsumer<T, MessageProcessorContext> processFunction)
     {
         return new MessageProcessor<>(topic(topicName)) {
@@ -57,7 +61,31 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
         };
     }
 
+    public static <T> MessageProcessor<T> jmsTopicSender(String topicName, BiConsumer<T, MessageProcessorContext> processFunction)
+    {
+        return new MessageProcessor<>(topic(topicName)) {
+            @Override
+            protected void doProcess(T data, MessageProcessorContext context) {
+                processFunction.accept(data, context);
+            }
+        };
+    }
+
+    /**
+     * @deprecated Use {@link #jmsQueueSender(String, BiConsumer)} instead
+     */
+    @Deprecated(forRemoval = true, since = "1.0.2")
     public static <T> MessageProcessor<T> sendToQueue(String queueName, BiConsumer<T, MessageProcessorContext> processFunction)
+    {
+        return new MessageProcessor<>(queue(queueName)) {
+            @Override
+            protected void doProcess(T data, MessageProcessorContext context) {
+                processFunction.accept(data, context);
+            }
+        };
+    }
+
+    public static <T> MessageProcessor<T> jmsQueueSender(String queueName,  BiConsumer<T, MessageProcessorContext> processFunction)
     {
         return new MessageProcessor<>(queue(queueName)) {
             @Override
@@ -79,6 +107,7 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
             messageFactory.toTopic(context.messageConfiguration().destinationName()).asJson();
         }
     }
+
 
     public record MessageProcessorContext(FilterContext filterContext, MessageSender messageSender, MessageConfiguration messageConfiguration) {}
 

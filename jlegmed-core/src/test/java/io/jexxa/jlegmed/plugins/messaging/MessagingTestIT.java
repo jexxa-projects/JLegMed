@@ -7,10 +7,10 @@ import io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSListener;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.sendToQueue;
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.sendToTopic;
-import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsQueue;
-import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsTopic;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.jmsQueueSender;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.jmsTopicSender;
+import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsQueueReceiver;
+import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsTopicReceiver;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -25,10 +25,10 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(sendToQueue("MyQueue", MessageProcessor::asJSON)).useProperties("test-jms-connection");
+                .and().consumeWith(jmsQueueSender("MyQueue", MessageProcessor::asJSON)).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsQueue("MyQueue", JMSListener::asJSON)).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsQueueReceiver("MyQueue", JMSListener::asJSON)).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::collect );
 
         //Act
@@ -48,10 +48,10 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(sendToTopic("MyTopic", MessageProcessor::asJSON)).useProperties("test-jms-connection");
+                .and().consumeWith( jmsTopicSender("MyTopic", MessageProcessor::asJSON) ).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsTopic("MyTopic", JMSListener::asJSON)).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsTopicReceiver("MyTopic", JMSListener::asJSON) ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::collect );
 
         //Act

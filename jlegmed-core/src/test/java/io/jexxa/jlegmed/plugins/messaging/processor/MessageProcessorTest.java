@@ -7,8 +7,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.sendToQueue;
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.sendToTopic;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.jmsQueueSender;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageProcessor.jmsTopicSender;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageProcessorTest {
@@ -34,8 +34,8 @@ class MessageProcessorTest {
 
     private static Stream<Processor<String, String>> provideMessageSender()
     {
-        Processor<String, String> queueSender = sendToQueue("MyQueue", MessageProcessor::asJSON);
-        Processor<String, String> topicSender = sendToTopic("MyTopic", MessageProcessor::asJSON);
+        Processor<String, String> queueSender = jmsQueueSender("MyQueue", MessageProcessor::asJSON);
+        Processor<String, String> topicSender = jmsTopicSender("MyTopic", MessageProcessor::asJSON);
         return Stream.of(queueSender, topicSender);
     }
 }

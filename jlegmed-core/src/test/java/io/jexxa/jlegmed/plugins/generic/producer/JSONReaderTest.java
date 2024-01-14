@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 
 import static io.jexxa.jlegmed.core.flowgraph.TestFilter.NewContract.newContract;
-import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStreamOnlyOnce;
-import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStreamUntilStopped;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
+import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStream;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -45,7 +46,7 @@ class JSONReaderTest {
                 .every(10, MILLISECONDS)
 
                 // Here we configure a producer using a factory method telling us the configuration mode
-                .receive(TestFilter.NewContract.class).from(jsonStreamUntilStopped(inputStream))
+                .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, UNTIL_STOPPED))
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().consumeWith( messageCollector::collect );
@@ -67,7 +68,7 @@ class JSONReaderTest {
 
                 .every(10, MILLISECONDS)
                 // Here we configure a producer using a factory method telling us the configuration mode
-                .receive(TestFilter.NewContract.class).from(jsonStreamOnlyOnce(inputStream))
+                .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, ONLY_ONCE))
 
                 .and().processWith( GenericProcessors::idProcessor )
                 .and().consumeWith( messageCollector::collect );

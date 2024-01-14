@@ -17,11 +17,49 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JDBCProducerIT {
 
     @Test
-    void readWriteToDatabase() {
+    void readFromDatabasePreparedStatements() {
         //Arrange
         var writerCollector = new GenericCollector<TestData>();
-        var readerCollectorPreparedStatement = new GenericCollector<TestData>();
-        var readerCollectorQueryBuilder = new GenericCollector<TestData>();
+        var readerCollector = new GenericCollector<TestData>();
+
+        var jdbc = new JDBCStatementsForTestData();
+        var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
+
+        //Write to a database
+        jlegmed.newFlowGraph("writeToDatabase")
+                .every(10, MILLISECONDS)
+                .receive(Integer.class).from(GenericProducer::counter)
+
+                .and().processWith( data -> new TestData(data, "Hello World " + data))
+                .and().processWith( jdbcProcessor( jdbc::insertTestData )).useProperties("test-jdbc-connection")
+                .and().processWith(writerCollector::collect );
+
+        //read from a database
+        jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
+                .every(10, MILLISECONDS)
+                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
+                .and().processWith(readerCollector::collect );
+
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> readerCollector.getNumberOfReceivedMessages() >= 10
+                && writerCollector.getNumberOfReceivedMessages() >= 10);
+
+        assertEquals(writerCollector.getMessages().get(0), readerCollector.getMessages().get(0));
+        assertEquals(writerCollector.getMessages().get(1), readerCollector.getMessages().get(1));
+        assertEquals(writerCollector.getMessages().get(2), readerCollector.getMessages().get(2));
+        assertEquals(writerCollector.getMessages().get(3), readerCollector.getMessages().get(3));
+        jlegmed.stop();
+    }
+
+
+    @Test
+    void readFromDatabaseQueryBuilder() {
+        //Arrange
+        var writerCollector = new GenericCollector<TestData>();
+        var readerCollector = new GenericCollector<TestData>();
 
         var jdbc = new JDBCStatementsForTestData();
         var jlegmed = new JLegMed(JDBCProducerIT.class).disableBanner();
@@ -34,34 +72,25 @@ class JDBCProducerIT {
                 .and().processWith( jdbcProcessor( jdbc::insertTestData )).useProperties("test-jdbc-connection")
                 .and().processWith(writerCollector::collect );
 
-        jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
-                .every(10, MILLISECONDS)
-                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
-                .and().processWith(readerCollectorPreparedStatement::collect );
-
 
         jlegmed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .every(10, MILLISECONDS)
                 .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataQueryBuilder)).useProperties("test-jdbc-connection")
-                .and().processWith(readerCollectorQueryBuilder::collect );
+                .and().processWith(readerCollector::collect );
 
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> readerCollectorPreparedStatement.getNumberOfReceivedMessages() >= 10
+        await().atMost(3, SECONDS).until(() -> readerCollector.getNumberOfReceivedMessages() >= 10
                 && writerCollector.getNumberOfReceivedMessages() >= 10);
 
-        assertEquals(writerCollector.getMessages().get(0), readerCollectorPreparedStatement.getMessages().get(0));
-        assertEquals(writerCollector.getMessages().get(1), readerCollectorPreparedStatement.getMessages().get(1));
-        assertEquals(writerCollector.getMessages().get(2), readerCollectorPreparedStatement.getMessages().get(2));
-        assertEquals(writerCollector.getMessages().get(3), readerCollectorPreparedStatement.getMessages().get(3));
-
-        assertEquals(writerCollector.getMessages().get(0), readerCollectorQueryBuilder.getMessages().get(0));
-        assertEquals(writerCollector.getMessages().get(1), readerCollectorQueryBuilder.getMessages().get(1));
-        assertEquals(writerCollector.getMessages().get(2), readerCollectorQueryBuilder.getMessages().get(2));
-        assertEquals(writerCollector.getMessages().get(3), readerCollectorQueryBuilder.getMessages().get(3));
+        assertEquals(writerCollector.getMessages().get(0), readerCollector.getMessages().get(0));
+        assertEquals(writerCollector.getMessages().get(1), readerCollector.getMessages().get(1));
+        assertEquals(writerCollector.getMessages().get(2), readerCollector.getMessages().get(2));
+        assertEquals(writerCollector.getMessages().get(3), readerCollector.getMessages().get(3));
 
         jlegmed.stop();
     }
+
 }

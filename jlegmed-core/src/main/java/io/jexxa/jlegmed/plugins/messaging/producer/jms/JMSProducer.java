@@ -6,11 +6,6 @@ import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-import java.util.function.BiConsumer;
-
-import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
-import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
-
 public class JMSProducer<T> extends ActiveProducer<T> {
 
     private IDrivingAdapter jmsAdapter;
@@ -55,53 +50,7 @@ public class JMSProducer<T> extends ActiveProducer<T> {
         jmsAdapter = null;
     }
 
-    /**
-     * @deprecated Use {@link #jmsTopicReceiver} instead
-     */
-    @Deprecated(forRemoval = true, since = "1.0.2")
-    public static <T> JMSProducer<T> jmsTopic(String topicName, BiConsumer<String, JMSProducer.JMSProducerContext<T>> consumer)
-    {
-        return new JMSProducer<>(new JMSProducerListener<>(topic(topicName)) {
-            @Override
-            public void onMessage(String message, JMSProducerContext<T> context) {
-                consumer.accept(message, context);
-            }
-        });
-    }
 
-    /**
-     * @deprecated Use {@link #jmsQueueReceiver} instead
-     */
-    @Deprecated(forRemoval = true, since = "1.0.2")
-    public static <T> JMSProducer<T> jmsQueue(String queueName, BiConsumer<String, JMSProducer.JMSProducerContext<T>> consumer)
-    {
-        return new JMSProducer<>(new JMSProducerListener<>(queue(queueName)) {
-            @Override
-            public void onMessage(String message, JMSProducerContext<T> context) {
-                consumer.accept(message, context);
-            }
-        });
-    }
-
-    public static <T> JMSProducer<T> jmsTopicReceiver(String topicName, BiConsumer<String, JMSProducer.JMSProducerContext<T>> consumer)
-    {
-        return new JMSProducer<>(new JMSProducerListener<>(topic(topicName)) {
-            @Override
-            public void onMessage(String message, JMSProducerContext<T> context) {
-                consumer.accept(message, context);
-            }
-        });
-    }
-
-    public static <T> JMSProducer<T> jmsQueueReceiver(String queueName, BiConsumer<String, JMSProducer.JMSProducerContext<T>> consumer)
-    {
-        return new JMSProducer<>(new JMSProducerListener<>(queue(queueName)) {
-            @Override
-            public void onMessage(String message, JMSProducerContext<T> context) {
-                consumer.accept(message, context);
-            }
-        });
-    }
 
     @Override
     public IDrivingAdapter drivingAdapter() {

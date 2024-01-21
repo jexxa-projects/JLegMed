@@ -5,7 +5,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
@@ -41,7 +40,6 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
-    @SuppressWarnings("unused")
     public static <T> JDBCProcessor<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
         return new JDBCProcessor<>() {
             @Override
@@ -51,21 +49,5 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
         };
     }
 
-    public static <T> JDBCProcessor<T> jdbcProcessor(BiConsumer<JDBCContext<T>, T> biConsumer) {
-        return new JDBCProcessor<>() {
-            @Override
-            protected void executeCommand(JDBCConnection connection, T data) {
-                biConsumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()), data);
-            }
-        };
-    }
-
-    public static  <T> Consumer<JDBCContext<T>> dropTable(Class<T> table){
-        return dropTable(table.getSimpleName());
-    }
-
-    public static  <T> Consumer<JDBCContext<T>> dropTable(String table){
-        return jdbcContext -> jdbcContext.jdbcConnection().createTableCommand().dropTableIfExists(table);
-    }
 
 }

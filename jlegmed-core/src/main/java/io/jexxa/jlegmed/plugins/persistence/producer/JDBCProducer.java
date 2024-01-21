@@ -2,9 +2,6 @@ package io.jexxa.jlegmed.plugins.persistence.producer;
 
 import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
-import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
-
-import java.util.function.Consumer;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
@@ -32,15 +29,6 @@ public abstract class JDBCProducer<T> extends PassiveProducer<T> {
 
     protected JDBCConnection jdbcConnection(){
         return getConnection(properties(), this).validateConnection();
-    }
-
-    public static <T> JDBCProducer<T> jdbcProducer(Consumer<JDBCContext<T>> consumer) {
-        return new JDBCProducer<>() {
-            @Override
-            protected void executeCommand() {
-                consumer.accept(new JDBCContext<>(jdbcConnection(), filterContext(), outputPipe()));
-            }
-        };
     }
 
 

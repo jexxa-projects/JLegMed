@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static io.jexxa.jlegmed.core.filter.FilterProperties.filterPropertiesOf;
-import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.dropTable;
+import static io.jexxa.jlegmed.plugins.persistence.JDBCOperation.dropTable;
 import static io.jexxa.jlegmed.plugins.persistence.processor.JDBCProcessor.jdbcExecutor;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;

@@ -7,16 +7,11 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
-import java.util.function.BiConsumer;
-
-import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.queue;
-import static io.jexxa.jlegmed.plugins.messaging.MessageConfiguration.topic;
-
 public abstract class MessageProcessor<T> extends Processor<T,T> {
     private MessageSender messageSender;
     private final MessageConfiguration messageConfiguration;
 
-    MessageProcessor(MessageConfiguration messageConfiguration)
+    protected MessageProcessor(MessageConfiguration messageConfiguration)
     {
         this.messageConfiguration = messageConfiguration;
     }
@@ -45,55 +40,6 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
     }
     protected abstract void doProcess(T data, MessageProcessorContext context);
 
-
-
-    /**
-     * @deprecated Use {@link #jmsTopicSender(String, BiConsumer)} instead
-     */
-    @Deprecated(forRemoval = true, since = "1.0.2")
-    public static <T> MessageProcessor<T> sendToTopic(String topicName, BiConsumer<T, MessageProcessorContext> processFunction)
-    {
-        return new MessageProcessor<>(topic(topicName)) {
-            @Override
-            protected void doProcess(T data, MessageProcessorContext context) {
-                processFunction.accept(data, context);
-            }
-        };
-    }
-
-    public static <T> MessageProcessor<T> jmsTopicSender(String topicName, BiConsumer<T, MessageProcessorContext> processFunction)
-    {
-        return new MessageProcessor<>(topic(topicName)) {
-            @Override
-            protected void doProcess(T data, MessageProcessorContext context) {
-                processFunction.accept(data, context);
-            }
-        };
-    }
-
-    /**
-     * @deprecated Use {@link #jmsQueueSender(String, BiConsumer)} instead
-     */
-    @Deprecated(forRemoval = true, since = "1.0.2")
-    public static <T> MessageProcessor<T> sendToQueue(String queueName, BiConsumer<T, MessageProcessorContext> processFunction)
-    {
-        return new MessageProcessor<>(queue(queueName)) {
-            @Override
-            protected void doProcess(T data, MessageProcessorContext context) {
-                processFunction.accept(data, context);
-            }
-        };
-    }
-
-    public static <T> MessageProcessor<T> jmsQueueSender(String queueName,  BiConsumer<T, MessageProcessorContext> processFunction)
-    {
-        return new MessageProcessor<>(queue(queueName)) {
-            @Override
-            protected void doProcess(T data, MessageProcessorContext context) {
-                processFunction.accept(data, context);
-            }
-        };
-    }
 
     public static <T> void asJSON(T data, MessageProcessor.MessageProcessorContext context)
     {

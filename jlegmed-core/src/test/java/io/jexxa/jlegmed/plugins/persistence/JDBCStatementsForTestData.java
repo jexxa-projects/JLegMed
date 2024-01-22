@@ -1,9 +1,11 @@
 package io.jexxa.jlegmed.plugins.persistence;
 
 
+import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.common.facade.jdbc.JDBCQuery;
 import io.jexxa.common.facade.jdbc.builder.JDBCTableBuilder;
 import io.jexxa.common.facade.jdbc.builder.SQLDataType;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_STRING_DATA;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
@@ -28,17 +31,22 @@ public class JDBCStatementsForTestData {
     }
 
 
-    synchronized public void insertTestData(JDBCContext<TestData> jdbcContext, TestData data) {
-        initDatabaseIfRequired(jdbcContext);
+    synchronized public TestData insertTestData(TestData data, FilterContext filterContext) {
+        var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        jdbcContext.jdbcConnection().createCommand(DBSchema.class).
+        initDatabaseIfRequired(filterContext, jdbcConnection);
+
+        jdbcConnection.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
                 .create()
                 .asUpdate();
+
+        return data;
     }
 
     synchronized public void readTestDataQueryBuilder(JDBCContext<TestData> jdbcContext) {
-        initDatabaseIfRequired(jdbcContext);
+
+        initDatabaseIfRequired(jdbcContext.filterContext(), jdbcContext.jdbcConnection());
 
         var latestIndex = getLatestIndex(jdbcContext);
         queryLatestDataQueryBuilder(jdbcContext, latestIndex)
@@ -47,7 +55,8 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void readTestDataPreparedStatement(JDBCContext<TestData> jdbcContext) {
-        initDatabaseIfRequired(jdbcContext);
+
+        initDatabaseIfRequired(jdbcContext.filterContext(), jdbcContext.jdbcConnection());
 
         var latestIndex = getLatestIndex(jdbcContext);
         queryLatestDataPreparedStatement(jdbcContext, latestIndex)
@@ -55,23 +64,23 @@ public class JDBCStatementsForTestData {
         this.lastForwardedIndexPreparedStatement = latestIndex;
     }
 
-    synchronized private void initDatabaseIfRequired(JDBCContext<TestData> jdbcContext) {
+    synchronized private void initDatabaseIfRequired(FilterContext filterContext, JDBCConnection jdbcConnection) {
         if (!databaseInitialized) {
-            createDatabase(jdbcContext);
-            dropTable(jdbcContext);
-            createTable(jdbcContext);
+            createDatabase(filterContext, jdbcConnection);
+            dropTable(jdbcConnection);
+            createTable(jdbcConnection);
             databaseInitialized = true;
         }
     }
 
-    synchronized private void dropTable(JDBCContext<TestData> jdbcContext) {
-        jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
+    synchronized private void dropTable(JDBCConnection jdbcConnection) {
+        jdbcConnection.createTableCommand(DBSchema.class)
                 .dropTableIfExists(DBSchema.DATABASE_READER_IT)
                 .asIgnore();
     }
 
-    synchronized private void createTable(JDBCContext<TestData> jdbcContext) {
-        jdbcContext.jdbcConnection().createTableCommand(DBSchema.class)
+    synchronized private void createTable(JDBCConnection jdbcConnection) {
+        jdbcConnection.createTableCommand(DBSchema.class)
                 .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
                 .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
                 .addColumn(DB_STRING_DATA, SQLDataType.VARCHAR)
@@ -79,8 +88,8 @@ public class JDBCStatementsForTestData {
                 .asIgnore();
     }
 
-    synchronized private void createDatabase(JDBCContext<TestData> jdbcContext) {
-        jdbcContext.jdbcConnection().autocreateDatabase(jdbcContext.filterContext().properties());
+    synchronized private void createDatabase(FilterContext jdbcContext, JDBCConnection jdbcConnection) {
+        jdbcConnection.autocreateDatabase(jdbcContext.properties());
     }
 
     private int getLatestIndex(JDBCContext<TestData> jdbcContext) {

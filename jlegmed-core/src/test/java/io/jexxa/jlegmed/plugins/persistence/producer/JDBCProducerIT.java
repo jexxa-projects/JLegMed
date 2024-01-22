@@ -7,8 +7,6 @@ import io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData;
 import io.jexxa.jlegmed.plugins.persistence.TestData;
 import org.junit.jupiter.api.Test;
 
-
-import static io.jexxa.jlegmed.plugins.persistence.JDBCFilter.jdbcProcessor;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCFilter.jdbcProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -32,7 +30,7 @@ class JDBCProducerIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( jdbcProcessor( jdbc::insertTestData )).useProperties("test-jdbc-connection")
+                .and().processWith( jdbc::insertTestData).useProperties("test-jdbc-connection")
                 .and().processWith(writerCollector::collect );
 
         //read from a database
@@ -70,7 +68,7 @@ class JDBCProducerIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( jdbcProcessor( jdbc::insertTestData )).useProperties("test-jdbc-connection")
+                .and().processWith( jdbc::insertTestData ).useProperties("test-jdbc-connection")
                 .and().processWith(writerCollector::collect );
 
 

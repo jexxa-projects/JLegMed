@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.persistence.JDBCFilter.jdbcProcessor;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -41,7 +40,7 @@ class JDBCProcessorIT {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .and().processWith( data -> new TestData(data, "Hello World " + data))
-                .and().processWith( jdbcProcessor(database::insertTestData)).useProperties("test-jdbc-connection")
+                .and().processWith( database::insertTestData ).useProperties("test-jdbc-connection")
                 .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();

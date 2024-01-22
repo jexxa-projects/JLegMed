@@ -53,11 +53,11 @@ class ProcessorTest {
     {
         //Arrange - test a filter that needs multiple processing steps for single input data
         var receivingPipe = new CollectingInputPipe<String>();
-        Processor<String, String> objectUnderTest = processor((data, filterContext) ->
+        Processor<String, String> objectUnderTest = processor((data, processorContext) ->
         {
             // Here we tell the processor that we must be called again
-            if (!filterContext.processingState().isProcessingAgain()) {
-                filterContext.processingState().processAgain();
+            if (!processorContext.processingState().isProcessingAgain()) {
+                processorContext.processingState().processAgain();
             }
             return data;
         });

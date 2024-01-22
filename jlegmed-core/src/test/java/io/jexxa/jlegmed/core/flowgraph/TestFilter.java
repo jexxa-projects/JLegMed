@@ -27,6 +27,7 @@ public class TestFilter {
         if (currentCounter % 2 == 0) {
             return null;
         }
+
         return data;
     }
 

@@ -3,9 +3,7 @@ package io.jexxa.jlegmed.plugins.persistence.processor;
 import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
-import io.jexxa.jlegmed.plugins.persistence.JDBCContext;
-
-import java.util.function.Consumer;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 
@@ -31,7 +29,7 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
     }
 
     @Override
-    protected T doProcess(T data, FilterContext context)
+    protected T doProcess(T data, FilterContext context, OutputPipe<T> outputPipe)
     {
         executeCommand(jdbcConnection(), data);
 
@@ -40,14 +38,6 @@ public abstract class JDBCProcessor<T> extends Processor<T, T> {
 
     protected abstract void executeCommand(JDBCConnection jdbcConnection, T element);
 
-    public static <T> JDBCProcessor<T> jdbcExecutor(Consumer<JDBCContext<T>> consumer) {
-        return new JDBCProcessor<>() {
-            @Override
-            protected void executeCommand(JDBCConnection connection, T element) {
-                consumer.accept(new JDBCContext<>(connection, filterContext(), outputPipe()));
-            }
-        };
-    }
 
 
 }

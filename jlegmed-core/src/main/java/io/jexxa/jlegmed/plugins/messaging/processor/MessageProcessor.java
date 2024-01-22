@@ -5,6 +5,7 @@ import io.jexxa.common.drivenadapter.messaging.DestinationType;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.messaging.MessageConfiguration;
 
 public abstract class MessageProcessor<T> extends Processor<T,T> {
@@ -34,7 +35,7 @@ public abstract class MessageProcessor<T> extends Processor<T,T> {
     }
 
     @Override
-    protected T doProcess(T data, FilterContext context) {
+    protected T doProcess(T data, FilterContext context, OutputPipe<T> outputPipe) {
         doProcess(data, new MessageProcessorContext(context, messageSender, messageConfiguration));
         return data;
     }

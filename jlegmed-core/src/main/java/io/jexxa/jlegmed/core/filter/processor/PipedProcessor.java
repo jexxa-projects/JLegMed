@@ -4,6 +4,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 @FunctionalInterface
-public interface FunctionalProcessor<T, R> {
+public interface PipedProcessor<T, R> {
     void processData(T data, FilterContext processContext, OutputPipe<R> outputPipe);
 }

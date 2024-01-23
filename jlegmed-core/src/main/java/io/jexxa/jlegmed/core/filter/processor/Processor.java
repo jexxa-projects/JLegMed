@@ -48,12 +48,12 @@ public abstract class Processor<T, R>  extends Filter {
         };
     }
 
-    public static  <T, R> Processor<T, R> processor(FunctionalProcessor<T, R> functionalProcessor)
+    public static  <T, R> Processor<T, R> processor(PipedProcessor<T, R> pipedProcessor)
     {
         return new Processor<>() {
             @Override
             protected R doProcess(T data, FilterContext filterContext, OutputPipe<R> outputPipe) {
-                functionalProcessor.processData(data, filterContext, outputPipe);
+                pipedProcessor.processData(data, filterContext, outputPipe);
                 return null;
             }
         };

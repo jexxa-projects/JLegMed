@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.processor.FunctionalProcessor;
+import io.jexxa.jlegmed.core.filter.processor.PipedProcessor;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
@@ -46,7 +46,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
-    public <R> Binding<R> processWith(FunctionalProcessor<T, R> successorFunction) {
+    public <R> Binding<R> processWith(PipedProcessor<T, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 

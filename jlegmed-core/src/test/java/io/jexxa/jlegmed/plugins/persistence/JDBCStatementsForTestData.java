@@ -8,7 +8,6 @@ import io.jexxa.common.facade.jdbc.builder.SQLDataType;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -44,23 +43,25 @@ public class JDBCStatementsForTestData {
         return data;
     }
 
-    synchronized public void readTestDataQueryBuilder(JDBCContext<TestData> jdbcContext) {
+    synchronized public void readTestDataQueryBuilder(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
+        var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        initDatabaseIfRequired(jdbcContext.filterContext(), jdbcContext.jdbcConnection());
+        initDatabaseIfRequired(filterContext, jdbcConnection);
 
-        var latestIndex = getLatestIndex(jdbcContext);
-        queryLatestDataQueryBuilder(jdbcContext, latestIndex)
-                .processWith(resultSet -> forwardData(resultSet, jdbcContext.outputPipe()));
+        var latestIndex = getLatestIndex(jdbcConnection);
+        queryLatestDataQueryBuilder(jdbcConnection, latestIndex)
+                .processWith(resultSet -> forwardData(resultSet, outputPipe));
         this.lastForwardedIndexQueryBuilder = latestIndex;
     }
 
-    synchronized public void readTestDataPreparedStatement(JDBCContext<TestData> jdbcContext) {
+    synchronized public void readTestDataPreparedStatement(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
+        var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        initDatabaseIfRequired(jdbcContext.filterContext(), jdbcContext.jdbcConnection());
+        initDatabaseIfRequired(filterContext, jdbcConnection);
 
-        var latestIndex = getLatestIndex(jdbcContext);
-        queryLatestDataPreparedStatement(jdbcContext, latestIndex)
-                .processWith(resultSet -> forwardData(resultSet, jdbcContext.outputPipe()));
+        var latestIndex = getLatestIndex(jdbcConnection);
+        queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
+                .processWith(resultSet -> forwardData(resultSet, outputPipe));
         this.lastForwardedIndexPreparedStatement = latestIndex;
     }
 
@@ -92,25 +93,25 @@ public class JDBCStatementsForTestData {
         jdbcConnection.autocreateDatabase(jdbcContext.properties());
     }
 
-    private int getLatestIndex(JDBCContext<TestData> jdbcContext) {
-        return jdbcContext.jdbcConnection()
+    private int getLatestIndex(JDBCConnection jdbcConnection) {
+        return jdbcConnection
                 .createQuery(DBSchema.class)
                 .selectMax(DB_INDEX).from(DBSchema.DATABASE_READER_IT).create()
                 .asInt().findFirst()
                 .orElse(0);
     }
 
-    private JDBCQuery queryLatestDataQueryBuilder(JDBCContext<TestData> jdbcContext, int maxIndex) {
-        return jdbcContext.jdbcConnection()
+    private JDBCQuery queryLatestDataQueryBuilder(JDBCConnection jdbcConnection, int maxIndex) {
+        return jdbcConnection
             .createQuery(DBSchema.class)
             .selectAll().from(DBSchema.DATABASE_READER_IT)
             .where(DB_INDEX).isGreaterThan(this.lastForwardedIndexQueryBuilder).and(DB_INDEX).isLessOrEqual(maxIndex)
             .create();
     }
 
-    private JDBCQuery queryLatestDataPreparedStatement(JDBCContext<TestData> jdbcContext, int maxIndex) {
+    private JDBCQuery queryLatestDataPreparedStatement(JDBCConnection jdbcConnection, int maxIndex) {
 
-        return new JDBCQuery(jdbcContext::jdbcConnection,
+        return new JDBCQuery(() -> jdbcConnection,
                 "select * from database_reader_it where DB_INDEX > ? and DB_INDEX <= ?",
                  List.of(this.lastForwardedIndexPreparedStatement, maxIndex));
     }

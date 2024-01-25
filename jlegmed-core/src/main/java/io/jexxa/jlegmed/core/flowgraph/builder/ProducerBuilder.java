@@ -5,10 +5,10 @@ import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
 import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
+import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,12 +38,13 @@ public class ProducerBuilder<T> {
         return configureScheduler(producer(function));
     }
 
-    public Binding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
-        return configureScheduler(producer(biFunction, sourceType));
+    public Binding<T> from(PipedProducer<T> function) {
+        return configureScheduler(producer(function));
     }
 
+
     public Binding<T> from(Supplier<T> supplier) {
-        return configureScheduler(producer(supplier, sourceType));
+        return configureScheduler(producer(supplier));
     }
 
     public Binding<T> from(PassiveProducer<T> producer) {

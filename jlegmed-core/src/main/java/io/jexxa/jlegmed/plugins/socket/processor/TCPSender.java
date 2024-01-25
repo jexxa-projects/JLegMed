@@ -2,12 +2,9 @@ package io.jexxa.jlegmed.plugins.socket.processor;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
-import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.socket.SocketContext;
 import io.jexxa.jlegmed.plugins.socket.producer.TCPReceiver;
-
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -76,7 +73,7 @@ public abstract class TCPSender<T, R> extends Processor<T, R> {
     }
 
     @Override
-    protected R doProcess(T data, FilterContext context, OutputPipe<R> outputPipe) {
+    protected R doProcess(T data) {
         try {
             R result = sendMessage(data, new SocketContext(bufferedReader, bufferedWriter, filterContext()));
             bufferedWriter.flush();

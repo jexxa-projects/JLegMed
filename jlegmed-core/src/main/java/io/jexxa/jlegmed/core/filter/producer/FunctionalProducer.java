@@ -54,9 +54,9 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     }
 
 
-    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function, Class<T> producingType)
+    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function)
     {
-        return new FunctionalProducer<>(producingType) {
+        return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
                 return function.apply(filterContext());
@@ -64,14 +64,10 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function) {
-        return  producer(function,null);
-    }
 
-
-    public static <T> FunctionalProducer<T> producer(Supplier<T> function, Class<T> producingType)
+    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
     {
-        return new FunctionalProducer<>(producingType) {
+        return new FunctionalProducer<>() {
             @Override
             protected T doProduce() {
                 return function.get();
@@ -79,9 +75,15 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
+    public static <T> FunctionalProducer<T> producer(PipedProducer<T> pipedProducer)
     {
-        return producer(function, null);
+        return new FunctionalProducer<>() {
+            @Override
+            protected T doProduce() {
+                pipedProducer.produceData(filterContext(), outputPipe());
+                return null;
+            }
+        };
     }
 
 }

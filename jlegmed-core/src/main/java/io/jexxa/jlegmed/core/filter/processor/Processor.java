@@ -29,21 +29,21 @@ public abstract class Processor<T, R>  extends Filter {
         do {
             startProcessing();
 
-            outputPipe().forward(doProcess(data, filterContext(), outputPipe));
+            outputPipe().forward(doProcess(data));
 
             finishedProcessing();
 
         } while (processAgain());
     }
 
-    protected abstract R doProcess(T data, FilterContext context, OutputPipe<R> outputPipe);
+    protected abstract R doProcess(T data);
 
     public static  <T, R> Processor<T, R> processor(BiFunction<T, FilterContext, R> processFunction)
     {
         return new Processor<>() {
             @Override
-            protected R doProcess(T data, FilterContext filterContext, OutputPipe<R> outputPipe) {
-                return processFunction.apply(data, filterContext);
+            protected R doProcess(T data) {
+                return processFunction.apply(data, filterContext());
             }
         };
     }
@@ -52,8 +52,8 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return new Processor<>() {
             @Override
-            protected R doProcess(T data, FilterContext filterContext, OutputPipe<R> outputPipe) {
-                pipedProcessor.processData(data, filterContext, outputPipe);
+            protected R doProcess(T data) {
+                pipedProcessor.processData(data, filterContext(), outputPipe());
                 return null;
             }
         };
@@ -63,7 +63,7 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return new Processor<>() {
             @Override
-            protected R doProcess(T data, FilterContext context, OutputPipe<R> outputPipe) {
+            protected R doProcess(T data) {
                 return processFunction.apply(data);
             }
         };
@@ -73,8 +73,8 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return new Processor<>() {
             @Override
-            protected T doProcess(T data, FilterContext context, OutputPipe<T> outputPipe) {
-                processFunction.accept(data, context);
+            protected T doProcess(T data) {
+                processFunction.accept(data, filterContext());
                 return null;
             }
         };
@@ -84,7 +84,7 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return new Processor<>() {
             @Override
-            protected T doProcess(T data, FilterContext context, OutputPipe<T> outputPipe) {
+            protected T doProcess(T data) {
                 processFunction.accept(data);
                 return null;
             }

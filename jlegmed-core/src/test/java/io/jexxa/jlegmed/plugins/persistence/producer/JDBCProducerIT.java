@@ -7,7 +7,6 @@ import io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData;
 import io.jexxa.jlegmed.plugins.persistence.TestData;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.persistence.JDBCFilter.jdbcProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -36,7 +35,7 @@ class JDBCProducerIT {
         //read from a database
         jlegmed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
-                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataPreparedStatement)).useProperties("test-jdbc-connection")
+                .receive(TestData.class).from(jdbc::readTestDataPreparedStatement).useProperties("test-jdbc-connection")
                 .and().processWith(readerCollector::collect );
 
         //Act
@@ -74,7 +73,7 @@ class JDBCProducerIT {
 
         jlegmed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .every(10, MILLISECONDS)
-                .receive(TestData.class).from(jdbcProducer(jdbc::readTestDataQueryBuilder)).useProperties("test-jdbc-connection")
+                .receive(TestData.class).from(jdbc::readTestDataQueryBuilder).useProperties("test-jdbc-connection")
                 .and().processWith(readerCollector::collect );
 
         //Act

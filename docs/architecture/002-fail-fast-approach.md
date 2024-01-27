@@ -20,4 +20,4 @@ We implement a fail-fast approach to ensure that the configuration of a flowgrap
 * When implementing a specific filter, we provide an `init` method that is used to validate the configuration
 * When using a lambda expression in filters that requires access to a technology stack, this property information must be handed 
 using method `useProperties`. 
-* We must provide a uniform way to pass `Properties` information to the `Manager` of a specific technology stack so that it can be validated before assuming that the flowgraph is running 
+* We must provide a uniform way to pass `Properties` information to the `object pool` of a specific technology stack so that it can be validated before assuming that the flowgraph is running 

@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import static io.jexxa.jlegmed.plugins.persistence.JDBCOperation.dropTable;
+import static io.jexxa.jlegmed.plugins.persistence.processor.RepositoryPool.getRepository;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -46,8 +46,12 @@ class RepositoryProcessorIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data) )
-                .and().processWith( RepositoryProcessor::persist ).useProperties("test-jdbc-connection")
+                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
+
+                .and().processWith( (data, filterContext) ->
+                        getRepository(TextEntity.class, TextEntity::key, filterContext).add(data))
+                    .useProperties("test-jdbc-connection")
+
                 .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();
@@ -57,41 +61,6 @@ class RepositoryProcessorIT {
     }
 
 
-    private static class TextEntity implements AbstractAggregate<TextEntity, String>
-    {
-        private final String data;
-        private final String aggregateID;
-        public TextEntity(String data, String aggregateID)
-        {
-            this.aggregateID = aggregateID;
-            this.data = data;
-        }
-
-        public TextEntity(String data)
-        {
-            this(data, UUID.randomUUID().toString());
-        }
-
-
-        public String getAggregateID() {
-            return aggregateID;
-        }
-
-        @Override
-        public Class<TextEntity> getAggregateType() {
-            return TextEntity.class;
-        }
-
-        @Override
-        public Function<TextEntity, String> getKeyFunction() {
-            return TextEntity::getAggregateID;
-        }
-
-        @Override
-        public String toString()
-        {
-            return aggregateID + ":" + data;
-        }
-    }
+    private record TextEntity (String data, String key) { }
 
 }

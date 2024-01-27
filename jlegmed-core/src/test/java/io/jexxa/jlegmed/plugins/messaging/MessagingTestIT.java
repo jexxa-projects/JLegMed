@@ -7,7 +7,7 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSListener;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderManager.getMessageSender;
+import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSenderPool.getMessageSender;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -18,12 +18,11 @@ class MessagingTestIT {
         //Arrange
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
-        var jmsSender = new JMSSender<Integer>();
 
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(jmsSender::myQueue).useProperties("test-jms-connection");
+                .and().consumeWith(JMSSender::myQueue).useProperties("test-jms-connection");
 
 
         jlegmed.newFlowGraph("Async MessageReceiver")
@@ -43,12 +42,12 @@ class MessagingTestIT {
         //Arrange
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
-        var jmsSender = new JMSSender<Integer>();
+
 
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( jmsSender::myTopic).useProperties("test-jms-connection");
+                .and().consumeWith( JMSSender::myTopic).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( JMSFilter.topicReceiver("MyTopic", JMSListener::asJSON) ).useProperties("test-jms-connection")
@@ -62,22 +61,22 @@ class MessagingTestIT {
         jlegmed.stop();
     }
 
-    static class JMSSender<T> {
-        public void myTopic(T data, FilterContext filterContext)
+    static class JMSSender {
+        public static <T> void myTopic(T data, FilterContext filterContext)
         {
-            getMessageSender(JMSSender.class, filterContext.properties())
+            getMessageSender(filterContext)
                     .send(data)
                     .addHeader("Type", data.getClass().getSimpleName())
                     .toTopic("MyTopic")
                     .asJson();
         }
 
-        public void myQueue(T data, FilterContext filterContext)
+        public static <T> void myQueue(T data, FilterContext filterContext)
         {
-            getMessageSender(JMSSender.class, filterContext.properties())
+            getMessageSender(filterContext)
                     .send(data)
                     .addHeader("Type", data.getClass().getSimpleName())
-                    .toTopic("MyQueue")
+                    .toQueue("MyQueue")
                     .asJson();
         }
     }

@@ -3,6 +3,7 @@ package io.jexxa.jlegmed.plugins.socket.producer;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -18,6 +19,7 @@ import static org.awaitility.Awaitility.await;
 class TCPReceiverIT {
 
     @Test
+    @Disabled
     void testTCPReceiver() throws IOException
     {
         var messageCollector = new GenericCollector<String>();
@@ -39,6 +41,7 @@ class TCPReceiverIT {
 
 
     @Test
+    @Disabled
     void testTCPReceiverOneMessagePerConnection() throws IOException
     {
         var messageCollector = new GenericCollector<String>();

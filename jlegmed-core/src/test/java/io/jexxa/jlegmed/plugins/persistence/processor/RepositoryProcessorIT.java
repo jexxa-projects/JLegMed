@@ -60,6 +60,30 @@ class RepositoryProcessorIT {
         await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
     }
 
+    private void initTestData() {
+        jLegMed.newFlowGraph("reset database")
+                .repeat(1)
+
+                .receive(TextEntity.class).from((filterContext) -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
+
+        jLegMed.newFlowGraph("Init test data")
+
+                .repeat(10)
+                .receive(String.class).from(() -> "Hello World")
+
+                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
+
+                .and().processWith( (data, filterContext) ->
+                        getRepository(TextEntity.class, TextEntity::key, filterContext).add(data))
+                .useProperties("test-jdbc-connection");
+
+
+        jLegMed.start();
+        jLegMed.waitUntilFinished();
+        jLegMed.stop();
+    }
+
+
 
     private record TextEntity (String data, String key) { }
 

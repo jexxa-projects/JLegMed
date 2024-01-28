@@ -72,6 +72,12 @@ public final class JLegMed
         isRunning = true;
     }
 
+    public void waitUntilFinished()
+    {
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.waitUntilFinished());
+    }
+
+
     @SuppressWarnings("unused")
     public void run()
     {

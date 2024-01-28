@@ -1,11 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
-import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
-import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ public class FlowGraph {
     private final List<Filter> filterList = new ArrayList<>();
     private final List<Processor<?,?>> processorList = new ArrayList<>();
 
-    private IDrivingAdapter drivingAdapter;
+    private final FlowGraphScheduler flowGraphScheduler = new FlowGraphScheduler();
 
 
     public FlowGraph(String flowGraphID)
@@ -50,40 +47,27 @@ public class FlowGraph {
 
     public FlowGraph start() {
         filterList.forEach(Filter::init);
-        filterList.forEach(Filter::start);
-        if (drivingAdapter != null )
-        {
-            drivingAdapter.start();
-        }
+        filterList.stream().filter(element -> element != producer).forEach(Filter::start);
+        producer.start();
 
+        flowGraphScheduler.start();
 
         return this;
     }
 
     public void stop() {
-        if (drivingAdapter != null ) {
-            drivingAdapter.stop();
-        }
+        flowGraphScheduler.stop();
         filterList.forEach(Filter::stop);
         filterList.forEach(Filter::deInit);
     }
 
-    public void setProducer(ActiveProducer<?> producer)
+    public void setProducer(Producer<?> producer)
     {
         this.producer = producer;
-        this.drivingAdapter = producer.drivingAdapter();
-
         filterList.add(producer);
     }
 
-    public void setProducer(PassiveProducer<?> producer, IDrivingAdapter drivingAdapter)
-    {
-        this.producer = producer;
-        this.drivingAdapter = drivingAdapter;
-        filterList.add(producer);
-    }
-
-    public void addProcessor(Processor<?,?> processor)
+    public void addProcessor(Processor<?, ?> processor)
     {
         if (!processorList.contains(processor)) {
             filterList.add(processor);
@@ -91,12 +75,15 @@ public class FlowGraph {
         }
     }
 
-
+    public FlowGraphScheduler getScheduler() {
+        return flowGraphScheduler;
+    }
 
     public <T, U> FlowGraph connect(Producer<T> producer, Processor<T,U> processor)
     {
         producer.outputPipe().connectTo(processor.inputPipe());
 
+        setProducer(producer);
         addProcessor(processor);
 
         return this;
@@ -118,4 +105,10 @@ public class FlowGraph {
                 .map(Processor::outputPipe)
                 .forEach( element -> getRootInterceptor(element).registerBefore(interceptor));
     }
+
+    public void waitUntilFinished()
+    {
+        flowGraphScheduler.waitUntilFinished();
+    }
+
 }

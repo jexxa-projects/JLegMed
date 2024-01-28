@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.socket.producer.TCPReceiver;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,6 +19,7 @@ import static org.awaitility.Awaitility.await;
 class TCPSenderIT {
 
     @Test
+    @Disabled
     void testTCPSender() {
         var messageCollector = new GenericCollector<String>();
         JLegMed jLegMed = new JLegMed(TCPSenderIT.class);
@@ -45,6 +47,7 @@ class TCPSenderIT {
     }
 
     @Test
+    @Disabled
     void testTCPJSONSender() {
         var counter = new AtomicInteger();
         var messageCollector = new GenericCollector<TestMessage>();

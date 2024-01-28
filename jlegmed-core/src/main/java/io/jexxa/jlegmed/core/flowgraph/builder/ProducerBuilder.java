@@ -1,8 +1,5 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.common.drivingadapter.scheduler.RepeatedFixedRate;
-import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
-import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
@@ -54,20 +51,13 @@ public class ProducerBuilder<T> {
 
     private Binding<T> configureScheduler(PassiveProducer<T> producer)
     {
-        Scheduler scheduler = new Scheduler();
-        scheduler.register(createListener(producer));
-
-        flowGraph.setProducer(producer, scheduler);
+        flowGraph.setProducer(producer);
+        if (maxIteration < 0) {
+            flowGraph.getScheduler().configureFixedRate(producer,fixedRate, timeUnit);
+        } else {
+            flowGraph.getScheduler().configureRepeatedRate( producer, maxIteration,  fixedRate, timeUnit);
+        }
 
         return new Binding<>(producer, producer.outputPipe(), flowGraph);
-    }
-
-    private Object createListener(PassiveProducer<T> producer)
-    {
-        if (maxIteration < 0 ){
-            return new ScheduledFixedRate(producer::produceData, 0, fixedRate, timeUnit);
-        } else {
-            return new RepeatedFixedRate(maxIteration, producer::produceData, 0, fixedRate, timeUnit);
-        }
     }
 }

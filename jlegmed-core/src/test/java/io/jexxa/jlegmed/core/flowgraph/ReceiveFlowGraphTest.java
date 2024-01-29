@@ -1,6 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,11 +14,24 @@ import static org.awaitility.Awaitility.await;
 
 class ReceiveFlowGraphTest {
 
+    private static JLegMed jlegmed;
+
+    @BeforeEach
+    void initBeforeEach()
+    {
+        jlegmed = new JLegMed(ReceiveFlowGraphTest.class).disableBanner();
+    }
+
+    @AfterEach
+    void deInitAfterEach()
+    {
+        jlegmed.stop();
+    }
+
     @Test
     void testReceiveHelloWorld() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
-        var jlegmed = new JLegMed(ReceiveFlowGraphTest.class).disableBanner();
         var result = new ArrayList<String>();
 
         // Define the flow graph:
@@ -35,10 +50,8 @@ class ReceiveFlowGraphTest {
         //Act
         jlegmed.start();
 
-        //Assert - We expect exactly three messages that must be the string in 'message'
+        //Assert - We expect at least three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> result.size() >= 3);
-
-        jlegmed.stop();
     }
 
 }

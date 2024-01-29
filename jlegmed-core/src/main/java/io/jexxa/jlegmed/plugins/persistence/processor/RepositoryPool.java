@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.processor;
 
+import io.jexxa.jlegmed.core.PoolRegistry;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.HashMap;
@@ -29,6 +30,11 @@ public class RepositoryPool {
                 repository -> new RepositoryProcessor<>(aggregateClazz, keyFunction, filterContext)
         );
         return (RepositoryProcessor<T, K>) repositories.get(filterContext.propertiesName());
+    }
+
+    private RepositoryPool()
+    {
+        PoolRegistry.registerInitHandler(properties -> repositories.clear());
     }
 
 }

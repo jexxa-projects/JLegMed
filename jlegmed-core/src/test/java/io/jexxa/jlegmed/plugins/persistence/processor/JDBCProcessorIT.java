@@ -34,6 +34,8 @@ class JDBCProcessorIT {
         var messageCollector = new GenericCollector<TestData>();
         var database = new JDBCStatementsForTestData();
 
+        jLegMed.bootstrapFlowGraph("bootstrap database").execute(database::bootstrapDatabase).useProperties("test-jdbc-connection");
+
         jLegMed.newFlowGraph("HelloWorld")
 
                 .every(10, MILLISECONDS)

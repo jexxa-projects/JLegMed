@@ -3,6 +3,7 @@ package io.jexxa.jlegmed.plugins.messaging.processor;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.common.drivenadapter.messaging.MessageSenderManager;
 import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
+import io.jexxa.jlegmed.core.PoolRegistry;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.HashMap;
@@ -43,5 +44,6 @@ public class MessageSenderPool {
         // Currently transactional outbox sender causes strange site effects at least in test.
         // One reason could be that it is designed as singleton. Therefore, we use JMSSender at the moment
         MessageSenderManager.setDefaultStrategy(JMSSender.class);
+        PoolRegistry.registerInitHandler( properties -> messageSenderMap.clear());
     }
 }

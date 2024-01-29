@@ -2,8 +2,8 @@ package io.jexxa.jlegmed.plugins.persistence.processor;
 
 import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -76,10 +76,10 @@ public class RepositoryProcessor<T, K> {
         return repository.get(key);
     }
 
-    public void readAll(OutputPipe<T> outputPipe)
+    public List<T> get()
     {
 
-        repository.get().forEach(outputPipe::forward);
+        return repository.get();
     }
 
 }

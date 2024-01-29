@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -85,5 +86,17 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
             }
         };
     }
+
+    public static <T> FunctionalProducer<T> producer(Consumer<FilterContext> function)
+    {
+        return new FunctionalProducer<>() {
+            @Override
+            protected T doProduce() {
+                function.accept(filterContext());
+                return null;
+            }
+        };
+    }
+
 
 }

@@ -18,7 +18,6 @@ import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBS
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class JDBCStatementsForTestData {
-    private boolean databaseInitialized = false;
     private int lastForwardedIndexQueryBuilder = 0;
     private int lastForwardedIndexPreparedStatement = 0;
 
@@ -33,8 +32,6 @@ public class JDBCStatementsForTestData {
     synchronized public TestData insertTestData(TestData data, FilterContext filterContext) {
         var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        initDatabaseIfRequired(filterContext, jdbcConnection);
-
         jdbcConnection.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
                 .create()
@@ -46,8 +43,6 @@ public class JDBCStatementsForTestData {
     synchronized public void readTestDataQueryBuilder(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
         var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        initDatabaseIfRequired(filterContext, jdbcConnection);
-
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataQueryBuilder(jdbcConnection, latestIndex)
                 .processWith(resultSet -> forwardData(resultSet, outputPipe));
@@ -57,21 +52,18 @@ public class JDBCStatementsForTestData {
     synchronized public void readTestDataPreparedStatement(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
         var jdbcConnection = getConnection(filterContext.properties(), this);
 
-        initDatabaseIfRequired(filterContext, jdbcConnection);
-
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
                 .processWith(resultSet -> forwardData(resultSet, outputPipe));
         this.lastForwardedIndexPreparedStatement = latestIndex;
     }
 
-    synchronized private void initDatabaseIfRequired(FilterContext filterContext, JDBCConnection jdbcConnection) {
-        if (!databaseInitialized) {
-            createDatabase(filterContext, jdbcConnection);
-            dropTable(jdbcConnection);
-            createTable(jdbcConnection);
-            databaseInitialized = true;
-        }
+    synchronized public void bootstrapDatabase(FilterContext filterContext) {
+        var jdbcConnection = getConnection(filterContext.properties(), this);
+
+        createDatabase(filterContext, jdbcConnection);
+        dropTable(jdbcConnection);
+        createTable(jdbcConnection);
     }
 
     synchronized private void dropTable(JDBCConnection jdbcConnection) {

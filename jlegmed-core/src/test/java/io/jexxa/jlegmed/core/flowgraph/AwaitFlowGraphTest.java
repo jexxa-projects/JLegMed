@@ -1,6 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,12 +14,24 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class AwaitFlowGraphTest {
+    private static JLegMed jlegmed;
+
+    @BeforeEach
+    void initBeforeEach()
+    {
+        jlegmed = new JLegMed(AwaitFlowGraphTest.class).disableBanner();
+    }
+
+    @AfterEach
+    void deInitAfterEach()
+    {
+        jlegmed.stop();
+    }
 
     @Test
     void testAwaitHelloWorld() {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
-        var jlegmed = new JLegMed(AwaitFlowGraphTest.class).disableBanner();
         var result = new ArrayList<String>();
 
         // Define the flow graph:

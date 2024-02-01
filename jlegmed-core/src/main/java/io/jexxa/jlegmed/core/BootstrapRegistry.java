@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public final class PoolRegistry {
+public final class BootstrapRegistry {
 
-    private static final PoolRegistry INSTANCE = new PoolRegistry();
+    private static final BootstrapRegistry INSTANCE = new BootstrapRegistry();
 
     private final List<Consumer<Properties>> initHandler = new ArrayList<>();
 
@@ -20,6 +20,5 @@ public final class PoolRegistry {
     {
         INSTANCE.initHandler.forEach( element -> element.accept(properties));
     }
-
 
 }

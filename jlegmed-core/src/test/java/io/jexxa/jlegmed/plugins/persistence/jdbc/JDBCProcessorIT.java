@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence.repository;
+package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -18,7 +18,7 @@ class JDBCProcessorIT {
 
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(RepositoryIT.class).disableBanner();
+        jLegMed = new JLegMed(JDBCProcessorIT.class).disableBanner();
     }
 
     @AfterEach

@@ -15,6 +15,7 @@ import java.util.List;
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_STRING_DATA;
+import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.getJDBCConnection;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class JDBCStatementsForTestData {
@@ -29,8 +30,9 @@ public class JDBCStatementsForTestData {
     }
 
 
+
     synchronized public TestData insertTestData(TestData data, FilterContext filterContext) {
-        var jdbcConnection = getConnection(filterContext.properties(), this);
+        var jdbcConnection = getJDBCConnection(filterContext);
 
         jdbcConnection.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
@@ -41,7 +43,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void readTestDataQueryBuilder(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
-        var jdbcConnection = getConnection(filterContext.properties(), this);
+        var jdbcConnection = getJDBCConnection(filterContext);
 
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataQueryBuilder(jdbcConnection, latestIndex)
@@ -50,7 +52,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void readTestDataPreparedStatement(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
-        var jdbcConnection = getConnection(filterContext.properties(), this);
+        var jdbcConnection = getJDBCConnection(filterContext);;
 
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
@@ -59,7 +61,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void bootstrapDatabase(FilterContext filterContext) {
-        var jdbcConnection = getConnection(filterContext.properties(), this);
+        var jdbcConnection = getJDBCConnection(filterContext);;
 
         createDatabase(filterContext, jdbcConnection);
         dropTable(jdbcConnection);
@@ -112,4 +114,5 @@ public class JDBCStatementsForTestData {
         var data = new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name()));
         outputPipe.forward(data);
     }
+
 }

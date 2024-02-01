@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence.producer;
+package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;

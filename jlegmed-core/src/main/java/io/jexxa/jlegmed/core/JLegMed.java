@@ -54,7 +54,7 @@ public final class JLegMed
         this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
         setExceptionHandler();
-        PoolRegistry.init(properties);
+        BootstrapRegistry.init(properties);
    }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)

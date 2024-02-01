@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static io.jexxa.jlegmed.plugins.persistence.JDBCOperation.dropTable;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool.getRepository;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -101,5 +101,12 @@ class RepositoryIT {
     public static void read(FilterContext filterContext, OutputPipe<TextEntity> outputPipe)
     {
         getRepository(TextEntity.class, TextEntity::key, filterContext).get().forEach(outputPipe::forward);
+    }
+
+    public static  <T> void dropTable(FilterContext filterContext, Class<T> table){
+        getConnection(filterContext.properties(), filterContext)
+                .createTableCommand()
+                .dropTableIfExists(table)
+                .asIgnore();
     }
 }

@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence.processor;
+package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -10,16 +10,16 @@ import java.util.function.Function;
 import static io.jexxa.common.drivenadapter.persistence.RepositoryManager.getRepository;
 
 
-public class RepositoryProcessor<T, K> {
+public class Repository<T, K> {
 
-    private final IRepository<T, K> repository;
+    private final IRepository<T, K> iRepository;
     Function<T, K> keyFunction;
 
-    RepositoryProcessor(Class<T> aggregateClazz,
-                        Function<T,K> keyFunction,
-                        FilterContext filterContext)
+    Repository(Class<T> aggregateClazz,
+               Function<T,K> keyFunction,
+               FilterContext filterContext)
     {
-        this.repository = getRepository(aggregateClazz, keyFunction, filterContext.properties());
+        this.iRepository = getRepository(aggregateClazz, keyFunction, filterContext.properties());
         this.keyFunction = keyFunction;
     }
 
@@ -30,7 +30,7 @@ public class RepositoryProcessor<T, K> {
      */
     public T update(T aggregate)
     {
-        repository.update(aggregate);
+        iRepository.update(aggregate);
         return aggregate;
     }
 
@@ -40,7 +40,7 @@ public class RepositoryProcessor<T, K> {
      * @pre Aggregate must be added by using {@link #add(Object)}}
      */
     public K remove(K key) {
-        repository.remove(key);
+        iRepository.remove(key);
         return key;
     }
 
@@ -50,7 +50,7 @@ public class RepositoryProcessor<T, K> {
      * @pre Aggregate must not be added before
      */
     public T add(T aggregate) {
-        repository.add(aggregate);
+        iRepository.add(aggregate);
         return aggregate;
     }
 
@@ -73,13 +73,13 @@ public class RepositoryProcessor<T, K> {
      */
     public Optional<T> get(K key)
     {
-        return repository.get(key);
+        return iRepository.get(key);
     }
 
     public List<T> get()
     {
 
-        return repository.get();
+        return iRepository.get();
     }
 
 }

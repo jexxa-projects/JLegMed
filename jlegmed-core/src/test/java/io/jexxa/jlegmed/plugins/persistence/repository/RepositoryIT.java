@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence.processor;
+package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static io.jexxa.jlegmed.plugins.persistence.JDBCOperation.dropTable;
-import static io.jexxa.jlegmed.plugins.persistence.processor.RepositoryPool.getRepository;
+import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool.getRepository;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class RepositoryProcessorIT {
+class RepositoryIT {
 
     private static JLegMed jLegMed;
 
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(RepositoryProcessorIT.class).disableBanner();
+        jLegMed = new JLegMed(RepositoryIT.class).disableBanner();
     }
 
     @AfterEach
@@ -48,7 +48,7 @@ class RepositoryProcessorIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().processWith( RepositoryProcessorIT::add ).useProperties("test-jdbc-connection")
+                .and().processWith( RepositoryIT::add ).useProperties("test-jdbc-connection")
                 .and().consumeWith( messageCollector::collect );
         //Act
         jLegMed.start();
@@ -67,7 +67,7 @@ class RepositoryProcessorIT {
 
         jLegMed.newFlowGraph("Read Data")
                 .repeat(1)
-                .receive(TextEntity.class).from(RepositoryProcessorIT::read).useProperties("test-jdbc-connection")
+                .receive(TextEntity.class).from(RepositoryIT::read).useProperties("test-jdbc-connection")
                 .and().processWith( messageCollector::collect );
 
         //Act
@@ -87,7 +87,7 @@ class RepositoryProcessorIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( RepositoryProcessorIT::add).useProperties("test-jdbc-connection");
+                .and().consumeWith( RepositoryIT::add).useProperties("test-jdbc-connection");
     }
 
 

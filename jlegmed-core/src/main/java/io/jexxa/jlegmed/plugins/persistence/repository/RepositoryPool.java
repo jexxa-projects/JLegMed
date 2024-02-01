@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence.processor;
+package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.jlegmed.core.PoolRegistry;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -10,26 +10,26 @@ import java.util.function.Function;
 public class RepositoryPool {
 
     public static final RepositoryPool INSTANCE = new RepositoryPool();
-    HashMap<String, RepositoryProcessor<?,?>> repositories = new HashMap<>();
+    HashMap<String, Repository<?,?>> repositories = new HashMap<>();
 
-    public static <T, K> RepositoryProcessor<T, K> getRepository(Class<T> aggregateClazz,
-                                                         Function<T,K> keyFunction, FilterContext filterContext)
+    public static <T, K> Repository<T, K> getRepository(Class<T> aggregateClazz,
+                                                        Function<T,K> keyFunction, FilterContext filterContext)
     {
         return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, filterContext);
     }
 
 
     @SuppressWarnings("unchecked") // OK, since the way we create the repository is type safe
-    private <T, K> RepositoryProcessor<T, K> getInternalRepository(
+    private <T, K> Repository<T, K> getInternalRepository(
             Class<T> aggregateClazz,
             Function<T,K> keyFunction,
             FilterContext filterContext)
     {
         repositories.computeIfAbsent(
                 filterContext.propertiesName(),
-                repository -> new RepositoryProcessor<>(aggregateClazz, keyFunction, filterContext)
+                repository -> new Repository<>(aggregateClazz, keyFunction, filterContext)
         );
-        return (RepositoryProcessor<T, K>) repositories.get(filterContext.propertiesName());
+        return (Repository<T, K>) repositories.get(filterContext.propertiesName());
     }
 
     private RepositoryPool()

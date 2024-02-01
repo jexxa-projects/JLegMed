@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_STRING_DATA;
 import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.getJDBCConnection;
@@ -52,7 +51,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void readTestDataPreparedStatement(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
-        var jdbcConnection = getJDBCConnection(filterContext);;
+        var jdbcConnection = getJDBCConnection(filterContext);
 
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
@@ -61,7 +60,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void bootstrapDatabase(FilterContext filterContext) {
-        var jdbcConnection = getJDBCConnection(filterContext);;
+        var jdbcConnection = getJDBCConnection(filterContext);
 
         createDatabase(filterContext, jdbcConnection);
         dropTable(jdbcConnection);

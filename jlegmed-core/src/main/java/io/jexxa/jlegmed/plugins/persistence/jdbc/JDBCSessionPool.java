@@ -1,24 +1,28 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.common.facade.jdbc.JDBCConnection;
-import io.jexxa.common.facade.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
 
-import java.util.Properties;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 
 public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();
     public static JDBCConnection getJDBCConnection(FilterContext filterContext) {
-        return JDBCConnectionPool.getConnection(filterContext.properties(), INSTANCE);
+        return getConnection(filterContext.properties(), INSTANCE);
     }
-    private void initJDBCSessions(Properties properties)
+    private void initJDBCSessions(FilterProperties filterProperties)
     {
-
+        if (filterProperties.properties().containsKey(jdbcUrl()))
+        {
+            getConnection(filterProperties.properties(), INSTANCE);
+        }
     }
     private JDBCSessionPool()
     {
-        BootstrapRegistry.registerInitHandler(this::initJDBCSessions);
+        BootstrapRegistry.registerFailFastHandler(this::initJDBCSessions);
     }
 
 }

@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
@@ -104,6 +105,11 @@ public class FlowGraph {
         processorList.stream()
                 .map(Processor::outputPipe)
                 .forEach( element -> getRootInterceptor(element).registerBefore(interceptor));
+    }
+
+    public List<FilterProperties> filterProperties()
+    {
+        return filterList.stream().map( Filter::filterProperties ).toList();
     }
 
     public void waitUntilFinished()

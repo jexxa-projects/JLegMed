@@ -1,24 +1,37 @@
 package io.jexxa.jlegmed.core;
 
+import io.jexxa.jlegmed.core.filter.FilterProperties;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 public final class BootstrapRegistry {
 
     private static final BootstrapRegistry INSTANCE = new BootstrapRegistry();
 
-    private final List<Consumer<Properties>> initHandler = new ArrayList<>();
+    private final List<Consumer<FilterProperties>> failFastHandler = new ArrayList<>();
+    private final List<Runnable> bootstrapHandler = new ArrayList<>();
 
-    public static void registerInitHandler(Consumer<Properties> initHandler)
+    public static void registerFailFastHandler(Consumer<FilterProperties> propertiesHandler)
     {
-        INSTANCE.initHandler.add(initHandler);
+        INSTANCE.failFastHandler.add(propertiesHandler);
     }
 
-    static void init(Properties properties)
+    public static void registerBootstrapHandler(Runnable bootStrapHandler)
     {
-        INSTANCE.initHandler.forEach( element -> element.accept(properties));
+        INSTANCE.bootstrapHandler.add(bootStrapHandler);
+    }
+
+
+    public static void initFailFast(FilterProperties filterProperties)
+    {
+        INSTANCE.failFastHandler.forEach(element -> element.accept(filterProperties));
+    }
+
+    public static void bootstrapServices()
+    {
+        INSTANCE.bootstrapHandler.forEach(Runnable::run);
     }
 
 }

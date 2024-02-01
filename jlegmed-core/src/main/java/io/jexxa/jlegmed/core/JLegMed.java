@@ -4,6 +4,7 @@ package io.jexxa.jlegmed.core;
 import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.builder.BootstrapBuilder;
 import io.jexxa.jlegmed.core.flowgraph.builder.FlowGraphBuilder;
@@ -54,8 +55,9 @@ public final class JLegMed
         this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
         setExceptionHandler();
-        BootstrapRegistry.init(properties);
-   }
+        BootstrapRegistry.bootstrapServices();
+
+    }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
     {
@@ -80,6 +82,8 @@ public final class JLegMed
 
     public synchronized void start()
     {
+        filterProperties().forEach(BootstrapRegistry::initFailFast);
+
         showPreStartupBanner();
 
         bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
@@ -88,6 +92,16 @@ public final class JLegMed
 
         showPostStartupBanner();
         isRunning = true;
+    }
+
+    List<FilterProperties> filterProperties()
+    {
+        var result = new ArrayList<FilterProperties>();
+
+        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+        flowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+
+        return result;
     }
 
     public boolean waitUntilFinished()

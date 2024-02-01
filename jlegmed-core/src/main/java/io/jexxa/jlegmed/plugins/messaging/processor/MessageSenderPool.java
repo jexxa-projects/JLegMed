@@ -44,6 +44,6 @@ public class MessageSenderPool {
         // Currently transactional outbox sender causes strange site effects at least in test.
         // One reason could be that it is designed as singleton. Therefore, we use JMSSender at the moment
         MessageSenderManager.setDefaultStrategy(JMSSender.class);
-        BootstrapRegistry.registerInitHandler(properties -> messageSenderMap.clear());
+        BootstrapRegistry.registerFailFastHandler(properties -> messageSenderMap.clear());
     }
 }

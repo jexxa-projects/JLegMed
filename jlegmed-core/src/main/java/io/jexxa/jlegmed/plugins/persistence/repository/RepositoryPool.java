@@ -32,9 +32,10 @@ public class RepositoryPool {
         return (Repository<T, K>) repositories.get(filterContext.propertiesName());
     }
 
+
     private RepositoryPool()
     {
-        BootstrapRegistry.registerInitHandler(properties -> repositories.clear());
+        BootstrapRegistry.registerBootstrapHandler(repositories::clear);
     }
 
 }

@@ -45,6 +45,20 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         this.tcpAdapter.register(this);
     }
 
+    @Override
+    public void start()
+    {
+        super.start();
+        tcpAdapter.start();
+    }
+
+    @Override
+    public void stop()
+    {
+        super.stop();
+        tcpAdapter.stop();
+    }
+
     private void validateFilterSettings() {
         if (port == -1) {
             throw new IllegalArgumentException("Port must be set");

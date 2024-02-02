@@ -29,7 +29,7 @@ public class JDBCStatements {
     private int lastForwardedIndexPreparedStatement = 0;
 
     synchronized public DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
-        var jdbcConnection = jdbcConnection(filterContext);
+        var jdbcConnection = JDBCSessionPool.jdbcConnection(filterContext);
 
         jdbcConnection.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))

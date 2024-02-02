@@ -19,6 +19,15 @@
     </license>
   </licenses>
 
+  <dependencies>
+  <!-- external dependencies for Jexxa core -->
+    <dependency>
+      <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>${classgraph.version}</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>

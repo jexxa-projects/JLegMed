@@ -4,10 +4,12 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSListener;
+import io.jexxa.jlegmed.plugins.messaging.producer.jms.MessageConverter;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.messaging.MessageSenderPool.getMessageSender;
+import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsQueue;
+import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsTopic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -27,7 +29,8 @@ class MessagingTestIT {
 
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( JMSFilter.queueReceiver("MyQueue", JMSListener::asJSON)).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsQueue("MyQueue", MessageConverter::fromJSON) ).useProperties("test-jms-connection")
+
                 .and().consumeWith( messageCollector::collect );
 
         //Act
@@ -49,10 +52,10 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( JMSSender::myTopic).useProperties("test-jms-connection");
+                .and().consumeWith( JMSSender::myTopic ).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( JMSFilter.topicReceiver("MyTopic", JMSListener::asJSON) ).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsTopic("MyTopic", MessageConverter::fromJSON) ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::collect );
 
         //Act

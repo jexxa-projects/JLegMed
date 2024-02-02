@@ -28,6 +28,8 @@ class JDBCFlowGraphsIT {
     @Test
     void writeToDatabase() {
         //Arrange
+        JDBCSessionPool.init();
+
         var messageCollector = new GenericCollector<DataToBeStored>();
         var database = new JDBCStatements();
 
@@ -51,6 +53,8 @@ class JDBCFlowGraphsIT {
     @Test
     void readFromDatabase() {
         //Arrange
+        JDBCSessionPool.init();
+
         var expectedData = new GenericCollector<DataToBeStored>();
         var result = new GenericCollector<DataToBeStored>();
 
@@ -90,6 +94,8 @@ class JDBCFlowGraphsIT {
     @Test
     void readWritePreparedStatements() {
         //Arrange
+        JDBCSessionPool.init();
+
         var writerCollector = new GenericCollector<DataToBeStored>();
         var readerCollector = new GenericCollector<DataToBeStored>();
 

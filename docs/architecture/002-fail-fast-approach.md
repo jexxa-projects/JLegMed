@@ -13,11 +13,14 @@ that a flowgraph, its configuration and required infrastructure are available in
 
 ## Decision
 
-We implement a fail-fast approach to ensure that the configuration of a flowgraph is valid and technology stacks are available at startup
+We implement a fail-fast approach to ensure that the configuration of a flowgraph is valid and technology stacks are available at startup.
 
 ## Consequences
 
-* When implementing a specific filter, we provide an `init` method that is used to validate the configuration
-* When using a lambda expression in filters that requires access to a technology stack, this property information must be handed 
-using method `useProperties`. 
-* We must provide a uniform way to pass `Properties` information to the `object pool` of a specific technology stack so that it can be validated before assuming that the flowgraph is running 
+* When implementing a specific filter, we provide an `init` method that is used to validate the configuration. 
+* When using a lambda expression in filters that requires access to a technology stack, this property information must be handled using method `useProperties`. 
+* We must provide a uniform way to pass `Properties` information to the `object pool` of a specific technology stack so that it can be validated before assuming that the flowgraph is running
+* This object pool must be initialized by its own static init method of the main-method so that it can register itself at JLegMed BootstrapRegistry. 
+
+Alternative:  
+* Instead of a static method invocation, we could use some kind of reflection mechanism. At the moment, we do not use this approach to simplify the support for native compilation     

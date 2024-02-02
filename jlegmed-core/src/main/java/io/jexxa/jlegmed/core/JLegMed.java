@@ -50,7 +50,6 @@ public final class JLegMed
     public JLegMed(Class<?> application, Properties properties)
     {
         JexxaContext.init();
-        BootstrapRegistry.loadMessagePools();
 
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);

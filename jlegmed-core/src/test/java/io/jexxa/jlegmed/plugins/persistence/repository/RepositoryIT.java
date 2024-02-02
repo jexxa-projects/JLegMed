@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RepositoryIT {
 
     private static JLegMed jLegMed;
+    record TextEntity (String data, String key) { }
 
     @BeforeEach
     void init() {
@@ -37,6 +38,7 @@ class RepositoryIT {
     @Test
     void testFlowGraph() {
         //Arrange
+        RepositoryPool.init();
         var messageCollector = new GenericCollector<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
@@ -61,6 +63,8 @@ class RepositoryIT {
     @Test
     void readData() {
         //Arrange
+        RepositoryPool.init();
+
         var messageCollector = new GenericCollector<TextEntity>();
         var numberOfData = 10;
         bootstrapTestData(jLegMed, numberOfData);
@@ -91,8 +95,6 @@ class RepositoryIT {
     }
 
 
-
-    record TextEntity (String data, String key) { }
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext)
     {
         return getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);

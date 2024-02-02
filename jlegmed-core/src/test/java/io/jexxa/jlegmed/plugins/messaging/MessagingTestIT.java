@@ -7,7 +7,7 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSListener;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.processor.MessageSenderPool.getMessageSender;
+import static io.jexxa.jlegmed.plugins.messaging.MessageSenderPool.getMessageSender;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;

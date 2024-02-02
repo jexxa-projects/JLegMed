@@ -13,8 +13,6 @@ import io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
-
 @SuppressWarnings("java:S6548")
 public class MessageSenderPool {
     private static boolean initialized = false;
@@ -35,8 +33,7 @@ public class MessageSenderPool {
         }
 
         INSTANCE.messageSenderMap.computeIfAbsent(filterContext.propertiesName(),
-                key -> MessageSenderManager.getMessageSender(MessageSenderPool.class, filterContext.properties())
-        );
+                key -> INSTANCE.getInternalMessageSender(filterContext.filterProperties()));
 
         return INSTANCE.messageSenderMap.get(filterContext.propertiesName());
     }
@@ -45,8 +42,13 @@ public class MessageSenderPool {
     {
         if (filterProperties.properties().containsKey(JMSProperties.JNDI_FACTORY_KEY))
         {
-            getConnection(filterProperties.properties(), INSTANCE);
+            getInternalMessageSender(filterProperties);
         }
+    }
+
+    private MessageSender getInternalMessageSender(FilterProperties filterProperties)
+    {
+        return MessageSenderManager.getMessageSender(MessageSenderPool.class, filterProperties.properties());
     }
 
 

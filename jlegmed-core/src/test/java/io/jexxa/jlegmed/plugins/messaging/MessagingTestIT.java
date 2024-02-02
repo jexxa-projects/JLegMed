@@ -16,6 +16,7 @@ class MessagingTestIT {
     @Test
     void testQueueMessaging() {
         //Arrange
+        MessageSenderPool.init();
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
@@ -40,6 +41,7 @@ class MessagingTestIT {
     @Test
     void testTopicMessaging() {
         //Arrange
+        MessageSenderPool.init();
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 

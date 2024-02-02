@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 
-import io.jexxa.common.facade.jdbc.JDBCConnection;
 import io.jexxa.common.facade.jdbc.JDBCQuery;
 import io.jexxa.common.facade.jdbc.builder.JDBCTableBuilder;
 import io.jexxa.common.facade.jdbc.builder.SQLDataType;
@@ -12,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.jdbcConnection;
+import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.jdbcSession;
 import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCStatements.DBSchema.DB_INDEX;
 import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCStatements.DBSchema.DB_STRING_DATA;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
@@ -29,9 +28,9 @@ public class JDBCStatements {
     private int lastForwardedIndexPreparedStatement = 0;
 
     synchronized public DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
-        var jdbcConnection = JDBCSessionPool.jdbcConnection(filterContext);
+        var jdbcSession = JDBCSessionPool.jdbcSession(filterContext);
 
-        jdbcConnection.createCommand(DBSchema.class).
+        jdbcSession.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
                 .create()
                 .asUpdate();
@@ -40,39 +39,39 @@ public class JDBCStatements {
     }
 
     synchronized public void readWithQueryBuilder(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
-        var jdbcConnection = jdbcConnection(filterContext);
+        var jdbcSession = jdbcSession(filterContext);
 
-        var latestIndex = getLatestIndex(jdbcConnection);
-        queryLatestDataQueryBuilder(jdbcConnection, latestIndex)
+        var latestIndex = getLatestIndex(jdbcSession);
+        queryLatestDataQueryBuilder(jdbcSession, latestIndex)
                 .processWith(resultSet -> forwardData(resultSet, outputPipe));
         this.lastForwardedIndexQueryBuilder = latestIndex;
     }
 
     synchronized public void readWithPreparedStatement(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
-        var jdbcConnection = jdbcConnection(filterContext);
+        var jdbcSession = jdbcSession(filterContext);
 
-        var latestIndex = getLatestIndex(jdbcConnection);
-        queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
+        var latestIndex = getLatestIndex(jdbcSession);
+        queryLatestDataPreparedStatement(jdbcSession, latestIndex)
                 .processWith(resultSet -> forwardData(resultSet, outputPipe));
         this.lastForwardedIndexPreparedStatement = latestIndex;
     }
 
     synchronized public void bootstrapDatabase(FilterContext filterContext) {
-        var jdbcConnection = jdbcConnection(filterContext);
+        var jdbcSession = jdbcSession(filterContext);
 
-        createDatabase(filterContext, jdbcConnection);
-        dropTable(jdbcConnection);
-        createTable(jdbcConnection);
+        jdbcSession.autocreateDatabase(filterContext.properties());
+        dropTable(jdbcSession);
+        createTable(jdbcSession);
     }
 
-    synchronized private void dropTable(JDBCConnection jdbcConnection) {
-        jdbcConnection.createTableCommand(DBSchema.class)
+    synchronized private void dropTable(JDBCSession jdbcSession) {
+        jdbcSession.createTableCommand(DBSchema.class)
                 .dropTableIfExists(DBSchema.DATABASE_READER_IT)
                 .asIgnore();
     }
 
-    synchronized private void createTable(JDBCConnection jdbcConnection) {
-        jdbcConnection.createTableCommand(DBSchema.class)
+    synchronized private void createTable(JDBCSession jdbcSession) {
+        jdbcSession.createTableCommand(DBSchema.class)
                 .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
                 .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
                 .addColumn(DB_STRING_DATA, SQLDataType.VARCHAR)
@@ -80,29 +79,26 @@ public class JDBCStatements {
                 .asIgnore();
     }
 
-    synchronized private void createDatabase(FilterContext jdbcContext, JDBCConnection jdbcConnection) {
-        jdbcConnection.autocreateDatabase(jdbcContext.properties());
-    }
 
-    private int getLatestIndex(JDBCConnection jdbcConnection) {
-        return jdbcConnection
+    private int getLatestIndex(JDBCSession jdbcSession) {
+        return jdbcSession
                 .createQuery(DBSchema.class)
                 .selectMax(DB_INDEX).from(DBSchema.DATABASE_READER_IT).create()
                 .asInt().findFirst()
                 .orElse(0);
     }
 
-    private JDBCQuery queryLatestDataQueryBuilder(JDBCConnection jdbcConnection, int maxIndex) {
-        return jdbcConnection
+    private JDBCQuery queryLatestDataQueryBuilder(JDBCSession jdbcSession, int maxIndex) {
+        return jdbcSession
             .createQuery(DBSchema.class)
             .selectAll().from(DBSchema.DATABASE_READER_IT)
             .where(DB_INDEX).isGreaterThan(this.lastForwardedIndexQueryBuilder).and(DB_INDEX).isLessOrEqual(maxIndex)
             .create();
     }
 
-    private JDBCQuery queryLatestDataPreparedStatement(JDBCConnection jdbcConnection, int maxIndex) {
+    private JDBCQuery queryLatestDataPreparedStatement(JDBCSession jdbcSession, int maxIndex) {
 
-        return new JDBCQuery(() -> jdbcConnection,
+        return jdbcSession.preparedStatement(
                 "select * from database_reader_it where DB_INDEX > ? and DB_INDEX <= ?",
                  List.of(this.lastForwardedIndexPreparedStatement, maxIndex));
     }

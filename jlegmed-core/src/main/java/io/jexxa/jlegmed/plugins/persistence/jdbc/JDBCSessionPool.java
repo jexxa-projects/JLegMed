@@ -10,7 +10,7 @@ import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 
 public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();
-    public static JDBCConnection getJDBCConnection(FilterContext filterContext) {
+    public static JDBCConnection jdbcConnection(FilterContext filterContext) {
         return getConnection(filterContext.properties(), INSTANCE);
     }
     private void initJDBCSessions(FilterProperties filterProperties)

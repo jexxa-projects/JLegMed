@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.persistence;
+package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 
 import io.jexxa.common.facade.jdbc.JDBCConnection;
@@ -12,15 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_INDEX;
-import static io.jexxa.jlegmed.plugins.persistence.JDBCStatementsForTestData.DBSchema.DB_STRING_DATA;
-import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.getJDBCConnection;
+import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool.jdbcConnection;
+import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCStatements.DBSchema.DB_INDEX;
+import static io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCStatements.DBSchema.DB_STRING_DATA;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
-public class JDBCStatementsForTestData {
-    private int lastForwardedIndexQueryBuilder = 0;
-    private int lastForwardedIndexPreparedStatement = 0;
-
+public class JDBCStatements {
     enum DBSchema {
         DB_INDEX,
         DB_STRING_DATA,
@@ -28,10 +25,11 @@ public class JDBCStatementsForTestData {
         DATABASE_READER_IT // Name of the database
     }
 
+    private int lastForwardedIndexQueryBuilder = 0;
+    private int lastForwardedIndexPreparedStatement = 0;
 
-
-    synchronized public TestData insertTestData(TestData data, FilterContext filterContext) {
-        var jdbcConnection = getJDBCConnection(filterContext);
+    synchronized public DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
+        var jdbcConnection = jdbcConnection(filterContext);
 
         jdbcConnection.createCommand(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
@@ -41,8 +39,8 @@ public class JDBCStatementsForTestData {
         return data;
     }
 
-    synchronized public void readTestDataQueryBuilder(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
-        var jdbcConnection = getJDBCConnection(filterContext);
+    synchronized public void readWithQueryBuilder(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
+        var jdbcConnection = jdbcConnection(filterContext);
 
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataQueryBuilder(jdbcConnection, latestIndex)
@@ -50,8 +48,8 @@ public class JDBCStatementsForTestData {
         this.lastForwardedIndexQueryBuilder = latestIndex;
     }
 
-    synchronized public void readTestDataPreparedStatement(FilterContext filterContext, OutputPipe<TestData> outputPipe) {
-        var jdbcConnection = getJDBCConnection(filterContext);
+    synchronized public void readWithPreparedStatement(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
+        var jdbcConnection = jdbcConnection(filterContext);
 
         var latestIndex = getLatestIndex(jdbcConnection);
         queryLatestDataPreparedStatement(jdbcConnection, latestIndex)
@@ -60,7 +58,7 @@ public class JDBCStatementsForTestData {
     }
 
     synchronized public void bootstrapDatabase(FilterContext filterContext) {
-        var jdbcConnection = getJDBCConnection(filterContext);
+        var jdbcConnection = jdbcConnection(filterContext);
 
         createDatabase(filterContext, jdbcConnection);
         dropTable(jdbcConnection);
@@ -109,9 +107,8 @@ public class JDBCStatementsForTestData {
                  List.of(this.lastForwardedIndexPreparedStatement, maxIndex));
     }
 
-    private void forwardData(ResultSet resultSet, OutputPipe<TestData> outputPipe) throws SQLException {
-        var data = new TestData(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name()));
+    private void forwardData(ResultSet resultSet, OutputPipe<DataToBeStored> outputPipe) throws SQLException {
+        var data = new DataToBeStored(resultSet.getInt(DB_INDEX.name()), resultSet.getString(DB_STRING_DATA.name()));
         outputPipe.forward(data);
     }
-
 }

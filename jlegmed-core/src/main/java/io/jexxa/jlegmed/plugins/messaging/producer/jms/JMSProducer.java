@@ -55,12 +55,6 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     }
 
 
-
-    @Override
-    public IDrivingAdapter drivingAdapter() {
-        return jmsAdapter;
-    }
-
     public static <T> JMSProducer<T> jmsTopic(String topicName, BiFunction<String, Class<T>, T> deserializer)
     {
         return new JMSProducer<>(topic(topicName), deserializer);

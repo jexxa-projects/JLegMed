@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 
-import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
 import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -42,10 +41,6 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         return this;
     }
 
-    @Override
-    public IDrivingAdapter drivingAdapter() {
-        return scheduler;
-    }
 
     @Override
     public void stop() {

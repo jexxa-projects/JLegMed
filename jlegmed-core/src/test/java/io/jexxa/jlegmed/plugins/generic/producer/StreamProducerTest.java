@@ -23,7 +23,6 @@ class StreamProducerTest {
 
         //Act
         objectUnderTest.reachStarted();
-        objectUnderTest.drivingAdapter().start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> receivingPipe.getCollectedData().size() == 10);

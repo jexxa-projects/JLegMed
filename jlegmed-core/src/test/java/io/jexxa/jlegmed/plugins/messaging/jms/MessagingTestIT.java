@@ -26,11 +26,11 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(JMSSender::myQueue).useProperties("test-jms-connection");
+                .and().consumeWith(MyQueue::sendTo).useProperties("test-jms-connection");
 
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsQueue("MyQueue", MessageDecoder::fromJSON) ).useProperties("test-jms-connection")
+                .await(Integer.class).from( MyQueue::receiveAsJSON ).useProperties("test-jms-connection")
 
                 .and().consumeWith( messageCollector::collect );
 
@@ -53,10 +53,10 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( JMSSender::myTopic ).useProperties("test-jms-connection");
+                .and().consumeWith( MyTopic::sendTo ).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsTopic("MyTopic", MessageDecoder::fromJSON) ).useProperties("test-jms-connection")
+                .await(Integer.class).from( MyTopic::receiveAsJSON ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::collect );
 
         //Act
@@ -67,8 +67,26 @@ class MessagingTestIT {
         jlegmed.stop();
     }
 
-    static class JMSSender {
-        public static <T> void myTopic(T data, FilterContext filterContext)
+    static class MyQueue {
+
+        public static <T> void sendTo(T data, FilterContext filterContext)
+        {
+            jmsSender(filterContext)
+                    .send(data)
+                    .addHeader("Type", data.getClass().getSimpleName())
+                    .toQueue("MyQueue")
+                    .asJson();
+        }
+
+        public static <T> JMSProducer<T> receiveAsJSON()
+        {
+            return jmsQueue("MyQueue", MessageDecoder::fromJSON);
+        }
+    }
+
+    static class MyTopic
+    {
+        public static <T> void sendTo(T data, FilterContext filterContext)
         {
             jmsSender(filterContext)
                     .send(data)
@@ -77,13 +95,9 @@ class MessagingTestIT {
                     .asJson();
         }
 
-        public static <T> void myQueue(T data, FilterContext filterContext)
+        public static <T> JMSProducer<T> receiveAsJSON()
         {
-            jmsSender(filterContext)
-                    .send(data)
-                    .addHeader("Type", data.getClass().getSimpleName())
-                    .toQueue("MyQueue")
-                    .asJson();
+            return jmsTopic("MyTopic", MessageDecoder::fromJSON);
         }
     }
 }

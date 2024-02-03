@@ -3,13 +3,10 @@ package io.jexxa.jlegmed.plugins.messaging.socket.producer;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.plugins.messaging.socket.processor.TCPConnection;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 import static io.jexxa.jlegmed.plugins.messaging.socket.producer.TCPReceiver.tcpReceiver;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -64,14 +61,11 @@ class TCPReceiverIT {
 
     public static void sendMessageMultipleTimes(String message, int counter) throws IOException
     {
-        var clientSocket = new Socket("localhost", 6665);
-        var bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
+        var tcpConnection = new TCPConnection("localhost", 6665);
         for (int i = 0; i < counter; ++i) {
-            bufferedWriter.write(message);
+            tcpConnection.sendMessage(message);
         }
-        bufferedWriter.flush();
-        bufferedWriter.close();
-        clientSocket.close();
+        tcpConnection.close();
     }
 
     public static void sendMessage(String message) throws IOException

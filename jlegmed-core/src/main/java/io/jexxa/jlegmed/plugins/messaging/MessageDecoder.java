@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.messaging.producer.jms;
+package io.jexxa.jlegmed.plugins.messaging;
 
 import io.jexxa.common.facade.json.JSONManager;
 

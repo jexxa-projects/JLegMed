@@ -46,6 +46,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
+
     public <R> Binding<R> processWith(PipedProcessor<T, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
@@ -70,6 +71,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, null, flowGraph);
     }
 
+    @Deprecated
     public <R> Binding<Void> consumeWith(Processor<T, R> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 

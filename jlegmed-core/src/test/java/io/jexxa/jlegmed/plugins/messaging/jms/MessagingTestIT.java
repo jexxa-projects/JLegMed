@@ -1,15 +1,16 @@
-package io.jexxa.jlegmed.plugins.messaging;
+package io.jexxa.jlegmed.plugins.messaging.jms;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.MessageDecoder;
+import io.jexxa.jlegmed.plugins.messaging.MessageDecoder;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.messaging.MessageSenderPool.getMessageSender;
-import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsQueue;
-import static io.jexxa.jlegmed.plugins.messaging.producer.jms.JMSProducer.jmsTopic;
+import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsQueue;
+import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSender;
+
+import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsTopic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -18,7 +19,7 @@ class MessagingTestIT {
     @Test
     void testQueueMessaging() {
         //Arrange
-        MessageSenderPool.init();
+        JMSPool.init();
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
@@ -44,7 +45,7 @@ class MessagingTestIT {
     @Test
     void testTopicMessaging() {
         //Arrange
-        MessageSenderPool.init();
+        JMSPool.init();
         var messageCollector = new GenericCollector<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
@@ -69,7 +70,7 @@ class MessagingTestIT {
     static class JMSSender {
         public static <T> void myTopic(T data, FilterContext filterContext)
         {
-            getMessageSender(filterContext)
+            jmsSender(filterContext)
                     .send(data)
                     .addHeader("Type", data.getClass().getSimpleName())
                     .toTopic("MyTopic")
@@ -78,7 +79,7 @@ class MessagingTestIT {
 
         public static <T> void myQueue(T data, FilterContext filterContext)
         {
-            getMessageSender(filterContext)
+            jmsSender(filterContext)
                     .send(data)
                     .addHeader("Type", data.getClass().getSimpleName())
                     .toQueue("MyQueue")

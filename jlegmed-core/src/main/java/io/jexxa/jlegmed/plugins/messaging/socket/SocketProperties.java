@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.socket;
+package io.jexxa.jlegmed.plugins.messaging.socket;
 
 public final class SocketProperties {
     public static final String TCP_PORT = "tcp.port";

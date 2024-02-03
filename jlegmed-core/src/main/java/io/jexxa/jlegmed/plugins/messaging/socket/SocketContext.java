@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.socket;
+package io.jexxa.jlegmed.plugins.messaging.socket;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
 

@@ -14,7 +14,7 @@ public class AwaitBuilder<T> {
         this.sourceType = sourceType;
     }
 
-    public Binding<T> from(ActiveProducer<T> producer) {
+    private Binding<T> from(ActiveProducer<T> producer) {
         producer.producingType(sourceType);
         flowGraph.setProducer(producer);
 

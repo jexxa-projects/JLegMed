@@ -1,6 +1,9 @@
 package io.jexxa.jlegmed.plugins.generic;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
+
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 
 public class GenericProducer {
 
@@ -9,6 +12,11 @@ public class GenericProducer {
         var currentCounter = context.state(stateID,Integer.class).orElse(0);
 
         return context.updateState(stateID, currentCounter+1);
+    }
+
+    public static ActiveProducer<Integer> scheduledCounter()
+    {
+        return scheduledProducer(GenericProducer::counter);
     }
 
 

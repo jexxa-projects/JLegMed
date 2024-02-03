@@ -8,8 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -80,7 +78,7 @@ class TransformDataTest {
 
         jlegmed.newFlowGraph("ActiveFlowGraph")
                 .await(Integer.class)
-                .from(activeProducer(GenericProducer::counter, schedule(50, MILLISECONDS)))
+                .from(GenericProducer::scheduledCounter)
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( TestFilter::skipEachSecondMessage )

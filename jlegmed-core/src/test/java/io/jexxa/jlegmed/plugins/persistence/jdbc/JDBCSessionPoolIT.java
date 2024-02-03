@@ -33,7 +33,7 @@ class JDBCSessionPoolIT {
         jLegMed.newFlowGraph("HelloWorld")
 
                 .await(DataToBeStored.class)
-                .from(streamProducer(Stream.empty()))
+                .from(() -> streamProducer(Stream.empty()))
                 .and().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
                 .and().consumeWith(messageCollector::collect);
         //Act/Assert

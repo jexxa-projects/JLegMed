@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ class FlowGraphConfigurationTest {
                 .await(String.class)
 
                 // The producer appends some properties-information such as propertiesName ...
-                .from(activeProducer( context -> "Hello World" + context.propertiesName()))
+                .from( () -> scheduledProducer(context -> "Hello World" + context.propertiesName()))
                 // ... that is injected by method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
@@ -65,7 +65,7 @@ class FlowGraphConfigurationTest {
         var objectUnderTest = jlegmed.newFlowGraph("InvalidProperties")
 
                 .await(String.class)
-                .from(activeProducer(context -> "Hello World" + context.propertiesName()));
+                .from( () -> scheduledProducer(context -> "Hello World" + context.propertiesName()));
 
         //Act / Assert - If the propertiesPrefix is not defined in the properties file, an exception is thrown
         assertThrows( IllegalArgumentException.class, () -> objectUnderTest.useProperties(propertiesPrefix));

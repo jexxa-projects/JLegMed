@@ -57,7 +57,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     public record Schedule(int fixedRate, TimeUnit timeUnit){}
 
 
-    public static <T> ScheduledProducer<T> activeProducer(BiFunction<FilterContext, Class<T>, T> biFunction) {
+    public static <T> ScheduledProducer<T> scheduledProducer(BiFunction<FilterContext, Class<T>, T> biFunction) {
         return new ScheduledProducer<>() {
             @Override
             protected T generateData() {
@@ -65,7 +65,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
             }
         };
     }
-    public static <T> ScheduledProducer<T> activeProducer(Function<FilterContext, T> contextFunction) {
+    public static <T> ScheduledProducer<T> scheduledProducer(Function<FilterContext, T> contextFunction) {
         return new ScheduledProducer<>() {
             @Override
             protected T generateData() {
@@ -74,7 +74,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         };
     }
 
-    public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier) {
+    public static <T> ScheduledProducer<T> scheduledProducer(Supplier<T> contextSupplier) {
         return new ScheduledProducer<>() {
             @Override
             protected T generateData() {
@@ -83,7 +83,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         };
     }
 
-    public static <T> ScheduledProducer<T> activeProducer(
+    public static <T> ScheduledProducer<T> scheduledProducer(
             BiFunction<FilterContext, Class<T>, T> biFunction, Schedule schedule
     ) {
         return new ScheduledProducer<>(schedule) {
@@ -94,7 +94,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         };
     }
 
-    public static <T> ScheduledProducer<T> activeProducer(Function<FilterContext, T> contextFunction,Schedule schedule) {
+    public static <T> ScheduledProducer<T> scheduledProducer(Function<FilterContext, T> contextFunction, Schedule schedule) {
         return new ScheduledProducer<>(schedule) {
             @Override
             protected T generateData() {
@@ -103,7 +103,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         };
     }
 
-    public static <T> ScheduledProducer<T> activeProducer(Supplier<T> contextSupplier, Schedule schedule) {
+    public static <T> ScheduledProducer<T> scheduledProducer(Supplier<T> contextSupplier, Schedule schedule) {
         return new ScheduledProducer<>(schedule) {
             @Override
             protected T generateData() {

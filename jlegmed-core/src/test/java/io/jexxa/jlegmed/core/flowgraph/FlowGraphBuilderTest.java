@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.activeProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -111,7 +111,7 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("AwaitHelloWorld")
                 .await(String.class)
-                .from(activeProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
+                .from(() -> scheduledProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( GenericProcessors::idProcessor )

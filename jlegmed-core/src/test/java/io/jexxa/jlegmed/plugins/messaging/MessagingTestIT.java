@@ -4,7 +4,7 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
-import io.jexxa.jlegmed.plugins.messaging.producer.jms.MessageConverter;
+import io.jexxa.jlegmed.plugins.messaging.producer.jms.MessageDecoder;
 import org.junit.jupiter.api.Test;
 
 import static io.jexxa.jlegmed.plugins.messaging.MessageSenderPool.getMessageSender;
@@ -29,7 +29,7 @@ class MessagingTestIT {
 
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsQueue("MyQueue", MessageConverter::fromJSON) ).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsQueue("MyQueue", MessageDecoder::fromJSON) ).useProperties("test-jms-connection")
 
                 .and().consumeWith( messageCollector::collect );
 
@@ -55,7 +55,7 @@ class MessagingTestIT {
                 .and().consumeWith( JMSSender::myTopic ).useProperties("test-jms-connection");
 
         jlegmed.newFlowGraph("Async MessageReceiver")
-                .await(Integer.class).from( jmsTopic("MyTopic", MessageConverter::fromJSON) ).useProperties("test-jms-connection")
+                .await(Integer.class).from( jmsTopic("MyTopic", MessageDecoder::fromJSON) ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::collect );
 
         //Act

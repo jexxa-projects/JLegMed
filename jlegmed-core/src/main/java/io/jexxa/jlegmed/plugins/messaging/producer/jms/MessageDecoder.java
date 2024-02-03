@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.producer.jms;
 
 import io.jexxa.common.facade.json.JSONManager;
 
-public class MessageConverter {
+public class MessageDecoder {
     public static <T>  T fromJSON(String message, Class<T> typeInformation)
     {
         return JSONManager
@@ -10,7 +10,7 @@ public class MessageConverter {
                 .fromJson(message, typeInformation);
     }
 
-    private MessageConverter() {
+    private MessageDecoder() {
         //Private constructor to hide the implicit public one
     }
 }

@@ -36,10 +36,7 @@ public class JMSPool {
                     "Please invoke MessageSender.init() in main");
         }
 
-        INSTANCE.messageSenderMap.computeIfAbsent(filterContext.propertiesName(),
-                key -> INSTANCE.internalJMSSender(filterContext.filterProperties()));
-
-        return INSTANCE.messageSenderMap.get(filterContext.propertiesName());
+        return INSTANCE.internalJMSSender(filterContext.filterProperties());
     }
 
     public static <T> JMSProducer<T> jmsTopic(String topicName, BiFunction<String, Class<T>, T> deserializer)
@@ -62,7 +59,10 @@ public class JMSPool {
 
     private MessageSender internalJMSSender(FilterProperties filterProperties)
     {
-        return MessageSenderManager.getMessageSender(JMSPool.class, filterProperties.properties());
+        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.propertiesName(),
+                key -> MessageSenderManager.getMessageSender(JMSPool.class, filterProperties.properties()));
+
+        return messageSenderMap.get(filterProperties.propertiesName());
     }
 
 

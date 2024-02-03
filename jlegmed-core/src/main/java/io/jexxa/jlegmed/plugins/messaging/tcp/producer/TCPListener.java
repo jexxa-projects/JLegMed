@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.messaging.socket.producer;
+package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 
 import io.jexxa.common.facade.utils.function.ThrowingConsumer;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;

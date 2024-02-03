@@ -71,13 +71,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, null, flowGraph);
     }
 
-    @Deprecated
-    public <R> Binding<Void> consumeWith(Processor<T, R> successor) {
-        predecessorPipe.connectTo(successor.inputPipe());
 
-        flowGraph.addProcessor(successor);
-        return new Binding<>(successor, null, flowGraph);
-    }
     public <R> Binding<R> processWith(Processor<T, R> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 

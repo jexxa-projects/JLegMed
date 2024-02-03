@@ -1,7 +1,9 @@
-package io.jexxa.jlegmed.plugins.messaging.socket.processor;
+package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
-import io.jexxa.jlegmed.plugins.messaging.socket.producer.TCPReceiver;
+import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
+import io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +13,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
+
+import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 
 public class TCPConnection {
 
@@ -29,6 +33,12 @@ public class TCPConnection {
         validateFilterSettings();
     }
 
+    public TCPConnection(FilterProperties filterProperties)
+    {
+        this(filterProperties.properties().getProperty(TCPProperties.TCP_ADDRESS),
+                Integer.parseInt(filterProperties.properties().getProperty(TCPProperties.TCP_PORT)));
+    }
+
 
     private void validateFilterSettings() {
         if (port == -1) {
@@ -42,15 +52,22 @@ public class TCPConnection {
 
 
     public synchronized void close() {
-
         try {
-           clientSocket.close();
-           bufferedWriter.close();
-           bufferedReader.close();
+            if(clientSocket != null) {
+                clientSocket.close();
+            }
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
         } catch (IOException e) {
             SLF4jLogger.getLogger(TCPConnection.class).error("Could not proper close listening socket on port {}",port );
         }
         clientSocket = null;
+        bufferedReader = null;
+        bufferedWriter = null;
     }
 
     public <T> void sendMessage(T data, Function<T, String> encoder) {
@@ -81,5 +98,15 @@ public class TCPConnection {
         }
     }
 
+    public static String sendTextMessage(String message, FilterContext filterContext)
+    {
+        TCPConnectionPool.tcpConnection(filterContext).sendMessage(message + "\n");
+        return message;
+    }
 
+    public static <T> T sendJSONMessage(T message, FilterContext filterContext)
+    {
+        sendTextMessage(getJSONConverter().toJson(message), filterContext);
+        return message;
+    }
 }

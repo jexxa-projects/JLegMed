@@ -1,10 +1,10 @@
-package io.jexxa.jlegmed.plugins.messaging.socket.producer;
+package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.common.facade.utils.function.ThrowingFunction;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
-import io.jexxa.jlegmed.plugins.messaging.socket.SocketContext;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
-import static io.jexxa.jlegmed.plugins.messaging.socket.SocketProperties.TCP_PORT;
+import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
@@ -133,4 +133,5 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         return getJSONConverter().fromJson(receiveLine(context), dataType);
     }
 
+    public record SocketContext(BufferedReader bufferedReader, BufferedWriter bufferedWriter, FilterContext filterContext) { }
 }

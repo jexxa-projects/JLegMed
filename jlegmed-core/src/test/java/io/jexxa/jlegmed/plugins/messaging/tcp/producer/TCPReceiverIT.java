@@ -1,14 +1,14 @@
-package io.jexxa.jlegmed.plugins.messaging.socket.producer;
+package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
-import io.jexxa.jlegmed.plugins.messaging.socket.processor.TCPConnection;
+import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnection;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static io.jexxa.jlegmed.plugins.messaging.socket.producer.TCPReceiver.tcpReceiver;
+import static io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver.tcpReceiver;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
@@ -22,7 +22,7 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from(tcpReceiver( TCPReceiver::receiveLine)).useProperties("test-tcp-sender")
+                .from(tcpReceiver( TCPReceiver::receiveLine )).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
@@ -43,7 +43,7 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
-                .from(tcpReceiver( TCPReceiver::receiveLine) ).useProperties("test-tcp-sender")
+                .from(tcpReceiver( TCPReceiver::receiveLine ) ).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
@@ -59,7 +59,7 @@ class TCPReceiverIT {
 
 
 
-    public static void sendMessageMultipleTimes(String message, int counter) throws IOException
+    public static void sendMessageMultipleTimes(String message, int counter)
     {
         var tcpConnection = new TCPConnection("localhost", 6665);
         for (int i = 0; i < counter; ++i) {

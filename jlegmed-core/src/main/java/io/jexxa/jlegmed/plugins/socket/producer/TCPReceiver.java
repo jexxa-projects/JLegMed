@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.socket.producer;
 
-import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.common.facade.utils.function.ThrowingFunction;
@@ -33,7 +32,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         //Protected constructor so that only child classes can use them
     }
 
-    private final TCPAdapter tcpAdapter = new TCPAdapter();
+    private final TCPAdapter<T> tcpAdapter = new TCPAdapter<>();
 
     @Override
     public void init()
@@ -145,7 +144,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         return getJSONConverter().fromJson(receiveLine(context), dataType);
     }
 
-    private static class TCPAdapter implements IDrivingAdapter
+    private static class TCPAdapter<T>
     {
         private boolean isListening = false;
         private int port = -1;
@@ -153,7 +152,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
         private ExecutorService executorService;
 
-        private TCPReceiver<?> receiver;
+        private TCPReceiver<T> receiver;
 
 
         public void setPort(int port)
@@ -161,12 +160,10 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
             this.port = port;
         }
 
-        @Override
-        public void register(Object object) {
-            receiver = (TCPReceiver<?>)(object);
+        public void register(TCPReceiver<T> object) {
+            receiver = object;
         }
 
-        @Override
         public void start() {
             executorService = Executors.newCachedThreadPool();
             try {
@@ -178,7 +175,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
             executorService.execute(this::startListening);
         }
 
-        @Override
+
         public void stop() {
             isListening = false;
             try {

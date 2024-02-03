@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPMessagingIT.TestMessage.testMessage;
-import static io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver.tcpReceiver;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -24,7 +23,7 @@ class TCPMessagingIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from(tcpReceiver( TCPReceiver::receiveLine )).useProperties("test-tcp-receiver")
+                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-receiver")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
@@ -54,7 +53,7 @@ class TCPMessagingIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(TestMessage.class)
-                .from(tcpReceiver( TCPReceiver::receiveAsJSON )).useProperties("test-tcp-receiver")
+                .from( TCPReceiver::receiveJSON ).useProperties("test-tcp-receiver")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );

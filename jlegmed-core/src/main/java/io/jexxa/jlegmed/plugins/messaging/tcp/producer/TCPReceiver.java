@@ -128,9 +128,19 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         return context.bufferedReader().readLine();
     }
 
+    public static ActiveProducer<String> receiveMessage()
+    {
+        return tcpReceiver(TCPReceiver::receiveLine);
+    }
+
     public static <T> T receiveAsJSON(SocketContext context, Class<T> dataType) throws IOException
     {
         return getJSONConverter().fromJson(receiveLine(context), dataType);
+    }
+
+    public static <T> TCPReceiver<T> receiveJSON()
+    {
+        return tcpReceiver( TCPReceiver::receiveAsJSON );
     }
 
     public record SocketContext(BufferedReader bufferedReader, BufferedWriter bufferedWriter, FilterContext filterContext) { }

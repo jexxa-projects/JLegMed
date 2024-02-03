@@ -6,23 +6,20 @@ import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnection;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
-import static io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver.tcpReceiver;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class TCPReceiverIT {
 
     @Test
-    void testTCPReceiver() throws IOException
+    void testTCPReceiver()
     {
         var messageCollector = new GenericCollector<String>();
         JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from(tcpReceiver( TCPReceiver::receiveLine )).useProperties("test-tcp-sender")
+                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
@@ -36,14 +33,14 @@ class TCPReceiverIT {
 
 
     @Test
-    void testTCPReceiverOneMessagePerConnection() throws IOException
+    void testTCPReceiverOneMessagePerConnection()
     {
         var messageCollector = new GenericCollector<String>();
         JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
-                .from(tcpReceiver( TCPReceiver::receiveLine ) ).useProperties("test-tcp-sender")
+                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::collect );
@@ -68,7 +65,7 @@ class TCPReceiverIT {
         tcpConnection.close();
     }
 
-    public static void sendMessage(String message) throws IOException
+    public static void sendMessage(String message)
     {
        sendMessageMultipleTimes(message, 1);
     }

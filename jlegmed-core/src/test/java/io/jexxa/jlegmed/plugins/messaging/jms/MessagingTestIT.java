@@ -23,13 +23,15 @@ class MessagingTestIT {
         var messageCollector = new Stack<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
-        jlegmed.newFlowGraph("MessageSender")
+        // Send a simple counter via JMS message queue
+        jlegmed.newFlowGraph("Send messages to queue")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith(MyQueue::sendTo).useProperties("test-jms-connection");
 
 
-        jlegmed.newFlowGraph("Async MessageReceiver")
+        // Receive message via queue again
+        jlegmed.newFlowGraph("Receive messages from queue")
                 .await(Integer.class).from( MyQueue::receiveAsJSON ).useProperties("test-jms-connection")
 
                 .and().consumeWith( messageCollector::push );
@@ -49,12 +51,13 @@ class MessagingTestIT {
         var messageCollector = new Stack<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
-
+        // Send a simple counter via JMS topic
         jlegmed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith( MyTopic::sendTo ).useProperties("test-jms-connection");
 
+        // Receive a message via JMS topic again
         jlegmed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveAsJSON ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::push );

@@ -20,7 +20,7 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
-                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-sender")
+                .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::push );
@@ -41,7 +41,7 @@ class TCPReceiverIT {
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
-                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-sender")
+                .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::push );

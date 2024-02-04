@@ -21,15 +21,17 @@ class TCPMessagingIT {
         var messageCollector = new Stack<String>();
         JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
-        jLegMed.newFlowGraph("testTCPReceiver")
+        // Create a flow graph to listen on incoming text messages via TCP
+        jLegMed.newFlowGraph("TCP Listener")
                 .await(String.class)
-                .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-receiver")
+                .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-receiver")
 
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::push );
 
 
-        jLegMed.newFlowGraph("testTCPSender")
+        // Create a flow graph to send text messages via TCP connection
+        jLegMed.newFlowGraph("TCP Sender")
                 .every(500, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
@@ -51,6 +53,7 @@ class TCPMessagingIT {
         var messageCollector = new Stack<TestMessage>();
         JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
+        // Create a flow graph to listen on incoming json messages from TCP port
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(TestMessage.class)
                 .from( TCPReceiver::receiveJSON ).useProperties("test-tcp-receiver")
@@ -58,7 +61,7 @@ class TCPMessagingIT {
                 .and().processWith( GenericProcessors::consoleLogger )
                 .and().consumeWith( messageCollector::push );
 
-
+        // Create a flow graph to send text messages via TCP connection
         jLegMed.newFlowGraph("testTCPSender")
                 .every(500, MILLISECONDS)
                 .receive(TestMessage.class).from(() -> testMessage(counter.getAndIncrement(),"Hello World"))

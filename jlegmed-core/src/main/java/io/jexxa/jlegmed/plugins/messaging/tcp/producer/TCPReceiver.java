@@ -123,12 +123,12 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         };
     }
 
-    public static String receiveLine(SocketContext context) throws IOException
+    private static String receiveLine(SocketContext context) throws IOException
     {
         return context.bufferedReader().readLine();
     }
 
-    public static ActiveProducer<String> receiveMessage()
+    public static ActiveProducer<String> receiveTextMessage()
     {
         return tcpReceiver(TCPReceiver::receiveLine);
     }

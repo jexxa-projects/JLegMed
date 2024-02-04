@@ -61,10 +61,11 @@ class JDBCFlowGraphsIT {
 
         var objectUnderTest = new JDBCStatements();
 
-        // reset the database as part of bootstrapping
-        jLegMed.bootstrapFlowGraph("reset database")
+        // Bootstrap database and database schema
+        jLegMed.bootstrapFlowGraph("bootstrap database")
                 .execute(objectUnderTest::bootstrapDatabase).useProperties("test-jdbc-connection");
 
+        // Init some test data that should be read
         jLegMed.bootstrapFlowGraph("init test data")
                 .repeat(10)
                 .receive(Integer.class).from(GenericProducer::counter)
@@ -73,13 +74,14 @@ class JDBCFlowGraphsIT {
                 .and().processWith( objectUnderTest::insert ).useProperties("test-jdbc-connection")
                 .and().consumeWith( expectedData::push );
 
-        //Act
+        // Read all data from the database with a delay of 10ms between reads
         jLegMed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(objectUnderTest::readWithPreparedStatement).useProperties("test-jdbc-connection")
 
                 .and().consumeWith( result::push );
 
+        //Act
         jLegMed.start();
 
         //Assert
@@ -93,7 +95,7 @@ class JDBCFlowGraphsIT {
 
 
     @Test
-    void readWritePreparedStatements() {
+    void parallelReadWritePreparedStatements() {
         //Arrange
         JDBCSessionPool.init();
 
@@ -139,7 +141,7 @@ class JDBCFlowGraphsIT {
 
 
     @Test
-    void readWriteQueryBuilder() {
+    void parallelReadWriteQueryBuilder() {
         //Arrange
         var writerCollector = new Stack<DataToBeStored>();
         var readerCollector = new Stack<DataToBeStored>();
@@ -149,6 +151,7 @@ class JDBCFlowGraphsIT {
         //First, we bootstrap database
         jLegMed.bootstrapFlowGraph("bootstrap database").execute(jdbc::bootstrapDatabase).useProperties("test-jdbc-connection");
 
+        //Write continuously data into database
         jLegMed.newFlowGraph("writeToDatabase")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
@@ -157,7 +160,7 @@ class JDBCFlowGraphsIT {
                 .and().processWith( jdbc::insert).useProperties("test-jdbc-connection")
                 .and().processWith(writerCollector::push );
 
-
+        //read continuously from a database
         jLegMed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(jdbc::readWithQueryBuilder).useProperties("test-jdbc-connection")

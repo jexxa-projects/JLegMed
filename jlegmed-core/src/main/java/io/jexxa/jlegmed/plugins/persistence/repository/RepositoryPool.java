@@ -14,9 +14,9 @@ import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 @SuppressWarnings("java:S6548")
 public class RepositoryPool {
     private static boolean initialized = false;
-
-    public static final RepositoryPool INSTANCE = new RepositoryPool();
-    HashMap<String, Repository<?,?>> repositories = new HashMap<>();
+    private static final RepositoryPool INSTANCE = new RepositoryPool();
+    
+    private final HashMap<String, Repository<?,?>> repositories = new HashMap<>();
 
     public static <T, K> Repository<T, K> getRepository(Class<T> aggregateClazz,
                                                         Function<T,K> keyFunction, FilterContext filterContext)

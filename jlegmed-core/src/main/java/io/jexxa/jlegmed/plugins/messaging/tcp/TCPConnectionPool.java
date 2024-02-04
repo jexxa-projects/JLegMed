@@ -41,10 +41,10 @@ public class TCPConnectionPool {
 
     private TCPConnection internalTCPConnection(FilterProperties filterProperties)
     {
-        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.propertiesName(),
+        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.name(),
                 key -> new TCPConnection(filterProperties));
 
-        return INSTANCE.messageSenderMap.get(filterProperties.propertiesName());
+        return INSTANCE.messageSenderMap.get(filterProperties.name());
     }
 
     private void cleanup()

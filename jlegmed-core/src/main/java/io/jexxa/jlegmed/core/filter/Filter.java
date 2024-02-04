@@ -54,7 +54,7 @@ public abstract class Filter {
     protected String propertiesName() {
         return filterContext
                 .filterProperties()
-                .propertiesName();
+                .name();
     }
 
     protected FilterContext filterContext() {

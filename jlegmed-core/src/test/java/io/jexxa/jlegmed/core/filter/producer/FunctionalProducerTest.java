@@ -33,11 +33,11 @@ class FunctionalProducerTest {
     void testFunctionProducer()
     {
         //Arrange
-        var propertiesName = "someProperties";
+        var filterProperties = filterPropertiesOf("someProperties", new Properties());
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
         var objectUnderTest = producer(context -> "Hello World" + context.propertiesName() );
 
-        objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
+        objectUnderTest.useProperties(filterProperties);
         objectUnderTest.outputPipe().connectTo(inputPipe);
         objectUnderTest.reachStarted();
 
@@ -46,20 +46,20 @@ class FunctionalProducerTest {
 
         //Assert
         assertEquals(1, inputPipe.getCollectedData().size());
-        assertEquals("Hello World"+ propertiesName , inputPipe.getCollectedData().get(0));
+        assertEquals("Hello World"+ filterProperties.name() , inputPipe.getCollectedData().get(0));
     }
 
     @Test
     void testBiFunctionProducer()
     {
         //Arrange
-        var propertiesName = "someProperties";
+        var filterProperties = filterPropertiesOf("someProperties", new Properties());
         CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
         FunctionalProducer<String> objectUnderTest = producer( (filterContext, dataType) ->
                 "Hello World" + filterContext.propertiesName() + dataType.getSimpleName());
 
         objectUnderTest.producingType(String.class);
-        objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
+        objectUnderTest.useProperties(filterProperties);
         objectUnderTest.outputPipe().connectTo(inputPipe);
         objectUnderTest.reachStarted();
 
@@ -68,7 +68,7 @@ class FunctionalProducerTest {
 
         //Assert
         assertEquals(1, inputPipe.getCollectedData().size());
-        assertEquals("Hello World" + propertiesName + String.class.getSimpleName(), inputPipe.getCollectedData().get(0));
+        assertEquals("Hello World" + filterProperties.name() + String.class.getSimpleName(), inputPipe.getCollectedData().get(0));
     }
 
     @Test

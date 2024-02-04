@@ -9,7 +9,7 @@ Proposed
 ## Context
 
 When defining a flow graph, we should:
-  * Separate its logic as good as possible to avoid dependencies between filters 
+  * Separate its logic as well as possible to avoid dependencies between filters 
   * Focus on `what` instead of `how` to improve readability and maintenance of the application. 
 
 ## Decision

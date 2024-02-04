@@ -59,10 +59,10 @@ public class JMSPool {
 
     private MessageSender internalJMSSender(FilterProperties filterProperties)
     {
-        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.propertiesName(),
+        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.name(),
                 key -> MessageSenderManager.getMessageSender(JMSPool.class, filterProperties.properties()));
 
-        return messageSenderMap.get(filterProperties.propertiesName());
+        return messageSenderMap.get(filterProperties.name());
     }
 
 

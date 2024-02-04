@@ -92,7 +92,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     }
 
 
-    abstract T receiveMessage(SocketContext socketContext) throws IOException;
+    abstract T receiveMessage(SocketContext socketContext);
 
 
     public static <T> TCPReceiver<T> tcpReceiver(ThrowingFunction<SocketContext, T, IOException> consumer) {

@@ -13,7 +13,7 @@ import static io.jexxa.common.drivenadapter.persistence.RepositoryManager.getRep
 public class Repository<T, K> {
 
     private final IRepository<T, K> iRepository;
-    Function<T, K> keyFunction;
+    private final Function<T, K> keyFunction;
 
     Repository(Class<T> aggregateClazz,
                Function<T,K> keyFunction,

@@ -2,11 +2,12 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -33,7 +34,7 @@ class TransformDataTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
+        var messageCollector = new Stack<TestFilter.UpdatedContract>();
         jlegmed.newFlowGraph("ChangeDataType")
                 .every(10, MILLISECONDS)
 
@@ -41,20 +42,20 @@ class TransformDataTest {
 
                 .and().processWith(TestFilter::transformToUpdatedContract)
                 .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertFalse( messageCollector.getMessages().isEmpty());
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertFalse( messageCollector.isEmpty());
     }
 
 
     @Test
     void testTransformDataWithFilterState() {
         //Arrange
-        var messageCollector = new GenericCollector<TestFilter.UpdatedContract>();
+        var messageCollector = new Stack<TestFilter.UpdatedContract>();
 
         jlegmed.newFlowGraph("TransformDataWithFilterState")
                 .every(10, MILLISECONDS)
@@ -62,19 +63,19 @@ class TransformDataTest {
                 .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
                 .and().processWith( TestFilter::contextTransformer)
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
     }
 
 
     @Test
     void testSkipData() {
         //Arrange
-        var messageCollector = new GenericCollector<Integer>();
+        var messageCollector = new Stack<Integer>();
 
         jlegmed.newFlowGraph("ActiveFlowGraph")
                 .await(Integer.class)
@@ -82,21 +83,21 @@ class TransformDataTest {
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( TestFilter::skipEachSecondMessage )
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jlegmed.start();
 
         //Assert - That each second message is skipped
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals(1, messageCollector.getMessages().get(0));
-        assertEquals(3, messageCollector.getMessages().get(1));
-        assertEquals(5, messageCollector.getMessages().get(2));
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(1, messageCollector.toArray()[0]);
+        assertEquals(3, messageCollector.toArray()[1]);
+        assertEquals(5, messageCollector.toArray()[2]);
     }
 
     @Test
     void testDuplicateData() {
         //Arrange
-        var messageCollector = new GenericCollector<String>();
+        var messageCollector = new Stack<String>();
 
         jlegmed.newFlowGraph("DuplicateData")
                 .repeat(2)
@@ -104,7 +105,7 @@ class TransformDataTest {
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .and().processWith( GenericProcessors::duplicate )
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
 
         jlegmed.monitorPipes("DuplicateData", logFunctionStyle());
 
@@ -112,10 +113,10 @@ class TransformDataTest {
         jlegmed.start();
 
         //Assert - That each second message is skipped
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() == 4);
-        assertEquals("HelloWorld", messageCollector.getMessages().get(0));
-        assertEquals("HelloWorld", messageCollector.getMessages().get(1));
-        assertEquals("HelloWorld", messageCollector.getMessages().get(2));
-        assertEquals("HelloWorld", messageCollector.getMessages().get(3));
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() == 4);
+        assertEquals("HelloWorld", messageCollector.toArray()[0]);
+        assertEquals("HelloWorld", messageCollector.toArray()[1]);
+        assertEquals("HelloWorld", messageCollector.toArray()[2]);
+        assertEquals("HelloWorld", messageCollector.toArray()[3]);
     }
 }

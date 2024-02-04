@@ -2,10 +2,11 @@ package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -30,7 +31,7 @@ class JDBCFlowGraphsIT {
         //Arrange
         JDBCSessionPool.init();
 
-        var messageCollector = new GenericCollector<DataToBeStored>();
+        var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 
         jLegMed.bootstrapFlowGraph("bootstrap database").execute(database::bootstrapDatabase).useProperties("test-jdbc-connection");
@@ -42,12 +43,12 @@ class JDBCFlowGraphsIT {
 
                 .and().processWith( data -> new DataToBeStored(data, "Hello World " + data))
                 .and().processWith( database::insert).useProperties("test-jdbc-connection")
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jLegMed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 10);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 10);
     }
 
     @Test
@@ -55,8 +56,8 @@ class JDBCFlowGraphsIT {
         //Arrange
         JDBCSessionPool.init();
 
-        var expectedData = new GenericCollector<DataToBeStored>();
-        var result = new GenericCollector<DataToBeStored>();
+        var expectedData = new Stack<DataToBeStored>();
+        var result = new Stack<DataToBeStored>();
 
         var objectUnderTest = new JDBCStatements();
 
@@ -70,24 +71,24 @@ class JDBCFlowGraphsIT {
 
                 .and().processWith( data -> new DataToBeStored(data, "Hello World " + data) )
                 .and().processWith( objectUnderTest::insert ).useProperties("test-jdbc-connection")
-                .and().consumeWith( expectedData::collect );
+                .and().consumeWith( expectedData::push );
 
         //Act
         jLegMed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(objectUnderTest::readWithPreparedStatement).useProperties("test-jdbc-connection")
 
-                .and().consumeWith( result::collect );
+                .and().consumeWith( result::push );
 
         jLegMed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> expectedData.getNumberOfReceivedMessages() >= 10 );
+        await().atMost(3, SECONDS).until(() -> expectedData.size() >= 10 );
 
-        assertEquals(expectedData.getMessages().get(0), result.getMessages().get(0));
-        assertEquals(expectedData.getMessages().get(1), result.getMessages().get(1));
-        assertEquals(expectedData.getMessages().get(2), result.getMessages().get(2));
-        assertEquals(expectedData.getMessages().get(3), result.getMessages().get(3));
+        assertEquals(expectedData.toArray()[0], result.toArray()[0]);
+        assertEquals(expectedData.toArray()[1], result.toArray()[1]);
+        assertEquals(expectedData.toArray()[2], result.toArray()[2]);
+        assertEquals(expectedData.toArray()[3], result.toArray()[3]);
     }
 
 
@@ -96,8 +97,8 @@ class JDBCFlowGraphsIT {
         //Arrange
         JDBCSessionPool.init();
 
-        var writerCollector = new GenericCollector<DataToBeStored>();
-        var readerCollector = new GenericCollector<DataToBeStored>();
+        var writerCollector = new Stack<DataToBeStored>();
+        var readerCollector = new Stack<DataToBeStored>();
 
         var jdbc = new JDBCStatements();
 
@@ -112,36 +113,36 @@ class JDBCFlowGraphsIT {
 
                 .and().processWith( data -> new DataToBeStored(data, "Hello World " + data) )
                 .and().processWith( jdbc::insert ).useProperties("test-jdbc-connection")
-                .and().consumeWith( writerCollector::collect );
+                .and().consumeWith( writerCollector::push );
 
         //read continuously from a database
         jLegMed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(jdbc::readWithPreparedStatement).useProperties("test-jdbc-connection")
 
-                .and().consumeWith( readerCollector::collect );
+                .and().consumeWith( readerCollector::push );
 
         //Act
         jLegMed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(
-                () -> readerCollector.getNumberOfReceivedMessages() >= 10
-                        && writerCollector.getNumberOfReceivedMessages() >= 10
+                () -> readerCollector.size() >= 10
+                        && writerCollector.size() >= 10
         );
 
-        assertEquals(writerCollector.getMessages().get(0), readerCollector.getMessages().get(0));
-        assertEquals(writerCollector.getMessages().get(1), readerCollector.getMessages().get(1));
-        assertEquals(writerCollector.getMessages().get(2), readerCollector.getMessages().get(2));
-        assertEquals(writerCollector.getMessages().get(3), readerCollector.getMessages().get(3));
+        assertEquals(writerCollector.toArray()[0], readerCollector.toArray()[0]);
+        assertEquals(writerCollector.toArray()[1], readerCollector.toArray()[1]);
+        assertEquals(writerCollector.toArray()[2], readerCollector.toArray()[2]);
+        assertEquals(writerCollector.toArray()[3], readerCollector.toArray()[3]);
     }
 
 
     @Test
     void readWriteQueryBuilder() {
         //Arrange
-        var writerCollector = new GenericCollector<DataToBeStored>();
-        var readerCollector = new GenericCollector<DataToBeStored>();
+        var writerCollector = new Stack<DataToBeStored>();
+        var readerCollector = new Stack<DataToBeStored>();
 
         var jdbc = new JDBCStatements();
 
@@ -154,24 +155,24 @@ class JDBCFlowGraphsIT {
 
                 .and().processWith(data -> new DataToBeStored(data, "Hello World " + data))
                 .and().processWith( jdbc::insert).useProperties("test-jdbc-connection")
-                .and().processWith(writerCollector::collect );
+                .and().processWith(writerCollector::push );
 
 
         jLegMed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(jdbc::readWithQueryBuilder).useProperties("test-jdbc-connection")
-                .and().processWith(readerCollector::collect );
+                .and().processWith(readerCollector::push );
         //Act
         jLegMed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> readerCollector.getNumberOfReceivedMessages() >= 10
-                && writerCollector.getNumberOfReceivedMessages() >= 10);
+        await().atMost(3, SECONDS).until(() -> readerCollector.size() >= 10
+                && writerCollector.size() >= 10);
 
-        assertEquals(writerCollector.getMessages().get(0), readerCollector.getMessages().get(0));
-        assertEquals(writerCollector.getMessages().get(1), readerCollector.getMessages().get(1));
-        assertEquals(writerCollector.getMessages().get(2), readerCollector.getMessages().get(2));
-        assertEquals(writerCollector.getMessages().get(3), readerCollector.getMessages().get(3));
+        assertEquals(writerCollector.toArray()[0], readerCollector.toArray()[0]);
+        assertEquals(writerCollector.toArray()[1], readerCollector.toArray()[1]);
+        assertEquals(writerCollector.toArray()[2], readerCollector.toArray()[2]);
+        assertEquals(writerCollector.toArray()[3], readerCollector.toArray()[3]);
     }
 
 }

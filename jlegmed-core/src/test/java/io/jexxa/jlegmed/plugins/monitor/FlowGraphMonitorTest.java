@@ -1,10 +1,11 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logDataFlowStyle;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
@@ -31,7 +32,7 @@ class FlowGraphMonitorTest {
     @Test
     void testMonitorBindingsLogDataFlowStyle() {
         //Arrange
-        var messageCollector = new GenericCollector<String>();
+        var messageCollector = new Stack<String>();
         var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
@@ -40,7 +41,7 @@ class FlowGraphMonitorTest {
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
                 .and().processWith(data -> data + " JLegMed" )
-                .and().consumeWith(messageCollector::collect);
+                .and().consumeWith(messageCollector::push);
 
         //Act - Monitor pipes produces the following output for each iteration
 
@@ -51,17 +52,17 @@ class FlowGraphMonitorTest {
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
 
-        assertEquals(message, messageCollector.getMessages().get(0));
-        assertEquals(message, messageCollector.getMessages().get(1));
-        assertEquals(message, messageCollector.getMessages().get(2));
+        assertEquals(message, messageCollector.toArray()[0]);
+        assertEquals(message, messageCollector.toArray()[1]);
+        assertEquals(message, messageCollector.toArray()[2]);
     }
 
     @Test
     void testMonitorLogFunctionStyle() {
         //Arrange
-        var messageCollector = new GenericCollector<String>();
+        var messageCollector = new Stack<String>();
         var message = "Hello World JLegMed";
 
         jlegmed.newFlowGraph("HelloWorld")
@@ -70,7 +71,7 @@ class FlowGraphMonitorTest {
                 .receive(String.class).from( () -> "Hello" )
                 .and().processWith(data -> data + " World" )
                 .and().processWith(data -> data + " JLegMed" )
-                .and().consumeWith(messageCollector::collect);
+                .and().consumeWith(messageCollector::push);
 
 
         //Act - Monitor pipes produces the following output for each iteration
@@ -81,10 +82,10 @@ class FlowGraphMonitorTest {
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
 
-        assertEquals(message, messageCollector.getMessages().get(0));
-        assertEquals(message, messageCollector.getMessages().get(1));
-        assertEquals(message, messageCollector.getMessages().get(2));
+        assertEquals(message, messageCollector.toArray()[0]);
+        assertEquals(message, messageCollector.toArray()[1]);
+        assertEquals(message, messageCollector.toArray()[2]);
     }
 }

@@ -1,11 +1,11 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Stack;
 import java.util.stream.Stream;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.StreamProducer.streamProducer;
@@ -27,7 +27,7 @@ class JDBCSessionPoolIT {
     @Test
     void failFastInvalidProperties() {
         //Arrange
-        var messageCollector = new GenericCollector<DataToBeStored>();
+        var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -35,7 +35,7 @@ class JDBCSessionPoolIT {
                 .await(DataToBeStored.class)
                 .from(() -> streamProducer(Stream.empty()))
                 .and().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
-                .and().consumeWith(messageCollector::collect);
+                .and().consumeWith(messageCollector::push);
         //Act/Assert
         assertThrows(IllegalArgumentException.class, () -> jLegMed.start());
     }

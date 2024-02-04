@@ -1,11 +1,12 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
@@ -33,7 +34,7 @@ class FlowGraphConfigurationTest {
     void testUseProperties() {
         //Arrange
         var propertiesPrefix = "test-jms-connection"; // This is the prefix used in properties file
-        var messageCollector = new GenericCollector<String>();
+        var messageCollector = new Stack<String>();
 
         jlegmed.newFlowGraph("UseProperties")
 
@@ -45,15 +46,15 @@ class FlowGraphConfigurationTest {
                 .useProperties(propertiesPrefix)
 
                 .and().processWith( processor(GenericProcessors::idProcessor ))
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(0));
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(1));
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.getMessages().get(2));
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[0]);
+        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[1]);
+        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[2]);
     }
 
 

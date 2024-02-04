@@ -1,11 +1,11 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver;
 import org.junit.jupiter.api.Test;
 
+import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPMessagingIT.TestMessage.testMessage;
@@ -18,7 +18,7 @@ class TCPMessagingIT {
     @Test
     void testTCPSender() {
         TCPConnectionPool.init();
-        var messageCollector = new GenericCollector<String>();
+        var messageCollector = new Stack<String>();
         JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiver")
@@ -26,7 +26,7 @@ class TCPMessagingIT {
                 .from( TCPReceiver::receiveMessage ).useProperties("test-tcp-receiver")
 
                 .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
 
 
         jLegMed.newFlowGraph("testTCPSender")
@@ -38,7 +38,7 @@ class TCPMessagingIT {
         //Act
         jLegMed.start();
 
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
 
         jLegMed.stop();
     }
@@ -48,7 +48,7 @@ class TCPMessagingIT {
         TCPConnectionPool.init();
 
         var counter = new AtomicInteger();
-        var messageCollector = new GenericCollector<TestMessage>();
+        var messageCollector = new Stack<TestMessage>();
         JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiver")
@@ -56,7 +56,7 @@ class TCPMessagingIT {
                 .from( TCPReceiver::receiveJSON ).useProperties("test-tcp-receiver")
 
                 .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
 
 
         jLegMed.newFlowGraph("testTCPSender")
@@ -69,7 +69,7 @@ class TCPMessagingIT {
         //Act
         jLegMed.start();
 
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
 
         jLegMed.stop();
     }

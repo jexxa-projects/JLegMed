@@ -3,13 +3,13 @@ package io.jexxa.jlegmed.plugins.messaging.jms;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.messaging.MessageDecoder;
 import org.junit.jupiter.api.Test;
 
+import java.util.Stack;
+
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsQueue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSender;
-
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsTopic;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -20,7 +20,7 @@ class MessagingTestIT {
     void testQueueMessaging() {
         //Arrange
         JMSPool.init();
-        var messageCollector = new GenericCollector<Integer>();
+        var messageCollector = new Stack<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
         jlegmed.newFlowGraph("MessageSender")
@@ -32,13 +32,13 @@ class MessagingTestIT {
         jlegmed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyQueue::receiveAsJSON ).useProperties("test-jms-connection")
 
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
 
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
         jlegmed.stop();
     }
 
@@ -46,7 +46,7 @@ class MessagingTestIT {
     void testTopicMessaging() {
         //Arrange
         JMSPool.init();
-        var messageCollector = new GenericCollector<Integer>();
+        var messageCollector = new Stack<Integer>();
         var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
 
@@ -57,13 +57,13 @@ class MessagingTestIT {
 
         jlegmed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveAsJSON ).useProperties("test-jms-connection")
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
 
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
         jlegmed.stop();
     }
 

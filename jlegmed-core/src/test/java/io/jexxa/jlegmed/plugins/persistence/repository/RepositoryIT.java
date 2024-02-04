@@ -3,11 +3,11 @@ package io.jexxa.jlegmed.plugins.persistence.repository;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Stack;
 import java.util.UUID;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
@@ -39,7 +39,7 @@ class RepositoryIT {
     void testFlowGraph() {
         //Arrange
         RepositoryPool.init();
-        var messageCollector = new GenericCollector<TextEntity>();
+        var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
                 .execute((filterContext) -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
@@ -51,12 +51,12 @@ class RepositoryIT {
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
                 .and().processWith( RepositoryIT::add ).useProperties("test-jdbc-connection")
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jLegMed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
     }
 
 
@@ -65,21 +65,21 @@ class RepositoryIT {
         //Arrange
         RepositoryPool.init();
 
-        var messageCollector = new GenericCollector<TextEntity>();
+        var messageCollector = new Stack<TextEntity>();
         var numberOfData = 10;
         bootstrapTestData(jLegMed, numberOfData);
 
         jLegMed.newFlowGraph("Read Data")
                 .repeat(1)
                 .receive(TextEntity.class).from(RepositoryIT::read).useProperties("test-jdbc-connection")
-                .and().processWith( messageCollector::collect );
+                .and().processWith( messageCollector::push );
 
         //Act
         jLegMed.start();
         await().atMost(3, SECONDS).until(jLegMed::waitUntilFinished );
 
         //Assert
-        assertEquals(numberOfData, messageCollector.getNumberOfReceivedMessages());
+        assertEquals(numberOfData, messageCollector.size());
     }
 
     private void bootstrapTestData(JLegMed jLegMed, int numberOfData) {

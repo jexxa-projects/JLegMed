@@ -5,6 +5,7 @@ import io.jexxa.common.facade.logger.SLF4jLogger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 
@@ -15,14 +16,14 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
 
     public abstract R multiplexData(U firstData, V secondData);
 
-    protected void notifyFirstData(U firstData) {
+    public void receiveFirstData(U firstData) {
         synchronized (this) {
             this.firstData.add(firstData);
             this.notifyAll();
         }
     }
 
-    protected void notifySecondData(V secondData) {
+    public void receiveSecondData(V secondData) {
         synchronized (this) {
             this.secondData.add(secondData);
             this.notifyAll();
@@ -70,6 +71,16 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
             getInvocationHandler(this)
                     .invoke(this, () -> outputPipe().forward(multiplexData(tmpFirstData, tmpSecondData)));
         }
+    }
 
+    @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation
+    public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(BiFunction<U, V, R> multiplexFunction)
+    {
+        return new BiFunctionMultiplexer<>() {
+            @Override
+            public R multiplexData(U firstData, V secondData) {
+                return multiplexFunction.apply(firstData, secondData);
+            }
+        };
     }
 }

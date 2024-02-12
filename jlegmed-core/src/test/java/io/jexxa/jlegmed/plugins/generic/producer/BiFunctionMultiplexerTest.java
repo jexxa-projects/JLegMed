@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.plugins.generic.producer.BiFunctionMultiplexer.multiplexer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -30,24 +31,24 @@ class BiFunctionMultiplexerTest {
 
     @Test
     void testMultiplex() {
-        var multiplexer = new FunctionMultiplexer();
+        var muxer = multiplexer(BiFunctionMultiplexerTest::multiplexData);
         var messageCollector = new Stack<Integer>();
 
-        //Arrange
+        //Arrange first flow graph
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(multiplexer::receiveFirstCounter);
+                .and().consumeWith(muxer::receiveFirstData);
 
-        // Receive message via queue again
+        //Arrange second flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
+                .and().consumeWith(muxer::receiveSecondData);
 
-                .and().consumeWith(multiplexer::receiveSecondCounter);
-
+        //Arrange multiplex
         jlegmed.newFlowGraph("Multiplexer flow graph ")
-                .await(Integer.class).from(() -> multiplexer)
+                .await(Integer.class).from(() -> muxer)
                 .and().consumeWith(messageCollector::push);
 
 
@@ -57,22 +58,9 @@ class BiFunctionMultiplexerTest {
     }
 
 
-    public static class FunctionMultiplexer extends BiFunctionMultiplexer<Integer, Integer, Integer>
-    {
 
-        void receiveFirstCounter(Integer integer) {
-            notifyFirstData(integer);
-        }
-
-
-        void receiveSecondCounter(Integer integer) {
-            notifySecondData(integer);
-        }
-
-        @Override
-        public Integer multiplexData(Integer firstData, Integer secondData) {
-            return firstData + secondData;
-        }
+    public static Integer multiplexData(Integer firstData, Integer secondData) {
+        return firstData + secondData;
     }
 
 

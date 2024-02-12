@@ -8,7 +8,7 @@ import java.util.List;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 
-public abstract class BiMultiplexer<U, V, R> extends ThreadedProducer<R> {
+public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
     private final List<U> firstData = Collections.synchronizedList(new ArrayList<>());
     private final List<V> secondData = Collections.synchronizedList(new ArrayList<>());
@@ -56,7 +56,7 @@ public abstract class BiMultiplexer<U, V, R> extends ThreadedProducer<R> {
                         this.wait();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        SLF4jLogger.getLogger(BiMultiplexer.class).error("Inner thread was interrupted");
+                        SLF4jLogger.getLogger(BiFunctionMultiplexer.class).error("Inner thread was interrupted");
                     }
                 }
                 if (!isRunning) {

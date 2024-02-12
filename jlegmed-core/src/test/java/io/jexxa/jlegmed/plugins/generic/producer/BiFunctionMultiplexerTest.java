@@ -1,8 +1,7 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.producer.BiMultiplexer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +12,13 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-class MultiplexerFlowGraphTest {
+class BiFunctionMultiplexerTest {
     private static JLegMed jlegmed;
 
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(AwaitFlowGraphTest.class).disableBanner();
+        jlegmed = new JLegMed(BiFunctionMultiplexerTest.class).disableBanner();
     }
 
     @AfterEach
@@ -31,7 +30,7 @@ class MultiplexerFlowGraphTest {
 
     @Test
     void testMultiplex() {
-        var multiplexer = new Multiplexer();
+        var multiplexer = new FunctionMultiplexer();
         var messageCollector = new Stack<Integer>();
 
         //Arrange
@@ -58,7 +57,7 @@ class MultiplexerFlowGraphTest {
     }
 
 
-    public static class Multiplexer extends BiMultiplexer<Integer, Integer, Integer>
+    public static class FunctionMultiplexer extends BiFunctionMultiplexer<Integer, Integer, Integer>
     {
 
         void receiveFirstCounter(Integer integer) {

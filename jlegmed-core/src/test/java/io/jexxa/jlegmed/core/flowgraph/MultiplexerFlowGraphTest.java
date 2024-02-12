@@ -30,7 +30,7 @@ class MultiplexerFlowGraphTest {
 
 
     @Test
-    void testMultiplexNew() {
+    void testMultiplex() {
         var multiplexer = new Multiplexer();
         var messageCollector = new Stack<Integer>();
 

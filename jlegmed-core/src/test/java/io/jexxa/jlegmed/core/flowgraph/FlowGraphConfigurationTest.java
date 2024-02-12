@@ -41,7 +41,7 @@ class FlowGraphConfigurationTest {
                 .await(String.class)
 
                 // The producer appends some properties-information such as name ...
-                .from( () -> scheduledProducer(context -> "Hello World" + context.propertiesName()))
+                .from( scheduledProducer(context -> "Hello World" + context.propertiesName()))
                 // ... that is injected by method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
@@ -66,7 +66,7 @@ class FlowGraphConfigurationTest {
         var objectUnderTest = jlegmed.newFlowGraph("InvalidProperties")
 
                 .await(String.class)
-                .from( () -> scheduledProducer(context -> "Hello World" + context.propertiesName()));
+                .from( scheduledProducer(context -> "Hello World" + context.propertiesName()));
 
         //Act / Assert - If the propertiesPrefix is not defined in the properties file, an exception is thrown
         assertThrows( IllegalArgumentException.class, () -> objectUnderTest.useProperties(propertiesPrefix));

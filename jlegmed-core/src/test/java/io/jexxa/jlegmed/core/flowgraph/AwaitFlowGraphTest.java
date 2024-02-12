@@ -40,7 +40,7 @@ class AwaitFlowGraphTest {
                 .await(String.class)
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
-                .from( () -> scheduledProducer(() -> "Hello ").fixedRate(500, MILLISECONDS) )
+                .from( scheduledProducer(() -> "Hello ").fixedRate(500, MILLISECONDS) )
                 .and().processWith( data -> data + "World")
                 .and().consumeWith( data -> result.add(data) );
 

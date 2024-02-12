@@ -16,14 +16,14 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
 
     public abstract R multiplexData(U firstData, V secondData);
 
-    public void receiveFirstData(U firstData) {
+    public void firstInput(U firstData) {
         synchronized (this) {
             this.firstData.add(firstData);
             this.notifyAll();
         }
     }
 
-    public void receiveSecondData(V secondData) {
+    public void secondInput(V secondData) {
         synchronized (this) {
             this.secondData.add(secondData);
             this.notifyAll();

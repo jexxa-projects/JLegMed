@@ -38,17 +38,17 @@ class BiFunctionMultiplexerTest {
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(muxer::receiveFirstData);
+                .and().consumeWith(muxer::firstInput);
 
         //Arrange second flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(muxer::receiveSecondData);
+                .and().consumeWith(muxer::secondInput);
 
         //Arrange multiplex
         jlegmed.newFlowGraph("Multiplexer flow graph ")
-                .await(Integer.class).from(() -> muxer)
+                .await(Integer.class).from(muxer)
                 .and().consumeWith(messageCollector::push);
 
 
@@ -56,7 +56,6 @@ class BiFunctionMultiplexerTest {
 
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
     }
-
 
 
     public static Integer multiplexData(Integer firstData, Integer secondData) {

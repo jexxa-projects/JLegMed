@@ -2,30 +2,32 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.BiFunction;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 
 public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
-    private final List<U> firstData = Collections.synchronizedList(new ArrayList<>());
-    private final List<V> secondData = Collections.synchronizedList(new ArrayList<>());
+    private final Queue<U> firstInputQueue = new ArrayDeque<>() {
+    };
+    private final Queue<V> secondInputQueue = new ArrayDeque<>();
 
     public abstract R multiplexData(U firstData, V secondData);
 
     public void firstInput(U firstData) {
         synchronized (this) {
-            this.firstData.add(firstData);
+            this.firstInputQueue.add(firstData);
             this.notifyAll();
         }
     }
 
     public void secondInput(V secondData) {
         synchronized (this) {
-            this.secondData.add(secondData);
+            this.secondInputQueue.add(secondData);
             this.notifyAll();
         }
     }
@@ -48,11 +50,10 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     public void produceData() {
 
         while (isRunning) {
-            U tmpFirstData;
-            V tmpSecondData;
+            List<R> result = new ArrayList<>();
 
             synchronized (this) {
-                while ((firstData.isEmpty() || secondData.isEmpty()) && isRunning) {
+                while ((firstInputQueue.isEmpty() || secondInputQueue.isEmpty()) && isRunning) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
@@ -60,17 +61,27 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
                         SLF4jLogger.getLogger(BiFunctionMultiplexer.class).error("Inner thread was interrupted");
                     }
                 }
-                if (!isRunning) {
-                    return;
-                }
 
-                tmpFirstData = firstData.remove(firstData.size() - 1);
-                tmpSecondData = secondData.remove(secondData.size() - 1);
+                //Multiplex all data in the queue
+                while (!firstInputQueue.isEmpty() && !secondInputQueue.isEmpty() ) {
+                    result.add(
+                            multiplexData(firstInputQueue.remove(), secondInputQueue.remove())
+                    );
+                }
             }
 
-            getInvocationHandler(this)
-                    .invoke(this, () -> outputPipe().forward(multiplexData(tmpFirstData, tmpSecondData)));
+            result.forEach( this::forwardData );
+
+            if (!isRunning) {
+                return;
+            }
         }
+    }
+
+    private void forwardData(R data)
+    {
+        getInvocationHandler(this)
+                .invoke(this, () -> outputPipe().forward(data));
     }
 
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation

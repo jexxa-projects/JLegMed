@@ -34,19 +34,19 @@ class BiFunctionMultiplexerTest {
         var muxer = multiplexer(BiFunctionMultiplexerTest::multiplexData);
         var messageCollector = new Stack<Integer>();
 
-        //Arrange first flow graph
+        //Arrange the first part of the flow graph
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith(muxer::firstInput);
 
-        //Arrange second flow graph
+        //Arrange the second part of the flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith(muxer::secondInput);
 
-        //Arrange multiplex
+        //Arrange the multiplexing part
         jlegmed.newFlowGraph("Multiplexer flow graph ")
                 .await(Integer.class).from(muxer)
                 .and().consumeWith(messageCollector::push);

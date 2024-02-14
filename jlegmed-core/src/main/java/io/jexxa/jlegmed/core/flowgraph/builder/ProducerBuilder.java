@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
@@ -31,7 +31,7 @@ public class ProducerBuilder<T> {
     }
 
 
-    public Binding<T> from(Function<FilterContext, T> function) {
+    public Binding<T> from(SerializableFunction<FilterContext, T> function) {
         return configureScheduler(producer(function));
     }
 
@@ -40,7 +40,7 @@ public class ProducerBuilder<T> {
     }
 
 
-    public Binding<T> from(Supplier<T> supplier) {
+    public Binding<T> from(SerializableSupplier<T> supplier) {
         return configureScheduler(producer(supplier));
     }
 

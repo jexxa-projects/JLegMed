@@ -1,15 +1,14 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
+import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.SerializableBiConsumer;
+import io.jexxa.jlegmed.core.filter.SerializableBiFunction;
 import io.jexxa.jlegmed.core.filter.processor.PipedProcessor;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
-
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
@@ -30,7 +29,7 @@ public class ProcessorBuilder<T> {
         this.flowGraph = flowGraph;
     }
 
-    public <R> Binding<R> processWith(BiFunction<T, FilterContext, R> successorFunction) {
+    public <R> Binding<R> processWith(SerializableBiFunction<T, FilterContext, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
@@ -38,7 +37,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
-    public <R> Binding<R> processWith(Function<T, R> successorFunction) {
+    public <R> Binding<R> processWith(SerializableFunction<T, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
@@ -55,7 +54,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.outputPipe(), flowGraph);
     }
 
-    public Binding<Void> consumeWith(Consumer<T> successorFunction) {
+    public Binding<Void> consumeWith(SerializableConsumer<T> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
@@ -63,7 +62,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, null, flowGraph);
     }
 
-    public Binding<Void> consumeWith(BiConsumer<T, FilterContext> successorFunction) {
+    public Binding<Void> consumeWith(SerializableBiConsumer<T, FilterContext> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 

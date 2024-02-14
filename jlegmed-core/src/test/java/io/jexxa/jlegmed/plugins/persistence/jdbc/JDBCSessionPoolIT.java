@@ -27,6 +27,7 @@ class JDBCSessionPoolIT {
     @Test
     void failFastInvalidProperties() {
         //Arrange
+        JDBCSessionPool.init();
         var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.StreamProducer.streamProducer;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JDBCSessionPoolIT {
     private static JLegMed jLegMed;
@@ -39,5 +40,6 @@ class JDBCSessionPoolIT {
                 .and().consumeWith(messageCollector::push);
         //Act/Assert
         assertThrows(IllegalArgumentException.class, () -> jLegMed.start());
+        assertTrue(messageCollector.empty()); // Only to avoid warning that messageCollector is not used
     }
 }

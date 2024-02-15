@@ -34,6 +34,13 @@ class BiFunctionMultiplexerTest {
         var muxer = multiplexer(BiFunctionMultiplexerTest::multiplexData);
         var messageCollector = new Stack<Integer>();
 
+        // Multiplexing in JLegMed is done by defining multiple flow graphs. This ensures that they can run in parallel.
+        // Note: Each flow graph runs in its own transaction. This means that there is no global transaction over the entire
+        // flow graph
+        // "First flow graph" -Input1"->
+        //                               -> "Multiplexer flow graph"
+        // "Second flow graph" -Input2"->
+
         //Arrange the first part of the flow graph
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)

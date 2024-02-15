@@ -93,6 +93,7 @@ Refer to the following examples to get an idea how this library works
   * [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
   * [Receiving and sending data from/to TCP Socket](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
   * [Reading and writing data from/to JDBC](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
+* [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java)
 
 ## Ecosystem:
 * [A template](https://github.com/jexxa-projects/JexxaArchetypes) for your first JLegMed application

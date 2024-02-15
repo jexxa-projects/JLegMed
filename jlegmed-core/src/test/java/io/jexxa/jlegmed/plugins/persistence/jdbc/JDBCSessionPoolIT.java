@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ class JDBCSessionPoolIT {
                 .and().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
                 .and().consumeWith(messageCollector::push);
         //Act/Assert
-        assertThrows(IllegalArgumentException.class, () -> jLegMed.start());
+        assertThrows(FailFastException.class, () -> jLegMed.start());
         assertTrue(messageCollector.empty()); // Only to avoid warning that messageCollector is not used
     }
 }

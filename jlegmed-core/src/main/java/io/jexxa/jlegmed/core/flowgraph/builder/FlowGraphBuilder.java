@@ -12,7 +12,20 @@ public class FlowGraphBuilder {
     public FlowGraphBuilder(String flowGraphID, JLegMed jLegMed)
     {
         this.flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
+        this.flowGraph.strictFailFast(jLegMed.strictFailFast());
         jLegMed.addFlowGraph(flowGraph);
+    }
+
+    public FlowGraphBuilder enableStrictFailFast()
+    {
+        this.flowGraph.enableStrictFailFast();
+        return this;
+    }
+
+    public FlowGraphBuilder disableStrictFailFast()
+    {
+        this.flowGraph.disableStrictFailFast();
+        return this;
     }
 
     public <T> AwaitBuilder<T> await(Class<T> inputData) {

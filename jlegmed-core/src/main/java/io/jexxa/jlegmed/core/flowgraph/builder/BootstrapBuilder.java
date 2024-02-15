@@ -3,9 +3,9 @@ package io.jexxa.jlegmed.core.flowgraph.builder;
 import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
-import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 public class BootstrapBuilder {
@@ -23,7 +23,7 @@ public class BootstrapBuilder {
 
     public Binding<Void> execute(SerializableConsumer<FilterContext> consumer)
     {
-        return new ProducerBuilder<>(flowGraph, Void.class, 1, NANOSECONDS, 1 ).from(producer(consumer));
+        return new ProducerBuilder<>(flowGraph, Void.class, 1, NANOSECONDS, 1 ).from(FunctionalProducer.consumer(consumer));
     }
 
 }

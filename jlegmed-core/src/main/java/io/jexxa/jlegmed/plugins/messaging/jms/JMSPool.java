@@ -7,6 +7,7 @@ import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
 import io.jexxa.common.facade.jms.JMSProperties;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool;
@@ -51,10 +52,16 @@ public class JMSPool {
 
     private void initJMSConnections(FilterProperties filterProperties)
     {
-        if (filterProperties.properties().containsKey(JMSProperties.JNDI_FACTORY_KEY))
-        {
-            internalJMSSender(filterProperties);
+        try {
+            if (filterProperties.properties().containsKey(JMSProperties.JNDI_FACTORY_KEY))
+            {
+                internalJMSSender(filterProperties);
+            }
+        } catch ( RuntimeException e) {
+            throw new FailFastException("Could not init JMS connection for filter properties " + filterProperties.name()
+                    + ". Reason: " + e.getMessage(), e );
         }
+
     }
 
     private MessageSender internalJMSSender(FilterProperties filterProperties)

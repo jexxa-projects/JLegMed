@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,6 @@ class RepositoryPoolIT {
                 .and().consumeWith( RepositoryIT::add ).useProperties("invalid-pw-jdbc-connection");
 
         //Act/Assert
-        assertThrows(IllegalArgumentException.class, () -> jLegMed.start());
+        assertThrows(FailFastException.class, () -> jLegMed.start());
     }
 }

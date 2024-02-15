@@ -41,6 +41,7 @@ public final class JLegMed
     private final PropertiesLoader propertiesLoader;
 
     private boolean enableBanner = true;
+    private boolean strictFailFast = false;
 
     public JLegMed(Class<?> application)
     {
@@ -56,7 +57,6 @@ public final class JLegMed
         this.application = application;
         setExceptionHandler();
         BootstrapRegistry.bootstrapServices();
-
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
@@ -92,6 +92,18 @@ public final class JLegMed
 
         showPostStartupBanner();
         isRunning = true;
+    }
+
+    public void enableStrictFailFast() {
+        this.strictFailFast = true;
+    }
+
+    public void disableStrictFailFast() {
+        this.strictFailFast = false;
+    }
+
+    public boolean strictFailFast() {
+        return strictFailFast;
     }
 
     List<FilterProperties> filterProperties()

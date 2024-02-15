@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import org.junit.jupiter.api.AfterEach;
@@ -28,13 +29,14 @@ class JMSPoolIT {
         JMSPool.init();
 
         jLegMed.newFlowGraph("HelloWorld")
+                .enableStrictFailFast()
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().consumeWith( JMSPoolIT::myQueue ).useProperties("invalid-factory-jms-connection");
+                .and().consumeWith( JMSPoolIT::myQueue );//.useProperties("invalid-factory-jms-connection");
 
         //Act/Assert
-        assertThrows(IllegalArgumentException.class, () -> jLegMed.start());
+        assertThrows(FailFastException.class, () -> jLegMed.start());
     }
 
     public static <T> void myQueue(T data, FilterContext filterContext)

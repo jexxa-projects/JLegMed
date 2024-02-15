@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 
@@ -22,9 +23,13 @@ public class JDBCSessionPool {
 
     private void initJDBCSessions(FilterProperties filterProperties)
     {
-        if (filterProperties.properties().containsKey(jdbcUrl()))
-        {
-            getConnection(filterProperties.properties(), INSTANCE);
+        try {
+            if (filterProperties.properties().containsKey(jdbcUrl())) {
+                getConnection(filterProperties.properties(), INSTANCE);
+            }
+        } catch ( RuntimeException e) {
+            throw new FailFastException("Could not init JDBC connection for filter properties " + filterProperties.name()
+                    + ". Reason: " + e.getMessage(), e );
         }
     }
 

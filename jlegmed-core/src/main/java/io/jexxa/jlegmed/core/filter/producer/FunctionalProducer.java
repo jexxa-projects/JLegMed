@@ -19,7 +19,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     }
 
     protected FunctionalProducer(Class<T> sourceType, String name) {
-        producingType(sourceType);
+        super(sourceType);
         this.name = name;
     }
 
@@ -91,7 +91,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(SerializableConsumer<FilterContext> function) {
+    public static <T> FunctionalProducer<T> consumer(SerializableConsumer<FilterContext> function) {
         return new FunctionalProducer<>(methodNameFromLambda(function)) {
             @Override
             protected T doProduce() {

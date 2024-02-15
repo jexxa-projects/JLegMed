@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool;
@@ -34,8 +35,13 @@ public class TCPConnectionPool {
 
     private void initTCPConnections(FilterProperties filterProperties)
     {
-        if (filterProperties.properties().containsKey(TCPProperties.TCP_ADDRESS)) {
-            internalTCPConnection(filterProperties);
+        try {
+            if (filterProperties.properties().containsKey(TCPProperties.TCP_ADDRESS)) {
+                internalTCPConnection(filterProperties);
+            }
+        } catch(RuntimeException e) {
+            throw new FailFastException("Could not init TCP connection for filter properties " + filterProperties.name()
+                + ". Reason: " + e.getMessage(), e );
         }
     }
 

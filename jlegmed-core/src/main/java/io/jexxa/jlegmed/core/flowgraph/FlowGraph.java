@@ -21,6 +21,7 @@ public class FlowGraph {
     private final List<Processor<?,?>> processorList = new ArrayList<>();
 
     private final FlowGraphScheduler flowGraphScheduler = new FlowGraphScheduler();
+    private boolean strictFailFast = false;
 
 
     public FlowGraph(String flowGraphID)
@@ -65,11 +66,13 @@ public class FlowGraph {
     public void setProducer(Producer<?> producer)
     {
         this.producer = producer;
+        this.producer.strictFailFast(strictFailFast());
         filterList.add(producer);
     }
 
     public void addProcessor(Processor<?, ?> processor)
     {
+        processor.strictFailFast(strictFailFast());
         if (!processorList.contains(processor)) {
             filterList.add(processor);
             processorList.add(processor);
@@ -115,6 +118,22 @@ public class FlowGraph {
     public void waitUntilFinished()
     {
         flowGraphScheduler.waitUntilFinished();
+    }
+
+    public void enableStrictFailFast() {
+        this.strictFailFast = true;
+    }
+
+    public void disableStrictFailFast() {
+        this.strictFailFast = false;
+    }
+
+    public boolean strictFailFast() {
+        return strictFailFast;
+    }
+
+    public void strictFailFast(boolean strictFailFast) {
+        this.strictFailFast = strictFailFast;
     }
 
 }

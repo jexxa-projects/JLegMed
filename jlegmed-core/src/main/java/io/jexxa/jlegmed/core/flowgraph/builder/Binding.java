@@ -28,6 +28,12 @@ public class Binding<T> {
         return this;
     }
 
+    public Binding<T> withoutProperties() {
+        filter.disableStrictFailFast();
+
+        return this;
+    }
+
     public ProcessorBuilder<T> and() {
         return new ProcessorBuilder<>(outputPipe, flowGraph);
     }

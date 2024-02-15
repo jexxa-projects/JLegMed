@@ -5,6 +5,7 @@ import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
 import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
@@ -27,8 +28,12 @@ public abstract class Processor<T, R>  extends Filter {
     public void init()
     {
         super.init();
-        if (filterContextRequired && (filterProperties().name().isEmpty())) {
-                SLF4jLogger.getLogger(Processor.class).warn("Lambda expression in Processor requires FilterContext, but no FilterProperties defined using `useProperties`");
+        if (strictFailFastWarning()) {
+                SLF4jLogger.getLogger(Processor.class).warn("Lambda expression in Processor requires FilterContext, but no FilterProperties defined using `useProperties` or excluded using `withoutProperties`");
+        }
+        if (strictFailFast() && strictFailFastWarning())
+        {
+            throw new FailFastException("Strict fail fast is enabled but " + name() + " has no FilterProperties defined using `useProperties` or excluded using `withoutProperties`");
         }
     }
 
@@ -60,6 +65,12 @@ public abstract class Processor<T, R>  extends Filter {
     }
 
     protected abstract R doProcess(T data);
+
+    private boolean strictFailFastWarning()
+    {
+        return (filterContextRequired && (filterProperties().name().isEmpty())
+                && !isPropertiesRequired());
+    }
 
     public static  <T, R> Processor<T, R> processor(SerializableBiFunction<T, FilterContext, R> processFunction)
     {
@@ -113,4 +124,6 @@ public abstract class Processor<T, R>  extends Filter {
             }
         };
     }
+
+
 }

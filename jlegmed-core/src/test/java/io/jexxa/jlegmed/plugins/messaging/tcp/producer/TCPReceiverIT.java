@@ -3,6 +3,9 @@ package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnection;
+import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnectionPool;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
@@ -11,12 +14,24 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class TCPReceiverIT {
+    private static JLegMed jLegMed;
+    @BeforeEach
+    void init() {
+        jLegMed = new JLegMed(TCPReceiverIT.class)
+                .useTechnology(TCPConnectionPool.class)
+                .disableBanner();
+    }
+
+    @AfterEach
+    void deInit() {
+        jLegMed.stop();
+    }
 
     @Test
     void testTCPReceiver()
     {
+        //Arrange
         var messageCollector = new Stack<String>();
-        JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiver")
                 .await(String.class)
@@ -29,7 +44,6 @@ class TCPReceiverIT {
         sendMessageMultipleTimes("Hello World\n", 3);
 
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        jLegMed.stop();
     }
 
 
@@ -37,7 +51,6 @@ class TCPReceiverIT {
     void testTCPReceiverOneMessagePerConnection()
     {
         var messageCollector = new Stack<String>();
-        JLegMed jLegMed = new JLegMed(TCPReceiverIT.class);
 
         jLegMed.newFlowGraph("testTCPReceiverOneMessagePerConnection")
                 .await(String.class)
@@ -52,7 +65,6 @@ class TCPReceiverIT {
         }
 
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        jLegMed.stop();
     }
 
 

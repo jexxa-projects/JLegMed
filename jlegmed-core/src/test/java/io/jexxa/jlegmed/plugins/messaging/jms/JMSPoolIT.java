@@ -15,7 +15,9 @@ class JMSPoolIT {
     private static JLegMed jLegMed;
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(JMSPoolIT.class).disableBanner();
+        jLegMed = new JLegMed(JMSPoolIT.class)
+                .useTechnology(JMSPool.class)
+                .disableBanner();
     }
 
     @AfterEach
@@ -26,8 +28,6 @@ class JMSPoolIT {
     @Test
     void failFastInvalidProperties() {
         //Arrange
-        JMSPool.init();
-
         jLegMed.newFlowGraph("HelloWorld")
                 .enableStrictFailFast()
                 .every(10, MILLISECONDS)

@@ -4,6 +4,8 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.messaging.MessageDecoder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
@@ -16,58 +18,65 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class MessagingTestIT {
+    private static JLegMed jLegMed;
+    @BeforeEach
+    void init() {
+        jLegMed = new JLegMed(JMSPoolIT.class)
+                .useTechnology(JMSPool.class)
+                .disableBanner();
+    }
+
+    @AfterEach
+    void deInit() {
+        jLegMed.stop();
+    }
+
     @Test
     void testQueueMessaging() {
         //Arrange
-        JMSPool.init();
         var messageCollector = new Stack<Integer>();
-        var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
         // Send a simple counter via JMS message queue
-        jlegmed.newFlowGraph("Send messages to queue")
+        jLegMed.newFlowGraph("Send messages to queue")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith(MyQueue::sendTo).useProperties("test-jms-connection");
 
 
         // Receive message via queue again
-        jlegmed.newFlowGraph("Receive messages from queue")
+        jLegMed.newFlowGraph("Receive messages from queue")
                 .await(Integer.class).from( MyQueue::receiveAsJSON ).useProperties("test-jms-connection")
 
                 .and().consumeWith( messageCollector::push );
 
         //Act
-        jlegmed.start();
+        jLegMed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        jlegmed.stop();
     }
 
     @Test
     void testTopicMessaging() {
         //Arrange
-        JMSPool.init();
         var messageCollector = new Stack<Integer>();
-        var jlegmed = new JLegMed(MessagingTestIT.class).disableBanner();
 
         // Send a simple counter via JMS topic
-        jlegmed.newFlowGraph("MessageSender")
+        jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
                 .and().consumeWith( MyTopic::sendTo ).useProperties("test-jms-connection");
 
         // Receive a message via JMS topic again
-        jlegmed.newFlowGraph("Async MessageReceiver")
+        jLegMed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveAsJSON ).useProperties("test-jms-connection")
                 .and().consumeWith( messageCollector::push );
 
         //Act
-        jlegmed.start();
+        jLegMed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        jlegmed.stop();
     }
 
     static class MyQueue {

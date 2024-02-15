@@ -18,7 +18,9 @@ class JDBCFlowGraphsIT {
 
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(JDBCFlowGraphsIT.class).disableBanner();
+        jLegMed = new JLegMed(JDBCFlowGraphsIT.class)
+                .useTechnology(JDBCSessionPool.class)
+                .disableBanner();
     }
 
     @AfterEach
@@ -29,8 +31,6 @@ class JDBCFlowGraphsIT {
     @Test
     void writeToDatabase() {
         //Arrange
-        JDBCSessionPool.init();
-
         var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 
@@ -54,8 +54,6 @@ class JDBCFlowGraphsIT {
     @Test
     void readFromDatabase() {
         //Arrange
-        JDBCSessionPool.init();
-
         var expectedData = new Stack<DataToBeStored>();
         var result = new Stack<DataToBeStored>();
 
@@ -97,8 +95,6 @@ class JDBCFlowGraphsIT {
     @Test
     void parallelReadWritePreparedStatements() {
         //Arrange
-        JDBCSessionPool.init();
-
         var writerCollector = new Stack<DataToBeStored>();
         var readerCollector = new Stack<DataToBeStored>();
 

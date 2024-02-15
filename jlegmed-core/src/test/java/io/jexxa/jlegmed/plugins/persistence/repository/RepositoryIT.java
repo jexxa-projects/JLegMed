@@ -24,7 +24,9 @@ class RepositoryIT {
 
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(RepositoryIT.class).disableBanner();
+        jLegMed = new JLegMed(RepositoryIT.class)
+                .useTechnology(RepositoryPool.class)
+                .disableBanner();
     }
 
     @AfterEach
@@ -38,7 +40,6 @@ class RepositoryIT {
     @Test
     void testFlowGraph() {
         //Arrange
-        RepositoryPool.init();
         var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
@@ -63,8 +64,6 @@ class RepositoryIT {
     @Test
     void readData() {
         //Arrange
-        RepositoryPool.init();
-
         var messageCollector = new Stack<TextEntity>();
         var numberOfData = 10;
         bootstrapTestData(jLegMed, numberOfData);

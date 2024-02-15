@@ -15,7 +15,9 @@ class RepositoryPoolIT {
     private static JLegMed jLegMed;
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(RepositoryPoolIT.class).disableBanner();
+        jLegMed = new JLegMed(RepositoryPoolIT.class)
+                .useTechnology(RepositoryPool.class)
+                .disableBanner();
     }
 
     @AfterEach
@@ -26,8 +28,6 @@ class RepositoryPoolIT {
     @Test
     void failFastInvalidProperties() {
         //Arrange
-        RepositoryPool.init();
-
         jLegMed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")

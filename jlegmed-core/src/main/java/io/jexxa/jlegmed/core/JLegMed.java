@@ -94,6 +94,13 @@ public final class JLegMed
         isRunning = true;
     }
 
+    public JLegMed useTechnology(Class<?>  ... classes) {
+        for (Class<?> aClass : classes) {
+            initClass(aClass);
+        }
+        return this;
+    }
+
     public void enableStrictFailFast() {
         this.strictFailFast = true;
     }
@@ -231,6 +238,14 @@ public final class JLegMed
             SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info           : {}", jlegmedInfo());
             SLF4jLogger.getLogger(JLegMed.class).info("Application Info       : {}", applicationInfo());
             SLF4jLogger.getLogger(JLegMed.class).info("Used Properties Files  : {}", propertiesFiles);
+        }
+    }
+
+    private void initClass(Class<?> clazz) {
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new FailFastException(e.getMessage(), e);
         }
     }
 

@@ -18,7 +18,9 @@ class JDBCSessionPoolIT {
 
     @BeforeEach
     void init() {
-        jLegMed = new JLegMed(JDBCFlowGraphsIT.class).disableBanner();
+        jLegMed = new JLegMed(JDBCFlowGraphsIT.class)
+                .useTechnology(JDBCSessionPool.class)
+                .disableBanner();
     }
 
     @AfterEach
@@ -29,7 +31,6 @@ class JDBCSessionPoolIT {
     @Test
     void failFastInvalidProperties() {
         //Arrange
-        JDBCSessionPool.init();
         var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 
@@ -43,4 +44,5 @@ class JDBCSessionPoolIT {
         assertThrows(FailFastException.class, () -> jLegMed.start());
         assertTrue(messageCollector.empty()); // Only to avoid warning that messageCollector is not used
     }
+
 }

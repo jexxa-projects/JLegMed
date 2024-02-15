@@ -3,6 +3,8 @@ package io.jexxa.jlegmed.plugins.messaging.tcp;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
@@ -14,12 +16,22 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 class TCPMessagingIT {
+    private static JLegMed jLegMed;
+    @BeforeEach
+    void init() {
+        jLegMed = new JLegMed(TCPMessagingIT.class)
+                .useTechnology(TCPConnectionPool.class)
+                .disableBanner();
+    }
+
+    @AfterEach
+    void deInit() {
+        jLegMed.stop();
+    }
 
     @Test
     void testTCPSender() {
-        TCPConnectionPool.init();
         var messageCollector = new Stack<String>();
-        JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
         // Create a flow graph to listen on incoming text messages via TCP
         jLegMed.newFlowGraph("TCP Listener")
@@ -41,17 +53,12 @@ class TCPMessagingIT {
         jLegMed.start();
 
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-
-        jLegMed.stop();
     }
 
     @Test
     void testTCPJSONSender() {
-        TCPConnectionPool.init();
-
         var counter = new AtomicInteger();
         var messageCollector = new Stack<TestMessage>();
-        JLegMed jLegMed = new JLegMed(TCPMessagingIT.class);
 
         // Create a flow graph to listen on incoming json messages from TCP port
         jLegMed.newFlowGraph("testTCPReceiver")
@@ -73,8 +80,6 @@ class TCPMessagingIT {
         jLegMed.start();
 
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-
-        jLegMed.stop();
     }
 
     record TestMessage(int counter, String message) {

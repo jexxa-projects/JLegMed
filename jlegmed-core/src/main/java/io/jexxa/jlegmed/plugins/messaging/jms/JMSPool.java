@@ -5,12 +5,10 @@ import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.common.drivenadapter.messaging.MessageSenderManager;
 import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
 import io.jexxa.common.facade.jms.JMSProperties;
-import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
-import io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,23 +18,12 @@ import static io.jexxa.jlegmed.plugins.messaging.jms.JMSConfiguration.topic;
 
 @SuppressWarnings("java:S6548")
 public class JMSPool {
-    private static boolean initialized = false;
     private static final JMSPool INSTANCE = new JMSPool();
 
     private final Map<String, MessageSender> messageSenderMap = new HashMap<>();
 
-    public static void init()
-    {
-        initialized = true;
-    }
-
     public static MessageSender jmsSender(FilterContext filterContext)
     {
-        if (!initialized) {
-            SLF4jLogger.getLogger(JDBCSessionPool.class).warn("MessageSender pool is not initialized. " +
-                    "Please invoke MessageSender.init() in main");
-        }
-
         return INSTANCE.internalJMSSender(filterContext.filterProperties());
     }
 

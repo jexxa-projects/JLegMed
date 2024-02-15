@@ -17,25 +17,25 @@ public class JDBCSession {
         this.connection = connection;
     }
 
-    public <T extends Enum<T>> JDBCQueryBuilder<T> createQuery(Class<T> schema)
+    public <T extends Enum<T>> JDBCQueryBuilder<T> query(Class<T> schema)
     {
-        return this.connection.createQuery(schema);
+        return this.connection.query(schema);
     }
 
-    public <T extends Enum<T>> JDBCCommandBuilder<T> createCommand(Class<T> schema)
+    public <T extends Enum<T>> JDBCCommandBuilder<T> command(Class<T> schema)
     {
-        return this.connection.createCommand(schema);
+        return this.connection.command(schema);
     }
 
     @SuppressWarnings("unused")
-    public <T extends Enum<T>> JDBCCommandBuilder<T> createCommand()
+    public <T extends Enum<T>> JDBCCommandBuilder<T> command()
     {
-        return this.connection.createCommand();
+        return this.connection.command();
     }
 
-    public <T extends Enum<T>> JDBCTableBuilder<T> createTableCommand(Class<T> schema)
+    public <T extends Enum<T>> JDBCTableBuilder<T> tableCommand(Class<T> schema)
     {
-        return this.connection.createTableCommand(schema);
+        return this.connection.tableCommand(schema);
     }
 
     public void autocreateDatabase(final Properties properties)

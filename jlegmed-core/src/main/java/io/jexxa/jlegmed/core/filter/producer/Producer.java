@@ -4,6 +4,7 @@ import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 public abstract class Producer<T> extends Filter {
+
     private Class<T> producingType;
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
 

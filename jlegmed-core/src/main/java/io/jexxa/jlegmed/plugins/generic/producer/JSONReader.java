@@ -17,6 +17,7 @@ public class JSONReader<T> extends FunctionalProducer<T> {
     private final ProducerMode producerMode;
     private JSONReader(InputStream inputStreamReader, ProducerMode producerMode)
     {
+        super(JSONReader.class.getSimpleName());
         this.inputStream = inputStreamReader;
         this.producerMode = producerMode;
     }

@@ -8,16 +8,17 @@ import java.util.Properties;
 public abstract class Filter {
     private final FilterContext filterContext = new FilterContext();
 
+    public abstract String name();
+
     public void init()   { /* Empty default implementation */ }
     public void start()  { /* Empty default implementation */ }
     public void stop()   { /* Empty default implementation */ }
     public void deInit() { /* Empty default implementation */ }
 
-    public Filter reachStarted()
+    public void reachStarted()
     {
         init();
         start();
-        return this;
     }
 
     public void reachDeInit()

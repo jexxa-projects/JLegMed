@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.jms;
 
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
+import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivingadapter.messaging.jms.DefaultJMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
 import io.jexxa.common.drivingadapter.messaging.jms.listener.JSONMessageListener;
@@ -10,15 +11,23 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
 
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 import static io.jexxa.common.drivenadapter.messaging.DestinationType.TOPIC;
 
 public class JMSProducer<T> extends ActiveProducer<T> {
 
     private IDrivingAdapter jmsAdapter;
     private final JMSListener<T> messageListener;
+    private final String name;
 
-    public JMSProducer(JMSConfiguration jmsConfiguration, BiFunction<String, Class<T>,T> decoder) {
+    public JMSProducer(JMSConfiguration jmsConfiguration, SerializableBiFunction<String, Class<T>, T> decoder) {
+        this.name = JMSProducer.class.getSimpleName() + ":" + methodNameFromLambda(decoder);
         this.messageListener = new JMSListener<>(jmsConfiguration, decoder);
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override

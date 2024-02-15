@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
+import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.common.drivenadapter.messaging.MessageSenderManager;
 import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
@@ -12,7 +13,6 @@ import io.jexxa.jlegmed.plugins.persistence.jdbc.JDBCSessionPool;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSConfiguration.queue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSConfiguration.topic;
@@ -39,12 +39,12 @@ public class JMSPool {
         return INSTANCE.internalJMSSender(filterContext.filterProperties());
     }
 
-    public static <T> JMSProducer<T> jmsTopic(String topicName, BiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsTopic(String topicName, SerializableBiFunction<String, Class<T>, T> deserializer)
     {
         return new JMSProducer<>(topic(topicName), deserializer);
     }
 
-    public static <T> JMSProducer<T> jmsQueue(String queueName, BiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsQueue(String queueName, SerializableBiFunction<String, Class<T>, T> deserializer)
     {
         return new JMSProducer<>(queue(queueName), deserializer);
     }

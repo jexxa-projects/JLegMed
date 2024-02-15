@@ -1,22 +1,32 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
+import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.BiFunction;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
-    private final Queue<U> firstInputQueue = new ArrayDeque<>() {
-    };
+    private final String name;
+    private final Queue<U> firstInputQueue = new ArrayDeque<>();
     private final Queue<V> secondInputQueue = new ArrayDeque<>();
 
+    protected BiFunctionMultiplexer(String name) {
+        this.name = name;
+    }
+
     public abstract R multiplexData(U firstData, V secondData);
+
+    @Override
+    public String name() {
+        return name;
+    }
 
     public void firstInput(U firstData) {
         synchronized (this) {
@@ -85,9 +95,9 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     }
 
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation
-    public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(BiFunction<U, V, R> multiplexFunction)
+    public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(SerializableBiFunction<U, V, R> multiplexFunction)
     {
-        return new BiFunctionMultiplexer<>() {
+        return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
             @Override
             public R multiplexData(U firstData, V secondData) {
                 return multiplexFunction.apply(firstData, secondData);

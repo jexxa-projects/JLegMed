@@ -107,7 +107,7 @@ class RepositoryIT {
 
     public static  <T> void dropTable(FilterContext filterContext, Class<T> table){
         getConnection(filterContext.properties(), filterContext)
-                .createTableCommand()
+                .tableCommand()
                 .dropTableIfExists(table)
                 .asIgnore();
     }

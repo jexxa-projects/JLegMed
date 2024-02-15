@@ -14,6 +14,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPProperties.TCP_PORT;
@@ -21,12 +22,18 @@ import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPProperties.TCP_PORT;
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     private int port = -1;
+    private final String name;
 
-    protected TCPReceiver()  {
-        //Protected constructor so that only child classes can use them
+    protected TCPReceiver(String name)  {
+        this.name = name;
     }
 
     private TCPListener tcpListener;
+
+    @Override
+    public String name() {
+        return name;
+    }
 
     @Override
     public void init()
@@ -96,7 +103,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
 
     public static <T> TCPReceiver<T> tcpReceiver(ThrowingFunction<SocketContext, T, IOException> consumer) {
-        return new TCPReceiver<>() {
+        return new TCPReceiver<>(methodNameFromLambda(consumer)) {
             @Override
             protected T receiveMessage(SocketContext context) {
                 try {
@@ -110,7 +117,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     }
 
     public static <T> TCPReceiver<T> tcpReceiver(ThrowingBiFunction<SocketContext, Class<T>, T, IOException> consumer) {
-        return new TCPReceiver<>() {
+        return new TCPReceiver<>(methodNameFromLambda(consumer)) {
             @Override
             protected T receiveMessage(SocketContext context) {
                 try {

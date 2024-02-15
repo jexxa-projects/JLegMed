@@ -30,7 +30,7 @@ public class JDBCStatements {
     synchronized public DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
         var jdbcSession = JDBCSessionPool.jdbcSession(filterContext);
 
-        jdbcSession.createCommand(DBSchema.class).
+        jdbcSession.command(DBSchema.class).
                 insertInto(DBSchema.DATABASE_READER_IT).values(toArray((Object)data.index(), data.message()))
                 .create()
                 .asUpdate();
@@ -65,13 +65,13 @@ public class JDBCStatements {
     }
 
     synchronized private void dropTable(JDBCSession jdbcSession) {
-        jdbcSession.createTableCommand(DBSchema.class)
+        jdbcSession.tableCommand(DBSchema.class)
                 .dropTableIfExists(DBSchema.DATABASE_READER_IT)
                 .asIgnore();
     }
 
     synchronized private void createTable(JDBCSession jdbcSession) {
-        jdbcSession.createTableCommand(DBSchema.class)
+        jdbcSession.tableCommand(DBSchema.class)
                 .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
                 .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)
                 .addColumn(DB_STRING_DATA, SQLDataType.VARCHAR)
@@ -82,7 +82,7 @@ public class JDBCStatements {
 
     private int getLatestIndex(JDBCSession jdbcSession) {
         return jdbcSession
-                .createQuery(DBSchema.class)
+                .query(DBSchema.class)
                 .selectMax(DB_INDEX).from(DBSchema.DATABASE_READER_IT).create()
                 .asInt().findFirst()
                 .orElse(0);
@@ -90,7 +90,7 @@ public class JDBCStatements {
 
     private JDBCQuery queryLatestDataQueryBuilder(JDBCSession jdbcSession, int maxIndex) {
         return jdbcSession
-            .createQuery(DBSchema.class)
+            .query(DBSchema.class)
             .selectAll().from(DBSchema.DATABASE_READER_IT)
             .where(DB_INDEX).isGreaterThan(this.lastForwardedIndexQueryBuilder).and(DB_INDEX).isLessOrEqual(maxIndex)
             .create();

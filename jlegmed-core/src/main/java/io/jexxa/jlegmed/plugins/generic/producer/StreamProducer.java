@@ -8,6 +8,12 @@ public class StreamProducer {
         return new ThreadedProducer<>()
         {
             @Override
+            public String name()
+            {
+                return "streamProducer";
+            }
+
+            @Override
             public void produceData() {
                 stream.forEach(outputPipe()::forward);
             }

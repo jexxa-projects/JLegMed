@@ -13,8 +13,8 @@ import io.jexxa.jlegmed.core.filter.FilterProperties;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.jexxa.jlegmed.plugins.messaging.jms.JMSConfiguration.queue;
-import static io.jexxa.jlegmed.plugins.messaging.jms.JMSConfiguration.topic;
+import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.queue;
+import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.topic;
 
 @SuppressWarnings("java:S6548")
 public class JMSPool {

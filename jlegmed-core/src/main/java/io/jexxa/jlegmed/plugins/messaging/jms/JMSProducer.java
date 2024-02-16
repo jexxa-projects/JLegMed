@@ -5,6 +5,7 @@ import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivingadapter.messaging.jms.DefaultJMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
+import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.listener.JSONMessageListener;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
@@ -12,7 +13,6 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import java.util.function.BiFunction;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
-import static io.jexxa.common.drivenadapter.messaging.DestinationType.TOPIC;
 
 public class JMSProducer<T> extends ActiveProducer<T> {
 
@@ -20,9 +20,9 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     private final JMSListener<T> messageListener;
     private final String name;
 
-    public JMSProducer(JMSConfiguration jmsConfiguration, SerializableBiFunction<String, Class<T>, T> decoder) {
+    public JMSProducer(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> decoder) {
         this.name = JMSProducer.class.getSimpleName() + ":" + methodNameFromLambda(decoder);
-        this.messageListener = new JMSListener<>(jmsConfiguration, decoder);
+        this.messageListener = new JMSListener<>(jmsSource, decoder);
     }
 
     @Override
@@ -70,10 +70,10 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     public static class JMSListener<T> extends JSONMessageListener {
         private OutputPipe<T> outputPipe;
         private Class<T> typeInformation;
-        private final JMSConfiguration configuration;
+        private final JMSSource configuration;
         private final BiFunction<String, Class<T>, T> decoder;
 
-        protected JMSListener(JMSConfiguration configuration, BiFunction<String, Class<T>, T> decoder) {
+        protected JMSListener(JMSSource configuration, BiFunction<String, Class<T>, T> decoder) {
             this.configuration = configuration;
             this.decoder = decoder;
         }
@@ -89,18 +89,14 @@ public class JMSProducer<T> extends ActiveProducer<T> {
         }
 
         @SuppressWarnings("unused")
-        public io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration getConfiguration()
+        public JMSConfiguration getConfiguration()
         {
-            io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType messagingType;
-            if (configuration.destinationType() == TOPIC)
-            {
-                messagingType = io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType.TOPIC;
-            } else
-            {
-                messagingType = io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType.QUEUE;
-            }
-
-            return new DefaultJMSConfiguration(configuration.destinationName(), messagingType);
+            return switch (configuration.destinationType()) {
+                case TOPIC ->
+                        new DefaultJMSConfiguration(configuration.destinationName(), JMSConfiguration.MessagingType.TOPIC);
+                case QUEUE ->
+                        new DefaultJMSConfiguration(configuration.destinationName(), JMSConfiguration.MessagingType.QUEUE);
+            };
         }
 
         @Override

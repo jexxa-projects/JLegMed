@@ -56,6 +56,7 @@ class MessagingTestIT {
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
     }
 
+
     @Test
     void testTopicMessaging() {
         //Arrange
@@ -78,6 +79,9 @@ class MessagingTestIT {
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
     }
+
+
+
 
     static class MyQueue {
 

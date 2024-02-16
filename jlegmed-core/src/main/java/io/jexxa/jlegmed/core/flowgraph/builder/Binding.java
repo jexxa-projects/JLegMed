@@ -29,7 +29,7 @@ public class Binding<T> {
     }
 
     public Binding<T> withoutProperties() {
-        filter.disableStrictFailFast();
+        filter.noPropertiesRequired();
 
         return this;
     }

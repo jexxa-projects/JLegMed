@@ -33,7 +33,7 @@ public abstract class Processor<T, R>  extends Filter {
         }
         if (strictFailFast() && strictFailFastWarning())
         {
-            throw new FailFastException("Strict fail fast is enabled: "+  name() + " requires FilterContext -> Either define properties with `useProperties` or call `withoutProperties` ");
+            throw new FailFastException("Strict fail fast is enabled: `"+  name() + "` requires FilterContext -> Either define properties with `useProperties` or call `withoutProperties` ");
         }
     }
 

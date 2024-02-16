@@ -55,6 +55,7 @@ public final class JLegMed
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
+        enableStrictFailFast();
         setExceptionHandler();
         BootstrapRegistry.bootstrapServices();
     }
@@ -101,12 +102,14 @@ public final class JLegMed
         return this;
     }
 
-    public void enableStrictFailFast() {
+    public JLegMed enableStrictFailFast() {
         this.strictFailFast = true;
+        return this;
     }
 
-    public void disableStrictFailFast() {
+    public JLegMed disableStrictFailFast() {
         this.strictFailFast = false;
+        return this;
     }
 
     public boolean strictFailFast() {

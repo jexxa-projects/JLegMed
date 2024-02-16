@@ -29,11 +29,10 @@ class JMSPoolIT {
     void failFastInvalidProperties() {
         //Arrange
         jLegMed.newFlowGraph("HelloWorld")
-                .enableStrictFailFast()
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().consumeWith( JMSPoolIT::myQueue );//.useProperties("invalid-factory-jms-connection");
+                .and().consumeWith( JMSPoolIT::myQueue ).useProperties("invalid-factory-jms-connection");
 
         //Act/Assert
         assertThrows(FailFastException.class, () -> jLegMed.start());

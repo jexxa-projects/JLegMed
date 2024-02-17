@@ -7,6 +7,7 @@ public abstract class Producer<T> extends Filter {
 
     private Class<T> producingType;
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
+    private final OutputPipe<T> errorPipe = new OutputPipe<>();
 
     protected Producer()
     {
@@ -32,5 +33,9 @@ public abstract class Producer<T> extends Filter {
     public OutputPipe<T> outputPipe()
     {
         return outputPipe;
+    }
+    public OutputPipe<T> errorPipe()
+    {
+        return errorPipe;
     }
 }

@@ -8,6 +8,7 @@ import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
@@ -16,6 +17,7 @@ import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromL
 public abstract class Processor<T, R>  extends Filter {
     private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
+    private final OutputPipe<T> errorPipe = new OutputPipe<>();
     private final boolean filterContextRequired;
     private final String name;
 
@@ -51,15 +53,34 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return outputPipe;
     }
+    public OutputPipe<T> errorPipe()
+    {
+        return errorPipe;
+    }
 
     public void process(T data) {
 
         do {
-            startProcessing();
+                startProcessing();
 
-            outputPipe().forward(doProcess(data));
+                R result;
 
-            finishedProcessing();
+                try {
+                    result = doProcess(data);
+                } catch (RuntimeException e) {
+                    SLF4jLogger.getLogger(Processor.class).error("{} could not process message `{}`", name(), data);
+                    if (errorPipe().isConnected())
+                    {
+                        errorPipe().forward(data);
+                        return;
+                    } else {
+                        throw new ProcessingException(this, e.getMessage(), e);
+                    }
+                }
+
+                outputPipe().forward(result);
+
+                finishedProcessing();
 
         } while (processAgain());
     }
@@ -113,6 +134,7 @@ public abstract class Processor<T, R>  extends Filter {
             }
         };
     }
+
 
     public static  <T> Processor<T, T> consumer(SerializableConsumer<T> processFunction)
     {

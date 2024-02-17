@@ -63,6 +63,8 @@ public class FlowGraph {
         filterList.forEach(Filter::deInit);
     }
 
+    /** TODO: Set max intertaion with producer and not in configureScheduler
+     */
     public void setProducer(Producer<?> producer)
     {
         this.producer = producer;

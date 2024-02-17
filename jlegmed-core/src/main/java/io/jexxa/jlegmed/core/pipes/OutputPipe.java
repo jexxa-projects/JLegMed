@@ -15,6 +15,11 @@ public class OutputPipe<T> {
         getInvocationHandler(this).invoke(this, this::forwardToSuccessor, data);
     }
 
+    public boolean isConnected()
+    {
+        return inputPipe != null;
+    }
+
     private void forwardToSuccessor(T data)
     {
         if (data == null) {

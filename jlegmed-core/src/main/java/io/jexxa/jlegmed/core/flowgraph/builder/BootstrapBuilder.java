@@ -21,7 +21,7 @@ public class BootstrapBuilder {
         return new RepeatBuilder(times, flowGraph);
     }
 
-    public Binding<Void> execute(SerializableConsumer<FilterContext> consumer)
+    public Binding<Void, Void> execute(SerializableConsumer<FilterContext> consumer)
     {
         return new ProducerBuilder<>(flowGraph, Void.class, 1, NANOSECONDS, 1 ).from(FunctionalProducer.consumer(consumer));
     }

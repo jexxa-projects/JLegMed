@@ -14,14 +14,14 @@ public class AwaitBuilder<T> {
         this.sourceType = sourceType;
     }
 
-    public Binding<T> from(ActiveProducer<T> producer) {
+    public Binding<T, T> from(ActiveProducer<T> producer) {
         producer.producingType(sourceType);
         flowGraph.setProducer(producer);
 
-        return new Binding<>(producer, producer.outputPipe(), flowGraph);
+        return new Binding<>(producer, producer.outputPipe(), producer.errorPipe(), flowGraph);
     }
 
-    public Binding<T> from( Supplier<ActiveProducer<T>> supplier) {
+    public Binding<T, T> from( Supplier<ActiveProducer<T>> supplier) {
         return from(supplier.get());
     }
 }

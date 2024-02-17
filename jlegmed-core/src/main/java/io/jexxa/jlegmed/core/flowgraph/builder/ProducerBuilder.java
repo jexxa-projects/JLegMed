@@ -31,25 +31,25 @@ public class ProducerBuilder<T> {
     }
 
 
-    public Binding<T> from(SerializableFunction<FilterContext, T> function) {
+    public Binding<T, T> from(SerializableFunction<FilterContext, T> function) {
         return configureScheduler(producer(function));
     }
 
-    public Binding<T> from(PipedProducer<T> function) {
+    public Binding<T, T> from(PipedProducer<T> function) {
         return configureScheduler(producer(function));
     }
 
 
-    public Binding<T> from(SerializableSupplier<T> supplier) {
+    public Binding<T, T> from(SerializableSupplier<T> supplier) {
         return configureScheduler(producer(supplier));
     }
 
-    public Binding<T> from(PassiveProducer<T> producer) {
+    public Binding<T, T> from(PassiveProducer<T> producer) {
         producer.producingType(sourceType);
         return configureScheduler(producer);
     }
 
-    private Binding<T> configureScheduler(PassiveProducer<T> producer)
+    private Binding<T, T> configureScheduler(PassiveProducer<T> producer)
     {
         flowGraph.setProducer(producer);
         if (maxIteration < 0) {
@@ -57,7 +57,6 @@ public class ProducerBuilder<T> {
         } else {
             flowGraph.getScheduler().configureRepeatedRate( producer, maxIteration,  fixedRate, timeUnit);
         }
-
-        return new Binding<>(producer, producer.outputPipe(), flowGraph);
+        return new Binding<>(producer, producer.outputPipe(), producer.errorPipe(), flowGraph);
     }
 }

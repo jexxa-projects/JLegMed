@@ -1,24 +1,29 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
+import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
 import io.jexxa.common.facade.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-public class Binding<T> {
+import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
+
+public class Binding<T, U> {
 
     private final Filter filter;
     private final FlowGraph flowGraph;
     private final OutputPipe<T> outputPipe;
+    private final OutputPipe<U> errorPipe;
 
-    public Binding(Filter filter, OutputPipe<T> outputPipe, FlowGraph flowGraph) {
+    public Binding(Filter filter, OutputPipe<T> outputPipe, OutputPipe<U> errorPipe, FlowGraph flowGraph) {
         this.filter = filter;
         this.flowGraph = flowGraph;
         this.outputPipe = outputPipe;
+        this.errorPipe = errorPipe;
     }
 
-    public Binding<T> useProperties(String propertiesPrefix) {
+    public Binding<T, U> useProperties(String propertiesPrefix) {
         var properties = PropertiesUtils.getSubset(flowGraph.properties(), propertiesPrefix);
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
@@ -28,9 +33,16 @@ public class Binding<T> {
         return this;
     }
 
-    public Binding<T> withoutProperties() {
+    public Binding<T, U> withoutProperties() {
         filter.noPropertiesRequired();
 
+        return this;
+    }
+
+    public Binding<T, U> onError(SerializableConsumer<U> errorHandler)
+    {
+        var errorProcessor = consumer(errorHandler);
+        errorPipe.connectTo(errorProcessor.inputPipe());
         return this;
     }
 

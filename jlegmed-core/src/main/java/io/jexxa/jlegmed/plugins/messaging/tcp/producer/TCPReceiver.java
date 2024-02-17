@@ -4,6 +4,8 @@ import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
 import io.jexxa.common.facade.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.io.BufferedReader;
@@ -88,9 +90,14 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
             if (message == null) {
                 break;
             }
-            InvocationManager
-                    .getInvocationHandler(TCPReceiver.class)
-                    .invoke(this, outputPipe()::forward, message);
+            try {
+                InvocationManager
+                        .getInvocationHandler(TCPReceiver.class)
+                        .invoke(this, outputPipe()::forward, message);
+            } catch (ProcessingException e)
+            {
+                errorPipe().forward(new ProcessingError<>(message, e));
+            }
         }
 
         bufferedReader.close();

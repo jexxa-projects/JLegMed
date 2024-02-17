@@ -7,6 +7,8 @@ import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
 import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
 import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.concurrent.TimeUnit;
@@ -57,7 +59,15 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
 
     private void execute()
     {
-        outputPipe().forward(generateData());
+        T generatedData = null;
+        try {
+            generatedData = generateData();
+            outputPipe().forward(generatedData);
+        } catch (ProcessingException e) {
+            errorPipe().forward(new ProcessingError<>(generatedData, e));
+        } catch (RuntimeException e) {
+            errorPipe().forward(new ProcessingError<>(generatedData, new ProcessingException(this, name() + " could not generate data", e)));
+        }
     }
 
     protected abstract T generateData();

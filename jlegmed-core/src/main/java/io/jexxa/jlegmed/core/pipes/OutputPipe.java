@@ -26,7 +26,7 @@ public class OutputPipe<T> {
             return;
         }
 
-        if (inputPipe == null)
+        if (!isConnected())
         {
             getLogger(OutputPipe.class).debug("No input pipe connected");
             return;

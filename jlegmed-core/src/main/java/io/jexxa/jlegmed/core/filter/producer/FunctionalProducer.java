@@ -5,6 +5,8 @@ import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
 import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 
 import java.util.Objects;
 
@@ -33,12 +35,28 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         do {
             startProcessing();
 
-            getInvocationHandler(this)
-                    .invoke(this, () -> outputPipe().forward(doProduce()));
+            T producedMessage = null;
+            try {
+                producedMessage = doProduce();
+                forwardMessage(producedMessage);
+            } catch (ProcessingException e)
+            {
+                errorPipe().forward(new ProcessingError<>(producedMessage, e));
+            } catch (RuntimeException e)
+            {
+                errorPipe().forward(new ProcessingError<>(producedMessage, new ProcessingException(this, name() + " could not produce message", e)));
+            }
 
             finishedProcessing();
 
         } while (processAgain());
+    }
+
+    private void forwardMessage(T message)
+    {
+        getInvocationHandler(this)
+                .invoke(this, () -> outputPipe().forward(message));
+
     }
 
     protected abstract T doProduce();

@@ -2,6 +2,8 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -90,8 +92,13 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
 
     private void forwardData(R data)
     {
-        getInvocationHandler(this)
+        try {
+            getInvocationHandler(this)
                 .invoke(this, () -> outputPipe().forward(data));
+        } catch (ProcessingException e) {
+            errorPipe().forward(new ProcessingError<>(data, e));
+        }
+
     }
 
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation

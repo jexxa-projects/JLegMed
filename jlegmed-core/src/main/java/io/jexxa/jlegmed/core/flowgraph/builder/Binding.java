@@ -14,14 +14,14 @@ public class Binding<T, U> {
 
     private final Filter filter;
     private final FlowGraph flowGraph;
-    private final OutputPipe<T> outputPipe;
-    private final OutputPipe<ProcessingError<U>> errorPipe;
+    private final OutputPipe<U> outputPipe;
+    private final OutputPipe<ProcessingError<T>> errorPipe;
 
-    public Binding(Filter filter, OutputPipe<T> outputPipe, OutputPipe<ProcessingError<U>> errorPipe, FlowGraph flowGraph) {
+    public Binding(Filter filter, OutputPipe<ProcessingError<T>> errorPipe, OutputPipe<U> outputPipe, FlowGraph flowGraph) {
         this.filter = filter;
         this.flowGraph = flowGraph;
-        this.outputPipe = outputPipe;
         this.errorPipe = errorPipe;
+        this.outputPipe = outputPipe;
     }
 
     public Binding<T, U> useProperties(String propertiesPrefix) {
@@ -40,14 +40,14 @@ public class Binding<T, U> {
         return this;
     }
 
-    public Binding<T, U> onError(SerializableConsumer<ProcessingError<U>> errorHandler)
+    public Binding<T, U> onError(SerializableConsumer<ProcessingError<T>> errorHandler)
     {
         var errorProcessor = consumer(errorHandler);
         errorPipe.connectTo(errorProcessor.inputPipe());
         return this;
     }
 
-    public ProcessorBuilder<T> and() {
+    public ProcessorBuilder<U> and() {
         return new ProcessorBuilder<>(outputPipe, flowGraph);
     }
 }

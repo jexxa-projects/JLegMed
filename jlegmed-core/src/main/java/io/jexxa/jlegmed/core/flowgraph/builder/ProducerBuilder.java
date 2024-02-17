@@ -57,6 +57,6 @@ public class ProducerBuilder<T> {
         } else {
             flowGraph.getScheduler().configureRepeatedRate( producer, maxIteration,  fixedRate, timeUnit);
         }
-        return new Binding<>(producer, producer.outputPipe(), producer.errorPipe(), flowGraph);
+        return new Binding<>(producer, producer.errorPipe(), producer.outputPipe(), flowGraph);
     }
 }

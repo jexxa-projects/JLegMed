@@ -6,9 +6,10 @@ import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivingadapter.messaging.jms.DefaultJMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
-import io.jexxa.common.drivingadapter.messaging.jms.listener.JSONMessageListener;
+import io.jexxa.common.drivingadapter.messaging.jms.listener.StringMessageListener;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.function.BiFunction;
 
@@ -39,7 +40,7 @@ public class JMSProducer<T> extends ActiveProducer<T> {
 
         this.jmsAdapter = new JMSAdapter(properties());
 
-        messageListener.outputPipe(outputPipe());
+        messageListener.jmsProducer(this);
         messageListener.typeInformation(producingType());
 
         jmsAdapter.register(messageListener);
@@ -67,8 +68,8 @@ public class JMSProducer<T> extends ActiveProducer<T> {
 
 
 
-    public static class JMSListener<T> extends JSONMessageListener {
-        private OutputPipe<T> outputPipe;
+    public static class JMSListener<T> extends StringMessageListener {
+        private JMSProducer<T> jmsProducer;
         private Class<T> typeInformation;
         private final JMSSource configuration;
         private final BiFunction<String, Class<T>, T> decoder;
@@ -78,9 +79,9 @@ public class JMSProducer<T> extends ActiveProducer<T> {
             this.decoder = decoder;
         }
 
-        public void outputPipe(OutputPipe<T> outputPipe)
+        public void jmsProducer(JMSProducer<T> jmsProducer)
         {
-            this.outputPipe = outputPipe;
+            this.jmsProducer = jmsProducer;
         }
 
         public void typeInformation(Class<T> typeInformation)
@@ -101,12 +102,15 @@ public class JMSProducer<T> extends ActiveProducer<T> {
 
         @Override
         public void onMessage(String message) {
-            onMessage(message, typeInformation, outputPipe);
-        }
-
-        protected void onMessage(String message, Class<T> typeInformation, OutputPipe<T> outputPipe)
-        {
-            outputPipe.forward(decoder.apply(message, typeInformation));
+            T decodedMessage = null;
+            try {
+                decodedMessage = decoder.apply(message, typeInformation);
+                jmsProducer.outputPipe().forward(decodedMessage);
+            } catch (ProcessingException e) {
+                jmsProducer.errorPipe().forward(new ProcessingError<>(decodedMessage, e));
+            } catch (RuntimeException e) {
+                jmsProducer.errorPipe().forward(new ProcessingError<>(decodedMessage, new ProcessingException(jmsProducer, "Could not deserialize message", e)));
+            }
         }
     }
 }

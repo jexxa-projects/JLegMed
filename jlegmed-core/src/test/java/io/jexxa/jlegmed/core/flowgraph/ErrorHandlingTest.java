@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,9 +69,9 @@ class ErrorHandlingTest {
         }
         return message;
     }
-    public static void errorHandler(String originalMessage)
+    public static void errorHandler(ProcessingError<String> processingError)
     {
-        System.out.println("Could not process message " + originalMessage);
-        errorList.add(originalMessage);
+        System.out.println("Could not process message " + processingError.originalMessage());
+        errorList.add(processingError.originalMessage());
     }
 }

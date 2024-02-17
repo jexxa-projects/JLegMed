@@ -1,13 +1,14 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
 import io.jexxa.jlegmed.core.filter.Filter;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 public abstract class Producer<T> extends Filter {
 
     private Class<T> producingType;
     private final OutputPipe<T> outputPipe = new OutputPipe<>();
-    private final OutputPipe<T> errorPipe = new OutputPipe<>();
+    private final OutputPipe<ProcessingError<T>> errorPipe = new OutputPipe<>();
 
     protected Producer()
     {
@@ -34,7 +35,7 @@ public abstract class Producer<T> extends Filter {
     {
         return outputPipe;
     }
-    public OutputPipe<T> errorPipe()
+    public OutputPipe<ProcessingError<T>> errorPipe()
     {
         return errorPipe;
     }

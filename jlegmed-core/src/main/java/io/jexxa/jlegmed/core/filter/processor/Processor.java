@@ -8,6 +8,7 @@ import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
@@ -17,7 +18,7 @@ import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromL
 public abstract class Processor<T, R>  extends Filter {
     private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
-    private final OutputPipe<T> errorPipe = new OutputPipe<>();
+    private final OutputPipe<ProcessingError<T>> errorPipe = new OutputPipe<>();
     private final boolean filterContextRequired;
     private final String name;
 
@@ -53,7 +54,7 @@ public abstract class Processor<T, R>  extends Filter {
     {
         return outputPipe;
     }
-    public OutputPipe<T> errorPipe()
+    public OutputPipe<ProcessingError<T>> errorPipe()
     {
         return errorPipe;
     }
@@ -71,7 +72,7 @@ public abstract class Processor<T, R>  extends Filter {
                     SLF4jLogger.getLogger(Processor.class).error("{} could not process message `{}`", name(), data);
                     if (errorPipe().isConnected())
                     {
-                        errorPipe().forward(data);
+                        errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
                         return;
                     } else {
                         throw new ProcessingException(this, e.getMessage(), e);

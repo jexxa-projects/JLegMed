@@ -16,7 +16,7 @@ In this context, we distinguish between two kinds of errors:
 
 ## Decision
 * To handle an __abnormal situation__, we use the `transactional outbox pattern` to avoid complexity of two phases commits.
-* To handle an __expected misbehavior__, we use the concept of a monad for a binding, which allows to define a processor or processing flow graph for error handling after each binding.  
+* To handle an __expected misbehavior__, we use the concept of an (either) monad for a binding, which allows to define a processor or processing flow graph for error handling after each binding.  
 
 
 ## Consequences

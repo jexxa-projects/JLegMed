@@ -39,7 +39,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.common.adapters.version>1.1.1-SNAPSHOT</jexxa.common.adapters.version>
+    <jexxa.common.adapters.version>1.2.0</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>
@@ -193,13 +193,6 @@
       <artifactId>javalin</artifactId>
       <version>${javalin.version}</version>
       <scope>test</scope>
-      <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-xml</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -209,13 +202,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-xml</artifactId>
-      <version>11.0.16</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 

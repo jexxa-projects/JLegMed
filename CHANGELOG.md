@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[2.0.0 - beta 2] - 2024-01-04
+- Multiplexing 
+- Fail fast approach 
+- Error handling for flow graphs / Binding is a monad
+
+
+
+## \[2.0.0 - beta 1] - 2024-02-04
+### Incompatible Changes 
+- Processor-Filters in FlowGraphBuilder accept only functional statements. See [ADR 003](docs/architecture/003-functional-interface-processor.md) for more information.   
+- Pools
+  Refactored Processor so that it accepts three type of functional interfaces
+- Start adding ADRs 
+
 ## \[1.0.1] - 2024-01-04
+### Fix
 - Updated dependencies
 
 ## \[1.0.0] - 2023-12-15

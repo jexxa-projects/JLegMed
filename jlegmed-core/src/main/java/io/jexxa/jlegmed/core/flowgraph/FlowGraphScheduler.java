@@ -8,6 +8,9 @@ import java.util.concurrent.TimeUnit;
 
 public class FlowGraphScheduler  {
 
+    public record FixedRate(long period, TimeUnit timeUnit){}
+    public record RepeatedRate(  long maxIteration, FixedRate fixedRate){}
+
     private Scheduler scheduler;
     private PassiveProducer<?> passiveProducer;
     private long maxIterations = 0;
@@ -39,19 +42,19 @@ public class FlowGraphScheduler  {
     }
 
 
-    public <T> void configureFixedRate(PassiveProducer<T> producer, long period, TimeUnit timeUnit)
+    public <T> void configureFixedRate(PassiveProducer<T> producer, FixedRate fixedRate)
     {
         this.scheduler = new Scheduler();
-        scheduler.register(new ScheduledFixedRate(producer::produceData, 0, period,timeUnit));
+        scheduler.register(new ScheduledFixedRate(producer::produceData, 0, fixedRate.period(),fixedRate.timeUnit()));
     }
 
-    public <T> void configureRepeatedRate(PassiveProducer<T> producer, long repeat, long period, TimeUnit timeUnit)
+    public <T> void configureRepeatedRate(PassiveProducer<T> producer, RepeatedRate repeatedRate)
     {
         this.scheduler = new Scheduler();
         this.passiveProducer = producer;
-        this.maxIterations = repeat;
+        this.maxIterations = repeatedRate.maxIteration();
         this.currentIterations = 0;
-        scheduler.register(new ScheduledFixedRate(this::countedProduceData, 0, period,timeUnit));
+        scheduler.register(new ScheduledFixedRate(this::countedProduceData, 0, repeatedRate.fixedRate().period(), repeatedRate.fixedRate().timeUnit()));
     }
 
 

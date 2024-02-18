@@ -6,6 +6,7 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,30 +33,29 @@ public class ProducerBuilder<T> {
 
 
     public Binding<T, T> from(SerializableFunction<FilterContext, T> function) {
-        return configureScheduler(producer(function));
+        return setProducer(producer(function));
     }
 
     public Binding<T, T> from(PipedProducer<T> function) {
-        return configureScheduler(producer(function));
+        return setProducer(producer(function));
     }
 
 
     public Binding<T, T> from(SerializableSupplier<T> supplier) {
-        return configureScheduler(producer(supplier));
+        return setProducer(producer(supplier));
     }
 
     public Binding<T, T> from(PassiveProducer<T> producer) {
         producer.producingType(sourceType);
-        return configureScheduler(producer);
+        return setProducer(producer);
     }
 
-    private Binding<T, T> configureScheduler(PassiveProducer<T> producer)
+    private Binding<T, T> setProducer(PassiveProducer<T> producer)
     {
-        flowGraph.setProducer(producer);
         if (maxIteration < 0) {
-            flowGraph.getScheduler().configureFixedRate(producer,fixedRate, timeUnit);
+            flowGraph.setProducer(producer, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit));
         } else {
-            flowGraph.getScheduler().configureRepeatedRate( producer, maxIteration,  fixedRate, timeUnit);
+            flowGraph.setProducer(producer, new FlowGraphScheduler.RepeatedRate(maxIteration, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit)));
         }
         return new Binding<>(producer, producer.errorPipe(), producer.outputPipe(), flowGraph);
     }

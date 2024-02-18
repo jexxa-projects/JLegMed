@@ -38,7 +38,7 @@ class RepeatFlowGraphTest {
         // Define the flow graph:
         jlegmed.bootstrapFlowGraph(flowGraphID)
                 //Using 'repeat'-statement ensures that the producer is triggered 'n' times.
-                //Optionally, you can define an interval
+                //Optionally, you can define an period
                 .repeat(repeatCounter).atInterval(50, MILLISECONDS)
 
                 // We start with "Hello ", extend it with "World" and store the result in a list

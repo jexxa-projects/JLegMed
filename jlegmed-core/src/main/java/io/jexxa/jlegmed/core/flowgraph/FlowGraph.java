@@ -4,6 +4,7 @@ import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
 import java.util.ArrayList;
@@ -63,12 +64,26 @@ public class FlowGraph {
         filterList.forEach(Filter::deInit);
     }
 
-    /** TODO: Set max intertaion with producer and not in configureScheduler
-     */
     public void setProducer(Producer<?> producer)
     {
         this.producer = producer;
         this.producer.strictFailFast(strictFailFast());
+        filterList.add(producer);
+    }
+
+    public void setProducer(PassiveProducer<?> producer, FlowGraphScheduler.FixedRate fixedRate)
+    {
+        this.producer = producer;
+        this.producer.strictFailFast(strictFailFast());
+        this.flowGraphScheduler.configureFixedRate(producer, fixedRate);
+        filterList.add(producer);
+    }
+
+    public void setProducer(PassiveProducer<?> producer, FlowGraphScheduler.RepeatedRate repeatedRate)
+    {
+        this.producer = producer;
+        this.producer.strictFailFast(strictFailFast());
+        this.flowGraphScheduler.configureRepeatedRate(producer, repeatedRate);
         filterList.add(producer);
     }
 
@@ -81,6 +96,7 @@ public class FlowGraph {
         }
     }
 
+    @SuppressWarnings("unused")
     public FlowGraphScheduler getScheduler() {
         return flowGraphScheduler;
     }

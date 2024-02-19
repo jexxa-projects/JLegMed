@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.jexxa.jlegmed.plugins.generic.producer.NotifiedProducer.notifiedProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -60,6 +62,45 @@ class ErrorHandlingTest {
         //Assert - We expect at least three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> errorList.size() >= 3);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testErrorFlowGraph() {
+        //Arrange
+        var flowGraphID = "ReceiveHelloWorld";
+        var result = new ArrayList<String>();
+        var errorHandler = notifiedProducer(ErrorHandlingTest::processErrorMessage);
+
+        // Define the flow graph:
+        jlegmed.newFlowGraph(flowGraphID)
+                //Using 'every'-statement ensures that the producer is triggered at the specified rate
+                .every(500, MILLISECONDS)
+
+                // We start with "Hello ", extend it with "World" and store the result in a list
+                .receive(String.class).from(() -> "Hello ").onError(errorHandler::notify)
+
+                .and().consumeWith(ErrorHandlingTest::throwRuntimeException);
+
+
+        jlegmed.newFlowGraph("Error handling flow graph")
+                .await(ErrorMessage.class).from(() -> errorHandler)
+                .and().processWith(errorMessage -> {result.add(errorMessage.data()); return errorMessage;})
+                .and().consumeWith(errorMessage ->
+                            System.out.println(errorMessage.data() + errorMessage.processingException().getMessage())
+                );
+
+
+        //Act
+        jlegmed.start();
+
+        //Assert - We expect at least three messages that must be the string in 'message'
+        await().atMost(3, SECONDS).until(() -> result.size() >= 3);
+    }
+
+    record ErrorMessage (String data, ProcessingException processingException){ }
+    public static ErrorMessage processErrorMessage(String message, ProcessingException processingException)
+    {
+        return new ErrorMessage(message, processingException);
     }
 
     static String throwRuntimeException(String message)

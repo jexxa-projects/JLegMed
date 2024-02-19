@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R> {
@@ -30,18 +29,21 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
         return name;
     }
 
-    public void firstInput(U firstData) {
+    public U firstInput(U firstData) {
         synchronized (this) {
             this.firstInputQueue.add(firstData);
             this.notifyAll();
         }
+        return firstData;
     }
 
-    public void secondInput(V secondData) {
+    public V secondInput(V secondData) {
         synchronized (this) {
             this.secondInputQueue.add(secondData);
             this.notifyAll();
         }
+
+        return secondData;
     }
 
     @Override
@@ -93,12 +95,10 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     private void forwardData(R data)
     {
         try {
-            getInvocationHandler(this)
-                .invoke(this, () -> outputPipe().forward(data));
+            outputPipe().forward(data);
         } catch (ProcessingException e) {
             errorPipe().forward(new ProcessingError<>(data, e));
         }
-
     }
 
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation

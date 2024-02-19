@@ -89,7 +89,7 @@ public abstract class NotifiedProducer <T,  R> extends ThreadedProducer<R> {
     @SuppressWarnings("java:S110")
     public static <T, R> NotifiedProducer<T, R> notifiedProducer(SerializableBiFunction<T, ProcessingException, R> function)
     {
-        return new NotifiedProducer<T, R>(methodNameFromLambda(function)) {
+        return new NotifiedProducer<>(methodNameFromLambda(function)) {
             @Override
             protected R produceData(T inputData, ProcessingException processingException) {
                 return function.apply(inputData, processingException);

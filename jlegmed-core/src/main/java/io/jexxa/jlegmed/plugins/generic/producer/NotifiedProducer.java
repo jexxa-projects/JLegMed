@@ -12,6 +12,9 @@ import java.util.Queue;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
+/**
+ * TODO: WIP status -> Redesign this class for error handling
+ * */
 public abstract class NotifiedProducer <T,  R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
     private final String name;

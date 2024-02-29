@@ -2,8 +2,6 @@ package io.jexxa.jlegmed.plugins.messaging.jms;
 
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.common.drivenadapter.messaging.MessageSenderManager;
-import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
 import io.jexxa.common.facade.jms.JMSProperties;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.FailFastException;
@@ -13,6 +11,7 @@ import io.jexxa.jlegmed.core.filter.FilterProperties;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.queue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.topic;
 
@@ -54,7 +53,7 @@ public class JMSPool {
     private MessageSender internalJMSSender(FilterProperties filterProperties)
     {
         INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.name(),
-                key -> MessageSenderManager.getMessageSender(JMSPool.class, filterProperties.properties()));
+                key -> createMessageSender(JMSPool.class, filterProperties.properties()));
 
         return messageSenderMap.get(filterProperties.name());
     }
@@ -62,9 +61,6 @@ public class JMSPool {
 
     private JMSPool()
     {
-        // Currently transactional outbox sender causes strange site effects at least in test.
-        // One reason could be that it is designed as singleton. Therefore, we use JMSSender at the moment
-        MessageSenderManager.setDefaultStrategy(JMSSender.class);
         BootstrapRegistry.registerFailFastHandler(properties -> messageSenderMap.clear());
         BootstrapRegistry.registerFailFastHandler(this::initJMSConnections);
     }

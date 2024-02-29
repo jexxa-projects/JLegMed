@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
@@ -116,14 +118,14 @@ public final class JLegMed
         return strictFailFast;
     }
 
-    List<FilterProperties> filterProperties()
+    Set<FilterProperties> filterProperties()
     {
         var result = new ArrayList<FilterProperties>();
 
         bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
         flowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
 
-        return result;
+        return new HashSet<>(result);
     }
 
     public boolean waitUntilFinished()

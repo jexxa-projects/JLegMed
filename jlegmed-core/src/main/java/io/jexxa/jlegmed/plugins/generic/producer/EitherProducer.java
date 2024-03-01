@@ -12,14 +12,12 @@ import java.util.Queue;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
-/**
- * TODO: WIP status -> Redesign this class for error handling
- * */
-public abstract class NotifiedProducer <T,  R> extends ThreadedProducer<R> {
+
+public abstract class EitherProducer<T,  R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
     private final String name;
     private final Queue<ProcessingError<T>> inputQueue = new ArrayDeque<>();
-    protected NotifiedProducer(String name) {
+    protected EitherProducer(String name) {
         this.name = name;
     }
     @Override
@@ -27,11 +25,10 @@ public abstract class NotifiedProducer <T,  R> extends ThreadedProducer<R> {
         return name;
     }
 
-    public synchronized ProcessingError<T> notify(ProcessingError<T> processingError)
+    public synchronized void notify(ProcessingError<T> processingError)
     {
         inputQueue.add(processingError);
         this.notifyAll();
-        return processingError;
     }
 
     @Override
@@ -87,15 +84,15 @@ public abstract class NotifiedProducer <T,  R> extends ThreadedProducer<R> {
         }
     }
 
-    protected abstract R produceData(T inputData, ProcessingException exception);
+    protected abstract R produceData(T unhandledInputData, ProcessingException exception);
 
     @SuppressWarnings("java:S110")
-    public static <T, R> NotifiedProducer<T, R> notifiedProducer(SerializableBiFunction<T, ProcessingException, R> function)
+    public static <T, R> EitherProducer<T, R> eitherProducer(SerializableBiFunction<T, ProcessingException, R> function)
     {
-        return new NotifiedProducer<>(methodNameFromLambda(function)) {
+        return new EitherProducer<>(methodNameFromLambda(function)) {
             @Override
-            protected R produceData(T inputData, ProcessingException processingException) {
-                return function.apply(inputData, processingException);
+            protected R produceData(T unhandledInputData, ProcessingException processingException) {
+                return function.apply(unhandledInputData, processingException);
             }
         };
     }

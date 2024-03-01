@@ -89,6 +89,9 @@ Refer to the following examples to get an idea how this library works
 
 * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
 
+* [Error handling in data flow](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ErrorHandlingTest.java)
+
+
 * Using Technology Stacks
   * [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
   * [Receiving and sending data from/to TCP Socket](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)

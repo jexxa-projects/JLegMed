@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
@@ -9,8 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.NotifiedProducer.notifiedProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.EitherProducer.eitherProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -36,7 +38,7 @@ class ErrorHandlingTest {
     }
 
     @Test
-    void testErrorHandling() {
+    void testCollectProcessingErrors() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
         var result = new ArrayList<String>();
@@ -47,11 +49,13 @@ class ErrorHandlingTest {
                 .every(500, MILLISECONDS)
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
-                .receive(String.class).from(() -> "Hello ").onError(ErrorHandlingTest::errorHandler)
+                .receive(String.class).from(() -> "Hello ").onError(ErrorHandlingTest::collectProcessingErrors)
 
-                .and().processWith( ErrorHandlingTest::throwRuntimeException).onError(ErrorHandlingTest::errorHandler)
+                .and().processWith( message-> message + "World")
 
-                .and().consumeWith( data -> result.add(data) ).onError(ErrorHandlingTest::errorHandler);
+                .and().processWith( ErrorHandlingTest::throwRuntimeException)
+
+                .and().consumeWith( data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -68,8 +72,8 @@ class ErrorHandlingTest {
     void testErrorFlowGraph() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
-        var result = new ArrayList<String>();
-        var errorHandler = notifiedProducer(ErrorHandlingTest::processErrorMessage);
+        var errorHandler = eitherProducer(ErrorMessage::new);
+        var result = new Stack<ErrorMessage>();
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
@@ -78,19 +82,19 @@ class ErrorHandlingTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ").onError(errorHandler::notify)
-
+                .and().processWith( message-> message + "World")
                 .and().consumeWith(ErrorHandlingTest::throwRuntimeException);
 
 
+        //Act - Define the flow graph for error handling
         jlegmed.newFlowGraph("Error handling flow graph")
                 .await(ErrorMessage.class).from(() -> errorHandler)
-                .and().processWith(errorMessage -> {result.add(errorMessage.data()); return errorMessage;})
+                .and().processWith(result::push)
                 .and().consumeWith(errorMessage ->
-                            System.out.println(errorMessage.data() + errorMessage.processingException().getMessage())
+                            SLF4jLogger.getLogger(ErrorHandlingTest.class).warn(errorMessage.data() + errorMessage.processingException().getMessage())
                 );
 
 
-        //Act
         jlegmed.start();
 
         //Assert - We expect at least three messages that must be the string in 'message'
@@ -98,21 +102,17 @@ class ErrorHandlingTest {
     }
 
     record ErrorMessage (String data, ProcessingException processingException){ }
-    public static ErrorMessage processErrorMessage(String message, ProcessingException processingException)
-    {
-        return new ErrorMessage(message, processingException);
-    }
 
     static String throwRuntimeException(String message)
     {
-        if (message.equals("Hello ")) {
+        if (message.equals("Hello World")) {
             throw new RuntimeException("Test Exception ");
         }
         return message;
     }
-    public static void errorHandler(ProcessingError<String> processingError)
+    public static void collectProcessingErrors(ProcessingError<String> processingError)
     {
-        System.out.println("Could not process message " + processingError.originalMessage());
+        SLF4jLogger.getLogger(ErrorHandlingTest.class).warn("Filter `{}` could not process initial message `{}`", processingError.processingException().causedFilter().name(), processingError.originalMessage());
         errorList.add(processingError.originalMessage());
     }
 }

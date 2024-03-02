@@ -61,6 +61,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
         }
     }
 
+    @Override
     public void produceData() {
 
         while (isRunning) {

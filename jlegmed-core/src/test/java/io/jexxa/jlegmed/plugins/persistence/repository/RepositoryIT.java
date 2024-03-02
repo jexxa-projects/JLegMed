@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 import java.util.UUID;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
 import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool.getRepository;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -105,7 +105,7 @@ class RepositoryIT {
     }
 
     public static  <T> void dropTable(FilterContext filterContext, Class<T> table){
-        getConnection(filterContext.properties(), filterContext)
+        getJDBCConnection(filterContext.properties(), filterContext)
                 .tableCommand()
                 .dropTableIfExists(table)
                 .asIgnore();

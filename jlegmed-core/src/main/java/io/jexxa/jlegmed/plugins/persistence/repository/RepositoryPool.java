@@ -8,7 +8,7 @@ import io.jexxa.jlegmed.core.filter.FilterProperties;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
 import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 
 @SuppressWarnings("java:S6548")
@@ -49,7 +49,7 @@ public class RepositoryPool {
         try {
             if (filterProperties.properties().containsKey(jdbcUrl()))
             {
-                getConnection(filterProperties.properties(), INSTANCE);
+                getJDBCConnection(filterProperties.properties(), INSTANCE);
             }
         } catch ( RuntimeException e) {
         throw new FailFastException("Could not init JDBC connection for filter properties " + filterProperties.name()

@@ -5,21 +5,21 @@ import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getConnection;
+import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
 import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 
 public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();
 
     public static JDBCSession jdbcSession(FilterContext filterContext) {
-        return new JDBCSession(getConnection(filterContext.properties(), INSTANCE));
+        return new JDBCSession(getJDBCConnection(filterContext.properties(), INSTANCE));
     }
 
     private void initJDBCSessions(FilterProperties filterProperties)
     {
         try {
             if (filterProperties.properties().containsKey(jdbcUrl())) {
-                getConnection(filterProperties.properties(), INSTANCE);
+                getJDBCConnection(filterProperties.properties(), INSTANCE);
             }
         } catch ( RuntimeException e) {
             throw new FailFastException("Could not init JDBC connection for filter properties " + filterProperties.name()

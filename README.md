@@ -91,7 +91,7 @@ Refer to the following examples to get an idea how this library works
   * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
   * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java)
   * [Error handling in data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ErrorHandlingTest.java)
-  * [Bootstrapping flow graphs]()
+  * [Bootstrapping flow graphs](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/BootstrappingFlowGraphTest.java)
 
 
 * Using technology stacks

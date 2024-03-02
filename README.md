@@ -65,7 +65,7 @@ Maven:
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>2.0.10</version>
+        <version>2.0.12</version>
     </dependency>
 </dependencies>
 ```
@@ -74,7 +74,7 @@ Gradle:
 
 ```groovy
 compile "io.jexxa:jlegmed-core:2.0.0"
-compile "org.slf4j:slf4j-simple:2.0.10"
+compile "org.slf4j:slf4j-simple:2.0.12"
 ``` 
 
 ## Examples

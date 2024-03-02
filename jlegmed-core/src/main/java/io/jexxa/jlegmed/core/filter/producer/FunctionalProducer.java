@@ -1,22 +1,33 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
+import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
-    protected FunctionalProducer(){
-        // Default constructor for filters that do not need type information
+    private final String name;
+    protected FunctionalProducer(String name) {
+        this.name = name;
     }
 
-    protected FunctionalProducer(Class<T> sourceType) {
-        producingType(sourceType);
+    protected FunctionalProducer(Class<T> sourceType, String name) {
+        super(sourceType);
+        this.name = name;
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override
@@ -24,24 +35,39 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         do {
             startProcessing();
 
-            getInvocationHandler(this)
-                    .invoke(this, () -> outputPipe().forward(doProduce()));
+            T producedMessage = null;
+            try {
+                producedMessage = doProduce();
+                forwardMessage(producedMessage);
+            } catch (ProcessingException e)
+            {
+                errorPipe().forward(new ProcessingError<>(producedMessage, e));
+            } catch (RuntimeException e)
+            {
+                errorPipe().forward(new ProcessingError<>(producedMessage, new ProcessingException(this, name() + " could not produce message", e)));
+            }
 
             finishedProcessing();
 
         } while (processAgain());
     }
 
+    private void forwardMessage(T message)
+    {
+        getInvocationHandler(this)
+                .invoke(this, () -> outputPipe().forward(message));
+
+    }
+
     protected abstract T doProduce();
 
-    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function, Class<T> producingType)
-    {
-        return new FunctionalProducer<>(producingType) {
+    public static <T> FunctionalProducer<T> producer(SerializableBiFunction<FilterContext, Class<T>, T> function, Class<T> producingType) {
+        return new FunctionalProducer<>(producingType, methodNameFromLambda(function)) {
             @Override
-            public void init()
-            {
+            public void init() {
                 Objects.requireNonNull(producingType());
             }
+
             @Override
             protected T doProduce() {
                 return function.apply(filterContext(), producingType());
@@ -49,14 +75,13 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(BiFunction<FilterContext, Class<T>, T> function) {
+    public static <T> FunctionalProducer<T> producer(SerializableBiFunction<FilterContext, Class<T>, T> function) {
         return producer(function, null);
     }
 
 
-    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function, Class<T> producingType)
-    {
-        return new FunctionalProducer<>(producingType) {
+    public static <T> FunctionalProducer<T> producer(SerializableFunction<FilterContext, T> function) {
+        return new FunctionalProducer<>(methodNameFromLambda(function)) {
             @Override
             protected T doProduce() {
                 return function.apply(filterContext());
@@ -64,14 +89,9 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Function<FilterContext, T> function) {
-        return  producer(function,null);
-    }
 
-
-    public static <T> FunctionalProducer<T> producer(Supplier<T> function, Class<T> producingType)
-    {
-        return new FunctionalProducer<>(producingType) {
+    public static <T> FunctionalProducer<T> producer(SerializableSupplier<T> function) {
+        return new FunctionalProducer<>(methodNameFromLambda(function)) {
             @Override
             protected T doProduce() {
                 return function.get();
@@ -79,9 +99,23 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
-    public static <T> FunctionalProducer<T> producer(Supplier<T> function)
-    {
-        return producer(function, null);
+    public static <T> FunctionalProducer<T> producer(PipedProducer<T> pipedProducer) {
+        return new FunctionalProducer<>(methodNameFromLambda(pipedProducer)) {
+            @Override
+            protected T doProduce() {
+                pipedProducer.produceData(filterContext(), outputPipe());
+                return null;
+            }
+        };
     }
 
+    public static <T> FunctionalProducer<T> consumer(SerializableConsumer<FilterContext> function) {
+        return new FunctionalProducer<>(methodNameFromLambda(function)) {
+            @Override
+            protected T doProduce() {
+                function.accept(filterContext());
+                return null;
+            }
+        };
+    }
 }

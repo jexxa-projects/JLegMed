@@ -32,11 +32,11 @@ class ProcessorTest {
     void testBiFunctionProcessor()
     {
         //Arrange
-        var propertiesName = "someProperties";
+        var filterProperties = filterPropertiesOf("someProperties", new Properties());
         var receivingPipe = new CollectingInputPipe<String>();
         Processor<String, String> objectUnderTest = processor((data, context) -> data + context.propertiesName());
 
-        objectUnderTest.useProperties(filterPropertiesOf(propertiesName, new Properties()));
+        objectUnderTest.useProperties(filterProperties);
         objectUnderTest.outputPipe().connectTo(receivingPipe);
         objectUnderTest.reachStarted();
 
@@ -45,7 +45,7 @@ class ProcessorTest {
 
         //Assert
         assertEquals(1 , receivingPipe.getCollectedData().size());
-        assertEquals("Hello World"+propertiesName, receivingPipe.getCollectedData().get(0));
+        assertEquals("Hello World"+filterProperties.name(), receivingPipe.getCollectedData().get(0));
     }
 
     @Test
@@ -53,11 +53,11 @@ class ProcessorTest {
     {
         //Arrange - test a filter that needs multiple processing steps for single input data
         var receivingPipe = new CollectingInputPipe<String>();
-        Processor<String, String> objectUnderTest = processor((data, filterContext) ->
+        Processor<String, String> objectUnderTest = processor((data, processorContext) ->
         {
             // Here we tell the processor that we must be called again
-            if (!filterContext.processingState().isProcessingAgain()) {
-                filterContext.processingState().processAgain();
+            if (!processorContext.processingState().isProcessingAgain()) {
+                processorContext.processingState().processAgain();
             }
             return data;
         });

@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[2.0.0 - beta 2] - 2024-02-18
+### Incompatible Changes
+- Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/002-fail-fast-approach.md)
+- Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/005-error-handling-during-message-processing.md)
+### Added 
+- Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java) for an example.
+
+### Fix
+- Updated dependencies
+
+## \[2.0.0 - beta 1] - 2024-02-04
+### Incompatible Changes 
+- Start adding ADRs
+- Processor-Filters in FlowGraphBuilder accept only functional statements. See [ADR 003 - Functional interface processor](docs/architecture/003-functional-interface-processor.md) for more information.   
+- Introduced `Object Pools` that allows processors to use stateful technology stacks. See [ADR 004 - Object Pool to access technology stack ](docs/architecture/004-object-pool-to-access-technology-stack.md) for more information.
+### Fix
+- Updated dependencies
+
+
 ## \[1.0.1] - 2024-01-04
+### Fix
 - Updated dependencies
 
 ## \[1.0.0] - 2023-12-15
@@ -60,7 +80,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## \[0.3.0] - 2023-11-05
 ### Added
 - JLegMed provides more sophisticated error handling for uncaught exceptions 
-- JLegMed provides a run method which waits until application is terminated in some way
+- JLegMed provides a run method which waits until the application is terminated in some way
 
 ### Changed
 - Streamlined entire API so that this version is not compatible with 0.2.0  

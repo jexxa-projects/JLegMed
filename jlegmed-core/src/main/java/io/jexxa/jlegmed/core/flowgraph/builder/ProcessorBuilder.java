@@ -1,14 +1,14 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
+import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
+import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.processor.PipedProcessor;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
-
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
@@ -29,48 +29,52 @@ public class ProcessorBuilder<T> {
         this.flowGraph = flowGraph;
     }
 
-    public <R> Binding<R> processWith(BiFunction<T, FilterContext, R> successorFunction) {
+    public <R> Binding<T, R> processWith(SerializableBiFunction<T, FilterContext, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);
-        return new Binding<>(successor, successor.outputPipe(), flowGraph);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 
-    public <R> Binding<R> processWith(Function<T, R> successorFunction) {
+    public <R> Binding<T, R> processWith(SerializableFunction<T, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);
-        return new Binding<>(successor, successor.outputPipe(), flowGraph);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 
-    public Binding<Void> consumeWith(Consumer<T> successorFunction) {
+
+    public <R> Binding<T, R> processWith(PipedProcessor<T, R> successorFunction) {
+        var successor = processor(successorFunction);
+        predecessorPipe.connectTo(successor.inputPipe());
+
+        flowGraph.addProcessor(successor);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
+    }
+
+    public Binding<T, Void> consumeWith(SerializableConsumer<T> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);
-        return new Binding<>(successor, null, flowGraph);
+        return new Binding<>(successor, successor.errorPipe(), null, flowGraph);
     }
 
-    public Binding<Void> consumeWith(BiConsumer<T, FilterContext> successorFunction) {
+    public Binding<T, Void> consumeWith(SerializableBiConsumer<T, FilterContext> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);
-        return new Binding<>(successor, null, flowGraph);
+        return new Binding<>(successor, successor.errorPipe(), null, flowGraph);
     }
 
-    public <R> Binding<Void> consumeWith(Processor<T, R> successor) {
+
+    public <R> Binding<T, R> processWith(Processor<T, R> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);
-        return new Binding<>(successor, null, flowGraph);
-    }
-    public <R> Binding<R> processWith(Processor<T, R> successor) {
-        predecessorPipe.connectTo(successor.inputPipe());
-
-        flowGraph.addProcessor(successor);
-        return new Binding<>(successor, successor.outputPipe(), flowGraph);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 }

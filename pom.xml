@@ -5,7 +5,7 @@
 
   <groupId>io.jexxa.jlegmed</groupId>
   <artifactId>jlegmed</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>2.0.0-beta.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- Project Information -->
@@ -193,13 +193,6 @@
       <artifactId>javalin</artifactId>
       <version>${javalin.version}</version>
       <scope>test</scope>
-      <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-xml</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -209,13 +202,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Manual fix for sec issue in 11.0.15 introduced by javalin -->
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-xml</artifactId>
-      <version>11.0.16</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 

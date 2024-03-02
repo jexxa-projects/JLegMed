@@ -18,7 +18,7 @@ public class FilterContext {
         return filterProperties;
     }
     public Properties properties() { return filterProperties.properties(); }
-    public String propertiesName() { return filterProperties.propertiesName(); }
+    public String propertiesName() { return filterProperties.name(); }
 
     public ProcessingState processingState() {
         return processingState;

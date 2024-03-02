@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +17,11 @@ class StreamProducerTest {
         var inputData = Stream.iterate(0, i -> i + 1).limit(10);
         var receivingPipe = new CollectingInputPipe<Integer>();
 
-        ActiveProducer<Integer> objectUnderTest = streamProducer(inputData);
+        var objectUnderTest = streamProducer(inputData);
         objectUnderTest.outputPipe().connectTo(receivingPipe);
 
         //Act
         objectUnderTest.reachStarted();
-        objectUnderTest.drivingAdapter().start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> receivingPipe.getCollectedData().size() == 10);

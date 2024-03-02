@@ -1,9 +1,12 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.builder.BootstrapBuilder;
 import io.jexxa.jlegmed.core.flowgraph.builder.FlowGraphBuilder;
 
 import java.io.FileInputStream;
@@ -12,11 +15,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
@@ -32,11 +37,13 @@ public final class JLegMed
 {
     private boolean isRunning = false;
     private final Map<String, FlowGraph> flowGraphs = new LinkedHashMap<>();
+    private final Map<String, FlowGraph> bootstrapFlowGraphs = new LinkedHashMap<>();
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;
 
     private boolean enableBanner = true;
+    private boolean strictFailFast = false;
 
     public JLegMed(Class<?> application)
     {
@@ -45,15 +52,24 @@ public final class JLegMed
 
     public JLegMed(Class<?> application, Properties properties)
     {
+        JexxaContext.init();
+
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);
         this.application = application;
+        enableStrictFailFast();
         setExceptionHandler();
+        BootstrapRegistry.bootstrapServices();
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
     {
         return new FlowGraphBuilder(flowGraphID, this);
+    }
+
+    public BootstrapBuilder bootstrapFlowGraph(String flowGraphID)
+    {
+        return new BootstrapBuilder(flowGraphID, this);
     }
 
 
@@ -62,15 +78,62 @@ public final class JLegMed
         flowGraphs.put(flowGraph.flowGraphID(), flowGraph);
     }
 
+    public void addBootstrapFlowGraph(FlowGraph flowGraph)
+    {
+        bootstrapFlowGraphs.put(flowGraph.flowGraphID(), flowGraph);
+    }
+
     public synchronized void start()
     {
+        filterProperties().forEach(BootstrapRegistry::initFailFast);
+
         showPreStartupBanner();
+
+        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
 
         flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
 
         showPostStartupBanner();
         isRunning = true;
     }
+
+    public JLegMed useTechnology(Class<?>  ... classes) {
+        for (Class<?> aClass : classes) {
+            initClass(aClass);
+        }
+        return this;
+    }
+
+    public JLegMed enableStrictFailFast() {
+        this.strictFailFast = true;
+        return this;
+    }
+
+    public JLegMed disableStrictFailFast() {
+        this.strictFailFast = false;
+        return this;
+    }
+
+    public boolean strictFailFast() {
+        return strictFailFast;
+    }
+
+    Set<FilterProperties> filterProperties()
+    {
+        var result = new ArrayList<FilterProperties>();
+
+        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+        flowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+
+        return new HashSet<>(result);
+    }
+
+    public boolean waitUntilFinished()
+    {
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.waitUntilFinished());
+        return true;
+    }
+
 
     @SuppressWarnings("unused")
     public void run()
@@ -85,6 +148,7 @@ public final class JLegMed
         isRunning = false;
 
         flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
+        JexxaContext.cleanup();
     }
 
     public JLegMed disableBanner()
@@ -95,12 +159,16 @@ public final class JLegMed
 
     public void monitorPipes(String flowGraphID, BeforeInterceptor interceptor)
     {
-        if( !flowGraphs.containsKey(flowGraphID) )
+        if (flowGraphs.containsKey(flowGraphID))
+        {
+            flowGraphs.get(flowGraphID).monitorPipes(interceptor);
+        } else if (bootstrapFlowGraphs.containsKey(flowGraphID))
+        {
+            bootstrapFlowGraphs.get(flowGraphID).monitorPipes(interceptor);
+        } else
         {
             throw new IllegalStateException("FlowGraph with ID " + flowGraphID + " does not exist");
         }
-
-        flowGraphs.get(flowGraphID).monitorPipes(interceptor);
     }
 
     private synchronized void waitForShutdown()
@@ -118,6 +186,13 @@ public final class JLegMed
             Thread.currentThread().interrupt();
             throw new IllegalStateException(e);
         }
+    }
+
+    private void runBootstrapFlowgraph(FlowGraph flowgraph)
+    {
+        flowgraph.start();
+        flowgraph.waitUntilFinished();
+        flowgraph.stop();
     }
 
     public Properties getProperties()
@@ -168,6 +243,14 @@ public final class JLegMed
             SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info           : {}", jlegmedInfo());
             SLF4jLogger.getLogger(JLegMed.class).info("Application Info       : {}", applicationInfo());
             SLF4jLogger.getLogger(JLegMed.class).info("Used Properties Files  : {}", propertiesFiles);
+        }
+    }
+
+    private void initClass(Class<?> clazz) {
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new FailFastException(e.getMessage(), e);
         }
     }
 

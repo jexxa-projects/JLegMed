@@ -19,6 +19,11 @@ public abstract class HTTPClient<T> extends PassiveProducer<T> {
 
 
     @Override
+    public String name() {
+        return HTTPClient.class.getSimpleName() + ":" + url;
+    }
+
+    @Override
     public void init() {
         super.init();
         if(producingType() == null)

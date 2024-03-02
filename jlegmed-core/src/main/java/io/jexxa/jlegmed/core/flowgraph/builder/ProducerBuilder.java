@@ -1,16 +1,14 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.common.drivingadapter.scheduler.RepeatedFixedRate;
-import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
-import io.jexxa.common.drivingadapter.scheduler.Scheduler;
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
+import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
 
@@ -34,39 +32,31 @@ public class ProducerBuilder<T> {
     }
 
 
-    public Binding<T> from(Function<FilterContext, T> function) {
-        return configureScheduler(producer(function));
+    public Binding<T, T> from(SerializableFunction<FilterContext, T> function) {
+        return setProducer(producer(function));
     }
 
-    public Binding<T> from(BiFunction<FilterContext, Class<T>, T> biFunction) {
-        return configureScheduler(producer(biFunction, sourceType));
+    public Binding<T, T> from(PipedProducer<T> function) {
+        return setProducer(producer(function));
     }
 
-    public Binding<T> from(Supplier<T> supplier) {
-        return configureScheduler(producer(supplier, sourceType));
+
+    public Binding<T, T> from(SerializableSupplier<T> supplier) {
+        return setProducer(producer(supplier));
     }
 
-    public Binding<T> from(PassiveProducer<T> producer) {
+    public Binding<T, T> from(PassiveProducer<T> producer) {
         producer.producingType(sourceType);
-        return configureScheduler(producer);
+        return setProducer(producer);
     }
 
-    private Binding<T> configureScheduler(PassiveProducer<T> producer)
+    private Binding<T, T> setProducer(PassiveProducer<T> producer)
     {
-        Scheduler scheduler = new Scheduler();
-        scheduler.register(createListener(producer));
-
-        flowGraph.setProducer(producer, scheduler);
-
-        return new Binding<>(producer, producer.outputPipe(), flowGraph);
-    }
-
-    private Object createListener(PassiveProducer<T> producer)
-    {
-        if (maxIteration < 0 ){
-            return new ScheduledFixedRate(producer::produceData, 0, fixedRate, timeUnit);
+        if (maxIteration < 0) {
+            flowGraph.setProducer(producer, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit));
         } else {
-            return new RepeatedFixedRate(maxIteration, producer::produceData, 0, fixedRate, timeUnit);
+            flowGraph.setProducer(producer, new FlowGraphScheduler.RepeatedRate(maxIteration, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit)));
         }
+        return new Binding<>(producer, producer.errorPipe(), producer.outputPipe(), flowGraph);
     }
 }

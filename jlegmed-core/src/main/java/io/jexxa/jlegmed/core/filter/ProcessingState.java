@@ -24,7 +24,7 @@ public class ProcessingState {
 
     void finished()
     {
-        // reset the trigger only of the counter is <= 0. This enables the processor
+        // Reset the trigger only of the counter is <= 0. This enables the processor
         // 1. to inform a scheduler that the method is called multiple times
         // 2. the method itself can check if it is in re-trigger mode or not
         if (processCounter <= 0) {

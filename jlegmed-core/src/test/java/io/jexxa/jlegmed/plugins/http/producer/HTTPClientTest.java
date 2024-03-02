@@ -4,11 +4,12 @@ import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
 import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericCollector;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.httpClient;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -69,7 +70,7 @@ class HTTPClientTest {
     void testHTTPClientFlowGraph() {
         //Arrange
         var expectedResult = new VersionInfo("a","b", "s", "d" );
-        var messageCollector = new GenericCollector<VersionInfo>();
+        var messageCollector = new Stack<VersionInfo>();
         JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
 
         jLegMed.newFlowGraph("HTTPClientFlowGraph")
@@ -77,16 +78,16 @@ class HTTPClientTest {
                 .receive(VersionInfo.class).from(httpClient()).useProperties("test-http-connection")
 
                 .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::collect );
+                .and().consumeWith( messageCollector::push );
         //Act
         jLegMed.start();
-        await().atMost(3, SECONDS).until(() -> messageCollector.getNumberOfReceivedMessages() >= 3);
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
         jLegMed.stop();
 
         //Assert
-        assertEquals(expectedResult, messageCollector.getMessages().get(0));
-        assertEquals(expectedResult, messageCollector.getMessages().get(1));
-        assertEquals(expectedResult, messageCollector.getMessages().get(2));
+        assertEquals(expectedResult, messageCollector.toArray()[0]);
+        assertEquals(expectedResult, messageCollector.toArray()[1]);
+        assertEquals(expectedResult, messageCollector.toArray()[2]);
     }
 
     @BeforeAll

@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;

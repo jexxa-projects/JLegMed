@@ -81,19 +81,20 @@ compile "org.slf4j:slf4j-simple:2.0.10"
 
 Refer to the following examples to get an idea how this library works
 * Basic use cases:
-  * [Data processing with a fixed number of iterations](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/RepeatFlowGraphTest.java)
-  * [Data processing at a specific interval](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ReceiveFlowGraphTest.java) 
-  * [Awaiting data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/AwaitFlowGraphTest.java)
+  * [Data processing with a fixed number of iterations](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/RepeatFlowGraphTest.java)
+  * [Data processing at a specific interval](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ReceiveFlowGraphTest.java) 
+  * [Awaiting data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/AwaitFlowGraphTest.java)
   
 
 * Advanced use cases:
-  * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/FlowGraphConfigurationTest.java)
-  * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java)
+  * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/FlowGraphConfigurationTest.java)
   * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
-  * [Error handling in data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/core/flowgraph/ErrorHandlingTest.java)
+  * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java)
+  * [Error handling in data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ErrorHandlingTest.java)
+  * [Bootstrapping flow graphs]()
 
 
-* Using Technology Stacks
+* Using technology stacks
   * [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
   * [Receiving and sending data from/to TCP Socket](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
   * [Reading and writing data from/to JDBC](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)

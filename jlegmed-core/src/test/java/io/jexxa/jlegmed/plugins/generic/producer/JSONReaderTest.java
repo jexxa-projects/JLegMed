@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.flowgraph.TestFilter;
+import io.jexxa.jlegmed.examples.TestFilter;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.core.flowgraph.TestFilter.NewContract.newContract;
+import static io.jexxa.jlegmed.examples.TestFilter.NewContract.newContract;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStream;

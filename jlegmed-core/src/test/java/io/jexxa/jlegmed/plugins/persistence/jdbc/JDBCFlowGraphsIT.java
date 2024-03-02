@@ -34,7 +34,8 @@ class JDBCFlowGraphsIT {
         var messageCollector = new Stack<DataToBeStored>();
         var database = new JDBCStatements();
 
-        jLegMed.bootstrapFlowGraph("bootstrap database").execute(database::bootstrapDatabase).useProperties("test-jdbc-connection");
+        jLegMed.bootstrapFlowGraph("bootstrap database")
+                .execute(database::bootstrapDatabase).useProperties("test-jdbc-connection");
 
         jLegMed.newFlowGraph("HelloWorld")
 

@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.flowgraph;
+package io.jexxa.jlegmed.examples;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
@@ -27,7 +27,7 @@ class ErrorHandlingTest {
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(AwaitFlowGraphTest.class).disableBanner();
+        jlegmed = new JLegMed(ErrorHandlingTest.class).disableBanner();
         errorList.clear();
     }
 

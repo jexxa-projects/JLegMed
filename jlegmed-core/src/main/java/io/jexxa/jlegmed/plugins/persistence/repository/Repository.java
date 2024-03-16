@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.jexxa.common.drivenadapter.persistence.RepositoryManager.getRepository;
+import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.createRepository;
 
 
 public class Repository<T, K> {
@@ -19,7 +19,7 @@ public class Repository<T, K> {
                Function<T,K> keyFunction,
                FilterContext filterContext)
     {
-        this.iRepository = getRepository(aggregateClazz, keyFunction, filterContext.properties());
+        this.iRepository = createRepository(aggregateClazz, keyFunction, filterContext.properties());
         this.keyFunction = keyFunction;
     }
 

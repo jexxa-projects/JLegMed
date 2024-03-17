@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.EitherProducer.eitherProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.OnErrorProducer.onErrorProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -72,7 +72,7 @@ class ErrorHandlingTest {
     void testErrorFlowGraph() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
-        var errorHandler = eitherProducer(ErrorMessage::new);
+        var errorHandler = onErrorProducer(ErrorMessage::new);
         var result = new Stack<ErrorMessage>();
 
         // Define the flow graph:
@@ -88,7 +88,7 @@ class ErrorHandlingTest {
 
         //Act - Define the flow graph for error handling
         jlegmed.newFlowGraph("Error handling flow graph")
-                .await(ErrorMessage.class).from(() -> errorHandler)
+                .await(ErrorMessage.class).from(errorHandler)
                 .and().processWith(result::push)
                 .and().consumeWith(errorMessage ->
                             SLF4jLogger.getLogger(ErrorHandlingTest.class).warn(errorMessage.data() + errorMessage.processingException().getMessage())

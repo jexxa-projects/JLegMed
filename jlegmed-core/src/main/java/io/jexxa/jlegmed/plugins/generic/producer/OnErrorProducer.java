@@ -13,11 +13,11 @@ import java.util.Queue;
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 
-public abstract class EitherProducer<T,  R> extends ThreadedProducer<R> {
+public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
     private final String name;
     private final Queue<ProcessingError<T>> inputQueue = new ArrayDeque<>();
-    protected EitherProducer(String name) {
+    protected OnErrorProducer(String name) {
         this.name = name;
     }
     @Override
@@ -87,9 +87,9 @@ public abstract class EitherProducer<T,  R> extends ThreadedProducer<R> {
     protected abstract R produceData(T unhandledInputData, ProcessingException exception);
 
     @SuppressWarnings("java:S110")
-    public static <T, R> EitherProducer<T, R> eitherProducer(SerializableBiFunction<T, ProcessingException, R> function)
+    public static <T, R> OnErrorProducer<T, R> onErrorProducer(SerializableBiFunction<T, ProcessingException, R> function)
     {
-        return new EitherProducer<>(methodNameFromLambda(function)) {
+        return new OnErrorProducer<>(methodNameFromLambda(function)) {
             @Override
             protected R produceData(T unhandledInputData, ProcessingException processingException) {
                 return function.apply(unhandledInputData, processingException);

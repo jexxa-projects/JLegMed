@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.0.0] - 2024-03-17
+### Incompatible Changes
+- Updated to jexxa-adapters 2.0.0 which removes deprecated API 
+- Renamed `EitherProducer` to `OnErrorProducer` 
+
 ## \[2.0.0] - 2024-03-02
 ### Incompatible Changes
 - Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/002-fail-fast-approach.md)

@@ -64,19 +64,14 @@ public abstract class Processor<T, R>  extends Filter {
         do {
                 startProcessing();
 
-                R result;
+                R result = null;
 
                 try {
                     result = doProcess(data);
-                } catch (RuntimeException e) {
-                    SLF4jLogger.getLogger(Processor.class).error("{} could not process message `{}`", name(), data);
-                    if (errorPipe().isConnected())
-                    {
-                        errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
-                        return;
-                    } else {
-                        throw new ProcessingException(this, e.getMessage(), e);
-                    }
+                } catch (ProcessingException e) { // ProcessingException is either forwarded to the errorPipe or rethrow
+                    handleProcessingException(e, data);
+                }   catch (RuntimeException e) {
+                   handleRuntimeException(e, data);
                 }
 
                 outputPipe().forward(result);
@@ -148,5 +143,31 @@ public abstract class Processor<T, R>  extends Filter {
         };
     }
 
+    private void handleRuntimeException(RuntimeException e, T data)
+    {
+        SLF4jLogger.getLogger(Processor.class).error("{}: Could not process message", name());
+        SLF4jLogger.getLogger(Processor.class).error("{}: Message: `{}` ", name(), data);
+        if (e.getCause() != null)
+        {
+            SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getCause().getClass().getSimpleName(), e.getCause().getMessage());
+        } else {
+            SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getClass().getSimpleName(), e.getMessage());
+        }
+        if (errorPipe().isConnected())
+        {
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
+        } else {
+            throw new ProcessingException(this, e.getMessage(), e);
+        }
+    }
+
+    private void handleProcessingException(RuntimeException e, T data)
+    {
+        if (errorPipe().isConnected()) {
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
+        } else {
+            throw e;
+        }
+    }
 
 }

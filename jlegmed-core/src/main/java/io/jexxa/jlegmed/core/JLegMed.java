@@ -85,16 +85,22 @@ public final class JLegMed
 
     public synchronized void start()
     {
-        filterProperties().forEach(BootstrapRegistry::initFailFast);
+        try {
+            filterProperties().forEach(BootstrapRegistry::initFailFast);
 
-        showPreStartupBanner();
+            showPreStartupBanner();
 
-        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
+            bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
 
-        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
+            flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.init());
+            flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
 
-        showPostStartupBanner();
-        isRunning = true;
+            showPostStartupBanner();
+            isRunning = true;
+        } catch (RuntimeException e) {
+            stop();
+            throw e;
+        }
     }
 
     public JLegMed useTechnology(Class<?>  ... classes) {
@@ -190,6 +196,7 @@ public final class JLegMed
 
     private void runBootstrapFlowgraph(FlowGraph flowgraph)
     {
+        flowgraph.init();
         flowgraph.start();
         flowgraph.waitUntilFinished();
         flowgraph.stop();

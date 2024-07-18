@@ -48,8 +48,15 @@ public class FlowGraph {
         return properties;
     }
 
-    public FlowGraph start() {
+    /**
+     * This method initializes all filters and ensures fail fast approach
+     * */
+    public FlowGraph init() {
         filterList.forEach(Filter::init);
+        return this;
+    }
+
+    public FlowGraph start() {
         filterList.stream().filter(element -> element != producer).forEach(Filter::start);
         producer.start();
 

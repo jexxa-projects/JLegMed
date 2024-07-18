@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
+import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -15,6 +16,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FlowGraphBuilderTest {
     private static JLegMed jlegmed;
@@ -177,4 +180,32 @@ class FlowGraphBuilderTest {
         await().atMost(3, SECONDS).until(() -> messageCollector2.size() >= 3);
     }
 
+    @Test
+    void testFailFastWithMissingProperties(){
+        //Arrange
+        var messageCollector1 = new Stack<Integer>();
+        var messageCollector2 = new Stack<Integer>();
+
+        jlegmed.newFlowGraph("FlowGraph1")
+                .every(10, MILLISECONDS)
+                .receive(Integer.class).from(GenericProducer::counter)
+
+                .and().processWith(GenericProcessors::idProcessor)
+                .and().consumeWith( messageCollector1::push );
+
+
+        jlegmed.newFlowGraph("Fail Fast flowgraph")
+                .every(20, MILLISECONDS)
+                .receive(Integer.class).from(GenericProducer::counter)
+
+                .and().processWith( (data, filterProperties) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
+                .and().consumeWith( messageCollector2::push );
+
+        //Act / assert
+        assertThrows(FailFastException.class, () -> jlegmed.start());
+
+        //Assert
+        assertTrue(messageCollector1.empty()); // The first flow graph must not start processing in case of a fail fast exception
+        assertTrue(messageCollector2.empty());
+    }
 }

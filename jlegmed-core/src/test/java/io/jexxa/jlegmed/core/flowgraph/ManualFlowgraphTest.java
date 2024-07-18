@@ -54,6 +54,7 @@ class ManualFlowgraphTest {
         //Connect all filters
         flowGraph.connect(sourceFilter, processorFilter)
                 .connect(processorFilter, sinkFilter)
+                .init()
                 .start();
 
         //Act

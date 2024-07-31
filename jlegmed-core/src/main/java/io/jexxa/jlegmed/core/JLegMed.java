@@ -77,6 +77,10 @@ public final class JLegMed
     {
         flowGraphs.put(flowGraph.flowGraphID(), flowGraph);
     }
+    public FlowGraph getFlowGraph(String flowGraphID)
+    {
+        return flowGraphs.getOrDefault(flowGraphID, null);
+    }
 
     public void addBootstrapFlowGraph(FlowGraph flowGraph)
     {

@@ -7,6 +7,7 @@ import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.Producer;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +30,26 @@ public class FlowGraph {
     {
         this(flowGraphID, new Properties());
     }
+
+    public ProcessingStats processingStats()
+    {
+        var processingErrorCount = processorList.stream()
+                .map( element -> element.errorPipe().processingErrorCount())
+                .reduce(BigInteger.ZERO, BigInteger::add)
+                .add(producer.errorPipe().processingErrorCount());
+
+        var handledProcessingErrors = processorList.stream()
+                .map( element -> element.errorPipe().handledProcessingErrors())
+                .reduce(BigInteger.ZERO, BigInteger::add)
+                .add(producer.errorPipe().handledProcessingErrors());
+
+        var unhandledProcessingErrors = processorList.stream()
+                .map( element -> element.errorPipe().unhandledProcessingErrors())
+                .reduce(BigInteger.ZERO, BigInteger::add)
+                .add(producer.errorPipe().unhandledProcessingErrors());
+        return new ProcessingStats(processingErrorCount, handledProcessingErrors, unhandledProcessingErrors);
+    }
+
 
     public FlowGraph(String flowGraphID, Properties properties)
     {

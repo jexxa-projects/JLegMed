@@ -34,4 +34,8 @@ public class OutputPipe<T> {
 
         inputPipe.receive(data);
     }
+
+    protected InputPipe<T> inputPipe() {
+        return inputPipe;
+    }
 }

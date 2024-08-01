@@ -69,7 +69,7 @@ public abstract class Processor<T, R>  extends Filter {
 
                 try {
                     result = doProcess(data);
-                } catch (ProcessingException e) { // ProcessingException is either forwarded to the errorPipe or rethrow
+                } catch (ProcessingException e) { // ProcessingException is either forwardedMessages to the errorPipe or rethrow
                     handleProcessingException(e, data);
                 }   catch (RuntimeException e) {
                    handleRuntimeException(e, data);

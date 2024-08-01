@@ -18,6 +18,7 @@ import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ErrorHandlingTest {
@@ -121,6 +122,9 @@ class ErrorHandlingTest {
 
         //Assert - We expect at least three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> jlegmed.getFlowGraph(flowGraphID).processingStats().unhandledProcessingErrors().compareTo(BigInteger.valueOf(3)) > 0);
+        assertEquals(BigInteger.valueOf(0), jlegmed.getFlowGraph(flowGraphID).processingStats().forwardedMessages());
+
+
     }
 
     record ErrorMessage (String data, ProcessingException processingException){ }

@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[UNRELEASED] - 2024-mm-dd
+## \[3.1.0] - 2024-08-01
+### Added
+- Statistics about processed messages and processing errors for each flow graph
+
 ### Fixed
 - Updated dependencies
 - When running multiple flow graphs fail fast approach is first validated on all flow graphs before starting them   
+- A processing error is now logged if all error pipes are unconnected  
 
 ## \[3.0.4] - 2024-07-03
 ### Fixed

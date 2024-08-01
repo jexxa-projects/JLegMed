@@ -47,7 +47,10 @@ public class FlowGraph {
                 .map( element -> element.errorPipe().unhandledProcessingErrors())
                 .reduce(BigInteger.ZERO, BigInteger::add)
                 .add(producer.errorPipe().unhandledProcessingErrors());
-        return new ProcessingStats(processingErrorCount, handledProcessingErrors, unhandledProcessingErrors);
+        return new ProcessingStats(producer.outputPipe().forwardedMessages(),
+                processingErrorCount,
+                handledProcessingErrors,
+                unhandledProcessingErrors);
     }
 
 

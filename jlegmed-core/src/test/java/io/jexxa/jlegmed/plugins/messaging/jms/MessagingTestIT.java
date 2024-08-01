@@ -27,8 +27,8 @@ class MessagingTestIT {
     @BeforeEach
     void init() {
         jLegMed = new JLegMed(JMSPoolIT.class)
-                .useTechnology(JMSPool.class);
-                //.disableBanner();
+                .useTechnology(JMSPool.class)
+                .disableBanner();
     }
 
     @AfterEach

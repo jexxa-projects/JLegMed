@@ -27,7 +27,7 @@ public class JDBCStatements {
     private int lastForwardedIndexQueryBuilder = 0;
     private int lastForwardedIndexPreparedStatement = 0;
 
-    synchronized public DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
+    public synchronized DataToBeStored insert(DataToBeStored data, FilterContext filterContext) {
         var jdbcSession = JDBCSessionPool.jdbcSession(filterContext);
 
         jdbcSession.command(DBSchema.class).
@@ -38,7 +38,7 @@ public class JDBCStatements {
         return data;
     }
 
-    synchronized public void readWithQueryBuilder(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
+    public synchronized void readWithQueryBuilder(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
         var jdbcSession = jdbcSession(filterContext);
 
         var latestIndex = getLatestIndex(jdbcSession);
@@ -47,7 +47,7 @@ public class JDBCStatements {
         this.lastForwardedIndexQueryBuilder = latestIndex;
     }
 
-    synchronized public void readWithPreparedStatement(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
+    public synchronized void readWithPreparedStatement(FilterContext filterContext, OutputPipe<DataToBeStored> outputPipe) {
         var jdbcSession = jdbcSession(filterContext);
 
         var latestIndex = getLatestIndex(jdbcSession);
@@ -56,7 +56,7 @@ public class JDBCStatements {
         this.lastForwardedIndexPreparedStatement = latestIndex;
     }
 
-    synchronized public void bootstrapDatabase(FilterContext filterContext) {
+    public synchronized void bootstrapDatabase(FilterContext filterContext) {
         var jdbcSession = jdbcSession(filterContext);
 
         jdbcSession.autocreateDatabase(filterContext.properties());
@@ -64,13 +64,13 @@ public class JDBCStatements {
         createTable(jdbcSession);
     }
 
-    synchronized private void dropTable(JDBCSession jdbcSession) {
+    private synchronized void dropTable(JDBCSession jdbcSession) {
         jdbcSession.tableCommand(DBSchema.class)
                 .dropTableIfExists(DBSchema.DATABASE_READER_IT)
                 .asIgnore();
     }
 
-    synchronized private void createTable(JDBCSession jdbcSession) {
+    private synchronized void createTable(JDBCSession jdbcSession) {
         jdbcSession.tableCommand(DBSchema.class)
                 .createTableIfNotExists(DBSchema.DATABASE_READER_IT)
                 .addColumn(DB_INDEX, SQLDataType.INTEGER).addConstraint(JDBCTableBuilder.SQLConstraint.PRIMARY_KEY)

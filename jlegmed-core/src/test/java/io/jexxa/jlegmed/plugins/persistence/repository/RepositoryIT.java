@@ -43,7 +43,7 @@ class RepositoryIT {
         var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute((filterContext) -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
+                .execute(filterContext -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
 
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -83,7 +83,7 @@ class RepositoryIT {
 
     private void bootstrapTestData(JLegMed jLegMed, int numberOfData) {
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute((filterContext) -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
+                .execute(filterContext -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
 
         jLegMed.bootstrapFlowGraph("Init test data")
                 .repeat(numberOfData)

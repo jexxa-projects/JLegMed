@@ -17,11 +17,12 @@ public class ErrorPipe<T> extends OutputPipe<ProcessingError<T>> {
     public BigInteger handledProcessingErrors() { return handledProcessingErrors; }
     public BigInteger unhandledProcessingErrors() { return unhandledProcessingErrors; }
 
+    @Override
     public void forward(ProcessingError<T> data) {
-        getInvocationHandler(this).invoke(this, this::forwardToSuccessor, data);
+        getInvocationHandler(this).invoke(this, this::forwardErrorToSuccessor, data);
     }
 
-    private void forwardToSuccessor(ProcessingError<T> processingError) {
+    private void forwardErrorToSuccessor(ProcessingError<T> processingError) {
         if (processingError == null) {
             return;
         }

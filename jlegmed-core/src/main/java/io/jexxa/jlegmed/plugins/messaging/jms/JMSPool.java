@@ -26,14 +26,30 @@ public class JMSPool {
         return INSTANCE.internalJMSSender(filterContext.filterProperties());
     }
 
+    public static <T> JMSProducer<T> jmsSource(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> deserializer)
+    {
+        return new JMSProducer<>(jmsSource, deserializer);
+    }
+
+
     public static <T> JMSProducer<T> jmsTopic(String topicName, SerializableBiFunction<String, Class<T>, T> deserializer)
     {
         return new JMSProducer<>(topic(topicName), deserializer);
     }
 
+    public static <T> JMSProducer<T> jmsTopic(String topicName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer)
+    {
+        return new JMSProducer<>(topic(topicName, selector), deserializer);
+    }
+
     public static <T> JMSProducer<T> jmsQueue(String queueName, SerializableBiFunction<String, Class<T>, T> deserializer)
     {
         return new JMSProducer<>(queue(queueName), deserializer);
+    }
+
+    public static <T> JMSProducer<T> jmsQueue(String queueName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer)
+    {
+        return new JMSProducer<>(queue(queueName, selector), deserializer);
     }
 
     private void initJMSConnections(FilterProperties filterProperties)

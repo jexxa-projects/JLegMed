@@ -3,7 +3,6 @@ package io.jexxa.jlegmed.plugins.messaging.jms;
 
 import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.common.drivingadapter.messaging.jms.DefaultJMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
 import io.jexxa.common.drivingadapter.messaging.jms.listener.StringMessageListener;
@@ -92,12 +91,7 @@ public class JMSProducer<T> extends ActiveProducer<T> {
         @SuppressWarnings("unused")
         public JMSConfiguration getConfiguration()
         {
-            return switch (configuration.destinationType()) {
-                case TOPIC ->
-                        new DefaultJMSConfiguration(configuration.destinationName(), JMSConfiguration.MessagingType.TOPIC);
-                case QUEUE ->
-                        new DefaultJMSConfiguration(configuration.destinationName(), JMSConfiguration.MessagingType.QUEUE);
-            };
+            return configuration;
         }
 
         @Override

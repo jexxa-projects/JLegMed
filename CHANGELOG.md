@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.2.0] - 2024-mm-dd
+### Added
+- JMSSource supports now all configuration options of JMS2.x
+
 ## \[3.1.0] - 2024-08-01
 ### Added
 - Statistics about processed messages and processing errors for each flow graph

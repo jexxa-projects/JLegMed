@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[3.2.0] - 2024-mm-dd
+## \[3.2.0] - 2024-08-02
 ### Added
-- JMSSource supports now all configuration options of JMS2.x
+- JMSSource supports now all configuration options of JMS2.x. See examples ind [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
 
 ## \[3.1.0] - 2024-08-01
 ### Added

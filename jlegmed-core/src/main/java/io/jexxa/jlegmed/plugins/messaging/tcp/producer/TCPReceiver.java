@@ -57,7 +57,9 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     public void stop()
     {
         super.stop();
-        tcpListener.stop();
+        if (tcpListener != null) {
+            tcpListener.stop();
+        }
     }
 
     private void validateFilterSettings() {

@@ -146,19 +146,27 @@ public abstract class Processor<T, R>  extends Filter {
 
     private void handleRuntimeException(RuntimeException e, T data)
     {
-        SLF4jLogger.getLogger(Processor.class).error("{}: Could not process message", name());
-        SLF4jLogger.getLogger(Processor.class).error("{}: Message: `{}` ", name(), data);
+        if (errorPipe().isConnected())
+        {
+            SLF4jLogger.getLogger(Processor.class).error("{} : Could not process message of input type {} -> forwarding it to error pipe", name(), data.getClass().getSimpleName());
+            logErrorCause(e);
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
+
+        } else {
+            SLF4jLogger.getLogger(Processor.class).error("{}: Could not process message -> forwarding ProcessingException to successor", name());
+            logErrorCause(e);
+
+            throw new ProcessingException(this, e.getMessage(), e);
+        }
+    }
+
+    private void logErrorCause(RuntimeException e)
+    {
         if (e.getCause() != null)
         {
             SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getCause().getClass().getSimpleName(), e.getCause().getMessage());
         } else {
             SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getClass().getSimpleName(), e.getMessage());
-        }
-        if (errorPipe().isConnected())
-        {
-            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
-        } else {
-            throw new ProcessingException(this, e.getMessage(), e);
         }
     }
 

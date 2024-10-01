@@ -2,9 +2,11 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
         this.name = name;
     }
 
-    public abstract R multiplexData(U firstData, V secondData);
+    protected abstract R multiplexData(U firstData, V secondData, FilterContext filterContext);
 
     @Override
     public String name() {
@@ -80,7 +82,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
                 //Multiplex all data in the queue
                 while (!firstInputQueue.isEmpty() && !secondInputQueue.isEmpty() ) {
                     result.add(
-                            multiplexData(firstInputQueue.remove(), secondInputQueue.remove())
+                            multiplexData(firstInputQueue.remove(), secondInputQueue.remove(), filterContext())
                     );
                 }
             }
@@ -107,9 +109,27 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     {
         return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
             @Override
-            public R multiplexData(U firstData, V secondData) {
+            public R multiplexData(U firstData, V secondData, FilterContext filterContext) {
                 return multiplexFunction.apply(firstData, secondData);
             }
         };
     }
+
+    @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation
+    public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(FilterContextMultiplexFunction<U, V, R> multiplexFunction)
+    {
+        return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
+            @Override
+            public R multiplexData(U firstData, V secondData, FilterContext filterContext) {
+                return multiplexFunction.apply(firstData, secondData, filterContext());
+            }
+        };
+    }
+
+    public interface FilterContextMultiplexFunction<U, V, R>  extends Serializable
+    {
+        R apply(U firstData, V secondData, FilterContext filterContext);
+    }
+
+
 }

@@ -1,0 +1,55 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+
+name: Java Support Matrix
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # test against supported Java version:
+        java: [ '17', '18', '19', '20', '21', '22','23']
+
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      activemq:
+        # Docker Hub image
+        image: quay.io/artemiscloud/activemq-artemis-broker:latest
+        #
+        ports:
+          # Opens tcp port 6379 on the host and service container
+          - 61616:61616
+        env:
+          AMQ_USER: admin
+          AMQ_PASSWORD: admin
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # setup default ports
+        ports:
+          # Opens tcp port 5432 on the host and service container
+          - 5432:5432
+        # setup default user for testing
+        env:
+          POSTGRES_PASSWORD: admin
+          POSTGRES_USER: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Maven build
+        run: mvn '-Dmaven.compiler.release=${{ matrix.java }}' -B clean install

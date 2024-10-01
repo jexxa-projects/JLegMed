@@ -50,7 +50,7 @@
     <junit.jupiter.engine.version>5.11.1</junit.jupiter.engine.version>
     <junit.jupiter.params.version>5.11.1</junit.jupiter.params.version>
     <awaitility.version>4.2.2</awaitility.version>
-    <jackson.databind.version>2.17.2</jackson.databind.version>
+    <jackson.databind.version>2.18.0</jackson.databind.version>
     <apache.commons.lang3>3.17.0</apache.commons.lang3>
     <activemq.artemis.client.version>2.37.0</activemq.artemis.client.version>
     <postgres.version>42.7.4</postgres.version>
@@ -67,7 +67,7 @@
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
 
     <!--version of  maven plugins  -->
-    <gpg.plugin.version>3.2.6</gpg.plugin.version>
+    <gpg.plugin.version>3.2.7</gpg.plugin.version>
     <maven.clean.plugin>3.4.0</maven.clean.plugin>
     <maven.compiler.plugin>3.13.0</maven.compiler.plugin>
     <maven.deploy.plugin>3.1.1</maven.deploy.plugin>

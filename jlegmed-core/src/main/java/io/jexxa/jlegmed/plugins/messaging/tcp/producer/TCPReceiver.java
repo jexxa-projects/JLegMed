@@ -141,7 +141,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     private static String receiveLine(SocketContext context) throws IOException
     {
-        return context.bufferedReader().readLine();
+        return context.bufferedReader().readLine(); //Handles all typical delimiter according to its doc
     }
 
     public static ActiveProducer<String> receiveTextMessage()

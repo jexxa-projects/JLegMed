@@ -18,6 +18,7 @@ import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 
 public class TCPConnection {
 
+
     private static final String COULD_NOT_SEND_MESSAGE = "Could not send message.";
     private final int port;
     private final String ipAddress;
@@ -70,14 +71,19 @@ public class TCPConnection {
         bufferedWriter = null;
     }
 
-    public <T> void sendMessage(T data, Function<T, String> encoder) {
-        sendMessage(encoder.apply(data));
+    public <T> void sendMessage(T data, Function<T, String> encoder, Delimiter delimiter) {
+        sendMessage(encoder.apply(data), delimiter);
     }
 
-    public void sendMessage(String data) {
+    public void sendMessage(String data, Delimiter delimiter) {
+        sendMessage(data, delimiter.asString());
+    }
+
+        public void sendMessage(String data, String delimiter) {
         try {
             validateConnection();
             bufferedWriter.write(data);
+            bufferedWriter.write(delimiter);
             bufferedWriter.flush();
         } catch (IOException e) {
             SLF4jLogger.getLogger(TCPReceiver.class).error(COULD_NOT_SEND_MESSAGE, e);
@@ -100,7 +106,7 @@ public class TCPConnection {
 
     public static String sendTextMessage(String message, FilterContext filterContext)
     {
-        TCPConnectionPool.tcpConnection(filterContext).sendMessage(message + "\n");
+        TCPConnectionPool.tcpConnection(filterContext).sendMessage(message , Delimiter.NEWLINE);
         return message;
     }
 

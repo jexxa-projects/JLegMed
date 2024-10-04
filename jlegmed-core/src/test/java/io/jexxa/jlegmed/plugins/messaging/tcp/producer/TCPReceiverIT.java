@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.plugins.messaging.tcp.Delimiter;
 import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnection;
 import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnectionPool;
 import org.junit.jupiter.api.AfterEach;
@@ -73,7 +74,7 @@ class TCPReceiverIT {
     {
         var tcpConnection = new TCPConnection("localhost", 6665);
         for (int i = 0; i < counter; ++i) {
-            tcpConnection.sendMessage(message);
+            tcpConnection.sendMessage(message, Delimiter.NEWLINE);
         }
         tcpConnection.close();
     }

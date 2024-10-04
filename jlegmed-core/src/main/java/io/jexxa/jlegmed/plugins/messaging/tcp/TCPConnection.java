@@ -79,7 +79,7 @@ public class TCPConnection {
         sendMessage(data, delimiter.asString());
     }
 
-        public void sendMessage(String data, String delimiter) {
+    public void sendMessage(String data, String delimiter) {
         try {
             validateConnection();
             bufferedWriter.write(data);

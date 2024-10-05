@@ -24,7 +24,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
         this.name = name;
     }
 
-    protected abstract R multiplexData(U firstData, V secondData, FilterContext filterContext);
+    protected abstract R multiplexData(U firstData, V secondData);
 
     @Override
     public String name() {
@@ -82,7 +82,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
                 //Multiplex all data in the queue
                 while (!firstInputQueue.isEmpty() && !secondInputQueue.isEmpty() ) {
                     result.add(
-                            multiplexData(firstInputQueue.remove(), secondInputQueue.remove(), filterContext())
+                            multiplexData(firstInputQueue.remove(), secondInputQueue.remove())
                     );
                 }
             }
@@ -109,7 +109,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     {
         return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
             @Override
-            public R multiplexData(U firstData, V secondData, FilterContext filterContext) {
+            public R multiplexData(U firstData, V secondData) {
                 return multiplexFunction.apply(firstData, secondData);
             }
         };
@@ -120,7 +120,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     {
         return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
             @Override
-            public R multiplexData(U firstData, V secondData, FilterContext filterContext) {
+            public R multiplexData(U firstData, V secondData) {
                 return multiplexFunction.apply(firstData, secondData, filterContext());
             }
         };

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.3.0] - 2024-10-05
+### Added
+- TCPSender can now use different delimiters 
+
+### Fixed
+- Updated dependencies
+- Improved error messages
+- TCPListener could be null, if node is not initialized which is now handled correctly.
+
 ## \[3.2.1] - 2024-08-31
 ### Fixed
 - Updated dependencies

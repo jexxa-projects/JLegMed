@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
+import io.jexxa.jlegmed.core.filter.ProcessingError;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.concurrent.ExecutorService;
@@ -34,4 +36,15 @@ public abstract class ThreadedProducer<T> extends ActiveProducer<T> {
     }
 
     public abstract void produceData();
+
+    protected void forwardData(T data)
+    {
+        try {
+            outputPipe().forward(data);
+        } catch (ProcessingException e) {
+            errorPipe().forward(new ProcessingError<>(data, e));
+        }catch (RuntimeException e) {
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, name() + " could not generate data", e)));
+        }
+    }
 }

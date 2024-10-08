@@ -90,7 +90,9 @@ public final class JLegMed
     public synchronized void start()
     {
         try {
-            filterProperties().forEach(BootstrapRegistry::initFailFast);
+            if (strictFailFast()) {
+                filterProperties().forEach(BootstrapRegistry::initFailFast);
+            }
 
             showPreStartupBanner();
 

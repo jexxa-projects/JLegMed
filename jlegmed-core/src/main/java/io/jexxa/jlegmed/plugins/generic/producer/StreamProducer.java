@@ -15,7 +15,7 @@ public class StreamProducer {
 
             @Override
             public void produceData() {
-                stream.forEach(outputPipe()::forward);
+                stream.forEach(this::forwardData);
             }
         };
     }

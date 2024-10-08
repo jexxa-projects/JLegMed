@@ -20,7 +20,6 @@ class BootstrappingFlowGraphTest {
     void initBeforeEach()
     {
         jlegmed = new JLegMed(BootstrappingFlowGraphTest.class)
-                .disableStrictFailFast() // For testing purposes, we disable fail fast
                 .disableBanner();
     }
 

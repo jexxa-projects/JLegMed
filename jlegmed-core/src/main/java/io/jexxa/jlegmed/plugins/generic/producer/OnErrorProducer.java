@@ -75,15 +75,6 @@ public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
         }
     }
 
-    private void forwardData(R data)
-    {
-        try {
-            outputPipe().forward(data);
-        } catch (ProcessingException e) {
-            errorPipe().forward(new ProcessingError<>(data, e));
-        }
-    }
-
     protected abstract R produceData(T unhandledInputData, ProcessingException exception);
 
     @SuppressWarnings("java:S110")

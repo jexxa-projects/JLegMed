@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.jexxa.jlegmed.examples.TestFilter.NewContract.newContract;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,7 +40,7 @@ class BootstrappingFlowGraphTest {
         //First, we have to initialize our data source before some other flow graph can start processing
         jlegmed.bootstrapFlowGraph("Setup Contract").repeat(repeatCounter)
                 .receive(TestFilter.NewContract.class)
-                .from(() -> new TestFilter.NewContract(counter.getAndIncrement()))
+                .from(() -> newContract(counter.getAndIncrement()))
                 .and().consumeWith(dataSource::push);
 
         jlegmed.newFlowGraph("Process contracts")

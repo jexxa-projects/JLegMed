@@ -10,8 +10,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
@@ -26,11 +30,13 @@ public class TCPConnection {
 
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private Duration timeout;
 
     public TCPConnection(String ipAddress, int port)
     {
         this.port = port;
         this.ipAddress = ipAddress;
+        timeout = Duration.of(0, ChronoUnit.MILLIS);
         validateFilterSettings();
     }
 
@@ -38,6 +44,11 @@ public class TCPConnection {
     {
         this(filterProperties.properties().getProperty(TCPProperties.TCP_ADDRESS),
                 Integer.parseInt(filterProperties.properties().getProperty(TCPProperties.TCP_PORT)));
+    }
+
+    public void connectionTimeout(Duration timeout)
+    {
+        this.timeout = timeout;
     }
 
 
@@ -95,7 +106,8 @@ public class TCPConnection {
     private void validateConnection() {
         if (clientSocket == null || !clientSocket.isConnected() || clientSocket.isClosed() ) {
             try {
-                clientSocket = new Socket(ipAddress, port);
+                clientSocket = new Socket();
+                clientSocket.connect(new InetSocketAddress(ipAddress, port), new BigDecimal(timeout.toMillis()).intValueExact() );
                 bufferedWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
                 bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
             } catch (IOException e) {

@@ -65,17 +65,13 @@ public abstract class Processor<T, R>  extends Filter {
         do {
                 startProcessing();
 
-                R result = null;
-
                 try {
-                    result = doProcess(data);
+                    outputPipe().forward(doProcess(data));
                 } catch (ProcessingException e) { // ProcessingException is either forwardedMessages to the errorPipe or rethrow
                     handleProcessingException(e, data);
                 }   catch (RuntimeException e) {
-                   handleRuntimeException(e, data);
+                    handleRuntimeException(e, data);
                 }
-
-                outputPipe().forward(result);
 
                 finishedProcessing();
 

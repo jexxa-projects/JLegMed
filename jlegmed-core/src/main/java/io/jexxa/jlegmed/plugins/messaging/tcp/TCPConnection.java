@@ -112,6 +112,8 @@ public class TCPConnection {
                 bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
             } catch (IOException e) {
                 throw new IllegalStateException("Could not connect to server.", e);
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("Invalid connection timeout defined.", e);
             }
         }
     }

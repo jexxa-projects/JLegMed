@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.4.0] - 2024-10-15
+### Added
+- TCPSender: Connection timeout can now be defined  
+- Possiblity to enable strict transactional behavior of flow graphs. Default mode is that flow graphs can run in parallel
+
+### Fixed
+-  Forwarding errors to the succeeding filter is now correctly handled. This fixes the issue that an error is not handled by filters that successfully processed the message.
+
+- Updated dependencies
+
 ## \[3.3.0] - 2024-10-05
 ### Added
 - TCPSender can now use different delimiters 

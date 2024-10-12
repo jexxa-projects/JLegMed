@@ -3,6 +3,9 @@ package io.jexxa.jlegmed.core;
 
 import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
+import io.jexxa.adapterapi.invocation.InvocationManager;
+import io.jexxa.adapterapi.invocation.SharedInvocationHandler;
+import io.jexxa.adapterapi.invocation.TransactionalInvocationHandler;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -53,6 +56,7 @@ public final class JLegMed
     public JLegMed(Class<?> application, Properties properties)
     {
         JexxaContext.init();
+        InvocationManager.setDefaultInvocationHandler(new SharedInvocationHandler());
 
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);
@@ -77,6 +81,7 @@ public final class JLegMed
     {
         flowGraphs.put(flowGraph.flowGraphID(), flowGraph);
     }
+
     public FlowGraph getFlowGraph(String flowGraphID)
     {
         return flowGraphs.getOrDefault(flowGraphID, null);
@@ -115,6 +120,14 @@ public final class JLegMed
         }
         return this;
     }
+
+
+    public JLegMed enableTransactionalFlowgraph()
+    {
+        InvocationManager.setDefaultInvocationHandler(new TransactionalInvocationHandler());
+        return this;
+    }
+
 
     public JLegMed enableStrictFailFast() {
         this.strictFailFast = true;

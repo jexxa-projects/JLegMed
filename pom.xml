@@ -47,7 +47,7 @@
 
     <!-- version of test dependencies -->
     <junit.platform.launcher.version>1.11.2</junit.platform.launcher.version>
-    <junit.jupiter.engine.version>5.11.2</junit.jupiter.engine.version>
+    <junit.jupiter.engine.version>5.11.3</junit.jupiter.engine.version>
     <junit.jupiter.params.version>5.11.2</junit.jupiter.params.version>
     <awaitility.version>4.2.2</awaitility.version>
     <jackson.databind.version>2.18.0</jackson.databind.version>

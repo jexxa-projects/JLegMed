@@ -102,11 +102,11 @@ public class FlowGraph {
         filterList.add(producer);
     }
 
-    public void setProducer(PassiveProducer<?> producer, FlowGraphScheduler.FixedRate fixedRate)
+    public void setProducer(PassiveProducer<?> producer, FlowGraphScheduler.FixedDelay fixedDelay)
     {
         this.producer = producer;
         this.producer.strictFailFast(strictFailFast());
-        this.flowGraphScheduler.configureFixedRate(producer, fixedRate);
+        this.flowGraphScheduler.configureFixedDelay(producer, fixedDelay);
         filterList.add(producer);
     }
 
@@ -114,7 +114,7 @@ public class FlowGraph {
     {
         this.producer = producer;
         this.producer.strictFailFast(strictFailFast());
-        this.flowGraphScheduler.configureRepeatedRate(producer, repeatedRate);
+        this.flowGraphScheduler.configureRepeatedDelay(producer, repeatedRate);
         filterList.add(producer);
     }
 

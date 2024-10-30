@@ -1,12 +1,14 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
+import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedDelay;
 import io.jexxa.common.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 
 import java.util.concurrent.TimeUnit;
 
 public class FlowGraphScheduler  {
+
+    public record FixedDelay(long period, TimeUnit timeUnit){}
 
     public record FixedRate(long period, TimeUnit timeUnit){}
     public record RepeatedRate(  long maxIteration, FixedRate fixedRate){}
@@ -41,20 +43,19 @@ public class FlowGraphScheduler  {
         }
     }
 
-
-    public <T> void configureFixedRate(PassiveProducer<T> producer, FixedRate fixedRate)
+    public <T> void configureFixedDelay(PassiveProducer<T> producer, FixedDelay fixedRate)
     {
         this.scheduler = new Scheduler();
-        scheduler.register(new ScheduledFixedRate(producer::produceData, 0, fixedRate.period(),fixedRate.timeUnit()));
+        scheduler.register(new ScheduledFixedDelay(producer::produceData, 0, fixedRate.period(),fixedRate.timeUnit()));
     }
 
-    public <T> void configureRepeatedRate(PassiveProducer<T> producer, RepeatedRate repeatedRate)
+    public <T> void configureRepeatedDelay(PassiveProducer<T> producer, RepeatedRate repeatedRate)
     {
         this.scheduler = new Scheduler();
         this.passiveProducer = producer;
         this.maxIterations = repeatedRate.maxIteration();
         this.currentIterations = 0;
-        scheduler.register(new ScheduledFixedRate(this::countedProduceData, 0, repeatedRate.fixedRate().period(), repeatedRate.fixedRate().timeUnit()));
+        scheduler.register(new ScheduledFixedDelay(this::countedProduceData, 0, repeatedRate.fixedRate().period(), repeatedRate.fixedRate().timeUnit()));
     }
 
 

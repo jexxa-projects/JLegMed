@@ -53,7 +53,7 @@ public class ProducerBuilder<T> {
     private Binding<T, T> setProducer(PassiveProducer<T> producer)
     {
         if (maxIteration < 0) {
-            flowGraph.setProducer(producer, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit));
+            flowGraph.setProducer(producer, new FlowGraphScheduler.FixedDelay(fixedRate, timeUnit));
         } else {
             flowGraph.setProducer(producer, new FlowGraphScheduler.RepeatedRate(maxIteration, new FlowGraphScheduler.FixedRate(fixedRate, timeUnit)));
         }

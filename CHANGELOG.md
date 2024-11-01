@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.4.0] - 2024-11-01
+### Fixed
+- A flow graph now waits for the interval defined in `every` after an iteration has been run through 
+- Updated dependencies
+
 ## \[3.4.0] - 2024-10-15
 ### Added
 - TCPSender: Connection timeout can now be defined  

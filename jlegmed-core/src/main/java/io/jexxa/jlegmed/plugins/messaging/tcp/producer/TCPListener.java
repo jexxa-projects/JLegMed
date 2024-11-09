@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
 
 import io.jexxa.common.facade.utils.function.ThrowingConsumer;
-import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -48,7 +47,7 @@ class TCPListener {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            getLogger(TCPReceiver.class).error("Could not proper close listening socket on port {}", port);
+            getLogger(TCPListener.class).error("Could not proper close listening socket on port {}", port);
         }
         serverSocket = null;
 
@@ -60,7 +59,7 @@ class TCPListener {
             }
         } catch (InterruptedException e) {
             executorService.shutdownNow();
-            getLogger(ThreadedProducer.class).warn("ThreadedProducer could not be stopped -> Force shutdown.", e);
+            getLogger(TCPListener.class).warn("ThreadedProducer could not be stopped -> Force shutdown.", e);
             Thread.currentThread().interrupt();
         }
     }

@@ -35,6 +35,8 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_REPOSI
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_VERSION;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_CONFIG_IMPORT;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
+import static io.jexxa.jlegmed.core.JLegMedProperties.getAsEnvironmentVariable;
+import static java.lang.System.getenv;
 
 public final class JLegMed
 {
@@ -382,8 +384,11 @@ public final class JLegMed
             if (this.properties.containsKey(JLEGMED_CONFIG_IMPORT)) {
                 importProperties(this.properties.getProperty(JLEGMED_CONFIG_IMPORT));
             }
-
-            //5. set system properties
+            // 5. Check if additional properties are defined as environment
+            if (getenv(getAsEnvironmentVariable(JLEGMED_CONFIG_IMPORT)) != null && !getenv(getAsEnvironmentVariable(JLEGMED_CONFIG_IMPORT)).isEmpty() ) {
+                importProperties(getenv(getAsEnvironmentVariable(JLEGMED_CONFIG_IMPORT)));
+            }
+            // 6. set system properties
             setSystemProperties(properties);
 
             return removeEmptyValues(properties);

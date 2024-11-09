@@ -23,6 +23,11 @@ public final class JLegMedProperties
     /** Defines the default properties file which is /JLEGMED-application.properties */
     public static final String JLEGMED_APPLICATION_PROPERTIES = "/jlegmed-application.properties";
 
+    public static String getAsEnvironmentVariable(String propertiesName)
+    {
+        return propertiesName.toUpperCase().replace(".", "_");
+    }
+
     private JLegMedProperties()
     {
         //Private constructor

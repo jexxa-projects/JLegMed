@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.4.2] - 2024-11-09
+### Fixed
+- JMSPool: JMSSession is managed per Filter to ensure that only one thread uses the JMSSession
+- TCPConnectionPool: A TCPConnection is managed per Filter to ensure that only one thread uses the TCPConnection 
+
+
 ## \[3.4.1] - 2024-11-01
 ### Fixed
 - A flow graph now waits for the interval defined in `every` after an iteration has been run through 

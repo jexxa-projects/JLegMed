@@ -12,11 +12,11 @@ import java.util.Map;
 public class TCPConnectionPool {
     private static final TCPConnectionPool INSTANCE = new TCPConnectionPool();
 
-    private final Map<String, TCPConnection> messageSenderMap = new HashMap<>();
+    private final Map<FilterContext, TCPConnection> messageSenderMap = new HashMap<>();
 
     public static TCPConnection tcpConnection(FilterContext filterContext)
     {
-        return INSTANCE.internalTCPConnection(filterContext.filterProperties());
+        return INSTANCE.internalTCPConnection(filterContext);
     }
 
 
@@ -24,7 +24,7 @@ public class TCPConnectionPool {
     {
         try {
             if (filterProperties.properties().containsKey(TCPProperties.TCP_ADDRESS)) {
-                internalTCPConnection(filterProperties);
+                new TCPConnection(filterProperties);
             }
         } catch(RuntimeException e) {
             throw new FailFastException("Could not init TCP connection for filter properties " + filterProperties.name()
@@ -32,12 +32,12 @@ public class TCPConnectionPool {
         }
     }
 
-    private TCPConnection internalTCPConnection(FilterProperties filterProperties)
+    private TCPConnection internalTCPConnection(FilterContext filterContext)
     {
-        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.name(),
-                key -> new TCPConnection(filterProperties));
+        INSTANCE.messageSenderMap.computeIfAbsent(filterContext,
+                key -> new TCPConnection(filterContext.filterProperties()));
 
-        return INSTANCE.messageSenderMap.get(filterProperties.name());
+        return INSTANCE.messageSenderMap.get(filterContext);
     }
 
     private void cleanup()

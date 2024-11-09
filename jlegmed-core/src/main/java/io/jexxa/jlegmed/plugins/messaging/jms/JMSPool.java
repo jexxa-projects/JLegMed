@@ -19,11 +19,11 @@ import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.topic;
 public class JMSPool {
     private static final JMSPool INSTANCE = new JMSPool();
 
-    private final Map<String, MessageSender> messageSenderMap = new HashMap<>();
+    private final Map<FilterContext, MessageSender> messageSenderMap = new HashMap<>();
 
     public static MessageSender jmsSender(FilterContext filterContext)
     {
-        return INSTANCE.internalJMSSender(filterContext.filterProperties());
+        return INSTANCE.internalJMSSender(filterContext);
     }
 
     public static <T> JMSProducer<T> jmsSource(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> deserializer)
@@ -57,7 +57,7 @@ public class JMSPool {
         try {
             if (filterProperties.properties().containsKey(JMSProperties.JNDI_FACTORY_KEY))
             {
-                internalJMSSender(filterProperties);
+                createMessageSender(JMSPool.class, filterProperties.properties());
             }
         } catch ( RuntimeException e) {
             throw new FailFastException("Could not init JMS connection for filter properties " + filterProperties.name()
@@ -66,12 +66,12 @@ public class JMSPool {
 
     }
 
-    private MessageSender internalJMSSender(FilterProperties filterProperties)
+    private MessageSender internalJMSSender(FilterContext filterContext)
     {
-        INSTANCE.messageSenderMap.computeIfAbsent(filterProperties.name(),
-                key -> createMessageSender(JMSPool.class, filterProperties.properties()));
+        INSTANCE.messageSenderMap.computeIfAbsent(filterContext,
+                key ->  createMessageSender(JMSPool.class, filterContext.properties()));
 
-        return messageSenderMap.get(filterProperties.name());
+        return messageSenderMap.get(filterContext);
     }
 
 

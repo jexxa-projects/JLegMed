@@ -76,30 +76,30 @@ class TCPListener {
             } catch (IOException e) {
                 if (isListening) {
                     ++reconnectionCounter;
-                    getLogger(TCPReceiver.class).warn("{} occurred during listening on port {}. Cause: {}",
+                    getLogger(TCPListener.class).warn("{} occurred during listening on port {}. Cause: {}",
                             e.getClass().getSimpleName(),
                             port,
                             e.getMessage());
                     if (reconnectionCounter < 10) {
-                        getLogger(TCPReceiver.class).warn("Try to restart listening on port {}", port);
+                        getLogger(TCPListener.class).warn("Try to restart listening on port {}", port);
                     } else {
-                        getLogger(TCPReceiver.class).error("We tried to restart listening 10 times without success -> we give up listening on port {}", port);
+                        getLogger(TCPListener.class).error("We tried to restart listening 10 times without success -> we give up listening on port {}", port);
                         return;
                     }
                 }
             }
         }
 
-        getLogger(TCPReceiver.class).info("Stop listening on port {} .", port);
+        getLogger(TCPListener.class).info("Stop listening on port {} .", port);
     }
 
     private void acceptConnection(Socket clientSocket)
     {
         try {
             receiver.accept(clientSocket);
-            getLogger(TCPReceiver.class).info("Connection closed by server for client {} on port {} after successfully processing its request.", clientSocket.getRemoteSocketAddress(), port);
+            getLogger(TCPListener.class).info("Connection closed by server for client {} on port {} after successfully processing its request.", clientSocket.getRemoteSocketAddress(), port);
         } catch (IOException e) {
-            getLogger(TCPReceiver.class).info("Connection closed by client {} on port {}.", clientSocket.getRemoteSocketAddress(), port);
+            getLogger(TCPListener.class).info("Connection closed by client {} on port {}.", clientSocket.getRemoteSocketAddress(), port);
         }
     }
 }

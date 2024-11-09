@@ -68,7 +68,9 @@ public final class JLegMed
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
     {
-        return new FlowGraphBuilder(flowGraphID, this);
+        var flowgraphBuilder = new FlowGraphBuilder(flowGraphID, getProperties(), strictFailFast());
+        addFlowGraph(flowgraphBuilder.getFlowGraph());
+        return flowgraphBuilder;
     }
 
     public BootstrapBuilder bootstrapFlowGraph(String flowGraphID)

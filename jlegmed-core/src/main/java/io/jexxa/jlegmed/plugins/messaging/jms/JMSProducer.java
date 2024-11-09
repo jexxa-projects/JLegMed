@@ -103,7 +103,7 @@ public class JMSProducer<T> extends ActiveProducer<T> {
             } catch (ProcessingException e) {
                 jmsProducer.errorPipe().forward(new ProcessingError<>(decodedMessage, e));
             } catch (RuntimeException e) {
-                jmsProducer.errorPipe().forward(new ProcessingError<>(decodedMessage, new ProcessingException(jmsProducer, "Could not deserialize message", e)));
+                jmsProducer.errorPipe().forward(new ProcessingError<>(decodedMessage, new ProcessingException(jmsProducer.name(), "Could not deserialize message", e)));
             }
         }
     }

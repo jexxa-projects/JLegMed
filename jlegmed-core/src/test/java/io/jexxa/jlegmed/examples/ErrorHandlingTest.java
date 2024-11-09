@@ -138,7 +138,7 @@ class ErrorHandlingTest {
     }
     public static void collectProcessingErrors(ProcessingError<String> processingError)
     {
-        getLogger(ErrorHandlingTest.class).warn("Filter `{}` could not process initial message `{}`", processingError.processingException().causedFilter().name(), processingError.originalMessage());
+        getLogger(ErrorHandlingTest.class).warn("Filter `{}` could not process initial message `{}`", processingError.processingException().causedFilter(), processingError.originalMessage());
         errorList.add(processingError.originalMessage());
     }
 }

@@ -31,7 +31,7 @@ public class ErrorPipe<T> extends OutputPipe<ProcessingError<T>> {
 
         if (!isConnected())
         {
-            var filterName = processingError.processingException().causedFilter().name();
+            var filterName = processingError.processingException().causedFilter();
 
             getLogger(ErrorPipe.class).error("{}: Could not process message and all errorPipes are unconnected", filterName);
             getLogger(ErrorPipe.class).error("{}: Message: `{}` ", filterName, processingError.originalMessage());

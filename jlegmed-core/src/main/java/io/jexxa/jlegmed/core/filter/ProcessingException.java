@@ -4,16 +4,16 @@ import java.io.Serial;
 
 public class ProcessingException extends RuntimeException {
     @Serial
-    private static final long serialVersionUID = 1234567L;
+    private static final long serialVersionUID = 1L;
 
-    private final transient Filter causedFilter;
-    public ProcessingException(Filter causedFilter, String message, Throwable cause)
+    private final String causedFilter;
+    public ProcessingException(String causedFilter, String message, Throwable cause)
     {
         super(message, cause);
         this.causedFilter = causedFilter;
     }
 
-    public Filter causedFilter(){
+    public String causedFilter(){
         return causedFilter;
     }
 }

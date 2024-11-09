@@ -66,7 +66,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         } catch (ProcessingException e) {
             errorPipe().forward(new ProcessingError<>(generatedData, e));
         } catch (RuntimeException e) {
-            errorPipe().forward(new ProcessingError<>(generatedData, new ProcessingException(this, name() + " could not generate data", e)));
+            errorPipe().forward(new ProcessingError<>(generatedData, new ProcessingException(this.name(), name() + " could not generate data", e)));
         }
     }
 

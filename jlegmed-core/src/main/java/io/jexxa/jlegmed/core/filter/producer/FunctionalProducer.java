@@ -44,7 +44,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
                 errorPipe().forward(new ProcessingError<>(producedMessage, e));
             } catch (RuntimeException e)
             {
-                errorPipe().forward(new ProcessingError<>(producedMessage, new ProcessingException(this, name() + " could not produce message", e)));
+                errorPipe().forward(new ProcessingError<>(producedMessage, new ProcessingException(this.name(), name() + " could not produce message", e)));
             }
 
             finishedProcessing();

@@ -44,7 +44,7 @@ public abstract class ThreadedProducer<T> extends ActiveProducer<T> {
         } catch (ProcessingException e) {
             errorPipe().forward(new ProcessingError<>(data, e));
         }catch (RuntimeException e) {
-            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, name() + " could not generate data", e)));
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this.name(), name() + " could not generate data", e)));
         }
     }
 }

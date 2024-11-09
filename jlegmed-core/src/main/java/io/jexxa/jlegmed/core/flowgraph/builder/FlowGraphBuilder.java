@@ -1,19 +1,18 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class FlowGraphBuilder {
 
     private final FlowGraph flowGraph;
 
-    public FlowGraphBuilder(String flowGraphID, JLegMed jLegMed)
+    public FlowGraphBuilder(String flowGraphID, Properties properties, boolean enableStrictFailFast)
     {
-        this.flowGraph = new FlowGraph(flowGraphID, jLegMed.getProperties());
-        this.flowGraph.strictFailFast(jLegMed.strictFailFast());
-        jLegMed.addFlowGraph(flowGraph);
+        this.flowGraph = new FlowGraph(flowGraphID, properties);
+        this.flowGraph.strictFailFast(enableStrictFailFast);
     }
 
     public FlowGraphBuilder enableStrictFailFast()
@@ -40,6 +39,11 @@ public class FlowGraphBuilder {
     public RepeatBuilder repeat(int times)
     {
         return new RepeatBuilder(times, flowGraph);
+    }
+
+    public FlowGraph getFlowGraph()
+    {
+        return flowGraph;
     }
 
 }

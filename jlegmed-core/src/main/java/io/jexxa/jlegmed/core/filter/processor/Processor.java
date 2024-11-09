@@ -146,13 +146,13 @@ public abstract class Processor<T, R>  extends Filter {
         {
             SLF4jLogger.getLogger(Processor.class).error("{} : Could not process message of input type {} -> forwarding it to error pipe", name(), data.getClass().getSimpleName());
             logErrorCause(e);
-            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this.name(), "Failed to process message", e)));
 
         } else {
             SLF4jLogger.getLogger(Processor.class).error("{}: Could not process message -> forwarding ProcessingException to successor", name());
             logErrorCause(e);
 
-            throw new ProcessingException(this, e.getMessage(), e);
+            throw new ProcessingException(this.name(), e.getMessage(), e);
         }
     }
 
@@ -169,7 +169,7 @@ public abstract class Processor<T, R>  extends Filter {
     private void handleProcessingException(RuntimeException e, T data)
     {
         if (errorPipe().isConnected()) {
-            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this, "Failed to process message", e)));
+            errorPipe().forward(new ProcessingError<>(data, new ProcessingException(this.name(), "Failed to process message", e)));
         } else {
             throw e;
         }

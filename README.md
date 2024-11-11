@@ -59,7 +59,7 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed-core</artifactId>
-        <version>3.4.2</version>
+        <version>3.5.0</version>
     </dependency>
     
     <dependency>
@@ -73,7 +73,7 @@ Maven:
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed-core:3.4.2"
+compile "io.jexxa:jlegmed-core:3.5.0"
 compile "org.slf4j:slf4j-simple:2.0.16"
 ``` 
 
@@ -89,7 +89,7 @@ Refer to the following examples to get an idea how this library works
 * Advanced use cases:
   * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/FlowGraphConfigurationTest.java)
   * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
-  * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java)
+  * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java)
   * [Error handling in data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ErrorHandlingTest.java)
   * [Bootstrapping flow graphs](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/BootstrappingFlowGraphTest.java)
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.5.0] - 2024-11-11
+### Added
+- New SynchronizedMultiplexer that multiplexes messages if a single message is received on each input. As soon as a message is received on an input. This input blocks and waits until a message is received on the other input or a defined timeout occurs 
+- New ThreadedMultiplexer (formerly BiFunctionMultiplexer) that receives as many messages as possible without blocking the input
+
+### Changed
+- BiFunctionalMultiplexer is set to deprecated -> Use ThreadedMultiplexer instead
+
 ## \[3.4.2] - 2024-11-09
 ### Fixed
 - JMSPool: JMSSession is managed per Filter to ensure that only one thread uses the JMSSession
@@ -81,7 +89,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/005-error-handling-during-message-processing.md)
 
 ### Added
-- Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java) for an example.
+- Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java) for an example.
 
 ### Fix
 - Updated dependencies
@@ -91,7 +99,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/002-fail-fast-approach.md)
 - Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/005-error-handling-during-message-processing.md)
 ### Added 
-- Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/producer/BiFunctionMultiplexerTest.java) for an example.
+- Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java) for an example.
 
 ### Fix
 - Updated dependencies

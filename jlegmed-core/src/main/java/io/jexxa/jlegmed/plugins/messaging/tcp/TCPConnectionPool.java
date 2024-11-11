@@ -5,14 +5,14 @@ import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("java:S6548")
 public class TCPConnectionPool {
     private static final TCPConnectionPool INSTANCE = new TCPConnectionPool();
 
-    private final Map<FilterContext, TCPConnection> messageSenderMap = new HashMap<>();
+    private final Map<FilterContext, TCPConnection> messageSenderMap = new ConcurrentHashMap<>();
 
     public static TCPConnection tcpConnection(FilterContext filterContext)
     {

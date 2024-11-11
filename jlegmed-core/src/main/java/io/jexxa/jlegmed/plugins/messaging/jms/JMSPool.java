@@ -8,8 +8,8 @@ import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.queue;
@@ -19,7 +19,7 @@ import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.topic;
 public class JMSPool {
     private static final JMSPool INSTANCE = new JMSPool();
 
-    private final Map<FilterContext, MessageSender> messageSenderMap = new HashMap<>();
+    private final Map<FilterContext, MessageSender> messageSenderMap = new ConcurrentHashMap<>();
 
     public static MessageSender jmsSender(FilterContext filterContext)
     {

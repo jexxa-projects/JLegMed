@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.generic.producer;
+package io.jexxa.jlegmed.plugins.generic.muxer;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.plugins.generic.producer.BiFunctionMultiplexer.multiplexer;
+import static io.jexxa.jlegmed.plugins.generic.muxer.Multiplexer.threadedMultiplexer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
-class BiFunctionMultiplexerTest {
+class ThreadedMultiplexerTest {
     private static JLegMed jlegmed;
 
     @BeforeEach
     void initBeforeEach()
     {
-        jlegmed = new JLegMed(BiFunctionMultiplexerTest.class).disableBanner();
+        jlegmed = new JLegMed(ThreadedMultiplexerTest.class).disableBanner();
     }
 
     @AfterEach
@@ -31,7 +31,7 @@ class BiFunctionMultiplexerTest {
 
     @Test
     void testMultiplex() {
-        var muxer = multiplexer(BiFunctionMultiplexerTest::multiplexData);
+        var muxer = threadedMultiplexer(ThreadedMultiplexerTest::multiplexData);
         var messageCollector = new Stack<Integer>();
 
         // Multiplexing in JLegMed is done by defining multiple flow graphs. This ensures that they can run in parallel.

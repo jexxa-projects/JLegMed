@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - New SynchronizedMultiplexer that multiplexes messages if a single message is received on each input. As soon as a message is received on an input. This input blocks and waits until a message is received on the other input or a defined timeout occurs 
 - New ThreadedMultiplexer (formerly BiFunctionMultiplexer) that receives as many messages as possible without blocking the input
+- Added possibility to define JLEGMED_CONFIG_IMPORT via environment variable
 
 ### Changed
 - BiFunctionalMultiplexer is set to deprecated -> Use ThreadedMultiplexer instead

@@ -63,6 +63,7 @@ public abstract class SynchronizedMultiplexer<U, V, R> extends ThreadedProducer<
         }
     }
 
+    @Override
     public void produceData() {
         U tmpFirstData;
         V tmpSecondData;

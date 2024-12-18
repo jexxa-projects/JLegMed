@@ -42,7 +42,7 @@ public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
                         this.wait();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        SLF4jLogger.getLogger(BiFunctionMultiplexer.class).error("Inner thread was interrupted");
+                        SLF4jLogger.getLogger(OnErrorProducer.class).error("Inner thread was interrupted");
                     }
                 }
 

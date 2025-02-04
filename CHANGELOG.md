@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Fix
 - Updated dependencies
 
+## \[3.5.2] - 2025-02-04
+## Fix
+- Updated dependencies
+
 ## \[3.5.1] - 2024-11-22
 ## Fix
 - Fixed race condition when accessing ressource pools 

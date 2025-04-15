@@ -5,7 +5,7 @@
 
   <groupId>io.jexxa.jlegmed</groupId>
   <artifactId>jlegmed</artifactId>
-  <version>3.5.5-SNAPSHOT</version>
+  <version>3.5.5</version>
   <packaging>pom</packaging>
 
   <!-- Project Information -->
@@ -30,7 +30,7 @@
     <connection>scm:git:https://github.com/jexxa-projects/JLegMed.git</connection>
     <url>https://github.com/jexxa-projects/JLegMed</url>
     <developerConnection>scm:git:https://github.com/jexxa-projects/JLegMed.git</developerConnection>
-    <tag>jlegmed-3.0.4</tag>
+    <tag>jlegmed-3.5.5</tag>
   </scm>
 
   <properties>

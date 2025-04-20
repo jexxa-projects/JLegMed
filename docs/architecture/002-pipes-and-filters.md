@@ -15,7 +15,7 @@ We need an architectural style that:
 * Clearly models data flow and transformations
 * Allows composability and separation of concerns
 * Works well in both synchronous and asynchronous contexts
-* Can be implemented with minimal dependencies
+* It Can be implemented with minimal dependencies
 
 Decision
 
@@ -37,6 +37,6 @@ Consequences
   
 * Cons:
   * Slightly higher initial design effort compared to monolithic data processing
-  * May introduce performance overhead if not optimized in data intensive operations such as reading data from an old DB stepwise  
+  * May introduce performance overhead if not optimized in data-intensive operations such as reading data from an old DB stepwise  
 * Mitigations:
   * We will benchmark critical flows and optimize or batch filters where necessary

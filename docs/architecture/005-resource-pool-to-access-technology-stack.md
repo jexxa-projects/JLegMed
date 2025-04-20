@@ -21,6 +21,6 @@ we use the `useProperties` name defined in flow graph
 
 ## Consequences
 * We use the `FilterContext` of a filter so that a resource pool can manage resources on a filter level. 
-* All configuration aspects of a technology stacks or a specific connection must be defined using properties. In case a developer forgets to configure the properties [ADR 002-fail-fast-approach](002-fail-fast-approach.md) handles this failure. 
+* All configuration aspects of a technology stacks or a specific connection must be defined using properties. In case a developer forgets to configure the properties [ADR 002-fail-fast-approach](004-fail-fast-approach.md) handles this failure. 
 * Resource pools must be implemented as singleton to be used in lambda expressions. For proper initialization of these singletons in Java, the class information must be passed to JLegMed in the main method so that it can force class loading   
-* Due to [ADR 002-fail-fast-approach](002-fail-fast-approach.md), ressource pools get `Properties` information for all pools. So they must be able to detect and ignore properties that are not related to themselves.        
+* Due to [ADR 002-fail-fast-approach](004-fail-fast-approach.md), ressource pools get `Properties` information for all pools. So they must be able to detect and ignore properties that are not related to themselves.        

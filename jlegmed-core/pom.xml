@@ -5,7 +5,7 @@
   <parent>
     <artifactId>jlegmed</artifactId>
     <groupId>io.jexxa.jlegmed</groupId>
-    <version>3.5.6-SNAPSHOT</version>
+    <version>3.5.6</version>
   </parent>
 
   <artifactId>jlegmed-core</artifactId>

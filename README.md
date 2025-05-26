@@ -59,13 +59,13 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed-core</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.5</version>
     </dependency>
     
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>2.0.16</version>
+        <version>2.0.17</version>
     </dependency>
 </dependencies>
 ```
@@ -73,8 +73,8 @@ Maven:
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed-core:3.5.0"
-compile "org.slf4j:slf4j-simple:2.0.16"
+compile "io.jexxa:jlegmed-core:3.5.5"
+compile "org.slf4j:slf4j-simple:2.0.17"
 ``` 
 
 ## Examples
@@ -112,6 +112,6 @@ Please make sure to update tests as appropriate.
 
 ## Copyright and license
 
-Code and documentation copyright 2023–2024 Michael Repplinger. 
+Code and documentation copyright 2023–2025 Michael Repplinger. 
 Code released under the [Apache 2.0 License](LICENSE)(see [TLDR legal](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)) for details).
 Docs released under [Creative Commons](https://creativecommons.org/licenses/by/4.0/).

@@ -4,10 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.5.5] - 2025-04-15
+## Fix
+- Updated dependencies
+
+## \[3.5.4] - 2025-03-18
+## Fix
+- Updated dependencies
+
+## \[3.5.3] - 2025-02-04
+## Fix
+- Updated dependencies
+
+## \[3.5.2] - 2025-02-04
+## Fix
+- Updated dependencies
+
+## \[3.5.1] - 2024-11-22
+## Fix
+- Fixed race condition when accessing ressource pools 
+- Updated dependencies
+
 ## \[3.5.0] - 2024-11-11
 ### Added
 - New SynchronizedMultiplexer that multiplexes messages if a single message is received on each input. As soon as a message is received on an input. This input blocks and waits until a message is received on the other input or a defined timeout occurs 
 - New ThreadedMultiplexer (formerly BiFunctionMultiplexer) that receives as many messages as possible without blocking the input
+- Added possibility to define JLEGMED_CONFIG_IMPORT via environment variable
 
 ### Changed
 - BiFunctionalMultiplexer is set to deprecated -> Use ThreadedMultiplexer instead
@@ -83,10 +105,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## \[2.0.0] - 2024-03-02
 ### Incompatible Changes
-- Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/002-fail-fast-approach.md)
+- Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/004-fail-fast-approach.md)
 - Processor-Filters in FlowGraphBuilder accept only functional statements. See [ADR 003 - Functional interface processor](docs/architecture/003-functional-interface-processor.md) for more information.
-- Introduced `Object Pools` that allows processors to use stateful technology stacks. See [ADR 004 - Object Pool to access technology stack ](docs/architecture/004-object-pool-to-access-technology-stack.md) for more information.
-- Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/005-error-handling-during-message-processing.md)
+- Introduced `Object Pools` that allows processors to use stateful technology stacks. See [ADR 004 - Object Pool to access technology stack ](docs/architecture/005-resource-pool-to-access-technology-stack) for more information.
+- Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/006-error-handling-during-message-processing.md)
 
 ### Added
 - Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java) for an example.
@@ -96,8 +118,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## \[2.0.0 - beta 2] - 2024-02-18
 ### Incompatible Changes
-- Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/002-fail-fast-approach.md)
-- Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/005-error-handling-during-message-processing.md)
+- Implemented a Fail fast approach as described in [ADR002 - Fail Fast approach](docs/architecture/004-fail-fast-approach.md)
+- Error handling for flow graphs as described in [ADR005 - Error handling during message processing](docs/architecture/006-error-handling-during-message-processing.md)
 ### Added 
 - Generic multiplexer in case the result of two flow graphs must be multiplexed. See [here](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java) for an example.
 
@@ -108,7 +130,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Incompatible Changes 
 - Start adding ADRs
 - Processor-Filters in FlowGraphBuilder accept only functional statements. See [ADR 003 - Functional interface processor](docs/architecture/003-functional-interface-processor.md) for more information.   
-- Introduced `Object Pools` that allows processors to use stateful technology stacks. See [ADR 004 - Object Pool to access technology stack ](docs/architecture/004-object-pool-to-access-technology-stack.md) for more information.
+- Introduced `Object Pools` that allows processors to use stateful technology stacks. See [ADR 004 - Object Pool to access technology stack ](docs/architecture/005-resource-pool-to-access-technology-stack) for more information.
 ### Fix
 - Updated dependencies
 

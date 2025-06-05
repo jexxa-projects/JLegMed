@@ -87,7 +87,7 @@ public class LogMonitor {
 
         var iterationDataString = sb.toString();
 
-        SLF4jLogger.getLogger(LogMonitor.class.getSimpleName()).info(iterationDataString);
+        SLF4jLogger.getLogger(LogMonitor.class).info(iterationDataString);
     }
 
     private void logIterationFilterStyle()
@@ -111,7 +111,7 @@ public class LogMonitor {
 
         var iterationDataString = sb.toString();
 
-        SLF4jLogger.getLogger(LogMonitor.class.getSimpleName()).info(iterationDataString);
+        SLF4jLogger.getLogger(LogMonitor.class).info(iterationDataString);
     }
 
     int getIndex(Object outputPipe)

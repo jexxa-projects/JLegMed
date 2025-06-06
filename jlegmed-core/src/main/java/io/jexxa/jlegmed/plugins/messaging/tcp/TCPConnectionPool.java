@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
+import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
@@ -51,5 +52,6 @@ public class TCPConnectionPool {
     {
         BootstrapRegistry.registerBootstrapHandler(this::cleanup);
         BootstrapRegistry.registerFailFastHandler(this::initTCPConnections);
+        JexxaContext.registerCleanupHandler(this::cleanup);
     }
 }

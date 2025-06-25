@@ -41,6 +41,7 @@ import static java.lang.System.getenv;
 public final class JLegMed
 {
     private boolean isRunning = false;
+    private boolean isStopped = false;
     private final Map<String, FlowGraph> flowGraphs = new LinkedHashMap<>();
     private final Map<String, FlowGraph> bootstrapFlowGraphs = new LinkedHashMap<>();
     private final Properties properties;
@@ -176,10 +177,16 @@ public final class JLegMed
 
     public synchronized void stop()
     {
-        isRunning = false;
+        if (!isStopped) {
+            isStopped = true;
+            isRunning = false;
 
-        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
-        JexxaContext.cleanup();
+            flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
+            JexxaContext.cleanup();
+            if (enableBanner) {
+                SLF4jLogger.getLogger(JLegMed.class).info("{} successfully stopped", application.getSimpleName());
+            }
+        }
     }
 
     public JLegMed disableBanner()
@@ -297,6 +304,7 @@ public final class JLegMed
     {
         isRunning = false;
         notifyAll();
+        stop();
     }
 
     public boolean isRunning() {

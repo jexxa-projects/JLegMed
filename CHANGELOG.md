@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[3.5.6] - 2025-06-26
+## \[3.5.7] - 2025-06-25
+### Fixed
+- Updated dependencies
+- Correct cleanup of JLegMed application if it is terminated with siq-quit
+
+## \[3.5.6] - 2025-05-26
 ### Fixed
 - Updated dependencies
 - Moved the deployment process from the legacy OSS deploy server to the new central sonatype

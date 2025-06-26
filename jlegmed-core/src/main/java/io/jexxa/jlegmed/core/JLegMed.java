@@ -101,24 +101,19 @@ public final class JLegMed
 
     public synchronized void start()
     {
-        try {
-            if (strictFailFast()) {
-                filterProperties().forEach(BootstrapRegistry::initFailFast);
-            }
-
-            showPreStartupBanner();
-
-            bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
-
-            flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.init());
-            flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
-
-            showPostStartupBanner();
-            isRunning = true;
-        } catch (RuntimeException e) {
-            stop();
-            throw e;
+        if (strictFailFast()) {
+            filterProperties().forEach(BootstrapRegistry::initFailFast);
         }
+
+        showPreStartupBanner();
+
+        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
+
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.init());
+        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
+
+        showPostStartupBanner();
+        isRunning = true;
     }
 
     public JLegMed useTechnology(Class<?>  ... classes) {
@@ -263,7 +258,7 @@ public final class JLegMed
     {
         if (Thread.getDefaultUncaughtExceptionHandler() == null)
         {
-            Thread.setDefaultUncaughtExceptionHandler(new JexxaExceptionHandler(this));
+            Thread.setDefaultUncaughtExceptionHandler(new JLegMedExceptionHandler(this));
         }
     }
     private void setupSignalHandler() {
@@ -312,7 +307,7 @@ public final class JLegMed
     }
 
 
-    record JexxaExceptionHandler(JLegMed jLegMed) implements Thread.UncaughtExceptionHandler {
+    record JLegMedExceptionHandler(JLegMed jLegMed) implements Thread.UncaughtExceptionHandler {
 
         @Override
         public void uncaughtException(Thread t, Throwable e) {
@@ -355,9 +350,16 @@ public final class JLegMed
                 detailedMessage = rootCause.getMessage();
             }
 
+            StackTraceElement firstStackTraceElement = null;
+            if (rootCause.getStackTrace().length > 0)
+            {
+                firstStackTraceElement = rootCause.getStackTrace()[0];
+            }
+
+
             stringBuilder.append("\n* JLegMed-Message   : ").append(jLegMedMessage);
             stringBuilder.append("\n* Detailed-Message  : ").append(detailedMessage);
-            stringBuilder.append("\n* 1st trace element : ").append(rootCause.getStackTrace()[0]);
+            stringBuilder.append("\n* 1st trace element : ").append(firstStackTraceElement);
 
             return stringBuilder.toString();
         }

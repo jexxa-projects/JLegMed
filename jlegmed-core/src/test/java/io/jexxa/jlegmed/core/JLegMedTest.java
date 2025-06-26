@@ -26,7 +26,7 @@ class JLegMedTest {
     {
         //Arrange
         var objectUnderTest= new JLegMed(JLegMedTest.class);
-        var jexxaException = new JLegMed.JexxaExceptionHandler(objectUnderTest);
+        var jexxaException = new JLegMed.JLegMedExceptionHandler(objectUnderTest);
 
         //Act
         objectUnderTest.start();

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[3.5.8] - 2025-07-07
+### Fixed
+- Updated dependencies
+- Fix: create a deep copy of properties set in `FilterProperties`. Otherwise, the internal properties could be overwritten if reused in other `FilterProperties`
+
 ## \[3.5.7] - 2025-06-25
 ### Fixed
 - Updated dependencies

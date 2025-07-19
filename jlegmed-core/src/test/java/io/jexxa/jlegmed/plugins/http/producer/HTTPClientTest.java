@@ -3,12 +3,12 @@ package io.jexxa.jlegmed.plugins.http.producer;
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.httpClient;
@@ -25,10 +25,10 @@ class HTTPClientTest {
     {
         //Arrange
         var expectedResult = new VersionInfo("a","b", "s", "d" );
-        var receivingPipe = new CollectingInputPipe<VersionInfo>();
+        var result = new ArrayList<VersionInfo>();
 
         HTTPClient<VersionInfo> objectUnderTest = httpClient("http://localhost:7070/");
-        objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.producingType(VersionInfo.class);
         objectUnderTest.reachStarted();
 
@@ -36,8 +36,8 @@ class HTTPClientTest {
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(1, receivingPipe.getCollectedData().size());
-        assertEquals(expectedResult, receivingPipe.getCollectedData().get(0));
+        assertEquals(1, result.size());
+        assertEquals(expectedResult, result.get(0));
 
         objectUnderTest.reachDeInit();
     }
@@ -47,21 +47,21 @@ class HTTPClientTest {
     void testFunctionalHTTPReader() {
         //Arrange
         var expectedResult = new VersionInfo("a","b", "s", "d" );
-        var receivingPipe = new CollectingInputPipe<VersionInfo>();
+        var result = new ArrayList<VersionInfo>();
         var versionInfo = new VersionInfoReader("http://localhost:7070/");
 
         var objectUnderTest = httpClient(versionInfo::read);
         objectUnderTest.producingType(VersionInfo.class);
 
-        objectUnderTest.outputPipe().connectTo(receivingPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
         //Act
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(1, receivingPipe.getCollectedData().size());
-        assertEquals(expectedResult, receivingPipe.getCollectedData().get(0));
+        assertEquals(1, result.size());
+        assertEquals(expectedResult, result.get(0));
 
         objectUnderTest.reachDeInit();
     }

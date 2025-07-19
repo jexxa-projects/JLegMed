@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.jlegmed.plugins.generic.pipe.CollectingInputPipe;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import static io.jexxa.jlegmed.core.filter.FilterProperties.filterPropertiesOf;
@@ -15,9 +15,9 @@ class FunctionalProducerTest {
     void testSupplyingProducer()
     {
         //Arrange
-        CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
+        var result = new ArrayList<String>();
         var objectUnderTest = producer(() -> "Hello World");
-        objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
 
         objectUnderTest.reachStarted();
 
@@ -25,8 +25,8 @@ class FunctionalProducerTest {
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(1, inputPipe.getCollectedData().size());
-        assertEquals("Hello World", inputPipe.getCollectedData().get(0));
+        assertEquals(1, result.size());
+        assertEquals("Hello World", result.get(0));
     }
 
     @Test
@@ -34,19 +34,19 @@ class FunctionalProducerTest {
     {
         //Arrange
         var filterProperties = filterPropertiesOf("someProperties", new Properties());
-        CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
+        var result = new ArrayList<String>();
         var objectUnderTest = producer(context -> "Hello World" + context.propertiesName() );
 
         objectUnderTest.useProperties(filterProperties);
-        objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
         //Act
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(1, inputPipe.getCollectedData().size());
-        assertEquals("Hello World"+ filterProperties.name() , inputPipe.getCollectedData().get(0));
+        assertEquals(1, result.size());
+        assertEquals("Hello World"+ filterProperties.name() , result.get(0));
     }
 
     @Test
@@ -54,28 +54,29 @@ class FunctionalProducerTest {
     {
         //Arrange
         var filterProperties = filterPropertiesOf("someProperties", new Properties());
-        CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
+        var result = new ArrayList<String>();
         FunctionalProducer<String> objectUnderTest = producer( (filterContext, dataType) ->
                 "Hello World" + filterContext.propertiesName() + dataType.getSimpleName());
 
         objectUnderTest.producingType(String.class);
         objectUnderTest.useProperties(filterProperties);
-        objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
         //Act
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(1, inputPipe.getCollectedData().size());
-        assertEquals("Hello World" + filterProperties.name() + String.class.getSimpleName(), inputPipe.getCollectedData().get(0));
+        assertEquals(1, result.size());
+        assertEquals("Hello World" + filterProperties.name() + String.class.getSimpleName(),
+                result.get(0));
     }
 
     @Test
     void testProduceAgain()
     {
         //Arrange
-        CollectingInputPipe<String> inputPipe = new CollectingInputPipe<>();
+        var result = new ArrayList<String>();
         FunctionalProducer<String> objectUnderTest = producer(filterContext -> {
             // Here we tell the producer that we must be called again
             if (!filterContext.processingState().isProcessingAgain()) {
@@ -84,16 +85,16 @@ class FunctionalProducerTest {
             return "Hello World";
         });
 
-        objectUnderTest.outputPipe().connectTo(inputPipe);
+        objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
         //Act
         objectUnderTest.produceData();
 
         //Assert
-        assertEquals(2, inputPipe.getCollectedData().size());
-        assertEquals("Hello World", inputPipe.getCollectedData().get(0));
-        assertEquals("Hello World", inputPipe.getCollectedData().get(1));
+        assertEquals(2, result.size());
+        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.get(1));
     }
 
 }

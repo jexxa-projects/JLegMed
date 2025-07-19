@@ -9,11 +9,8 @@ import java.util.List;
  * @deprecated : Is replaced by functional interface IInputPipe
  */
 @Deprecated(forRemoval = true)
-public class CollectingInputPipe<T> extends InputPipe<T> {
+public class CollectingInputPipe<T> implements InputPipe<T> {
     private final List<T> collectedData = new ArrayList<>();
-    public CollectingInputPipe() {
-        super(null);
-    }
 
     @Override
     public void receive(T data) {

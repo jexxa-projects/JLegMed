@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
 import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
+import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
+import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.Filter;
@@ -17,7 +17,6 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 public abstract class Processor<T, R>  extends Filter {
-    private final InputPipe<T> inputPipe = new InputPipe<>(this);
     private final OutputPipe<R> outputPipe = new OutputPipe<>();
     private final ErrorPipe<T> errorPipe = new ErrorPipe<>();
     private final boolean filterContextRequired;
@@ -48,7 +47,7 @@ public abstract class Processor<T, R>  extends Filter {
 
     public InputPipe<T> inputPipe()
     {
-        return inputPipe;
+        return this::process;
     }
 
     public OutputPipe<R> outputPipe()

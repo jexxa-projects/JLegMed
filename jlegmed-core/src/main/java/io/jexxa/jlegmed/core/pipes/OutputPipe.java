@@ -7,11 +7,11 @@ import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static java.math.BigInteger.valueOf;
 
 public class OutputPipe<T> {
-    private IInputPipe<T> inputPipe;
+    private InputPipe<T> inputPipe;
     private BigInteger forwardedMessages = valueOf(0);
 
 
-    public void connectTo(IInputPipe<T> inputPipe)
+    public void connectTo(InputPipe<T> inputPipe)
     {
         this.inputPipe = inputPipe;
     }
@@ -44,7 +44,7 @@ public class OutputPipe<T> {
         forwardedMessages = forwardedMessages.add(valueOf(1));
     }
 
-    protected IInputPipe<T> inputPipe() {
+    protected InputPipe<T> inputPipe() {
         return inputPipe;
     }
 }

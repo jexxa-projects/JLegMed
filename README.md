@@ -9,10 +9,10 @@
 
 ## 🚀 Features
 
-- 👋 **Pipes & Filters Architecture** – A natural fit for data-flow-based processing
-- 🎯 **Functional Programming Style** – Focus on the *what*, not the *how*
-- ⚡ **Minimal Dependencies** – Built on Java SE APIs
-- 🔌 **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, and more
+- **Pipes & Filters Architecture** – A natural fit for data-flow-based processing
+- **Functional Programming Style** – Focus on the *what*, not the *how*
+- **Minimal Dependencies** – Built on Java SE APIs
+- **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, and more
 
 ---
 
@@ -89,9 +89,10 @@ compile "org.slf4j:slf4j-simple:2.0.17"
 ---
 
 ## 🌐 Ecosystem
-* Pre-built templates for quick project startup
+* [Pre-built template](https://github.com/jexxa-projects/JexxaArchetypes) for quick project startup
 * Fully Maven-compatible
-* Optional integration with the Jexxa Framework
+* Optional integration with the [Jexxa Framework](https://www.jexxa.io)
+
 
 ---
 

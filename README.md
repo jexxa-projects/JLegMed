@@ -2,34 +2,28 @@
 
 [![Maven Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
 [![CodeQL](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml)
-# JLegMed—Connect the Past with the Future
+# 🧩JLegMed—Connect the Past with the Future
 
-This library is intended to build bridges between systems that do not share the same semantics. 
-For example, this can happen when a legacy application is gradually migrated to a modern system.
-
-Another use case is business applications that are implemented using Domain-Driven Design (DDD).
-As soon as they no longer use the same ubiquitous language, a so-called context mapping must be implemented.
-The strategic design of DDD describes different approaches that can be used. A good summary can be found [here](https://github.com/ddd-crew/context-mapping).
-
-For this purpose, this library focuses on the following aspects:  
-* First-class representation of data flow and transformation using [pipes and filters](https://learn.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters)
-* Use of a functional style to emphasize the WHAT and not the HOW
-* Minimal dependency approach (MDA) by providing filters based on Java standard APIs
-* Easy integration of technology stacks that are required for your project   
+**JLegMed** closes the semantic gap between legacy systems and modern architectures — designed for software modernization and Domain‑Driven Design (DDD) contexts.
 
 
-## Requirements
+## 🚀 Features
 
-*   Java 17+ installed
-*   IDE with maven support 
+- 👋 **Pipes & Filters Architecture** – A natural fit for data-flow-based processing
+- 🎯 **Functional Programming Style** – Focus on the *what*, not the *how*
+- ⚡ **Minimal Dependencies** – Built on Java SE APIs
+- 🔌 **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, and more
 
+---
 
-## Quickstart
+## 📋 Requirements
 
-### Start programming
+- Java **17 or higher**
+- Maven-compatible IDE (e.g., IntelliJ IDEA, Eclipse)
 
-Below, you see a simple ``Hello World`` example:
-
+---
+## 🛠️ Quickstart
+### Hello World Example
 ```java     
 public final class HelloJLegMed
 {
@@ -41,7 +35,7 @@ public final class HelloJLegMed
 
                 .receive(String.class).from( () -> "Hello " )
                 .and().processWith(data -> data + "World" )
-                .and().consumeWith(data -> getLogger(JLegMedTest.class).info(data));
+                .and().consumeWith(System.out::println);
 
         jLegMed.run();
     }
@@ -49,9 +43,6 @@ public final class HelloJLegMed
 ```    
 
 ### Add Dependencies
-Whenever possible, JLegMed is developed against standard APIs. This allows an application to use the preferred
-technology stacks. Therefore, our application needs two dependencies: `jlegmed` and a logger that fulfills
-your requirements, such as `slf4j-simple`.
 
 Maven:
 ```xml
@@ -76,42 +67,47 @@ Gradle:
 compile "io.jexxa:jlegmed-core:3.5.8"
 compile "org.slf4j:slf4j-simple:2.0.17"
 ``` 
+## 📚 Use Cases with Examples
 
-## Examples
+### Basic Patterns
+* [Fixed iteration count](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/RepeatFlowGraphTest.java)
+* [Time-triggered execution](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ReceiveFlowGraphTest.java)
+* [Wait-for-data triggers](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/AwaitFlowGraphTest.java)
 
-Refer to the following examples to get an idea how this library works
-* Basic use cases:
-  * [Data processing with a fixed number of iterations](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/RepeatFlowGraphTest.java)
-  * [Data processing at a specific interval](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ReceiveFlowGraphTest.java) 
-  * [Awaiting data for processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/AwaitFlowGraphTest.java)
-  
+### Advanced Patterns
+* [Flow graph configuration](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/FlowGraphConfigurationTest.java)
+* [Flow graph introspection](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
+* [Data fan-out / fan-in (multi-sinks/sources)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java)
+* [Custom error handling strategies](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ErrorHandlingTest.java)
+* [Bootstrapping and flow control](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/BootstrappingFlowGraphTest.java)
 
-* Advanced use cases:
-  * [Configuration of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/FlowGraphConfigurationTest.java)
-  * [Monitoring data flow of a flowgraph](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/monitor/FlowGraphMonitorTest.java)
-  * [Multiplexing different data streams](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/generic/muxer/ThreadedMultiplexerTest.java)
-  * [Error handling in data processing](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/ErrorHandlingTest.java)
-  * [Bootstrapping flow graphs](jlegmed-core/src/test/java/io/jexxa/jlegmed/examples/BootstrappingFlowGraphTest.java)
+### Support for sending/receiving over:
+* [JMS (e.g., ActiveMQ)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
+* [TCP Sockets](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
+* [JDBC (e.g., PostgreSQL)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
 
+---
 
-* Using technology stacks
-  * [Receiving and sending data from/to JMS](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
-  * [Receiving and sending data from/to TCP Socket](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
-  * [Reading and writing data from/to JDBC](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
+## 🌐 Ecosystem
+* Pre-built templates for quick project startup
+* Fully Maven-compatible
+* Optional integration with the Jexxa Framework
 
+---
 
-## Ecosystem:
-* [A template](https://github.com/jexxa-projects/JexxaArchetypes) for your first JLegMed application
-* [Build the library](BUILD.md) in case you will contribute
+## 🤝 Contributing
 
-## Contributing
+Contributions are welcome!
+For large changes, please open an issue to discuss what you have in mind.
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Please make sure:
+* All code changes are covered by tests
+* Documentation is updated accordingly
 
-Please make sure to update tests as appropriate.
+---
 
-## Copyright and license
+## 📜 License
+* Source code: [Apache 2.0 License](LICENSE) - see [TLDR legal](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
+* Documentation: [Creative Commons](https://creativecommons.org/licenses/by/4.0/)
+* ©️ 2023–2025 Michael Repplinger
 
-Code and documentation copyright 2023–2025 Michael Repplinger. 
-Code released under the [Apache 2.0 License](LICENSE)(see [TLDR legal](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)) for details).
-Docs released under [Creative Commons](https://creativecommons.org/licenses/by/4.0/).

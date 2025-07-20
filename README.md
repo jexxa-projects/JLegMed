@@ -14,14 +14,11 @@
 - **Minimal Dependencies** – Built on Java SE APIs
 - **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, and more
 
----
-
 ## 📋 Requirements
 
 - Java **17 or higher**
 - Maven-compatible IDE (e.g., IntelliJ IDEA, Eclipse)
 
----
 ## 🛠️ Quickstart
 ### Hello World Example
 ```java     
@@ -86,15 +83,11 @@ compile "org.slf4j:slf4j-simple:2.0.17"
 * [TCP Sockets](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
 * [JDBC (e.g., PostgreSQL)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
 
----
-
 ## 🌐 Ecosystem
 * [Pre-built template](https://github.com/jexxa-projects/JexxaArchetypes) for quick project startup
 * Fully Maven-compatible
 * Optional integration with the [Jexxa Framework](https://www.jexxa.io)
 
-
----
 
 ## 🤝 Contributing
 
@@ -104,8 +97,6 @@ For large changes, please open an issue to discuss what you have in mind.
 Please make sure:
 * All code changes are covered by tests
 * Documentation is updated accordingly
-
----
 
 ## 📜 License
 * Source code: [Apache 2.0 License](LICENSE) - see [TLDR legal](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))

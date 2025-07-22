@@ -46,13 +46,13 @@
 
 
     <!-- version of test dependencies -->
-    <junit.platform.launcher.version>1.13.3</junit.platform.launcher.version>
+    <junit.platform.launcher.version>1.13.4</junit.platform.launcher.version>
     <junit.jupiter.engine.version>5.13.3</junit.jupiter.engine.version>
-    <junit.jupiter.params.version>5.13.3</junit.jupiter.params.version>
+    <junit.jupiter.params.version>5.13.4</junit.jupiter.params.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <jackson.databind.version>2.19.1</jackson.databind.version>
+    <jackson.databind.version>2.19.2</jackson.databind.version>
     <apache.commons.lang3>3.18.0</apache.commons.lang3>
-    <activemq.artemis.client.version>2.41.0</activemq.artemis.client.version>
+    <activemq.artemis.client.version>2.42.0</activemq.artemis.client.version>
     <postgres.version>42.7.7</postgres.version>
     <slf4j.simple.version>2.0.17</slf4j.simple.version>
     <javalin.version>6.7.0</javalin.version>

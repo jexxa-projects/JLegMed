@@ -680,5 +680,6 @@
 
   <modules>
     <module>jlegmed-core</module>
+    <module>jlegmed-test</module>
   </modules>
 </project>

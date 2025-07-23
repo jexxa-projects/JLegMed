@@ -29,7 +29,7 @@ class PersistentTimerIT {
 
         var filter = processor(PersistentTimer::nextInterval);
         filter.outputPipe().connectTo(result::add);
-        filter.useProperties(FilterProperties.filterPropertiesOf("test", PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection")));
+        filter.useProperties(FilterProperties.filterPropertiesOf("PersistentTimer", PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection")));
         filter.reachStarted();
 
         //Act

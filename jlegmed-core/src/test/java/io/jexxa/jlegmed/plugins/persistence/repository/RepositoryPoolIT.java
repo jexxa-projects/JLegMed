@@ -36,6 +36,6 @@ class RepositoryPoolIT {
                 .and().consumeWith( RepositoryIT::add ).useProperties("invalid-pw-jdbc-connection");
 
         //Act/Assert
-        assertThrows(FailFastException.class, () -> jLegMed.start());
+        assertThrows(FailFastException.class, jLegMed::start);
     }
 }

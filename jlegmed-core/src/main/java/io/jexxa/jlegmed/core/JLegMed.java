@@ -312,7 +312,7 @@ public final class JLegMed
         @Override
         public void uncaughtException(Thread t, Throwable e) {
             var errorMessage = getOutputMessage(e);
-            //Show startup banner if enabled and jexxa not started
+            //Show the startup banner if enabled and jexxa not started
             if ( jLegMed.enableBanner &&
                     !jLegMed.isRunning)
             {

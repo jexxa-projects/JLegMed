@@ -11,7 +11,6 @@ import io.jexxa.jlegmed.core.filter.ProcessingException;
 import java.util.Objects;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
@@ -62,7 +61,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     protected abstract T doProduce();
 
     public static <T> FunctionalProducer<T> producer(SerializableBiFunction<FilterContext, Class<T>, T> function, Class<T> producingType) {
-        return new FunctionalProducer<>(producingType, methodNameFromLambda(function)) {
+        return new FunctionalProducer<>(producingType, filterNameFromLambda(function)) {
             @Override
             public void init() {
                 Objects.requireNonNull(producingType());
@@ -81,7 +80,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
 
     public static <T> FunctionalProducer<T> producer(SerializableFunction<FilterContext, T> function) {
-        return new FunctionalProducer<>(methodNameFromLambda(function)) {
+        return new FunctionalProducer<>(filterNameFromLambda(function)) {
             @Override
             protected T doProduce() {
                 return function.apply(filterContext());
@@ -91,7 +90,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
 
     public static <T> FunctionalProducer<T> producer(SerializableSupplier<T> function) {
-        return new FunctionalProducer<>(methodNameFromLambda(function)) {
+        return new FunctionalProducer<>(filterNameFromLambda(function)) {
             @Override
             protected T doProduce() {
                 return function.get();
@@ -100,7 +99,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     }
 
     public static <T> FunctionalProducer<T> producer(PipedProducer<T> pipedProducer) {
-        return new FunctionalProducer<>(methodNameFromLambda(pipedProducer)) {
+        return new FunctionalProducer<>(filterNameFromLambda(pipedProducer)) {
             @Override
             protected T doProduce() {
                 pipedProducer.produceData(filterContext(), outputPipe());
@@ -110,7 +109,7 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     }
 
     public static <T> FunctionalProducer<T> consumer(SerializableConsumer<FilterContext> function) {
-        return new FunctionalProducer<>(methodNameFromLambda(function)) {
+        return new FunctionalProducer<>(filterNameFromLambda(function)) {
             @Override
             protected T doProduce() {
                 function.accept(filterContext());

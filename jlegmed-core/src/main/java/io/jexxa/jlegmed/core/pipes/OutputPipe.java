@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.core.pipes;
 
+import io.jexxa.jlegmed.core.filter.Filter;
+
 import java.math.BigInteger;
 
 import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
@@ -9,7 +11,17 @@ import static java.math.BigInteger.valueOf;
 public class OutputPipe<T> {
     private InputPipe<T> inputPipe;
     private BigInteger forwardedMessages = valueOf(0);
+    private final Filter filter;
 
+    public OutputPipe(Filter filter)
+    {
+        this.filter = filter;
+    }
+
+    public Filter filter()
+    {
+        return filter;
+    }
 
     public void connectTo(InputPipe<T> inputPipe)
     {

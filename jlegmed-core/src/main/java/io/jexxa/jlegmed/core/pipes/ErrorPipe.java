@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.core.pipes;
 
+import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 
 import java.math.BigInteger;
@@ -17,6 +18,10 @@ public class ErrorPipe<T> extends OutputPipe<ProcessingError<T>> {
     public BigInteger handledProcessingErrors() { return handledProcessingErrors; }
     public BigInteger unhandledProcessingErrors() { return unhandledProcessingErrors; }
 
+    public ErrorPipe(Filter filter)
+    {
+        super(filter);
+    }
     @Override
     public void forward(ProcessingError<T> data) {
         getInvocationHandler(this).invoke(this, this::forwardErrorToSuccessor, data);

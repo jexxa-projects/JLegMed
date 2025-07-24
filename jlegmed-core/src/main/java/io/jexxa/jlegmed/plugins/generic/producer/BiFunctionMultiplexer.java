@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
-
 /**
  * @deprecated Use ThreadedMultixplexer instead
  */
@@ -101,7 +99,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation
     public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(SerializableBiFunction<U, V, R> multiplexFunction)
     {
-        return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
+        return new BiFunctionMultiplexer<>(filterNameFromLambda(multiplexFunction)) {
             @Override
             public R multiplexData(U firstData, V secondData) {
                 return multiplexFunction.apply(firstData, secondData);
@@ -112,7 +110,7 @@ public abstract class BiFunctionMultiplexer<U, V, R> extends ThreadedProducer<R>
     @SuppressWarnings("java:S110") // The increased amount of inheritance is caused by anonymous implementation
     public static <U, V, R> BiFunctionMultiplexer<U, V, R> multiplexer(FilterContextMultiplexFunction<U, V, R> multiplexFunction)
     {
-        return new BiFunctionMultiplexer<>(methodNameFromLambda(multiplexFunction)) {
+        return new BiFunctionMultiplexer<>(filterNameFromLambda(multiplexFunction)) {
             @Override
             public R multiplexData(U firstData, V secondData) {
                 return multiplexFunction.apply(firstData, secondData, filterContext());

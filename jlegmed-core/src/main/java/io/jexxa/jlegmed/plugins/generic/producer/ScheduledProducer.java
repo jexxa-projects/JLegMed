@@ -13,8 +13,6 @@ import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
-
 public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     private final Scheduler scheduler = new Scheduler();
     private int fixedRate;
@@ -76,7 +74,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
 
 
     public static <T> ScheduledProducer<T> scheduledProducer(SerializableBiFunction<FilterContext, Class<T>, T> biFunction) {
-        return new ScheduledProducer<>(methodNameFromLambda(biFunction)) {
+        return new ScheduledProducer<>(filterNameFromLambda(biFunction)) {
             @Override
             protected T generateData() {
                 return biFunction.apply(filterContext(), producingType());
@@ -84,7 +82,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
         };
     }
     public static <T> ScheduledProducer<T> scheduledProducer(SerializableFunction<FilterContext, T> contextFunction) {
-        return new ScheduledProducer<>(methodNameFromLambda(contextFunction)) {
+        return new ScheduledProducer<>(filterNameFromLambda(contextFunction)) {
             @Override
             protected T generateData() {
                 return contextFunction.apply(filterContext());
@@ -93,7 +91,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     }
 
     public static <T> ScheduledProducer<T> scheduledProducer(SerializableSupplier<T> contextSupplier) {
-        return new ScheduledProducer<>(methodNameFromLambda(contextSupplier)) {
+        return new ScheduledProducer<>(filterNameFromLambda(contextSupplier)) {
             @Override
             protected T generateData() {
                 return contextSupplier.get();
@@ -104,7 +102,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     public static <T> ScheduledProducer<T> scheduledProducer(
             SerializableBiFunction<FilterContext, Class<T>, T> biFunction, Schedule schedule
     ) {
-        return new ScheduledProducer<>(schedule, methodNameFromLambda(biFunction)) {
+        return new ScheduledProducer<>(schedule, filterNameFromLambda(biFunction)) {
             @Override
             protected T generateData() {
                 return biFunction.apply(filterContext(), producingType());
@@ -113,7 +111,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     }
 
     public static <T> ScheduledProducer<T> scheduledProducer(SerializableFunction<FilterContext, T> contextFunction, Schedule schedule) {
-        return new ScheduledProducer<>(schedule, methodNameFromLambda(contextFunction)) {
+        return new ScheduledProducer<>(schedule, filterNameFromLambda(contextFunction)) {
             @Override
             protected T generateData() {
                 return contextFunction.apply(filterContext());
@@ -122,7 +120,7 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     }
 
     public static <T> ScheduledProducer<T> scheduledProducer(SerializableSupplier<T> contextSupplier, Schedule schedule) {
-        return new ScheduledProducer<>(schedule, methodNameFromLambda(contextSupplier)) {
+        return new ScheduledProducer<>(schedule, filterNameFromLambda(contextSupplier)) {
             @Override
             protected T generateData() {
                 return contextSupplier.get();

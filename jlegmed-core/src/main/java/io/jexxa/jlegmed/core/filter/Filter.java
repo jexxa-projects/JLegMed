@@ -1,6 +1,10 @@
 package io.jexxa.jlegmed.core.filter;
 
+import java.io.Serializable;
 import java.util.Properties;
+
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
 
 /**
  * A filter is an object that can be used to produce or process the data
@@ -103,6 +107,11 @@ public abstract class Filter {
 
     protected boolean processAgain() {
         return processingState().isProcessingAgain();
+    }
+
+    public static String filterNameFromLambda(Serializable lambda)
+    {
+        return classNameFromLambda(lambda).getSimpleName() + "::" + methodNameFromLambda(lambda);
     }
 
 }

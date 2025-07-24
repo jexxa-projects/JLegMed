@@ -12,8 +12,6 @@ import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.function.BiFunction;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
-
 public class JMSProducer<T> extends ActiveProducer<T> {
 
     private IDrivingAdapter jmsAdapter;
@@ -21,7 +19,7 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     private final String name;
 
     public JMSProducer(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> decoder) {
-        this.name = JMSProducer.class.getSimpleName() + ":" + methodNameFromLambda(decoder);
+        this.name = JMSProducer.class.getSimpleName() + ":" + filterNameFromLambda(decoder);
         this.messageListener = new JMSListener<>(jmsSource, decoder);
     }
 

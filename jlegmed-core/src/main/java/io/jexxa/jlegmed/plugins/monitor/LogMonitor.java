@@ -3,6 +3,7 @@ package io.jexxa.jlegmed.plugins.monitor;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.adapterapi.invocation.InvocationContext;
 import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,7 +45,7 @@ public class LogMonitor {
         {
             this.producerOutputPipe = invocationContext.getTarget();
         }
-        filterDescription.computeIfAbsent(invocationContext.getTarget(), target -> createFilterDescription());
+        filterDescription.computeIfAbsent(invocationContext.getTarget(), this::createFilterDescription);
     }
 
     private void logIteration(InvocationContext invocationContext)
@@ -66,9 +67,9 @@ public class LogMonitor {
         iterationData.add(new IterationEntry(context.getTarget(), context.getArgs()[0]));
     }
 
-    private FilterDescription createFilterDescription()
+    private FilterDescription createFilterDescription(Object outputPipe)
     {
-        var description = new FilterDescription(filterCounter);
+        var description = new FilterDescription(filterCounter, ((OutputPipe<?>)outputPipe).filter().name());
         ++filterCounter;
         return description;
     }
@@ -96,14 +97,14 @@ public class LogMonitor {
         sb.append("Iteration ")
                 .append(iterationCounter)
                 .append(" (FilterStyle) : ")
-                .append( " [Binding " ).append(getIndex(iterationData.get(0).outputPipe())).append( "] ")
+                .append( " [" ).append(getFilterName(iterationData.get(0).outputPipe())).append( "] ")
                 .append( " () -> " )
                 .append(iterationData.get(0).producedData());
 
         for (int i = 0; i < iterationData.size() - 1 ; i++)
         {
             sb.append(" | ")
-                    .append( " [Binding " ).append(getIndex(iterationData.get(i+1).outputPipe())).append( "] ")
+                    .append( " [" ).append(getFilterName(iterationData.get(i+1).outputPipe())).append( "] ")
                     .append(iterationData.get(i).producedData())
                     .append( " -> " )
                     .append(iterationData.get(i+1).producedData());
@@ -123,6 +124,16 @@ public class LogMonitor {
         }
     }
 
+    String getFilterName(Object outputPipe)
+    {
+        if (filterDescription.containsKey(outputPipe)) {
+            return filterDescription.get(outputPipe).filterName();
+        } else {
+            return "UNKNOWN FILTER";
+        }
+    }
+
+
 
 
     public static BeforeInterceptor logDataFlowStyle()
@@ -135,8 +146,7 @@ public class LogMonitor {
         return new LogMonitor(LogStyle.FUNCTION_STYLE)::intercept;
     }
 
-    private record FilterDescription(int index) {
-    }
+    private record FilterDescription(int index, String filterName) { }
 
     record IterationEntry(Object outputPipe, Object producedData){}
 }

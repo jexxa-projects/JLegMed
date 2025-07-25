@@ -8,12 +8,12 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Represents data transported in between Filters that is not published.
+ * Represents a measured value such as the temperature that is published
  */
 @Target(METHOD)
 @Retention(RUNTIME)
 @Documented
-public @interface FlowData
+public @interface TelemetryData
 {
 
 }

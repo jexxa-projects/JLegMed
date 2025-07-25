@@ -42,6 +42,5 @@ class PersistentTimerIT {
         //Assert
         assertFalse(result.isEmpty());
         assertEquals(2, result.size());
-        result.forEach(System.out::println);
     }
 }

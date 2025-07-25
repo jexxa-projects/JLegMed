@@ -22,6 +22,7 @@ public class Binding<T, U> {
         this.flowGraph = flowGraph;
         this.errorPipe = errorPipe;
         this.outputPipe = outputPipe;
+        setDefaultProperties();
     }
 
     public Binding<T, U> useProperties(String propertiesPrefix) {
@@ -50,4 +51,16 @@ public class Binding<T, U> {
     public ProcessorBuilder<U> and() {
         return new ProcessorBuilder<>(outputPipe, flowGraph);
     }
+
+    private void setDefaultProperties()
+    {
+        if (!filter.defaultPropertiesName().isEmpty())
+        {
+            var defaultProperties = PropertiesUtils.getSubset(flowGraph.properties(), filter.defaultPropertiesName());
+            if (!defaultProperties.isEmpty()) {
+                filter.useProperties(new FilterProperties(filter.defaultPropertiesName(), defaultProperties));
+            }
+        }
+    }
+
 }

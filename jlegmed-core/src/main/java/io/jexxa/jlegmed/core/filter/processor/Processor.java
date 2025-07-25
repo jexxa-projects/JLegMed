@@ -14,15 +14,19 @@ import io.jexxa.jlegmed.core.pipes.ErrorPipe;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+
 public abstract class Processor<T, R>  extends Filter {
     private final OutputPipe<R> outputPipe = new OutputPipe<>(this);
     private final ErrorPipe<T> errorPipe = new ErrorPipe<>(this);
     private final boolean filterContextRequired;
     private final String name;
+    private final Class<?> classFromLambda;
 
-    protected Processor(boolean filterContextRequired, String name) {
+    protected Processor(boolean filterContextRequired, String name, Class<?> classFromLambda) {
         this.filterContextRequired = filterContextRequired;
         this.name = name;
+        this.classFromLambda = classFromLambda;
     }
 
     @Override
@@ -57,8 +61,13 @@ public abstract class Processor<T, R>  extends Filter {
         return errorPipe;
     }
 
-    public void process(T data) {
+    @Override
+    public String defaultPropertiesName()
+    {
+        return classFromLambda.getSimpleName().toLowerCase();
+    }
 
+    public void process(T data) {
         do {
                 startProcessing();
 
@@ -85,7 +94,10 @@ public abstract class Processor<T, R>  extends Filter {
 
     public static  <T, R> Processor<T, R> processor(SerializableBiFunction<T, FilterContext, R> processFunction)
     {
-        return new Processor<>(true, filterNameFromLambda(processFunction)) {
+        return new Processor<>(true,
+                filterNameFromLambda(processFunction),
+                classNameFromLambda(processFunction))
+        {
             @Override
             protected R doProcess(T data) {
                 return processFunction.apply(data, filterContext());
@@ -95,7 +107,10 @@ public abstract class Processor<T, R>  extends Filter {
 
     public static  <T, R> Processor<T, R> processor(PipedProcessor<T, R> pipedProcessor)
     {
-        return new Processor<>(true, filterNameFromLambda(pipedProcessor)) {
+        return new Processor<>(true,
+                filterNameFromLambda(pipedProcessor),
+                classNameFromLambda(pipedProcessor))
+        {
             @Override
             protected R doProcess(T data) {
                 pipedProcessor.processData(data, filterContext(), outputPipe());
@@ -106,7 +121,10 @@ public abstract class Processor<T, R>  extends Filter {
 
     public static  <T, R> Processor<T, R> processor(SerializableFunction<T, R> processFunction)
     {
-        return new Processor<>(false, filterNameFromLambda(processFunction)) {
+        return new Processor<>(false,
+                filterNameFromLambda(processFunction),
+                classNameFromLambda(processFunction))
+        {
             @Override
             protected R doProcess(T data) {
                 return processFunction.apply(data);
@@ -116,7 +134,10 @@ public abstract class Processor<T, R>  extends Filter {
 
     public static  <T> Processor<T, T> consumer(SerializableBiConsumer<T, FilterContext> processFunction)
     {
-        return new Processor<>(true, filterNameFromLambda(processFunction)) {
+        return new Processor<>(true,
+                filterNameFromLambda(processFunction),
+                classNameFromLambda(processFunction))
+        {
             @Override
             protected T doProcess(T data) {
                 processFunction.accept(data, filterContext());
@@ -128,7 +149,10 @@ public abstract class Processor<T, R>  extends Filter {
 
     public static  <T> Processor<T, T> consumer(SerializableConsumer<T> processFunction)
     {
-        return new Processor<>(false, filterNameFromLambda(processFunction)) {
+        return new Processor<>(false,
+                filterNameFromLambda(processFunction),
+                classNameFromLambda(processFunction))
+        {
             @Override
             protected T doProcess(T data) {
                 processFunction.accept(data);

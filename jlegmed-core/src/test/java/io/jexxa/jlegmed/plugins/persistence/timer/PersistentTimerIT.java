@@ -1,6 +1,5 @@
 package io.jexxa.jlegmed.plugins.persistence.timer;
 
-import io.jexxa.common.facade.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.jexxa.common.facade.utils.properties.PropertiesUtils.getSubset;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfigOf;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerID.timerIdOf;
@@ -29,7 +29,10 @@ class PersistentTimerIT {
 
         var filter = processor(PersistentTimer::nextInterval);
         filter.outputPipe().connectTo(result::add);
-        filter.useProperties(FilterProperties.filterPropertiesOf("PersistentTimer", PropertiesUtils.getSubset(jLegMed.getProperties(), "test-jdbc-connection")));
+        filter.useProperties(FilterProperties.filterPropertiesOf(
+                filter.defaultPropertiesName(),
+                getSubset(jLegMed.getProperties(), filter.defaultPropertiesName())));
+
         filter.reachStarted();
 
         //Act

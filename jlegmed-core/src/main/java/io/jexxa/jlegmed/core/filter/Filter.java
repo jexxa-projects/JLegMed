@@ -9,6 +9,7 @@ import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromL
 /**
  * A filter is an object that can be used to produce or process the data
  */
+@SuppressWarnings("unused")
 public abstract class Filter {
     private boolean strictFailFast = false;
     private boolean withoutProperties = false;
@@ -75,6 +76,11 @@ public abstract class Filter {
         return filterContext
                 .filterProperties()
                 .name();
+    }
+
+    public String defaultPropertiesName()
+    {
+        return getClass().getSimpleName();
     }
 
     public void enableStrictFailFast() {

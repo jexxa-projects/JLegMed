@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
@@ -32,7 +32,7 @@ class AwaitFlowGraphTest {
     void testAwaitHelloWorld() {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
-        var result = new ArrayList<String>();
+        var result = new LinkedHashSet<String>();
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
@@ -40,9 +40,9 @@ class AwaitFlowGraphTest {
                 .await(String.class)
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
-                .from( scheduledProducer(() -> "Hello ").fixedRate(500, MILLISECONDS) )
-                .and().processWith( data -> data + "World")
-                .and().consumeWith( data -> result.add(data) );
+                .from( scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS) )
+                .and().processWith( AwaitFlowGraphTest::world)
+                .and().consumeWith( result::add);
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -55,5 +55,9 @@ class AwaitFlowGraphTest {
 
         jlegmed.stop();
     }
+
+    public static String hello() { return "Hello " ;}
+
+    public static String world(String input) { return input + "World" ;}
 
 }

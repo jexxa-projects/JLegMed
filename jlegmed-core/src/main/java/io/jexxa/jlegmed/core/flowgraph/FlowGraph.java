@@ -164,6 +164,11 @@ public class FlowGraph {
         return filterList.stream().map( Filter::filterProperties ).toList();
     }
 
+    public List<String> flowgraphDescription()
+    {
+        return filterList.stream().map( Filter::name ).toList();
+    }
+
     public void waitUntilFinished()
     {
         flowGraphScheduler.waitUntilFinished();

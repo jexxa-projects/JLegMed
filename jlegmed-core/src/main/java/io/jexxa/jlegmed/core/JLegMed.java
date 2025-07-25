@@ -93,6 +93,10 @@ public final class JLegMed
     {
         return flowGraphs.getOrDefault(flowGraphID, null);
     }
+    public List<String> getFlowGraphs()
+    {
+        return flowGraphs.keySet().stream().toList();
+    }
 
     public void addBootstrapFlowGraph(FlowGraph flowGraph)
     {

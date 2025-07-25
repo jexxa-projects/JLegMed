@@ -15,6 +15,11 @@ public abstract class ThreadedProducer<T> extends ActiveProducer<T> {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    protected ThreadedProducer(Class<?> classFromLambda)
+    {
+        super(classFromLambda);
+    }
+
     @Override
     public void start() {
         super.start();

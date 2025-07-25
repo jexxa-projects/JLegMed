@@ -1,8 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 import java.util.UUID;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
-import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool.getRepository;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -20,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RepositoryIT {
 
     private static JLegMed jLegMed;
-    record TextEntity (String data, String key) { }
 
     @BeforeEach
     void init() {
@@ -43,7 +38,7 @@ class RepositoryIT {
         var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(filterContext -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
+                .execute(TestRepository::dropTable);
 
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -51,7 +46,7 @@ class RepositoryIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().processWith( RepositoryIT::add ).useProperties("test-jdbc-connection")
+                .and().processWith( TestRepository::add )
                 .and().consumeWith( messageCollector::push );
         //Act
         jLegMed.start();
@@ -70,7 +65,7 @@ class RepositoryIT {
 
         jLegMed.newFlowGraph("Read Data")
                 .repeat(1)
-                .receive(TextEntity.class).from(RepositoryIT::read).useProperties("test-jdbc-connection")
+                .receive(TextEntity.class).from(TestRepository::read)
                 .and().processWith( messageCollector::push );
 
         //Act
@@ -83,31 +78,15 @@ class RepositoryIT {
 
     private void bootstrapTestData(JLegMed jLegMed, int numberOfData) {
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(filterContext -> dropTable(filterContext, TextEntity.class)).useProperties("test-jdbc-connection");
+                .execute(TestRepository::dropTable);
 
         jLegMed.bootstrapFlowGraph("Init test data")
                 .repeat(numberOfData)
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( RepositoryIT::add).useProperties("test-jdbc-connection");
+                .and().consumeWith( TestRepository::add);
     }
 
 
-    public static TextEntity add(TextEntity textEntity, FilterContext filterContext)
-    {
-        return getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
-    }
-
-    public static void read(FilterContext filterContext, OutputPipe<TextEntity> outputPipe)
-    {
-        getRepository(TextEntity.class, TextEntity::key, filterContext).get().forEach(outputPipe::forward);
-    }
-
-    public static  <T> void dropTable(FilterContext filterContext, Class<T> table){
-        getJDBCConnection(filterContext.properties(), filterContext)
-                .tableCommand()
-                .dropTableIfExists(table)
-                .asIgnore();
-    }
 }

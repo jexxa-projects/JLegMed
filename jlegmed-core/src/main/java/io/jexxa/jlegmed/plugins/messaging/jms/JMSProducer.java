@@ -18,7 +18,9 @@ public class JMSProducer<T> extends ActiveProducer<T> {
     private final JMSListener<T> messageListener;
     private final String name;
 
-    public JMSProducer(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> decoder) {
+    public JMSProducer(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> decoder)
+    {
+        super(JMSProducer.class);
         this.name = JMSProducer.class.getSimpleName() + ":" + filterNameFromLambda(decoder);
         this.messageListener = new JMSListener<>(jmsSource, decoder);
     }

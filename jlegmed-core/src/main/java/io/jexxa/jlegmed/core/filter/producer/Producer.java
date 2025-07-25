@@ -9,17 +9,25 @@ public abstract class Producer<T> extends Filter {
     private Class<T> producingType;
     private final OutputPipe<T> outputPipe = new OutputPipe<>(this);
     private final ErrorPipe<T> errorPipe = new ErrorPipe<>(this);
+    private final Class<?> classFromLambda;
 
-    protected Producer()
+    protected Producer(Class<?> classFromLambda)
     {
+        this.classFromLambda = classFromLambda;
         this.producingType = null;
     }
 
-    protected Producer(Class<T> producingType)
+    protected Producer(Class<T> producingType, Class<?> classFromLambda)
     {
         this.producingType = producingType;
+        this.classFromLambda = classFromLambda;
     }
 
+    @Override
+    public String defaultPropertiesName()
+    {
+        return classFromLambda.getSimpleName().toLowerCase();
+    }
 
     public void producingType(Class<T> producingType)
     {

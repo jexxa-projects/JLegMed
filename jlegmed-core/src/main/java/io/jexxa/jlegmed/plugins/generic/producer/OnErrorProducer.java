@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+
 
 public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
     private boolean isRunning = false;
     private final String name;
     private final Queue<ProcessingError<T>> inputQueue = new ArrayDeque<>();
-    protected OnErrorProducer(String name) {
+    protected OnErrorProducer(String name, Class<?> classFromLambda) {
+        super(classFromLambda);
         this.name = name;
     }
     @Override
@@ -78,7 +81,10 @@ public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
     @SuppressWarnings("java:S110")
     public static <T, R> OnErrorProducer<T, R> onErrorProducer(SerializableBiFunction<T, ProcessingException, R> function)
     {
-        return new OnErrorProducer<>(filterNameFromLambda(function)) {
+        return new OnErrorProducer<>(
+                filterNameFromLambda(function),
+                classNameFromLambda(function))
+        {
             @Override
             protected R produceData(T unhandledInputData, ProcessingException processingException) {
                 return function.apply(unhandledInputData, processingException);

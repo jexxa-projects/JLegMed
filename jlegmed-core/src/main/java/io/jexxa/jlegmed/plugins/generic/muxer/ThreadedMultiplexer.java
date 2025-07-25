@@ -14,7 +14,8 @@ public abstract class ThreadedMultiplexer<U, V, R> extends ThreadedProducer<R> {
     private final Queue<U> firstInputQueue = new ArrayDeque<>();
     private final Queue<V> secondInputQueue = new ArrayDeque<>();
 
-    protected ThreadedMultiplexer(String name) {
+    protected ThreadedMultiplexer(String name, Class<?> classFromLambda) {
+        super(classFromLambda);
         this.name = name;
     }
 

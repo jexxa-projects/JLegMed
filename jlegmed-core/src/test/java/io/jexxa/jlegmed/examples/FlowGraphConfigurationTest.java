@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,5 +71,35 @@ class FlowGraphConfigurationTest {
 
         //Act / Assert - If the propertiesPrefix is not defined in the properties file, an exception is thrown
         assertThrows( IllegalArgumentException.class, () -> objectUnderTest.useProperties(propertiesPrefix));
+    }
+
+    @Test
+    void testDefaultProperties() {
+        //Arrange
+        var messageCollector = new Stack<String>();
+        var expectedResult = "defaultProperties"; // Defined in jlegmed-application-properties
+
+        jlegmed.newFlowGraph("UseDefaultProperties")
+
+                .await(String.class)
+
+                // The producer appends some properties-information such as name ...
+                .from( scheduledProducer(FlowGraphConfigurationTest::defaultProperties))
+                .and().processWith( processor(GenericProcessors::idProcessor ))
+                .and().consumeWith( messageCollector::push );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(expectedResult, messageCollector.toArray()[0]);
+        assertEquals(expectedResult, messageCollector.toArray()[1]);
+        assertEquals(expectedResult, messageCollector.toArray()[2]);
+
+    }
+
+    static String defaultProperties(FilterContext filterContext)
+    {
+        return filterContext.properties().getProperty("name");
     }
 }

@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 public class StreamProducer {
     public static <T> ThreadedProducer<T> streamProducer(Stream<T> stream)
     {
-        return new ThreadedProducer<>()
+        return new ThreadedProducer<>(StreamProducer.class)
         {
             @Override
             public String name()

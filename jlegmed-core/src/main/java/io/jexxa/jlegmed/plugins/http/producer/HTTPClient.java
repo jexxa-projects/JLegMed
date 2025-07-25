@@ -17,6 +17,9 @@ public abstract class HTTPClient<T> extends PassiveProducer<T> {
     private UnirestInstance unirestInstance;
     private String url;
 
+    protected HTTPClient() {
+        super(HTTPClient.class);
+    }
 
     @Override
     public String name() {

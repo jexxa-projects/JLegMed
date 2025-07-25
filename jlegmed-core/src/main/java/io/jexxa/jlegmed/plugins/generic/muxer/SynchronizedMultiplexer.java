@@ -17,7 +17,8 @@ public abstract class SynchronizedMultiplexer<U, V, R> extends ThreadedProducer<
     private V secondData = null;
     private final Duration muxTimeout;
 
-    protected SynchronizedMultiplexer(String name, Duration muxTimeout) {
+    protected SynchronizedMultiplexer(String name, Duration muxTimeout, Class<?> classFromLambda) {
+        super(classFromLambda);
         this.name = name;
         this.muxTimeout = muxTimeout;
     }

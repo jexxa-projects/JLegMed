@@ -32,8 +32,8 @@ class RepositoryPoolIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new RepositoryIT.TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( RepositoryIT::add ).useProperties("invalid-pw-jdbc-connection");
+                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .and().consumeWith( TestRepository::add ).useProperties("invalid-pw-jdbc-connection");
 
         //Act/Assert
         assertThrows(FailFastException.class, jLegMed::start);

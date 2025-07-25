@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashSet;
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
@@ -32,7 +33,7 @@ class AwaitFlowGraphTest {
     void testAwaitHelloWorld() {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
-        var result = new LinkedHashSet<String>();
+        var result = new Stack<String>();
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
@@ -42,7 +43,7 @@ class AwaitFlowGraphTest {
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .from( scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS) )
                 .and().processWith( AwaitFlowGraphTest::world)
-                .and().consumeWith( result::add);
+                .and().consumeWith( result::push );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

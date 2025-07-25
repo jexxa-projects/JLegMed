@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[4.0.0] - 2025-07-dd
+### Added 
+- JLegMedTest to simplify testing applications based on jlegmed
+- Annotations for architecture tests
+- New plugin PersistentTimer 
+
+### Fixed 
+- Updated dependencies
+
+### Changed
+- Removed all deprecated methods and classes
+- Filter name for functional methods is now based on `ClassName::methodName` which is more expressive
+
+
+
 ## \[3.5.8] - 2025-07-07
 ### Fixed
 - Updated dependencies

@@ -34,11 +34,11 @@ public abstract class Processor<T, R>  extends Filter {
     {
         super.init();
         if (strictFailFastWarning()) {
-                SLF4jLogger.getLogger(Processor.class).warn("`{}` requires FilterContext -> Either define properties with `useProperties` or call `withoutProperties` ", name());
+                SLF4jLogger.getLogger(Processor.class).warn("`{}` requires FilterContext -> Either define default properties `{}`, or use `useProperties` or call `withoutProperties` ", name(), defaultPropertiesName());
         }
         if (strictFailFast() && strictFailFastWarning())
         {
-            throw new FailFastException("Strict fail fast is enabled: `"+  name() + "` requires FilterContext -> Either define properties with `useProperties` or call `withoutProperties` ");
+            throw new FailFastException("Strict fail fast is enabled: `"+  name() + "` requires FilterContext -> Either define default properties `"+ defaultPropertiesName() + "`, properties with `useProperties` or call `withoutProperties` ");
         }
     }
 

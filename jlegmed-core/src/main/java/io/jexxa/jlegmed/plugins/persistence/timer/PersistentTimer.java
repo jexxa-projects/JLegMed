@@ -5,8 +5,19 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import java.time.Instant;
 
 import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool.getRepository;
+import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfigOf;
 
 public class PersistentTimer {
+    public static final String START_TIME = "start.time";
+    public static TimeInterval nextInterval(TimerID timerID, FilterContext filterContext) {
+        if (!filterContext.properties().containsKey(START_TIME))
+        {
+            throw new IllegalArgumentException(START_TIME + " is missing in properties " + filterContext.propertiesName());
+        }
+
+        return nextInterval(timerConfigOf(timerID,
+                Instant.parse(filterContext.properties().getProperty(START_TIME) )), filterContext);
+    }
 
     public static TimeInterval nextInterval(TimerConfig timerConfig, FilterContext filterContext)
     {

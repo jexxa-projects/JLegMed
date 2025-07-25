@@ -14,7 +14,7 @@ public class TestRepository {
         RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().forEach(outputPipe::forward);
     }
 
-    public static <T> void dropTable(FilterContext filterContext) {
+    public static void dropTable(FilterContext filterContext) {
         JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)
                 .tableCommand()
                 .dropTableIfExists(TextEntity.class.getSimpleName())

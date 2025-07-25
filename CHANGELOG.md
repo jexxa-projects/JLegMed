@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[4.0.0] - 2025-07-dd
+## \[4.0.0] - 2025-07-25
 ### Added 
 - JLegMedTest to simplify testing applications based on jlegmed
 - Annotations for architecture tests

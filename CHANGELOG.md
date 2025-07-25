@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - JLegMedTest to simplify testing applications based on jlegmed
 - Annotations for architecture tests
 - New plugin PersistentTimer 
+- Architecture tests
 
 ### Fixed 
 - Updated dependencies

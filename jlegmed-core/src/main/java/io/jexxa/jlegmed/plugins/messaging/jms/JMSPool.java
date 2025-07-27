@@ -26,30 +26,30 @@ public class JMSPool {
         return INSTANCE.internalJMSSender(filterContext);
     }
 
-    public static <T> JMSProducer<T> jmsSource(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsSource(JMSSource jmsSource, SerializableBiFunction<String, Class<T>, T> deserializer, Class<?> parentClass)
     {
-        return new JMSProducer<>(jmsSource, deserializer);
+        return new JMSProducer<>(jmsSource, deserializer,  parentClass);
     }
 
 
-    public static <T> JMSProducer<T> jmsTopic(String topicName, SerializableBiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsTopic(String topicName, SerializableBiFunction<String, Class<T>, T> deserializer, Class<?> parentClass)
     {
-        return new JMSProducer<>(topic(topicName), deserializer);
+        return new JMSProducer<>(topic(topicName), deserializer, parentClass);
     }
 
-    public static <T> JMSProducer<T> jmsTopic(String topicName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsTopic(String topicName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer, Class<?> parentClass)
     {
-        return new JMSProducer<>(topic(topicName, selector), deserializer);
+        return new JMSProducer<>(topic(topicName, selector), deserializer, parentClass);
     }
 
-    public static <T> JMSProducer<T> jmsQueue(String queueName, SerializableBiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsQueue(String queueName, SerializableBiFunction<String, Class<T>, T> deserializer, Class<?> parentClass)
     {
-        return new JMSProducer<>(queue(queueName), deserializer);
+        return new JMSProducer<>(queue(queueName), deserializer, parentClass);
     }
 
-    public static <T> JMSProducer<T> jmsQueue(String queueName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer)
+    public static <T> JMSProducer<T> jmsQueue(String queueName, String selector, SerializableBiFunction<String, Class<T>, T> deserializer, Class<?> parentClass)
     {
-        return new JMSProducer<>(queue(queueName, selector), deserializer);
+        return new JMSProducer<>(queue(queueName, selector), deserializer, parentClass);
     }
 
     private void initJMSConnections(FilterProperties filterProperties)

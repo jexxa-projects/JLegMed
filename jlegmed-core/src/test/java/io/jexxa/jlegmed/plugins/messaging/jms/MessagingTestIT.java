@@ -159,7 +159,7 @@ class MessagingTestIT {
 
         public static <T> JMSProducer<T> receiveAsJSON()
         {
-            return jmsQueue("MyQueue", MessageDecoder::fromJSON);
+            return jmsQueue("MyQueue", MessageDecoder::fromJSON, MyQueue.class);
         }
     }
 
@@ -176,18 +176,18 @@ class MessagingTestIT {
 
         public static <T> JMSProducer<T> receiveAsJSON()
         {
-            return jmsTopic("MyTopic", MessageDecoder::fromJSON);
+            return jmsTopic("MyTopic", MessageDecoder::fromJSON, MyTopic.class);
         }
 
         public static <T> JMSProducer<T> receiveJMSWithSelector()
         {
             return jmsSource(new JMSSource(JMSConfiguration.MessagingType.TOPIC,
                     "MyTopic", "Type='Integer'", JMSConfiguration.DurableType.NON_DURABLE, ""),
-                    MessageDecoder::fromJSON);
+                    MessageDecoder::fromJSON, MessagingTestIT.class);
         }
         public static <T> JMSProducer<T> receiveJMSWithInvalidSelector()
         {
-            return jmsTopic("MyTopic", "Type='Invalid'", MessageDecoder::fromJSON);
+            return jmsTopic("MyTopic", "Type='Invalid'", MessageDecoder::fromJSON, MessagingTestIT.class);
         }
     }
 }

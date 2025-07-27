@@ -129,6 +129,23 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
         };
     }
 
+    public static <T> TCPReceiver<T> tcpReceiver(ThrowingFunction<SocketContext, T, IOException> consumer, Class<?> parentClass) {
+        return new TCPReceiver<>(
+                filterNameFromLambda(consumer),
+                parentClass)
+        {
+            @Override
+            protected T receiveMessage(SocketContext context) {
+                try {
+                    return consumer.apply(context);
+                } catch (IOException e) {
+                    getLogger(TCPReceiver.class).error("Could not read message.", e);
+                    return null;
+                }
+            }
+        };
+    }
+
     public static <T> TCPReceiver<T> tcpReceiver(ThrowingBiFunction<SocketContext, Class<T>, T, IOException> consumer) {
         return new TCPReceiver<>(filterNameFromLambda(consumer),
                 classNameFromLambda(consumer))
@@ -153,6 +170,11 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
     public static ActiveProducer<String> receiveTextMessage()
     {
         return tcpReceiver(TCPReceiver::receiveLine);
+    }
+
+    public static ActiveProducer<String> receiveTextMessage(Class<?> parentClass)
+    {
+        return tcpReceiver(TCPReceiver::receiveLine, parentClass);
     }
 
     public static <T> T receiveAsJSON(SocketContext context, Class<T> dataType) throws IOException

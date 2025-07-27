@@ -1,6 +1,7 @@
 package io.jexxa.jlegmedtest.architecture;
 
 import com.tngtech.archunit.core.importer.ImportOption;
+import io.jexxa.jlegmed.annotation.ConsumedMessage;
 import io.jexxa.jlegmed.annotation.DomainEvent;
 import io.jexxa.jlegmed.annotation.FlowData;
 import io.jexxa.jlegmed.annotation.FlowError;
@@ -8,6 +9,7 @@ import io.jexxa.jlegmed.annotation.PublishedMessage;
 import io.jexxa.jlegmed.annotation.TelemetryData;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static io.jexxa.jlegmedtest.architecture.PackageName.CONSUMED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.DOMAIN_EVENT;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_DATA;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_ERROR;
@@ -32,6 +34,7 @@ public class DTORules extends ProjectContent {
         validateFlowError();
         validateTelemetryData();
         validatePublishedMessage();
+        validateConsumedMessage();
     }
 
     protected void validateDomainEvent()
@@ -84,6 +87,16 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(PUBLISHED_MESSAGE)
                 .and().areNotAnonymousClasses()
                 .should().beAnnotatedWith(PublishedMessage.class)
+                .allowEmptyShould(true);
+
+        annotationRule.check(importedClasses());
+    }
+    protected void validateConsumedMessage()
+    {
+        var annotationRule = classes()
+                .that().resideInAnyPackage(CONSUMED_MESSAGE)
+                .and().areNotAnonymousClasses()
+                .should().beAnnotatedWith(ConsumedMessage.class)
                 .allowEmptyShould(true);
 
         annotationRule.check(importedClasses());

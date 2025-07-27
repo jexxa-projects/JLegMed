@@ -10,6 +10,7 @@ final class PackageName
     public static final String DOMAIN_EVENT = "..domainevent..";
     public static final String TELEMETRY_DATA = "..dto.telemetrydata..";
     public static final String PUBLISHED_MESSAGE = "..dto.publishedmessage..";
+    public static final String CONSUMED_MESSAGE = "..dto.consumedmessage..";
     public static final String FLOW_DATA = "..dto.flowdata..";
     public static final String FLOW_ERROR = "..dto.flowerror..";
     public static final String PLUGINS = "..plugins..";

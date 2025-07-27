@@ -32,7 +32,8 @@ public class FilterRules extends ProjectContent {
                 if (!classHasFilter) {
                     for (JavaMethod method : javaClass.getMethods()) {
                         boolean isPublicStatic = method.getModifiers().contains(JavaModifier.PUBLIC) &&
-                                method.getModifiers().contains(JavaModifier.STATIC);
+                                method.getModifiers().contains(JavaModifier.STATIC) &&
+                                !method.getOwner().isNestedClass();
                         boolean methodHasFilter = method.isAnnotatedWith(Filter.class);
 
                         if (isPublicStatic && !methodHasFilter) {

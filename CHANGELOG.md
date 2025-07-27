@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[4.1.0] - 2025-07-26
+### Added 
+- Added annotation `ConsumedMessage` for incoming messages
+
+### Fixed
+- Introduced annotations
+  - Annotations that are used with classes not for methods 
+  - Architecture rules to ignore nested classes
+- Fixed producing filter to define a parent class that is used for the default prefix 
+- The default message sender is `JMSSender` and not `TransactionalOutboxSender`
+
+
 ## \[4.0.0] - 2025-07-25
 ### Added 
 - JLegMedTest to simplify testing applications based on jlegmed

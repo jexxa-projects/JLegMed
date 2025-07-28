@@ -42,6 +42,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(DOMAIN_EVENT)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(DomainEvent.class)
                 .allowEmptyShould(true);
 
@@ -53,6 +54,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(TELEMETRY_DATA)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(TelemetryData.class)
                 .allowEmptyShould(true);
 
@@ -64,6 +66,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(FLOW_DATA)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(FlowData.class)
                 .allowEmptyShould(true);
 
@@ -75,6 +78,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(FLOW_ERROR)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(FlowError.class)
                 .allowEmptyShould(true);
 
@@ -86,6 +90,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(PUBLISHED_MESSAGE)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(PublishedMessage.class)
                 .allowEmptyShould(true);
 
@@ -96,6 +101,7 @@ public class DTORules extends ProjectContent {
         var annotationRule = classes()
                 .that().resideInAnyPackage(CONSUMED_MESSAGE)
                 .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
                 .should().beAnnotatedWith(ConsumedMessage.class)
                 .allowEmptyShould(true);
 

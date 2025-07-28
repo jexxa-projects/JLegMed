@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[4.1.1] - 2025-07-27
+### Fixed
+- Architecture rules for DTOs ignore nested classes correctly 
+
 ## \[4.1.0] - 2025-07-26
 ### Added 
 - Added annotation `ConsumedMessage` for incoming messages

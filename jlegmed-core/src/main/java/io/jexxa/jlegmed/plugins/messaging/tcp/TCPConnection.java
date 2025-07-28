@@ -54,11 +54,11 @@ public class TCPConnection {
 
     private void validateFilterSettings() {
         if (port == -1) {
-            throw new IllegalArgumentException("Port must be set");
+            throw new IllegalArgumentException( TCPConnection.class.getSimpleName()  + ": Port must be set");
         }
 
         if (ipAddress.isEmpty()) {
-            throw new IllegalArgumentException("IP address must be set");
+            throw new IllegalArgumentException(TCPConnection.class.getSimpleName()  + ": IP address must be set");
         }
     }
 

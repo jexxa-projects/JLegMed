@@ -1,6 +1,9 @@
 package io.jexxa.jlegmed.plugins.persistence.timer;
 
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.ProcessingException;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.time.Instant;
 
@@ -9,17 +12,19 @@ import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfig
 
 public class PersistentTimer {
     public static final String START_TIME = "start.time";
-    public static TimeInterval nextInterval(TimerID timerID, FilterContext filterContext) {
+    public static void nextInterval(TimerID timerID, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe) {
         if (!filterContext.properties().containsKey(START_TIME))
         {
             throw new IllegalArgumentException(START_TIME + " is missing in properties " + filterContext.propertiesName());
         }
 
-        return nextInterval(timerConfigOf(timerID,
-                Instant.parse(filterContext.properties().getProperty(START_TIME) )), filterContext);
+        nextInterval(timerConfigOf(timerID,
+                Instant.parse(filterContext.properties().getProperty(START_TIME) )),
+                filterContext,
+                outputPipe);
     }
 
-    public static TimeInterval nextInterval(TimerConfig timerConfig, FilterContext filterContext)
+    public static void nextInterval(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe)
     {
         var repository = getRepository(TimerState.class,
                 TimerState::timerID,
@@ -33,16 +38,21 @@ public class PersistentTimer {
                         new TimeInterval(state.timerInterval.end())))
                 .orElseGet(() -> new TimerState(timerConfig.timerID(), new TimeInterval(timerConfig.startTime(), Instant.now())));
 
-        //2. Store the new TimeInterval in Repository
+        //2. Forward timeInterval. Only in case of success, we store the new value
+        try {
+            outputPipe.forward(timerState.timerInterval);
+        } catch (ProcessingException e) {
+            SLF4jLogger.getLogger(PersistentTimer.class).warn("Error on processing timerId {}, timeInterval {} -> Repeat interval with last start-time until success", timerState.timerID(), timerState.timerInterval);
+            throw e;
+        }
+
+        //3. Store the new TimeInterval in Repository
         if (repository.get(timerConfig.timerID()).isPresent())
         {
             repository.update(timerState);
         } else {
             repository.add(timerState);
         }
-
-        //3. Return the new interval
-        return timerState.timerInterval();
     }
 
 

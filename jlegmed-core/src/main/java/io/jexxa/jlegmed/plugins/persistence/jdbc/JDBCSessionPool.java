@@ -12,7 +12,7 @@ public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();
 
     public static JDBCSession jdbcSession(FilterContext filterContext) {
-        return new JDBCSession(getJDBCConnection(filterContext.properties(), INSTANCE));
+        return new JDBCSession(getJDBCConnection(filterContext.properties(), filterContext));
     }
 
     private void initJDBCSessions(FilterProperties filterProperties)

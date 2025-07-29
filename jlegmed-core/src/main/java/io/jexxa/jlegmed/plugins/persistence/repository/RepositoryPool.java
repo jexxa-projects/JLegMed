@@ -15,9 +15,9 @@ import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
 public class RepositoryPool {
     private static final RepositoryPool INSTANCE = new RepositoryPool();
     
-    private final HashMap<String, Repository<?,?>> repositories = new HashMap<>();
+    private final HashMap<FilterContext, Repository<?,?>> repositories = new HashMap<>();
 
-    public static <T, K> Repository<T, K> getRepository(Class<T> aggregateClazz,
+    public static synchronized <T, K> Repository<T, K> getRepository(Class<T> aggregateClazz,
                                                         Function<T,K> keyFunction, FilterContext filterContext)
     {
         return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, filterContext);
@@ -31,10 +31,10 @@ public class RepositoryPool {
             FilterContext filterContext)
     {
         repositories.computeIfAbsent(
-                filterContext.propertiesName(),
+                filterContext,
                 repository -> new Repository<>(aggregateClazz, keyFunction, filterContext)
         );
-        return (Repository<T, K>) repositories.get(filterContext.propertiesName());
+        return (Repository<T, K>) repositories.get(filterContext);
     }
 
     private RepositoryPool()

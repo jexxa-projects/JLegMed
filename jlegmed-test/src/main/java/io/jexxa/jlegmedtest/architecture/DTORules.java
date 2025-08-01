@@ -43,6 +43,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(DOMAIN_EVENT)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(DomainEvent.class)
                 .allowEmptyShould(true);
 
@@ -55,6 +56,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(TELEMETRY_DATA)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(TelemetryData.class)
                 .allowEmptyShould(true);
 
@@ -67,6 +69,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(FLOW_DATA)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(FlowData.class)
                 .allowEmptyShould(true);
 
@@ -79,6 +82,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(FLOW_ERROR)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(FlowError.class)
                 .allowEmptyShould(true);
 
@@ -91,6 +95,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(PUBLISHED_MESSAGE)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(PublishedMessage.class)
                 .allowEmptyShould(true);
 
@@ -102,6 +107,7 @@ public class DTORules extends ProjectContent {
                 .that().resideInAnyPackage(CONSUMED_MESSAGE)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
+                .and().arePublic()
                 .should().beAnnotatedWith(ConsumedMessage.class)
                 .allowEmptyShould(true);
 

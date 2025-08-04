@@ -18,13 +18,13 @@ public class PersistentTimer {
             throw new IllegalArgumentException(START_TIME + " is missing in properties " + filterContext.propertiesName());
         }
 
-        nextInterval(timerConfigOf(timerID,
+        nextIntervalWithConfig(timerConfigOf(timerID,
                 Instant.parse(filterContext.properties().getProperty(START_TIME) )),
                 filterContext,
                 outputPipe);
     }
 
-    public static void nextInterval(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe)
+    public static void nextIntervalWithConfig(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe)
     {
         var repository = getRepository(TimerState.class,
                 TimerState::timerID,

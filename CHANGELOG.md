@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - RepositoryPool access methods are now synchronized to avoid ConcurrentModificationException
 - RepositoryPool management uses FilterContext to ensure unique Repository instances
 
+## [4.2.0] - 2025-08-04
+### Added
+- Added default method `value()` to FlowGraph annotation
+
+### Changed
+- Renamed method `nextInterval` to `nextIntervalWithConfig` in PersistentTimer to avoid type erasure issues
+- Limited DTO architecture rules to public classes only
+
+### Deprecated
+- Deprecated `name()` method in FlowGraph annotation in favor of `value()`
+
+
 ## \[4.1.1] - 2025-07-27
 ### Fixed
 - Architecture rules for DTOs ignore nested classes correctly 

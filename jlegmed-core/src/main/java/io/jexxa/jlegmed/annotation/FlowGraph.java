@@ -21,6 +21,7 @@ public @interface FlowGraph
      *
      * @return Name of the domain event
      */
-    String name();
-
+    @Deprecated // Use value() instead
+    String name() default "";
+    String value();
 }

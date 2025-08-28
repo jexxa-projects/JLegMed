@@ -1,26 +1,24 @@
-# 5. Error handling during message processing
+# 5. Error Handling during Message Processing
 
-Date: 2024-02-18
-
-## Status
-
-Accepted
+**Date:** 2024-02-18  
+**Extended:** 2025-08-28  
+**Status:** Accepted
 
 ## Context
-When processing messages, arbitrary errors and failures can occur. We need a unified concept for error handling to support the developer.   
+When processing messages, different types of errors and failures may occur. To support developers using **JLegMed**, we need a unified concept for error handling.
 
-In this context, we distinguish between two kinds of errors:
-* An exception in terms of an __abnormal situation__ such as the used database is no longer available for some reason. In this case, no processing can be performed and previous stateful changes must be rolled back. 
-* An exception in terms of __expected misbehavior__ such as a service is temporarily not available. In this case, we have to execute different processing steps.    
+We distinguish between two categories of errors:
 
+* **Recoverable errors (expected misbehavior)**  
+  Examples: a temporarily unavailable service or invalid/failed data validation. These errors require explicit handling steps, such as notifying the sender about the validation issue.
+
+* **Unrecoverable errors (abnormal situations)**  
+  Examples: the database is no longer available or other critical infrastructure failures. Such errors cannot be handled by the current filter itself. Instead, they must be propagated to predecessor filters so they can roll back internal state or apply their own error-handling strategies.
 
 ## Decision
-* To handle an __abnormal situation__, we use the `transactional outbox pattern` to avoid complexity of two phases commits.
-* To handle __expected misbehavior__, we use the concept of an (either) monad for a binding, which allows defining a processor or processing flow graph for error handling after each binding.  
-
+* For **recoverable errors**, we use the concept of an *Either monad* within a binding. This allows each processing step to explicitly define an alternative flow for error handling.
+* For **unrecoverable errors**, the exception is propagated backwards in the processing graph so that predecessor filters are informed and can perform compensation actions (e.g., rollback) or escalate the failure.
 
 ## Consequences
-
-* Due to the transaction outbox pattern, all technology stacks must first write their information to the same database first. Due to this consequence, a single flow graph should not update different databases, for example. If such a scenario is desired, we recommend not using this framework.           
-* For handling an __expected misbehavior__ that requires multiple processing steps, a separate flow graph must be defined. This causes that a strict ordering of messages is lost. If strict message ordering is required, this must be considered by the flow graph and/or application (e.g., by stopping processing).  
-* Since handling of __expected misbehavior__ can be caused by a succeeding filter, but only a previous filter provides error handling, we introduce the `ProcessingException` so that the previous filter is aware that he has to forward this information to the error pipe.   
+* Handling **recoverable errors** that require multiple processing steps must be modeled as a separate flow graph. For this purpose, we introduce the `onError()` method as part of a binding, which defines a dedicated error-handling flow.
+* Since **unrecoverable errors** cannot be resolved within the filter itself, all predecessor filters must be informed. To enable this, we introduce the `ProcessingException`, which signals to predecessor filters that the error must either be forwarded to the error pipeline or be handled by them directly.  

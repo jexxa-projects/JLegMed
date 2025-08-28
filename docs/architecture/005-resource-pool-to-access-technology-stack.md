@@ -1,26 +1,21 @@
-# 4. Object Pool to access technology stack 
+# 4. Object Pool for Accessing the Technology Stack
 
-Date: 2024-01-26
-
-## Status
-
-Accepted
+**Date:** 2024-01-26  
+**Status:** Accepted
 
 ## Context
-Technology stacks typically depend on state-related information such as a file or session handle.
-Since we are pushing the use of lambda expressions, we need a way to initialize and
-manage this technology-related state information outside the lambda expression.  
+Technology stacks often rely on stateful information such as file handles, session handles, or connections.  
+Since we encourage the use of lambda expressions in **JLegMed**, we need a mechanism to initialize and manage such state information **outside** of the lambda expression.
 
 ## Decision
+We introduce a dedicated **resource pool** for each specific technology stack.  
+This pool manages the lifecycle of stateful resources at the filter level.
 
-We use a dedicated `ressource pool` for a specific technology stack to manage it states on a filter level.
-A lambda expression, encapsulated in a filter, can then access the ressource pool
-and avoid creating a new ressource by simply asking the pool for one that has already been instantiated instead.
-For identifying the required ressource, 
-we use the `useProperties` name defined in flow graph
+A lambda expression, encapsulated within a filter, can then access the resource pool and reuse an already instantiated resource instead of creating a new one.  
+The required resource is identified using the `useProperties` name defined in the flow graph.
 
 ## Consequences
-* We use the `FilterContext` of a filter so that a resource pool can manage resources on a filter level. 
-* All configuration aspects of a technology stack or a specific connection must be defined using properties. In case a developer forgets to configure the properties, [ADR 002-fail-fast-approach](004-fail-fast-approach.md) handles this failure. 
-* Resource pools must be implemented as singletons to be used in lambda expressions. For proper initialization of these singletons in Java, the class information must be passed to JLegMed in the main method so that it can force class loading   
-* Due to [ADR 002-fail-fast-approach](004-fail-fast-approach.md), ressource pools get `Properties` information for all pools. So they must be able to detect and ignore properties that are not related to themselves.        
+* The `FilterContext` of a filter is used so that the resource pool can manage resources at the filter level.
+* All configuration aspects of a technology stack or a specific connection must be defined using **properties**. If a developer forgets to configure these properties, [ADR 002 - Fail-Fast Approach](004-fail-fast-approach.md) ensures the application fails fast.
+* Resource pools must be implemented as **singletons** to be reusable in lambda expressions. For proper initialization of these singletons in Java, the class information must be passed to JLegMed in the main method so that it can enforce class loading.
+* Due to the [ADR 002 - Fail-Fast Approach](004-fail-fast-approach.md), all resource pools receive the full set of `Properties`. They must therefore be able to detect and ignore properties that are not relevant to themselves.  

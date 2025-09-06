@@ -4,18 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[4.2.0] - 2025-09-06
+## \[4.3.0] - 2025-09-06
 ### Changed
 - BootstrapRegistry is declared as deprecated and replaced by JexxaContext  
 
 ### Fixed
 - Updated Dependencies
-
-## \[4.1.2] - 2025-07-29
-### Fixed
-- JDBCConnection management uses FilterContext to ensure unique JDBCConnection
-- RepositoryPool access methods are now synchronized to avoid ConcurrentModificationException
-- RepositoryPool management uses FilterContext to ensure unique Repository instances
 
 ## [4.2.0] - 2025-08-04
 ### Added
@@ -27,6 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 - Deprecated `name()` method in FlowGraph annotation in favor of `value()`
+
+## \[4.1.2] - 2025-07-29
+### Fixed
+- JDBCConnection management uses FilterContext to ensure unique JDBCConnection
+- RepositoryPool access methods are now synchronized to avoid ConcurrentModificationException
+- RepositoryPool management uses FilterContext to ensure unique Repository instances
 
 
 ## \[4.1.1] - 2025-07-27

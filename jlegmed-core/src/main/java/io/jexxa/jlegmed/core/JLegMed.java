@@ -69,7 +69,6 @@ public final class JLegMed
         this.application = application;
         enableStrictFailFast();
         setExceptionHandler();
-        BootstrapRegistry.bootstrapServices();
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
@@ -109,7 +108,12 @@ public final class JLegMed
     public synchronized void start()
     {
         if (strictFailFast()) {
-            filterProperties().forEach(BootstrapRegistry::initFailFast);
+            try {
+                filterProperties().stream().map(FilterProperties::properties).forEach(JexxaContext::validate);
+            } catch (RuntimeException e)
+            {
+                throw new FailFastException(e.getMessage(), e);
+            }
         }
 
         showPreStartupBanner();

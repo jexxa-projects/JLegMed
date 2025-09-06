@@ -1,12 +1,11 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.FilterProperties;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("java:S6548")
@@ -21,14 +20,14 @@ public class TCPConnectionPool {
     }
 
 
-    private void initTCPConnections(FilterProperties filterProperties)
+    private void initTCPConnections(Properties properties)
     {
         try {
-            if (filterProperties.properties().containsKey(TCPProperties.TCP_ADDRESS)) {
-                new TCPConnection(filterProperties);
+            if (properties.containsKey(TCPProperties.TCP_ADDRESS)) {
+                new TCPConnection(properties);
             }
         } catch(RuntimeException e) {
-            throw new FailFastException("Could not init TCP connection for filter properties " + filterProperties.name()
+            throw new FailFastException("Could not init TCP connection for filter properties "
                 + ". Reason: " + e.getMessage(), e );
         }
     }
@@ -50,8 +49,7 @@ public class TCPConnectionPool {
 
     private TCPConnectionPool()
     {
-        BootstrapRegistry.registerBootstrapHandler(this::cleanup);
-        BootstrapRegistry.registerFailFastHandler(this::initTCPConnections);
         JexxaContext.registerCleanupHandler(this::cleanup);
+        JexxaContext.registerValidationHandler(this::initTCPConnections);
     }
 }

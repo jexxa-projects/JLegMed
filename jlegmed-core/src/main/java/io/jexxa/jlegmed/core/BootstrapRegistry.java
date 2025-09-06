@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Deprecated
 public final class BootstrapRegistry {
 
     private static final BootstrapRegistry INSTANCE = new BootstrapRegistry();

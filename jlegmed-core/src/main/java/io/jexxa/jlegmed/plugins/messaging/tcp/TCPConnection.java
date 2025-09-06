@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Properties;
 import java.util.function.Function;
 
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
@@ -42,8 +43,13 @@ public class TCPConnection {
 
     public TCPConnection(FilterProperties filterProperties)
     {
-        this(filterProperties.properties().getProperty(TCPProperties.TCP_ADDRESS),
-                Integer.parseInt(filterProperties.properties().getProperty(TCPProperties.TCP_PORT)));
+        this(filterProperties.properties());
+    }
+
+    public TCPConnection(Properties properties)
+    {
+        this(properties.getProperty(TCPProperties.TCP_ADDRESS),
+                Integer.parseInt(properties.getProperty(TCPProperties.TCP_PORT)));
     }
 
     public void connectionTimeout(Duration timeout)

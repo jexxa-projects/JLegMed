@@ -1,11 +1,11 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
-import io.jexxa.jlegmed.core.BootstrapRegistry;
+import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.FilterProperties;
 
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.function.Function;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.validateJDBCConnection;
@@ -39,20 +39,20 @@ public class RepositoryPool {
 
     private RepositoryPool()
     {
-        BootstrapRegistry.registerBootstrapHandler(repositories::clear);
-        BootstrapRegistry.registerFailFastHandler(this::initJDBCSessions);
+        JexxaContext.registerCleanupHandler(repositories::clear);
+        JexxaContext.registerValidationHandler(this::initJDBCSessions);
     }
 
 
-    private void initJDBCSessions(FilterProperties filterProperties)
+    private void initJDBCSessions(Properties properties)
     {
         try {
-            if (filterProperties.properties().containsKey(jdbcUrl()))
+            if (properties.containsKey(jdbcUrl()))
             {
-                validateJDBCConnection(filterProperties.properties());
+                validateJDBCConnection(properties);
             }
         } catch ( RuntimeException e) {
-        throw new FailFastException("Could not init JDBC connection for filter properties " + filterProperties.name()
+        throw new FailFastException("Could not init JDBC connection for filter properties "
                 + ". Reason: " + e.getMessage(), e );
     }
     }

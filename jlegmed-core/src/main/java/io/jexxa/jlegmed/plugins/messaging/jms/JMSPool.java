@@ -1,14 +1,14 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
+import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.common.facade.jms.JMSProperties;
-import io.jexxa.jlegmed.core.BootstrapRegistry;
 import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.FilterProperties;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
@@ -52,15 +52,15 @@ public class JMSPool {
         return new JMSProducer<>(queue(queueName, selector), deserializer, parentClass);
     }
 
-    private void initJMSConnections(FilterProperties filterProperties)
+    private void initJMSConnections(Properties properties)
     {
         try {
-            if (filterProperties.properties().containsKey(JMSProperties.JNDI_FACTORY_KEY))
+            if (properties.containsKey(JMSProperties.JNDI_FACTORY_KEY))
             {
-                createMessageSender(JMSPool.class, filterProperties.properties());
+                createMessageSender(JMSPool.class, properties);
             }
         } catch ( RuntimeException e) {
-            throw new FailFastException("Could not init JMS connection for filter properties " + filterProperties.name()
+            throw new FailFastException("Could not init JMS connection for filter properties "
                     + ". Reason: " + e.getMessage(), e );
         }
 
@@ -77,7 +77,7 @@ public class JMSPool {
 
     private JMSPool()
     {
-        BootstrapRegistry.registerFailFastHandler(properties -> messageSenderMap.clear());
-        BootstrapRegistry.registerFailFastHandler(this::initJMSConnections);
+        JexxaContext.registerCleanupHandler(messageSenderMap::clear);
+        JexxaContext.registerValidationHandler(this::initJMSConnections);
     }
 }

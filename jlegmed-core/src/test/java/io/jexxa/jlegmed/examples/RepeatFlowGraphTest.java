@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -32,7 +32,7 @@ class RepeatFlowGraphTest {
     void testRepeatHelloWorld() {
         //Arrange
         var flowGraphID = "RepeatHelloWorld";
-        var result = new ArrayList<String>();
+        var result = new Stack<String>();
         var repeatCounter = 10;
 
         // Define the flow graph:
@@ -41,10 +41,10 @@ class RepeatFlowGraphTest {
                 //Optionally, you can define a period
                 .repeat(repeatCounter).atInterval(50, MILLISECONDS)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
+                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ")
                 .and().processWith( data -> data + "World")
-                .and().consumeWith( data -> result.add(data) );
+                .and().consumeWith( result::push );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[UNRELEASED] - 2025-mm-dd
+## \[4.4.0] - 2025-09-14
 ### Added
 - Plugin `PersistentTimer` now supports properties `lookback.period` to define a relative start time in seconds (s), minutes(m), hours(h), days(d), and weeks(w). 
   - Example: `lookback.period = 5d` for an initial start time of now() - 5 days  

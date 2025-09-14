@@ -6,6 +6,8 @@ import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.plugins.persistence.repository.RepositoryPool;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -18,6 +20,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PersistentTimerIT {
 
@@ -96,6 +99,85 @@ class PersistentTimerIT {
         //Assert
         await().atMost(3, TimeUnit.SECONDS).until( () -> result.size() > 2);
         jLegMed.stop();
+    }
+
+    @Test
+    void validLookBackConfiguration() {
+
+        //Arrange
+        var jLegMed = new JLegMed(PersistentTimerIT.class)
+                .useTechnology(RepositoryPool.class);
+
+        List<TimeInterval> result = new ArrayList<>();
+        var timerConfig= timerIdOf("validLookBackConfiguration");
+
+        var filter = processor(PersistentTimer::nextInterval);
+        filter.outputPipe().connectTo(result::add);
+        filter.useProperties(FilterProperties.filterPropertiesOf(
+                filter.defaultPropertiesName(),
+                getSubset(jLegMed.getProperties(), "validlookback")));
+
+        filter.reachStarted();
+
+        //Act
+        filter.process(timerConfig);
+        filter.process(timerConfig);
+
+        //Assert
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void lookBackTest() {
+
+        //Arrange
+        var jLegMed = new JLegMed(PersistentTimerIT.class)
+                .useTechnology(RepositoryPool.class);
+
+        List<TimeInterval> result = new ArrayList<>();
+        var timerConfig= timerIdOf("lookBackTest");
+
+        var filter = processor(PersistentTimer::nextInterval);
+        filter.outputPipe().connectTo(result::add);
+        filter.useProperties(FilterProperties.filterPropertiesOf(
+                filter.defaultPropertiesName(),
+                getSubset(jLegMed.getProperties(), "validlookback")));
+
+        filter.reachStarted();
+
+        //Act
+        Instant startTime = Instant.now().minus(Duration.ofDays(5));
+        filter.process(timerConfig);
+        filter.process(timerConfig);
+        Instant endTime = Instant.now();
+
+        //Assert
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertTrue( startTime.compareTo(result.get(0).begin()) <= 0);
+        assertTrue( endTime.compareTo(result.get(0).begin()) > 0);
+    }
+
+
+    @Test
+    void invalidLookBackConfiguration() {
+
+        //Arrange
+        var jLegMed = new JLegMed(PersistentTimerIT.class)
+                .useTechnology(RepositoryPool.class);
+
+        var timerConfig= timerIdOf(PersistentTimerIT.class.getSimpleName());
+
+        var filter = processor(PersistentTimer::nextInterval);
+        filter.useProperties(FilterProperties.filterPropertiesOf(
+                filter.defaultPropertiesName(),
+                getSubset(jLegMed.getProperties(), "invalidlookback")));
+
+        filter.reachStarted();
+
+        //Act / Assert
+        assertThrows(ProcessingException.class, () -> filter.process(timerConfig));
     }
 
 

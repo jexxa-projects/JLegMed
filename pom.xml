@@ -85,7 +85,7 @@
     <maven.javadoc.plugin>3.11.3</maven.javadoc.plugin>
     <maven.versions.plugin>2.19.0</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
-    <maven.shade.plugin>3.6.0</maven.shade.plugin>
+    <maven.shade.plugin>3.6.1</maven.shade.plugin>
     <maven.templating.plugin>3.0.0</maven.templating.plugin>
     <maven.central.publishing.plugin>0.8.0</maven.central.publishing.plugin>
 

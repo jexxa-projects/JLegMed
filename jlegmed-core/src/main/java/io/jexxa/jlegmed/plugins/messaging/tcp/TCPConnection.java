@@ -3,7 +3,6 @@ package io.jexxa.jlegmed.plugins.messaging.tcp;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
-import io.jexxa.jlegmed.plugins.messaging.tcp.producer.TCPReceiver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

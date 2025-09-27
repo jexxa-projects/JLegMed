@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
+package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.adapterapi.invocation.InvocationManager;
 import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
@@ -164,7 +164,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
 
     private static String receiveLine(SocketContext context) throws IOException
     {
-        return context.bufferedReader().readLine(); //Handles all typical delimiter according to its doc
+        return context.bufferedReader().readLine(); //Handles all typical delimiters according to its doc
     }
 
     public static ActiveProducer<String> receiveTextMessage()

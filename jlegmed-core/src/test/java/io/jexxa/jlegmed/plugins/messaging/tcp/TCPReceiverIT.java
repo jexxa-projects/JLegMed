@@ -1,10 +1,7 @@
-package io.jexxa.jlegmed.plugins.messaging.tcp.producer;
+package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
-import io.jexxa.jlegmed.plugins.messaging.tcp.Delimiter;
-import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnection;
-import io.jexxa.jlegmed.plugins.messaging.tcp.TCPConnectionPool;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -21,8 +21,8 @@ import java.util.function.Function;
 
 import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
 
+@SuppressWarnings("unused")
 public class TCPConnection {
-
 
     private static final String COULD_NOT_SEND_MESSAGE = "Could not send message.";
     private final int port;
@@ -49,7 +49,7 @@ public class TCPConnection {
     public TCPConnection(Properties properties)
     {
         this(properties.getProperty(TCPProperties.TCP_ADDRESS),
-                Integer.parseInt(properties.getProperty(TCPProperties.TCP_PORT)));
+                extractPort(properties));
     }
 
     public void connectionTimeout(Duration timeout)
@@ -124,6 +124,11 @@ public class TCPConnection {
         }
     }
 
+    /**
+     * @param message message to be sent
+     * @param filterContext context information of the filter
+     * @return message for further processing
+     */
     public static String sendTextMessage(String message, FilterContext filterContext)
     {
         TCPConnectionPool.tcpConnection(filterContext).sendMessage(message , Delimiter.NEWLINE);
@@ -134,5 +139,19 @@ public class TCPConnection {
     {
         sendTextMessage(getJSONConverter().toJson(message), filterContext);
         return message;
+    }
+
+    private static int extractPort(Properties properties)
+    {
+        if (!properties.containsKey(TCPProperties.TCP_PORT)) {
+            throw new IllegalArgumentException(TCPProperties.TCP_PORT + " is not set");
+        }
+
+        try {
+            return Integer.parseInt(properties.getProperty(TCPProperties.TCP_PORT));
+        } catch (NumberFormatException e)
+        {
+            throw new IllegalArgumentException("Invalid TCP-Port " +properties.getProperty(TCPProperties.TCP_PORT), e);
+        }
     }
 }

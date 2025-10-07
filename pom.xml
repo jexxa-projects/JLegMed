@@ -39,7 +39,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.common.adapters.version>2.4.0</jexxa.common.adapters.version>
+    <jexxa.common.adapters.version>2.5.0</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>

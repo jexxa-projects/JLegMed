@@ -3,9 +3,10 @@
 [![Maven Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
 [![CodeQL](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml)
 # 🧩JLegMed—Connect the Past with the Future
+**JLegMed** is a lightweight Java framework that combines the principles of domain-driven design (DDD) with seamless integration between traditional enterprise systems and modern cloud-native platforms.
+It connects JMS-, JDBC-, and TCP-based business applications with Kafka and S3 to support both transaction- and event-driven workflows.
 
-**JLegMed** closes the semantic gap between legacy systems and modern architectures — designed for software modernization and Domain‑Driven Design (DDD) contexts.
-
+By aligning clear domain boundaries with flexible technical adapters, JLegMed helps you modernize existing systems step by step to establish coherent DDD-based business logic and operate it in a scalable, cloud-native infrastructure.
 
 ## 🚀 Features
 

@@ -39,7 +39,7 @@
     <maven.compiler.release>17</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.common.adapters.version>2.4.0</jexxa.common.adapters.version>
+    <jexxa.common.adapters.version>2.6.0</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>
@@ -51,7 +51,7 @@
     <junit.jupiter.params.version>6.0.0</junit.jupiter.params.version>
     <awaitility.version>4.3.0</awaitility.version>
     <jackson.databind.version>2.20.0</jackson.databind.version>
-    <apache.commons.lang3>3.18.0</apache.commons.lang3>
+    <apache.commons.lang3>3.19.0</apache.commons.lang3>
     <activemq.artemis.client.version>2.42.0</activemq.artemis.client.version>
     <postgres.version>42.7.8</postgres.version>
     <slf4j.simple.version>2.0.17</slf4j.simple.version>
@@ -79,9 +79,9 @@
     <maven.site.plugin>3.21.0</maven.site.plugin>
     <maven.surefire.plugin>3.5.4</maven.surefire.plugin>
     <maven.release.plugin>3.1.1</maven.release.plugin>
-    <maven.jacoco.plugin>0.8.13</maven.jacoco.plugin>
+    <maven.jacoco.plugin>0.8.14</maven.jacoco.plugin>
     <maven.reports.plugin>3.9.0</maven.reports.plugin>
-    <maven.enforcer.plugin>3.6.1</maven.enforcer.plugin>
+    <maven.enforcer.plugin>3.6.2</maven.enforcer.plugin>
     <maven.javadoc.plugin>3.12.0</maven.javadoc.plugin>
     <maven.versions.plugin>2.19.1</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>

@@ -25,7 +25,7 @@ By aligning clear domain boundaries with flexible technical adapters, JLegMed he
 ```java     
 public final class HelloJLegMed
 {
-    public static void main(String[] args)    {
+ static void main(String[] args)    {
         var jLegMed = new JLegMed(HelloJLegMed.class);
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -38,7 +38,7 @@ public final class HelloJLegMed
         jLegMed.run();
     }
 }
-```    
+```
 
 ### Add Dependencies
 

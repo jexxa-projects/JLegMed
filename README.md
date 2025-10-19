@@ -6,14 +6,14 @@
 **JLegMed** is a lightweight Java framework that combines the principles of domain-driven design (DDD) with seamless integration between traditional enterprise systems and modern cloud-native platforms.
 It connects JMS-, JDBC-, and TCP-based business applications with Kafka and S3 to support both transaction- and event-driven workflows.
 
-By aligning clear domain boundaries with flexible technical adapters, JLegMed helps you modernize existing systems step by step to establish coherent DDD-based business logic and operate it in a scalable, cloud-native infrastructure.
+By aligning clear domain boundaries with flexible technical adapters, JLegMed helps you modernize existing systems step by step to establish coherent DDD-based business logic and operate it in an on-premise, cloud-native, or hybrid infrastructure.
 
 ## 🚀 Features
 
 - **Pipes & Filters Architecture** – A natural fit for data-flow-based processing
 - **Functional Programming Style** – Focus on the *what*, not the *how*
 - **Minimal Dependencies** – Built on Java SE APIs
-- **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, and more
+- **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, S3, and more
 
 ## 📋 Requirements
 

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[4.5.0] - 2025-10-19
+### Added
+- Repository and object store now support S3-storage (introduced with the update to common-adapters 2.6.0)
+
+### Fixed
+- Updated Dependencies
+
 ## \[4.4.0] - 2025-09-14
 ### Added
 - Plugin `PersistentTimer` now supports properties `lookback.period` to define a relative start time in seconds (s), minutes(m), hours(h), days(d), and weeks(w). 

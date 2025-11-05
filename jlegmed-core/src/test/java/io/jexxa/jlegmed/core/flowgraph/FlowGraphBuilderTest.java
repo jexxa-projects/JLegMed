@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.jlegmed.core.FailFastException;
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -202,7 +202,7 @@ class FlowGraphBuilderTest {
                 .and().consumeWith( messageCollector2::push );
 
         //Act / assert
-        assertThrows(FailFastException.class, () -> jlegmed.start());
+        assertThrows(ConfigurationFailedException.class, () -> jlegmed.start());
 
         //Assert
         assertTrue(messageCollector1.empty()); // The first flow graph must not start processing in case of a fail fast exception

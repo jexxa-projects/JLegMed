@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.core;
 
 
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
 import io.jexxa.adapterapi.invocation.InvocationManager;
@@ -112,7 +113,7 @@ public final class JLegMed
                 filterProperties().stream().map(FilterProperties::properties).forEach(JexxaContext::validate);
             } catch (RuntimeException e)
             {
-                throw new FailFastException(e.getMessage(), e);
+                throw new ConfigurationFailedException(e.getMessage(), e);
             }
         }
 
@@ -295,7 +296,7 @@ public final class JLegMed
         try {
             Class.forName(clazz.getName(), true, clazz.getClassLoader());
         } catch (ClassNotFoundException e) {
-            throw new FailFastException(e.getMessage(), e);
+            throw new ConfigurationFailedException(e.getMessage(), e);
         }
     }
 

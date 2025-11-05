@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.common.facade.utils.properties.PropertiesUtils.getSubset;
+import static io.jexxa.common.facade.utils.properties.PropertiesUtils.filterByPrefix;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerID.timerIdOf;
 import static org.awaitility.Awaitility.await;
@@ -38,7 +38,7 @@ class PersistentTimerIT {
         filter.outputPipe().connectTo(result::add);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                getSubset(jLegMed.getProperties(), filter.defaultPropertiesName())));
+                filterByPrefix(jLegMed.getProperties(), filter.defaultPropertiesName())));
 
         filter.reachStarted();
 
@@ -66,7 +66,7 @@ class PersistentTimerIT {
         filter.outputPipe().connectTo( data -> validateStartTime(data, result));
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                getSubset(jLegMed.getProperties(), filter.defaultPropertiesName())));
+                filterByPrefix(jLegMed.getProperties(), filter.defaultPropertiesName())));
 
         filter.reachStarted();
 
@@ -115,7 +115,7 @@ class PersistentTimerIT {
         filter.outputPipe().connectTo(result::add);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                getSubset(jLegMed.getProperties(), "validlookback")));
+                filterByPrefix(jLegMed.getProperties(), "validlookback")));
 
         filter.reachStarted();
 
@@ -142,7 +142,7 @@ class PersistentTimerIT {
         filter.outputPipe().connectTo(result::add);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                getSubset(jLegMed.getProperties(), "validlookback")));
+                filterByPrefix(jLegMed.getProperties(), "validlookback")));
 
         filter.reachStarted();
 
@@ -172,7 +172,7 @@ class PersistentTimerIT {
         var filter = processor(PersistentTimer::nextInterval);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                getSubset(jLegMed.getProperties(), "invalidlookback")));
+                filterByPrefix(jLegMed.getProperties(), "invalidlookback")));
 
         filter.reachStarted();
 

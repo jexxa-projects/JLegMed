@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Properties;
@@ -23,7 +23,7 @@ public class JDBCSessionPool {
                 getJDBCConnection(properties, INSTANCE);
             }
         } catch ( RuntimeException e) {
-            throw new FailFastException("Could not init JDBC connection for filter properties " + properties.getProperty(jdbcUrl())
+            throw new ConfigurationFailedException("Could not init JDBC connection for filter properties " + properties.getProperty(jdbcUrl())
                     + ". Reason: " + e.getMessage(), e );
         }
     }

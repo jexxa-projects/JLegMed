@@ -26,7 +26,7 @@ public class Binding<T, U> {
     }
 
     public Binding<T, U> useProperties(String propertiesPrefix) {
-        var properties = PropertiesUtils.getSubset(flowGraph.properties(), propertiesPrefix);
+        var properties = PropertiesUtils.filterByPrefix(flowGraph.properties(), propertiesPrefix);
         if (properties.isEmpty()) {
             throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
         }
@@ -56,7 +56,7 @@ public class Binding<T, U> {
     {
         if (!filter.defaultPropertiesName().isEmpty())
         {
-            var defaultProperties = PropertiesUtils.getSubset(flowGraph.properties(), filter.defaultPropertiesName());
+            var defaultProperties = PropertiesUtils.filterByPrefix(flowGraph.properties(), filter.defaultPropertiesName());
             if (!defaultProperties.isEmpty()) {
                 filter.useProperties(new FilterProperties(filter.defaultPropertiesName(), defaultProperties));
             }

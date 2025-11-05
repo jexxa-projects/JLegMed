@@ -1,10 +1,10 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.common.drivenadapter.messaging.MessageSender;
 import io.jexxa.common.facade.jms.JMSProperties;
-import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Map;
@@ -55,12 +55,12 @@ public class JMSPool {
     private void initJMSConnections(Properties properties)
     {
         try {
-            if (properties.containsKey(JMSProperties.JNDI_FACTORY_KEY))
+            if (properties.containsKey(JMSProperties.jndiFactoryKey()))
             {
                 createMessageSender(JMSPool.class, properties);
             }
         } catch ( RuntimeException e) {
-            throw new FailFastException("Could not init JMS connection for filter properties "
+            throw new ConfigurationFailedException("Could not init JMS connection for filter properties "
                     + ". Reason: " + e.getMessage(), e );
         }
 

@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
-import io.jexxa.jlegmed.core.FailFastException;
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +35,7 @@ class JMSPoolIT {
                 .and().consumeWith( JMSPoolIT::myQueue ).useProperties("invalid-factory-jms-connection");
 
         //Act/Assert
-        assertThrows(FailFastException.class, () -> jLegMed.start());
+        assertThrows(ConfigurationFailedException.class, () -> jLegMed.start());
     }
 
     public static <T> void myQueue(T data, FilterContext filterContext)

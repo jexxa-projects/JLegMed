@@ -108,7 +108,6 @@ class SynchronizedMultiplexerTest {
         if (!errorCollector.empty())
         {
             errorCollector.forEach(System.out::println);
-
         }
 
         assertTrue(errorCollector.empty());

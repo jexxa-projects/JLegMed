@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class TCPConnectionPool {
                 new TCPConnection(properties);
             }
         } catch(RuntimeException e) {
-            throw new FailFastException("Could not init TCP connection for filter properties "
+            throw new ConfigurationFailedException("Could not init TCP connection for filter properties "
                 + ". Reason: " + e.getMessage(), e );
         }
     }

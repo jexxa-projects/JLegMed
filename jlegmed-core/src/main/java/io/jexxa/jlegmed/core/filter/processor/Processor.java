@@ -1,11 +1,11 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
+import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
 import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
 import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
 import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.common.facade.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.FailFastException;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
@@ -38,7 +38,7 @@ public abstract class Processor<T, R>  extends Filter {
         }
         if (strictFailFast() && strictFailFastWarning())
         {
-            throw new FailFastException("Strict fail fast is enabled: `"+  name() + "` requires FilterContext -> Either define default properties `"+ defaultPropertiesName() + "`, properties with `useProperties` or call `withoutProperties` ");
+            throw new ConfigurationFailedException("Strict fail fast is enabled: `"+  name() + "` requires FilterContext -> Either define default properties `"+ defaultPropertiesName() + "`, properties with `useProperties` or call `withoutProperties` ");
         }
     }
 

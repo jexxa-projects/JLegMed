@@ -36,10 +36,10 @@
   <properties>
     <!-- target/compiler configuration  -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
 
     <!-- version of core dependencies -->
-    <jexxa.common.adapters.version>3.0.0-SNAPSHOT</jexxa.common.adapters.version>
+    <jexxa.common.adapters.version>3.0.0</jexxa.common.adapters.version>
 
     <!-- version of dependencies -->
     <unirest.java.version>3.14.5</unirest.java.version>

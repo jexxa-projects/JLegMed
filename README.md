@@ -17,7 +17,7 @@ By aligning clear domain boundaries with flexible technical adapters, JLegMed he
 
 ## 📋 Requirements
 
-- Java **17 or higher**
+- Java **25 or higher**
 - Maven-compatible IDE (e.g., IntelliJ IDEA, Eclipse)
 
 ## 🛠️ Quickstart

@@ -40,8 +40,6 @@ jobs:
       - name: Build with Maven
         run: mvn -B install --file pom.xml
       - name: SonarQube Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY : 'jexxa-projects_JLegMed'
-          SONAR_ORGANIZATION : 'jexxa-projects'
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }

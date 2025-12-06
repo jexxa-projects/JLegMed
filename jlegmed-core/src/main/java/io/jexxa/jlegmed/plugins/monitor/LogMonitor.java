@@ -97,9 +97,9 @@ public class LogMonitor {
         sb.append("Iteration ")
                 .append(iterationCounter)
                 .append(" (FilterStyle) : ")
-                .append( " [" ).append(getFilterName(iterationData.get(0).outputPipe())).append( "] ")
+                .append( " [" ).append(getFilterName(iterationData.getFirst().outputPipe())).append( "] ")
                 .append( " () -> " )
-                .append(iterationData.get(0).producedData());
+                .append(iterationData.getFirst().producedData());
 
         for (int i = 0; i < iterationData.size() - 1 ; i++)
         {

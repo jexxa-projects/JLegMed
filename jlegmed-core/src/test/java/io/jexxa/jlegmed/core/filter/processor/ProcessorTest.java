@@ -26,7 +26,7 @@ class ProcessorTest {
 
         //Assert
         assertEquals(1 , result.size());
-        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.getFirst());
     }
 
 
@@ -47,7 +47,7 @@ class ProcessorTest {
 
         //Assert
         assertEquals(1 , result.size());
-        assertEquals("Hello World"+filterProperties.name(), result.get(0));
+        assertEquals("Hello World"+filterProperties.name(), result.getFirst());
     }
 
     @Test
@@ -74,7 +74,7 @@ class ProcessorTest {
 
         //Assert
         assertEquals(2 , result.size());
-        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.getFirst());
     }
 
 }

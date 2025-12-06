@@ -155,8 +155,8 @@ class PersistentTimerIT {
         //Assert
         assertFalse(result.isEmpty());
         assertEquals(2, result.size());
-        assertTrue( startTime.compareTo(result.get(0).begin()) <= 0);
-        assertTrue( endTime.compareTo(result.get(0).begin()) > 0);
+        assertTrue( startTime.compareTo(result.getFirst().begin()) <= 0);
+        assertTrue( endTime.compareTo(result.getFirst().begin()) > 0);
     }
 
 

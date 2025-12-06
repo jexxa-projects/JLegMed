@@ -25,7 +25,7 @@ class GenericProcessorsTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals(inputData, result.get(0));
+        assertEquals(inputData, result.getFirst());
         objectUnderTest.reachDeInit();
     }
 
@@ -45,7 +45,7 @@ class GenericProcessorsTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals(expectedResult, result.get(0));
+        assertEquals(expectedResult, result.getFirst());
         objectUnderTest.reachDeInit();
     }
 
@@ -64,7 +64,7 @@ class GenericProcessorsTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals(inputData, result.get(0));
+        assertEquals(inputData, result.getFirst());
         objectUnderTest.reachDeInit();
     }
 

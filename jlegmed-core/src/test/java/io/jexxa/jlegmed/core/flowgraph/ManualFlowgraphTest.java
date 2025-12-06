@@ -37,7 +37,7 @@ class ManualFlowgraphTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.getFirst());
     }
 
     @Test
@@ -64,6 +64,6 @@ class ManualFlowgraphTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.getFirst());
     }
 }

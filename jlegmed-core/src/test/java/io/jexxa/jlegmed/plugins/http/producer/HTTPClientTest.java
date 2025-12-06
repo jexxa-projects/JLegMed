@@ -37,7 +37,7 @@ class HTTPClientTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals(expectedResult, result.get(0));
+        assertEquals(expectedResult, result.getFirst());
 
         objectUnderTest.reachDeInit();
     }
@@ -61,7 +61,7 @@ class HTTPClientTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals(expectedResult, result.get(0));
+        assertEquals(expectedResult, result.getFirst());
 
         objectUnderTest.reachDeInit();
     }

@@ -26,7 +26,7 @@ class FunctionalProducerTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals("Hello World", result.get(0));
+        assertEquals("Hello World", result.getFirst());
     }
 
     @Test
@@ -46,7 +46,7 @@ class FunctionalProducerTest {
 
         //Assert
         assertEquals(1, result.size());
-        assertEquals("Hello World"+ filterProperties.name() , result.get(0));
+        assertEquals("Hello World"+ filterProperties.name() , result.getFirst());
     }
 
     @Test
@@ -69,7 +69,7 @@ class FunctionalProducerTest {
         //Assert
         assertEquals(1, result.size());
         assertEquals("Hello World" + filterProperties.name() + String.class.getSimpleName(),
-                result.get(0));
+                result.getFirst());
     }
 
     @Test

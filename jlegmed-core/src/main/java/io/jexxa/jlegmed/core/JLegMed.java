@@ -41,6 +41,7 @@ import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_USER_TIMEZONE;
 import static io.jexxa.jlegmed.core.JLegMedProperties.getAsEnvironmentVariable;
 import static java.lang.System.getenv;
 
+@SuppressWarnings("unused")
 public final class JLegMed
 {
     private boolean isRunning = false;
@@ -119,10 +120,10 @@ public final class JLegMed
 
         showPreStartupBanner();
 
-        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> runBootstrapFlowgraph(flowgraph));
+        bootstrapFlowGraphs.forEach((_, flowgraph) -> runBootstrapFlowgraph(flowgraph));
 
-        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.init());
-        flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.start());
+        flowGraphs.forEach((_, flowgraph) -> flowgraph.init());
+        flowGraphs.forEach((_, flowgraph) -> flowgraph.start());
 
         showPostStartupBanner();
         isRunning = true;
@@ -143,6 +144,9 @@ public final class JLegMed
     }
 
 
+    /**
+     * @return JLegMed instance for fluent API
+     */
     public JLegMed enableStrictFailFast() {
         this.strictFailFast = true;
         return this;
@@ -161,8 +165,8 @@ public final class JLegMed
     {
         var result = new ArrayList<FilterProperties>();
 
-        bootstrapFlowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
-        flowGraphs.forEach((flowgraphID, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+        bootstrapFlowGraphs.forEach((_, flowgraph) -> result.addAll(flowgraph.filterProperties()));
+        flowGraphs.forEach((_, flowgraph) -> result.addAll(flowgraph.filterProperties()));
 
         return new HashSet<>(result);
     }
@@ -436,7 +440,7 @@ public final class JLegMed
                 } else {
                     getLogger(PropertiesLoader.class).warn("Default properties file {} not available", JLEGMED_APPLICATION_PROPERTIES);
                 }
-            } catch ( IOException e ) {
+            } catch ( IOException _ ) {
                 getLogger(PropertiesLoader.class).warn("Default properties file {} not available", JLEGMED_APPLICATION_PROPERTIES);
             }
         }
@@ -461,7 +465,7 @@ public final class JLegMed
                 } else {
                     throw new FileNotFoundException(resource);
                 }
-            } catch (IOException e) {
+            } catch (IOException _) {
                 //2. tries to import properties from outside the jar
                 try (FileInputStream file = new FileInputStream(resource)) {
                     properties.load(file);

@@ -75,15 +75,15 @@
     <maven.failsafe.plugin>3.5.4</maven.failsafe.plugin>
     <maven.install.plugin>3.1.4</maven.install.plugin>
     <maven.jar.plugin>3.5.0</maven.jar.plugin>
-    <maven.resources.plugin>3.3.1</maven.resources.plugin>
+    <maven.resources.plugin>3.4.0</maven.resources.plugin>
     <maven.site.plugin>3.21.0</maven.site.plugin>
     <maven.surefire.plugin>3.5.4</maven.surefire.plugin>
-    <maven.release.plugin>3.2.0</maven.release.plugin>
+    <maven.release.plugin>3.3.0</maven.release.plugin>
     <maven.jacoco.plugin>0.8.14</maven.jacoco.plugin>
     <maven.reports.plugin>3.9.0</maven.reports.plugin>
     <maven.enforcer.plugin>3.6.2</maven.enforcer.plugin>
     <maven.javadoc.plugin>3.12.0</maven.javadoc.plugin>
-    <maven.versions.plugin>2.19.1</maven.versions.plugin>
+    <maven.versions.plugin>2.20.1</maven.versions.plugin>
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.6.1</maven.shade.plugin>
     <maven.templating.plugin>3.0.0</maven.templating.plugin>
@@ -437,7 +437,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.4.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>

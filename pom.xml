@@ -88,6 +88,7 @@
     <maven.shade.plugin>3.6.1</maven.shade.plugin>
     <maven.templating.plugin>3.0.0</maven.templating.plugin>
     <maven.central.publishing.plugin>0.9.0</maven.central.publishing.plugin>
+    <maven.sonar.plugin>5.5.0.6356</maven.sonar.plugin>
 
     <!-- sonar configuration  -->
     <sonar.organization>jexxa-projects</sonar.organization>
@@ -101,8 +102,7 @@
     <argLine>-Xmx2048m -Xms1024m</argLine>
 
   </properties>
-
-  <dependencies>
+    <dependencies>
     <!-- dependencies for library -->
     <dependency>
       <groupId>io.jexxa.common</groupId>
@@ -293,6 +293,11 @@
             <rulesUri>file:///${session.executionRootDirectory}/mavenVersionRules.xml</rulesUri>
           </configuration>
         </plugin>
+          <plugin>
+              <groupId>org.sonarsource.scanner.maven</groupId>
+              <artifactId>sonar-maven-plugin</artifactId>
+              <version>${maven.sonar.plugin}</version>
+          </plugin>
       </plugins>
     </pluginManagement>
 

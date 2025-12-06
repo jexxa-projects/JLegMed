@@ -22,7 +22,7 @@ import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {
-
+    private static final String COULD_NOT_READ_MESSAGE = "Could not read message";
     private int port = -1;
     private final String name;
 
@@ -76,7 +76,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
                 port = Integer.parseInt(properties().getProperty(TCP_PORT));
             } catch (NumberFormatException e)
             {
-                throw new IllegalArgumentException("Port must be an integer");
+                throw new IllegalArgumentException("Port must be an integer", e);
             }
         }
     }
@@ -122,7 +122,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
                 try {
                     return consumer.apply(context);
                 } catch (IOException e) {
-                    getLogger(TCPReceiver.class).error("Could not read message.", e);
+                    getLogger(TCPReceiver.class).error(COULD_NOT_READ_MESSAGE, e);
                     return null;
                 }
             }
@@ -139,7 +139,7 @@ public abstract class TCPReceiver<T> extends ActiveProducer<T> {
                 try {
                     return consumer.apply(context);
                 } catch (IOException e) {
-                    getLogger(TCPReceiver.class).error("Could not read message.", e);
+                    getLogger(TCPReceiver.class).error(COULD_NOT_READ_MESSAGE, e);
                     return null;
                 }
             }

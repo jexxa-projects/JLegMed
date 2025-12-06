@@ -31,7 +31,7 @@ public class JSONReader<T> extends FunctionalProducer<T> {
             if (producerMode == ProducerMode.UNTIL_STOPPED) {
                 inputStream.reset();
             }
-        } catch (IOException e)
+        } catch (IOException _)
         {
             return null;
         }

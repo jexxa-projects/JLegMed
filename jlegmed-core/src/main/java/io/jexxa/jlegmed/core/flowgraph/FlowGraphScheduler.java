@@ -38,7 +38,7 @@ public class FlowGraphScheduler  {
             while (currentIterations < maxIterations) {
                 this.wait();
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
         }
     }

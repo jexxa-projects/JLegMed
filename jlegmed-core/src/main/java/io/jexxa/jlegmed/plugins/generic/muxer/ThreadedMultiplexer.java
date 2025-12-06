@@ -68,7 +68,7 @@ public abstract class ThreadedMultiplexer<U, V, R> extends ThreadedProducer<R> {
                 while ((firstInputQueue.isEmpty() || secondInputQueue.isEmpty()) && isRunning) {
                     try {
                         this.wait();
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException _) {
                         Thread.currentThread().interrupt();
                         SLF4jLogger.getLogger(ThreadedMultiplexer.class).error("Inner thread was interrupted");
                     }

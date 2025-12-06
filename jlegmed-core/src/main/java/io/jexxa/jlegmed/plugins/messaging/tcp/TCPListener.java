@@ -47,7 +47,7 @@ class TCPListener {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            getLogger(TCPListener.class).error("Could not proper close listening socket on port {}", port);
+            getLogger(TCPListener.class).error("Could not proper close listening socket on port {}. Reason: {}", port, e.getCause());
         }
         serverSocket = null;
 
@@ -98,7 +98,7 @@ class TCPListener {
         try {
             receiver.accept(clientSocket);
             getLogger(TCPListener.class).info("Connection closed by server for client {} on port {} after successfully processing its request.", clientSocket.getRemoteSocketAddress(), port);
-        } catch (IOException e) {
+        } catch (IOException _) {
             getLogger(TCPListener.class).info("Connection closed by client {} on port {}.", clientSocket.getRemoteSocketAddress(), port);
         }
     }

@@ -80,7 +80,7 @@ public class TCPConnection {
                 bufferedReader.close();
             }
         } catch (IOException e) {
-            SLF4jLogger.getLogger(TCPConnection.class).error("Could not proper close listening socket on port {}",port );
+            SLF4jLogger.getLogger(TCPConnection.class).error("Could not proper close listening socket on port {}. Reason: {}",port, e.getCause());
         }
         clientSocket = null;
         bufferedReader = null;

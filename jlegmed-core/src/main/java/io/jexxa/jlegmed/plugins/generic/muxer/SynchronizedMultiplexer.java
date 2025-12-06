@@ -74,7 +74,7 @@ public abstract class SynchronizedMultiplexer<U, V, R> extends ThreadedProducer<
                 while ((this.firstData == null || this.secondData == null) && isRunning) {
                     try {
                         this.wait();
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException _) {
                         Thread.currentThread().interrupt();
                         SLF4jLogger.getLogger(SynchronizedMultiplexer.class).error("Inner thread was interrupted");
                     }

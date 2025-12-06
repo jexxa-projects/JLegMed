@@ -41,7 +41,7 @@ public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {
                 while (inputQueue.isEmpty() && isRunning) {
                     try {
                         this.wait();
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException _) {
                         Thread.currentThread().interrupt();
                         SLF4jLogger.getLogger(OnErrorProducer.class).error("Inner thread was interrupted");
                     }

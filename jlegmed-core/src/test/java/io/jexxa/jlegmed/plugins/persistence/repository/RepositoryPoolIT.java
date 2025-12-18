@@ -26,7 +26,7 @@ class RepositoryPoolIT {
     }
 
     @Test
-    void failFastInvalidProperties() {
+    void failFastInvalidJDBCProperties() {
         //Arrange
         jLegMed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
@@ -34,6 +34,20 @@ class RepositoryPoolIT {
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
                 .and().consumeWith( TestRepository::add ).useProperties("invalid-pw-jdbc-connection");
+
+        //Act/Assert
+        assertThrows(ConfigurationFailedException.class, jLegMed::start);
+    }
+
+    @Test
+    void failFastInvalidS3Properties() {
+        //Arrange
+        jLegMed.newFlowGraph("HelloWorld")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> "Hello World")
+
+                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .and().consumeWith( TestRepository::add ).useProperties("invalid-pw-s3-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);

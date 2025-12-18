@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.common.facade.s3.S3Client;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.validateJDBCConnection;
 import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
+import static io.jexxa.common.facade.s3.S3Properties.s3Endpoint;
 
 @SuppressWarnings("java:S6548")
 public class RepositoryPool {
@@ -41,8 +43,22 @@ public class RepositoryPool {
     {
         JexxaContext.registerCleanupHandler(repositories::clear);
         JexxaContext.registerValidationHandler(this::initJDBCSessions);
+        JexxaContext.registerValidationHandler(this::initS3Sessions);
     }
 
+
+    private void initS3Sessions(Properties properties)
+    {
+        try {
+            if (properties.containsKey(s3Endpoint()))
+            {
+                new S3Client(properties);
+            }
+        } catch ( RuntimeException e) {
+        throw new ConfigurationFailedException("Could not init S3 connection for filter properties "
+                + ". Reason: " + e.getMessage(), e );
+        }
+    }
 
     private void initJDBCSessions(Properties properties)
     {
@@ -52,9 +68,9 @@ public class RepositoryPool {
                 validateJDBCConnection(properties);
             }
         } catch ( RuntimeException e) {
-        throw new ConfigurationFailedException("Could not init JDBC connection for filter properties "
-                + ". Reason: " + e.getMessage(), e );
-    }
+            throw new ConfigurationFailedException("Could not init JDBC connection for filter properties "
+                    + ". Reason: " + e.getMessage(), e );
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.common.drivenadapter.persistence.repository.jdbc.JDBCKeyValueRepository;
+import io.jexxa.common.drivenadapter.persistence.repository.s3.S3KeyValueRepository;
 import io.jexxa.common.facade.s3.S3Client;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
@@ -11,6 +13,7 @@ import java.util.function.Function;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.validateJDBCConnection;
 import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
+import static io.jexxa.common.facade.jdbc.JDBCProperties.repositoryStrategy;
 import static io.jexxa.common.facade.s3.S3Properties.s3Endpoint;
 
 @SuppressWarnings("java:S6548")
@@ -34,7 +37,7 @@ public class RepositoryPool {
     {
         repositories.computeIfAbsent(
                 filterContext,
-                repository -> new Repository<>(aggregateClazz, keyFunction, filterContext)
+                _ -> new Repository<>(aggregateClazz, keyFunction, filterContext)
         );
         return (Repository<T, K>) repositories.get(filterContext);
     }
@@ -49,6 +52,14 @@ public class RepositoryPool {
 
     private void initS3Sessions(Properties properties)
     {
+        if (properties.containsKey(repositoryStrategy()))
+        {
+            if (!properties.getProperty(repositoryStrategy()).equals(S3KeyValueRepository.class.getName()))
+            {
+                return;
+            }
+        }
+
         try {
             if (properties.containsKey(s3Endpoint()))
             {
@@ -62,6 +73,14 @@ public class RepositoryPool {
 
     private void initJDBCSessions(Properties properties)
     {
+        if (properties.containsKey(repositoryStrategy()))
+        {
+            if (!properties.getProperty(repositoryStrategy()).equals(JDBCKeyValueRepository.class.getName()))
+            {
+                return;
+            }
+        }
+
         try {
             if (properties.containsKey(jdbcUrl()))
             {

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RepositoryPoolIT {
@@ -51,5 +52,19 @@ class RepositoryPoolIT {
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);
+    }
+
+    @Test
+    void failFastHandleExplicitRepository() {
+        //Arrange
+        jLegMed.newFlowGraph("HelloWorld")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> "Hello World")
+
+                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .and().consumeWith( TestRepository::add ).useProperties("explicit.imdb-repository");
+
+        //Act/Assert
+        assertDoesNotThrow(jLegMed::start);
     }
 }

@@ -19,6 +19,8 @@ class RepositoryPoolIT {
         jLegMed = new JLegMed(RepositoryPoolIT.class)
                 .useTechnology(RepositoryPool.class)
                 .disableBanner();
+        System.out.println("Properties : " + jLegMed.getProperties());
+
     }
 
     @AfterEach

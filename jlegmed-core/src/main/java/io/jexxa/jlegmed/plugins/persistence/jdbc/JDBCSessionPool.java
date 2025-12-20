@@ -2,12 +2,14 @@ package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.common.drivenadapter.persistence.repository.jdbc.JDBCKeyValueRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Properties;
 
 import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
 import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
+import static io.jexxa.common.facade.jdbc.JDBCProperties.repositoryStrategy;
 
 public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();
@@ -18,6 +20,11 @@ public class JDBCSessionPool {
 
     public void initJDBCSessions(Properties properties)
     {
+        if (properties.containsKey(repositoryStrategy()))
+        {
+            System.out.println("Ignore settings since they belong to a Repository");
+            return;
+        }
         try {
             if (properties.containsKey(jdbcUrl())) {
                 getJDBCConnection(properties, INSTANCE);

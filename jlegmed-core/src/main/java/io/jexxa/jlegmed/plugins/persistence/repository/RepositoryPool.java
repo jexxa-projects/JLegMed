@@ -77,7 +77,6 @@ public class RepositoryPool {
         {
             if (!properties.getProperty(repositoryStrategy()).equals(JDBCKeyValueRepository.class.getName()))
             {
-                System.out.println("IGNORE properties " + properties.toString());
                 return;
             }
         }
@@ -85,7 +84,6 @@ public class RepositoryPool {
         try {
             if (properties.containsKey(jdbcUrl()))
             {
-                System.out.println("VALIDATE properties " + properties.toString());
                 validateJDBCConnection(properties);
             }
         } catch ( RuntimeException e) {

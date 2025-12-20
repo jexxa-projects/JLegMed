@@ -2,7 +2,6 @@ package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.common.drivenadapter.persistence.repository.jdbc.JDBCKeyValueRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Properties;
@@ -22,7 +21,6 @@ public class JDBCSessionPool {
     {
         if (properties.containsKey(repositoryStrategy()))
         {
-            System.out.println("Ignore settings since they belong to a Repository");
             return;
         }
         try {

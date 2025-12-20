@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[5.1.1] - 2025-12-dd
+### Fixed
+- Fail fast for repositories first check if an explicit strategy is defined. If so, defined properties are only validated if they match to the specified strategy.  
+
 ## \[5.1.0] - 2025-12-17
 ### Added
 - TimeUtils filter to add a look ahead or subtract a look back window  

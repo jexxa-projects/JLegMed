@@ -111,7 +111,6 @@ public final class JLegMed
     {
         if (strictFailFast()) {
             try {
-                filterProperties().stream().map(FilterProperties::properties).forEach(System.out::println);
                 filterProperties().stream().map(FilterProperties::properties).forEach(JexxaContext::validate);
             } catch (RuntimeException e)
             {

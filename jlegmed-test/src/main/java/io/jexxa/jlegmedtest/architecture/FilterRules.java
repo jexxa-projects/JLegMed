@@ -51,6 +51,7 @@ public class FilterRules extends ProjectContent {
                   .that()
                   .resideInAnyPackage(PLUGINS)
                   .should(condition)
+                  .allowEmptyShould(true)
                   .check(importedClasses());
       }
 

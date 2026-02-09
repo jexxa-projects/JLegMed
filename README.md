@@ -2,18 +2,45 @@
 
 [![Maven Build](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/mavenBuild.yml)
 [![CodeQL](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jexxa-projects/JLegMed/actions/workflows/codeql-analysis.yml)
-# 🧩JLegMed—Connect the Past with the Future
-**JLegMed** is a lightweight Java framework that combines the principles of domain-driven design (DDD) with seamless integration between traditional enterprise systems and modern cloud-native platforms.
-It connects JMS-, JDBC-, and TCP-based business applications with Kafka and S3 to support both transaction- and event-driven workflows.
+# 🧩 JLegMed — Connect the Past with the Future
 
-By aligning clear domain boundaries with flexible technical adapters, JLegMed helps you modernize existing systems step by step to establish coherent DDD-based business logic and operate it in an on-premise, cloud-native, or hybrid infrastructure.
+**JLegMed** is a lightweight Java library for building **explicit technical data flows** between systems. 
+It is designed to isolate **integration, translation, and reconstruction logic** from business applications and domain models.
+
+JLegMed focuses on *how data flows and is transformed*, not on *what the data means to the business*.
+
+
+## 🧭 When to Use JLegMed
+
+If you are dealing with integration logic that feels harder than it should be,
+JLegMed is worth experimenting with.
+
+Typical signals include:
+- translation logic keeps growing but does not belong to the domain
+- CDC or polling delivers facts, but their meaning remains unclear
+- integration code becomes procedural, stateful, and hard to test
+- declarative mappings stop being sufficient
+
+If any of these resonate, starting with a small experiment is usually
+low-effort and highly informative.
+
 
 ## 🚀 Features
 
-- **Pipes & Filters Architecture** – A natural fit for data-flow-based processing
-- **Functional Programming Style** – Focus on the *what*, not the *how*
-- **Minimal Dependencies** – Built on Java SE APIs
-- **Easy Integration** – Compatible with JMS, JDBC, TCP, Kafka, S3, and more
+- **Pipes & Filters Architecture**  
+  A natural fit for explicit, step-by-step data-flow processing
+
+- **Functional Programming Style**  
+  Encourages clear transformation logic and testable processing steps
+
+- **Explicit State Handling**  
+  Makes buffering, deduplication, and reconstruction logic visible and controllable
+
+- **Minimal Dependencies**  
+  Built on Java SE APIs, easy to embed and reason about
+
+- **Easy Integration**  
+  Works well with JMS, JDBC, TCP, Kafka, S3, and similar technologies
 
 ## 📋 Requirements
 

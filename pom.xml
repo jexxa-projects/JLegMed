@@ -55,7 +55,7 @@
     <activemq.artemis.client.version>2.44.0</activemq.artemis.client.version>
     <postgres.version>42.7.10</postgres.version>
     <slf4j.simple.version>2.0.17</slf4j.simple.version>
-    <javalin.version>6.7.0</javalin.version>
+    <javalin.version>7.0.1</javalin.version>
     <archunit.version>1.4.1</archunit.version>
 
 

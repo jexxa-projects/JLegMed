@@ -46,14 +46,14 @@
 
 
     <!-- version of test dependencies -->
-    <junit.platform.launcher.version>6.0.2</junit.platform.launcher.version>
-    <junit.jupiter.engine.version>6.0.2</junit.jupiter.engine.version>
-    <junit.jupiter.params.version>6.0.2</junit.jupiter.params.version>
+    <junit.platform.launcher.version>6.0.3</junit.platform.launcher.version>
+    <junit.jupiter.engine.version>6.0.3</junit.jupiter.engine.version>
+    <junit.jupiter.params.version>6.0.3</junit.jupiter.params.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <jackson.databind.version>2.21.0</jackson.databind.version>
+    <jackson.databind.version>2.21.1</jackson.databind.version>
     <apache.commons.lang3>3.20.0</apache.commons.lang3>
     <activemq.artemis.client.version>2.44.0</activemq.artemis.client.version>
-    <postgres.version>42.7.9</postgres.version>
+    <postgres.version>42.7.10</postgres.version>
     <slf4j.simple.version>2.0.17</slf4j.simple.version>
     <javalin.version>7.0.1</javalin.version>
     <archunit.version>1.4.1</archunit.version>
@@ -72,12 +72,12 @@
     <maven.clean.plugin>3.5.0</maven.clean.plugin>
     <maven.compiler.plugin>3.15.0</maven.compiler.plugin>
     <maven.deploy.plugin>3.1.1</maven.deploy.plugin>
-    <maven.failsafe.plugin>3.5.4</maven.failsafe.plugin>
+    <maven.failsafe.plugin>3.5.5</maven.failsafe.plugin>
     <maven.install.plugin>3.1.4</maven.install.plugin>
     <maven.jar.plugin>3.5.0</maven.jar.plugin>
     <maven.resources.plugin>3.4.0</maven.resources.plugin>
     <maven.site.plugin>3.21.0</maven.site.plugin>
-    <maven.surefire.plugin>3.5.4</maven.surefire.plugin>
+    <maven.surefire.plugin>3.5.5</maven.surefire.plugin>
     <maven.release.plugin>3.3.1</maven.release.plugin>
     <maven.jacoco.plugin>0.8.14</maven.jacoco.plugin>
     <maven.reports.plugin>3.9.0</maven.reports.plugin>

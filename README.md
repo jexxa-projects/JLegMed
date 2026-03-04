@@ -129,5 +129,5 @@ Please make sure:
 ## 📜 License
 * Source code: [Apache 2.0 License](LICENSE) - see [TLDR legal](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0))
 * Documentation: [Creative Commons](https://creativecommons.org/licenses/by/4.0/)
-* ©️ 2023–2025 Michael Repplinger
+* ©️ 2023–2026 Michael Repplinger
 

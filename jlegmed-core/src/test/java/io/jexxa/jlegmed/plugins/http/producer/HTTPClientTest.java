@@ -93,11 +93,11 @@ class HTTPClientTest {
     @BeforeAll
     static void startWebservice() {
         var versionInfo = new VersionInfo("a","b", "s", "d" );
-        javalin = Javalin.create(javalinConfig -> javalinConfig.showJavalinBanner = false)
-                .get("/", ctx -> ctx.json(versionInfo))
+        javalin = Javalin.create(config ->
+                        config.routes.get("/", ctx -> ctx.json(versionInfo))
+                )
                 .start(7070);
     }
-
 
     @AfterAll
     static void stopWebService()

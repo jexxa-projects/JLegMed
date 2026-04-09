@@ -35,7 +35,7 @@ public class Repository<T, K> {
     }
 
     /**
-     * Removed aggregate identified by given key.
+     * Removed aggregate identified by the given key.
      * @param key to the aggregate to be removed
      * @pre Aggregate must be added by using {@link #add(Object)}}
      */

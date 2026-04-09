@@ -7,7 +7,7 @@
 **JLegMed** is a lightweight Java library for building **explicit technical data flows** between systems. 
 It is designed to isolate **integration, translation, and reconstruction logic** from business applications and domain models.
 
-JLegMed focuses on *how data flows and is transformed*, not on *what the data means to the business*.
+JLegMed focuses on *how data flows and is transformed*, not on *what the data means to the business*. When it comes to implementing actual business logic and building a robust domain model, we recommend checking out **[Jexxa](https://www.jexxa.io)**.
 
 
 ## 🧭 When to Use JLegMed
@@ -109,6 +109,7 @@ compile "org.slf4j:slf4j-simple:2.0.17"
 ### Support for sending/receiving over:
 * [JMS (e.g., ActiveMQ)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
 * [TCP Sockets](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
+* Kafka ([sender](https://github.com/jexxa-projects/ESPAdapters/blob/main/esp-adapters-core/src/test/java/io/jexxa/esp/drivenadapter/kafka/KafkaSenderIT.java), [receiver](https://github.com/jexxa-projects/ESPAdapters/blob/main/esp-adapters-core/src/test/java/io/jexxa/esp/drivingadapter/KafkaAdapterIT.java))
 * [JDBC (e.g., PostgreSQL)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
 
 ## 🌐 Ecosystem

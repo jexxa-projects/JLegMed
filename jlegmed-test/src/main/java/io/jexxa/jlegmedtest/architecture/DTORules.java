@@ -3,16 +3,23 @@ package io.jexxa.jlegmedtest.architecture;
 import com.tngtech.archunit.core.importer.ImportOption;
 import io.jexxa.jlegmed.annotation.ConsumedMessage;
 import io.jexxa.jlegmed.annotation.DomainEvent;
+import io.jexxa.jlegmed.annotation.EventPayload;
+import io.jexxa.jlegmed.annotation.FlowContract;
 import io.jexxa.jlegmed.annotation.FlowData;
 import io.jexxa.jlegmed.annotation.FlowError;
+import io.jexxa.jlegmed.annotation.MessagePayload;
+import io.jexxa.jlegmed.annotation.ProducedMessage;
 import io.jexxa.jlegmed.annotation.PublishedMessage;
 import io.jexxa.jlegmed.annotation.TelemetryData;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static io.jexxa.jlegmedtest.architecture.PackageName.CONSUMED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.DOMAIN_EVENT;
+import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_CONTRACT;
+import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_CONTRACT_ERROR;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_DATA;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_ERROR;
+import static io.jexxa.jlegmedtest.architecture.PackageName.PRODUCED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.PUBLISHED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.TELEMETRY_DATA;
 
@@ -35,6 +42,7 @@ public class DTORules extends ProjectContent {
         validateTelemetryData();
         validatePublishedMessage();
         validateConsumedMessage();
+        validateProducedMessage();
     }
 
     protected void validateDomainEvent()
@@ -45,6 +53,7 @@ public class DTORules extends ProjectContent {
                 .and().areNotNestedClasses()
                 .and().arePublic()
                 .should().beAnnotatedWith(DomainEvent.class)
+                .orShould().beAnnotatedWith(EventPayload.class)
                 .allowEmptyShould(true);
 
         annotationRule.check(importedClasses());
@@ -76,10 +85,36 @@ public class DTORules extends ProjectContent {
         annotationRule.check(importedClasses());
     }
 
+    protected void validateFlowContract()
+    {
+        var annotationRule = classes()
+                .that().resideInAnyPackage(FLOW_CONTRACT)
+                .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
+                .and().arePublic()
+                .should().beAnnotatedWith(FlowContract.class)
+                .allowEmptyShould(true);
+
+        annotationRule.check(importedClasses());
+    }
+
     protected void validateFlowError()
     {
         var annotationRule = classes()
                 .that().resideInAnyPackage(FLOW_ERROR)
+                .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
+                .and().arePublic()
+                .should().beAnnotatedWith(FlowError.class)
+                .allowEmptyShould(true);
+
+        annotationRule.check(importedClasses());
+    }
+
+    protected void validateFlowContractError()
+    {
+        var annotationRule = classes()
+                .that().resideInAnyPackage(FLOW_CONTRACT_ERROR)
                 .and().areNotAnonymousClasses()
                 .and().areNotNestedClasses()
                 .and().arePublic()
@@ -101,6 +136,19 @@ public class DTORules extends ProjectContent {
 
         annotationRule.check(importedClasses());
     }
+    protected void validateProducedMessage()
+    {
+        var annotationRule = classes()
+                .that().resideInAnyPackage(PRODUCED_MESSAGE)
+                .and().areNotAnonymousClasses()
+                .and().areNotNestedClasses()
+                .and().arePublic()
+                .should().beAnnotatedWith(ProducedMessage.class)
+                .orShould().beAnnotatedWith(MessagePayload.class)
+                .allowEmptyShould(true);
+
+        annotationRule.check(importedClasses());
+    }
     protected void validateConsumedMessage()
     {
         var annotationRule = classes()
@@ -109,6 +157,7 @@ public class DTORules extends ProjectContent {
                 .and().areNotNestedClasses()
                 .and().arePublic()
                 .should().beAnnotatedWith(ConsumedMessage.class)
+                .orShould().beAnnotatedWith(MessagePayload.class)
                 .allowEmptyShould(true);
 
         annotationRule.check(importedClasses());

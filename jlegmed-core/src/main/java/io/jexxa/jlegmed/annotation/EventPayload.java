@@ -8,13 +8,12 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Represents data transported in between Filters that is not published.
+ * Represents payload information inside a domain event in the context of DDD.
  */
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Deprecated(forRemoval = true)
-public @interface FlowData
+public @interface EventPayload
 {
 
 }

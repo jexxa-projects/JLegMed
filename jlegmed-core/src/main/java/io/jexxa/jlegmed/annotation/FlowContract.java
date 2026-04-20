@@ -9,12 +9,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Represents data transported in between Filters that is not published.
+ * Since filters are replaceable, this represents a contract between filters
  */
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Deprecated(forRemoval = true)
-public @interface FlowData
+public @interface FlowContract
 {
 
 }

@@ -8,13 +8,13 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Represents data transported in between Filters that is not published.
+ * Represents a value that must be published e.g., to a legacy system, but no more
+ * context is available to use @DomainEvent or @TelemetryData
  */
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
-@Deprecated(forRemoval = true)
-public @interface FlowData
+public @interface ProducedMessage
 {
 
 }

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## \[5.2.x] - 2026-mm-dd
+## \[5.2.0] - 2026-04-24
 
 ### Added 
 - Added annotations 
@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Annotations declared as deprecated
   - `@FlowData` (replaced by `@FlowContract`)
   - `@PublishedMessage` (replaced by `@ProducedMessage`)
+
+### Fixed
+- Updated dependencies 
+
 
 ## \[5.1.5] - 2026-04-03
 ### Fixed

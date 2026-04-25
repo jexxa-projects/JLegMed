@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
+@SuppressWarnings("unused")
 public abstract class ManagedStreamProcessor<T, R>  extends Processor<T,R> {
-    protected ManagedStreamProcessor(Class<?> classFromLambda) {
+    public ManagedStreamProcessor(Class<?> classFromLambda) {
         super(true, classFromLambda.getSimpleName(),  classFromLambda);
     }
 

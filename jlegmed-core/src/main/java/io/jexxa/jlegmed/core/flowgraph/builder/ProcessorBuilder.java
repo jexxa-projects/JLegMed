@@ -11,7 +11,9 @@ import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
+import static io.jexxa.jlegmed.core.filter.processor.Processor.managedStreamProcessor;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 
 /**
  * This class represents a connection between two filters as a first-class object to the application.
@@ -46,8 +48,25 @@ public class ProcessorBuilder<T> {
     }
 
 
+    @Deprecated
     public <R> Binding<T, R> processWith(PipedProcessor<T, R> successorFunction) {
         var successor = processor(successorFunction);
+        predecessorPipe.connectTo(successor.inputPipe());
+
+        flowGraph.addProcessor(successor);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
+    }
+
+    public <R> Binding<T, R> streamWith(PipedProcessor<T, R> successorFunction) {
+        var successor = managedStreamProcessor(successorFunction);
+        predecessorPipe.connectTo(successor.inputPipe());
+
+        flowGraph.addProcessor(successor);
+        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
+    }
+
+    public <R> Binding<T, R> streamWith(SerializableBiConsumer<T, OutputPipe<R>> successorFunction) {
+        var successor = streamProcessor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);

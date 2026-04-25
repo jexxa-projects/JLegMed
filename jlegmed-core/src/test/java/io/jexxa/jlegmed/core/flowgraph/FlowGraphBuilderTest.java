@@ -1,7 +1,10 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
 import io.jexxa.adapterapi.ConfigurationFailedException;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
@@ -21,11 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FlowGraphBuilderTest {
     private static JLegMed jlegmed;
-
+    private static int streamDataCounter;
     @BeforeEach
     void initBeforeEach()
     {
         jlegmed = new JLegMed(FlowGraphBuilderTest.class).disableBanner();
+        streamDataCounter = 0;
     }
 
     @AfterEach
@@ -198,7 +202,7 @@ class FlowGraphBuilderTest {
                 .every(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith( (data, filterProperties) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
+                .and().processWith( (data, _) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
                 .and().consumeWith( messageCollector2::push );
 
         //Act / assert
@@ -208,4 +212,66 @@ class FlowGraphBuilderTest {
         assertTrue(messageCollector1.empty()); // The first flow graph must not start processing in case of a fail fast exception
         assertTrue(messageCollector2.empty());
     }
+
+    @Test
+    void testStreamData() {
+        //Arrange
+        var messageCollector = new Stack<String>();
+        var inputData = "Hello World";
+
+        jlegmed.newFlowGraph("ChangeData")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> inputData)
+
+                .and().streamWith( FlowGraphBuilderTest::streamData )
+                .and().consumeWith( messageCollector::push );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(inputData, messageCollector.toArray()[0]);
+    }
+
+    @Test
+    void testManagedStreamData() {
+        //Arrange
+        var messageCollector = new Stack<String>();
+        var inputData = "Hello World";
+
+        jlegmed.newFlowGraph("ChangeData")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> inputData)
+
+                .and().streamWith( FlowGraphBuilderTest::managedStreamData ).useProperties("flowgraphconfigurationtest")
+                .and().consumeWith( messageCollector::push );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(inputData, messageCollector.toArray()[0]);
+    }
+
+    private static void streamData(String inputData, OutputPipe<String> outputPipe) {
+        ++streamDataCounter;
+        if (streamDataCounter % 2 == 0) {
+            outputPipe.forward(inputData);
+        } else {
+            SLF4jLogger.getLogger(FlowGraphBuilderTest.class).info("streamData() drop data.");
+        }
+
+    }
+
+    private static void managedStreamData(String inputData, FilterContext filterContext, OutputPipe<String> outputPipe) {
+        ++streamDataCounter;
+
+        if (streamDataCounter % 2 == 0) {
+            outputPipe.forward(inputData);
+        } else {
+            SLF4jLogger.getLogger(FlowGraphBuilderTest.class).info("streamData() drop data.");
+        }
+
+    }
+
 }

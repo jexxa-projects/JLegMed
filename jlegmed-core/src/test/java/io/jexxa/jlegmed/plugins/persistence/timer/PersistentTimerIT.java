@@ -87,10 +87,10 @@ class PersistentTimerIT {
                 .useTechnology(RepositoryPool.class);
         var result = new Stack<TimeInterval>();
 
-        jLegMed.newFlowGraph("FertigungsplanErstellt")
+        jLegMed.newFlowGraph("PersistentTimer")
                 .every(10, TimeUnit.MILLISECONDS)
 
-                .receive(TimerID.class).from(() -> timerIdOf("FertigungsplanErstellt"))
+                .receive(TimerID.class).from(() -> timerIdOf("NameOfPersistentTimer"))
                 .and().processWith(PersistentTimer::nextInterval)
                 .and().processWith(result::push);
         //Act

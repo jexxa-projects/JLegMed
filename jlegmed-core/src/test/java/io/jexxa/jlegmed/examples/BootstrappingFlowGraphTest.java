@@ -52,5 +52,6 @@ class BootstrappingFlowGraphTest {
         //Assert
         await().atMost(3, SECONDS).until(() -> dataSink.size() == repeatCounter);
         assertTrue( dataSource.isEmpty());
+        jlegmed.stop();
     }
 }

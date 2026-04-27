@@ -22,22 +22,36 @@ public class RepositoryPool {
     
     private final HashMap<FilterContext, Repository<?,?>> repositories = new HashMap<>();
 
-    public static synchronized <T, K> Repository<T, K> getRepository(Class<T> aggregateClazz,
-                                                        Function<T,K> keyFunction, FilterContext filterContext)
+    public static synchronized <T, K> Repository<T, K> getRepository(
+            Class<T> aggregateClazz,
+            Function<T,K> keyFunction,
+            FilterContext filterContext)
     {
-        return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, filterContext);
+        return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, aggregateClazz.getSimpleName(), filterContext);
     }
 
+    public static synchronized <T, K> Repository<T, K> getRepository(
+            Class<T> aggregateClazz,
+            String storageName,
+            Function<T,K> keyFunction,
+            FilterContext filterContext)
+    {
+        return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, storageName, filterContext);
+    }
 
     @SuppressWarnings("unchecked") // OK, since the way we create the repository is type safe
     private <T, K> Repository<T, K> getInternalRepository(
             Class<T> aggregateClazz,
             Function<T,K> keyFunction,
+            String storageName,
             FilterContext filterContext)
     {
         repositories.computeIfAbsent(
                 filterContext,
-                _ -> new Repository<>(aggregateClazz, keyFunction, filterContext)
+                _ -> new Repository<>(
+                        aggregateClazz,
+                        keyFunction, storageName,
+                        filterContext)
         );
         return (Repository<T, K>) repositories.get(filterContext);
     }

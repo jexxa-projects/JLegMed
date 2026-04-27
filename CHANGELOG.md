@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * explicit method `streamWith` in `FlowGraphBuilder` to express 1:n relationship
 
+* `ExpiringRepository` to define a TTL on managed objects 
+
 ## \[5.2.0] - 2026-04-24
 
 ### Added 

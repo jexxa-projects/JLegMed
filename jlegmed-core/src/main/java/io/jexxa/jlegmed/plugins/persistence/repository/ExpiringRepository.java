@@ -7,12 +7,20 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.createRepository;
 
 public class ExpiringRepository<T,K> extends Repository<T, K>{
     private final IRepository<ExpiringRecord, String> ttlRepository;
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    private long purgeInterval = 60;
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
+
     private final Class<K> keyClazz;
     ExpiringRepository(
             Class<T> aggregateClazz,
@@ -26,6 +34,15 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         ttlRepository =  createRepository(ExpiringRecord.class,
                 ExpiringRecord::key, storageNameTTL, filterContext.properties());
         this.keyClazz = keyClazz;
+        this.scheduler.scheduleAtFixedRate(this::purgeData, purgeInterval, purgeInterval, timeUnit);
+    }
+
+    public void purgeInterval(long interval, TimeUnit timeUnit ) {
+        shutdown();
+        this.purgeInterval = interval;
+        this.timeUnit = timeUnit;
+        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.scheduler.scheduleAtFixedRate(this::purgeData, purgeInterval, purgeInterval, timeUnit);
     }
 
     synchronized void expireIn(K key, Duration ttl){
@@ -69,6 +86,19 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         }
 
         expiredData.forEach(this::remove);
+    }
+
+    private void shutdown() {
+        scheduler.shutdown(); // Verhindert neue Tasks
+        try {
+            // Warte bis zu 5 Sekunden, ob der aktuelle Purge-Vorgang noch fertig wird
+            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow(); // Erzwinge Abbruch, wenn es zu lange dauert
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt(); // Status wiederherstellen
+        }
     }
 
     record ExpiringRecord(String key, Instant expireAt) {}

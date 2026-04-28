@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static io.jexxa.jlegmed.plugins.persistence.repository.RepositoryConfig.REPOSITORY_CONFIG;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,6 +55,7 @@ class ExpiringRepositoryIT {
                 TextEntity.class, String.class,
                 TextEntity::key, filterContext);
         objectUnderTest.removeAll();
+        objectUnderTest.purgeInterval(100, MILLISECONDS);
         entities.forEach(objectUnderTest::add);
 
 
@@ -63,7 +65,7 @@ class ExpiringRepositoryIT {
         //Assert
         assertEquals(10, objectUnderTest.get().size());
 
-        await().atMost(3, SECONDS).until(() -> {objectUnderTest.purgeData(); return objectUnderTest.get().isEmpty();});
+        await().atMost(4, SECONDS).until(() -> objectUnderTest.get().isEmpty());
     }
 
 

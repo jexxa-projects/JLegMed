@@ -1,6 +1,8 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
 import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
+import io.jexxa.common.facade.json.JSONManager;
+import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.time.Duration;
@@ -11,9 +13,10 @@ import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.create
 
 public class ExpiringRepository<T,K> extends Repository<T, K>{
     private final IRepository<ExpiringRecord, String> ttlRepository;
-
+    private final Class<K> keyClazz;
     ExpiringRepository(
             Class<T> aggregateClazz,
+            Class<K> keyClazz,
             Function<T, K> keyFunction,
             String storageName,
             FilterContext filterContext)
@@ -22,7 +25,7 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         String storageNameTTL = storageName + "_ttl";
         ttlRepository =  createRepository(ExpiringRecord.class,
                 ExpiringRecord::key, storageNameTTL, filterContext.properties());
-
+        this.keyClazz = keyClazz;
     }
 
     synchronized void expireIn(K key, Duration ttl){
@@ -31,24 +34,41 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
 
     synchronized void expireAt(K key, Instant timestamp){
         if (get(key).isEmpty()){
-            throw new IllegalArgumentException("key is managed in this repository");
+            throw new IllegalArgumentException("key is not managed in this repository");
         }
 
-        var keyIdent = KeyIdentifier.of(key);
+        var keyIdent = JSONManager.getJSONConverter().toJson(key);
         if (ttlRepository.get(keyIdent).isPresent()) {
-            ttlRepository.update(new ExpiringRecord(KeyIdentifier.of(key), timestamp));
+            ttlRepository.update(new ExpiringRecord(keyIdent, timestamp));
         } else {
-            ttlRepository.add(new ExpiringRecord(KeyIdentifier.of(key), timestamp));
+            ttlRepository.add(new ExpiringRecord(keyIdent, timestamp));
         }
     }
 
     synchronized public K remove(K key) {
-        var keyIdent = KeyIdentifier.of(key);
+        var keyIdent = JSONManager.getJSONConverter().toJson(key);
         super.remove(key);
         if (ttlRepository.get(keyIdent).isPresent()) {
             ttlRepository.remove(keyIdent);
         }
         return key;
+    }
+
+    synchronized public void purgeData() {
+        var expiredData = ttlRepository
+                .get()
+                .stream()
+                .filter(element -> element.expireAt().isBefore(Instant.now()))
+                .map(data -> JSONManager.getJSONConverter().fromJson(data.key(), keyClazz))
+                .toList();
+
+        if (expiredData.isEmpty()) {
+            SLF4jLogger.getLogger(ExpiringRepository.class).debug("No data expired" );
+        } else {
+            SLF4jLogger.getLogger(ExpiringRepository.class).info("Remove {} entries from Repository", expiredData.size() );
+        }
+
+        expiredData.forEach(this::remove);
     }
 
     record ExpiringRecord(String key, Instant expireAt) {}

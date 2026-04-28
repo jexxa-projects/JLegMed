@@ -21,6 +21,7 @@ public class RepositoryPool {
     private static final RepositoryPool INSTANCE = new RepositoryPool();
     
     private final HashMap<FilterContext, Repository<?,?>> repositories = new HashMap<>();
+    private final HashMap<FilterContext, ExpiringRepository<?,?>> expiringRepositories = new HashMap<>();
 
     public static synchronized <T, K> Repository<T, K> getRepository(
             Class<T> aggregateClazz,
@@ -32,12 +33,40 @@ public class RepositoryPool {
 
     public static synchronized <T, K> Repository<T, K> getRepository(
             Class<T> aggregateClazz,
-            String storageName,
             Function<T,K> keyFunction,
+            String storageName,
             FilterContext filterContext)
     {
         return INSTANCE.getInternalRepository(aggregateClazz, keyFunction, storageName, filterContext);
     }
+
+    public static synchronized <T, K> ExpiringRepository<T, K> getExpiringRepository(
+            Class<T> aggregateClazz,
+            Class<K> keyClass,
+            Function<T,K> keyFunction,
+            String storageName,
+            FilterContext filterContext)
+    {
+        return INSTANCE.getInternalExpiringRepository(
+                aggregateClazz,
+                keyClass,
+                keyFunction,
+                storageName,
+                filterContext);
+    }
+    public static synchronized <T, K> ExpiringRepository<T, K> getExpiringRepository(
+            Class<T> aggregateClazz,
+            Class<K> keyClazz,
+            Function<T,K> keyFunction,
+            FilterContext filterContext)
+    {
+        return getExpiringRepository(
+                aggregateClazz, keyClazz,
+                keyFunction,
+                aggregateClazz.getSimpleName(),
+                filterContext);
+    }
+
 
     @SuppressWarnings("unchecked") // OK, since the way we create the repository is type safe
     private <T, K> Repository<T, K> getInternalRepository(
@@ -56,6 +85,25 @@ public class RepositoryPool {
         return (Repository<T, K>) repositories.get(filterContext);
     }
 
+    @SuppressWarnings("unchecked")
+    private <T, K> ExpiringRepository<T, K> getInternalExpiringRepository(
+            Class<T> aggregateClazz,
+            Class<K> keyClazz,
+            Function<T,K> keyFunction,
+            String storageName,
+            FilterContext filterContext)
+    {
+        expiringRepositories.computeIfAbsent(
+                filterContext,
+                _ -> new ExpiringRepository<>(
+                        aggregateClazz,
+                        keyClazz,
+                        keyFunction,
+                        storageName,
+                        filterContext)
+        );
+        return (ExpiringRepository<T, K>) expiringRepositories.get(filterContext);
+    }
     private RepositoryPool()
     {
         JexxaContext.registerCleanupHandler(repositories::clear);

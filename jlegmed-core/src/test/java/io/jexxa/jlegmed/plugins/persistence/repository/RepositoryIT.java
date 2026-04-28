@@ -38,7 +38,7 @@ class RepositoryIT {
         var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(TestRepository::dropTable);
+                .execute(StatefulFilter::dropTable);
 
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -46,7 +46,7 @@ class RepositoryIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().processWith( TestRepository::add )
+                .and().processWith( StatefulFilter::add )
                 .and().consumeWith( messageCollector::push );
         //Act
         jLegMed.start();
@@ -65,7 +65,7 @@ class RepositoryIT {
 
         jLegMed.newFlowGraph("Read Data")
                 .repeat(1)
-                .receive(TextEntity.class).from(TestRepository::read)
+                .receive(TextEntity.class).from(StatefulFilter::read)
                 .and().processWith( messageCollector::push );
 
         //Act
@@ -78,14 +78,14 @@ class RepositoryIT {
 
     private void bootstrapTestData(JLegMed jLegMed, int numberOfData) {
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(TestRepository::dropTable);
+                .execute(StatefulFilter::dropTable);
 
         jLegMed.bootstrapFlowGraph("Init test data")
                 .repeat(numberOfData)
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( TestRepository::add);
+                .and().consumeWith( StatefulFilter::add);
     }
 
 

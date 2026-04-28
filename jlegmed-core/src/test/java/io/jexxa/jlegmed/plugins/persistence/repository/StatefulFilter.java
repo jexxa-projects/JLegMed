@@ -4,7 +4,7 @@ import io.jexxa.common.facade.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-public class TestRepository {
+public class StatefulFilter {
 
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext) {
         return RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);

@@ -53,6 +53,11 @@ public class Repository<T, K> {
         return key;
     }
 
+    synchronized public void removeAll() {
+        iRepository.get().forEach(element -> remove(keyFunction.apply(element)));
+    }
+
+
     /**
      * Adds an aggregate to this repository
      * @param aggregate that should be added

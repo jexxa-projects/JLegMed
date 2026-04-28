@@ -34,7 +34,7 @@ class RepositoryPoolIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( TestRepository::add ).useProperties("invalid-pw-jdbc-connection");
+                .and().consumeWith( StatefulFilter::add ).useProperties("invalid-pw-jdbc-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);
@@ -48,7 +48,7 @@ class RepositoryPoolIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( TestRepository::add ).useProperties("invalid-pw-s3-connection");
+                .and().consumeWith( StatefulFilter::add ).useProperties("invalid-pw-s3-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);
@@ -62,7 +62,7 @@ class RepositoryPoolIT {
                 .receive(String.class).from(() -> "Hello World")
 
                 .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( TestRepository::add ).useProperties("explicit.imdb-repository");
+                .and().consumeWith( StatefulFilter::add ).useProperties("explicit.imdb-repository");
 
         //Act/Assert
         assertDoesNotThrow(jLegMed::start);

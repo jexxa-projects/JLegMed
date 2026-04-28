@@ -17,8 +17,8 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
 
 public abstract class Processor<T, R>  extends Filter {
-    private final OutputPipe<R> outputPipe = new OutputPipe<>(this);
-    private final ErrorPipe<T> errorPipe = new ErrorPipe<>(this);
+    private OutputPipe<R> outputPipe = null;
+    private ErrorPipe<T> errorPipe = null;
     private final boolean filterContextRequired;
     private final String name;
     private final Class<?> classFromLambda;
@@ -54,10 +54,19 @@ public abstract class Processor<T, R>  extends Filter {
 
     public OutputPipe<R> outputPipe()
     {
+        if (outputPipe == null) {
+            outputPipe = new OutputPipe<>(this);
+        }
         return outputPipe;
     }
+
     public ErrorPipe<T> errorPipe()
     {
+
+        if (errorPipe == null)
+        {
+            errorPipe = new ErrorPipe<>(this);
+        }
         return errorPipe;
     }
 

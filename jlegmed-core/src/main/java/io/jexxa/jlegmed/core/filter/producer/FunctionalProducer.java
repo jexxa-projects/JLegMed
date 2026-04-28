@@ -106,7 +106,21 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
+    @Deprecated
     public static <T> FunctionalProducer<T> producer(PipedProducer<T> pipedProducer) {
+        return new FunctionalProducer<>(
+                filterNameFromLambda(pipedProducer),
+                classNameFromLambda(pipedProducer))
+        {
+            @Override
+            protected T doProduce() {
+                pipedProducer.produceData(filterContext(), outputPipe());
+                return null;
+            }
+        };
+    }
+
+    public static <T> FunctionalProducer<T> streamProducer(PipedProducer<T> pipedProducer) {
         return new FunctionalProducer<>(
                 filterNameFromLambda(pipedProducer),
                 classNameFromLambda(pipedProducer))

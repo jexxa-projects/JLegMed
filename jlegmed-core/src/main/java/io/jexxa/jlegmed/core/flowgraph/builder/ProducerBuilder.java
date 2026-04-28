@@ -11,6 +11,7 @@ import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.producer;
+import static io.jexxa.jlegmed.core.filter.producer.FunctionalProducer.streamProducer;
 
 public class ProducerBuilder<T> {
     private final Class<T> sourceType;
@@ -37,7 +38,7 @@ public class ProducerBuilder<T> {
     }
 
     public Binding<T, T> from(PipedProducer<T> function) {
-        return setProducer(producer(function));
+        return setProducer(streamProducer(function));
     }
 
 

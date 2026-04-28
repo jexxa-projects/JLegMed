@@ -7,8 +7,8 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 public abstract class Producer<T> extends Filter {
 
     private Class<T> producingType;
-    private final OutputPipe<T> outputPipe = new OutputPipe<>(this);
-    private final ErrorPipe<T> errorPipe = new ErrorPipe<>(this);
+    private OutputPipe<T> outputPipe = null;
+    private ErrorPipe<T> errorPipe = null;
     private final Class<?> classFromLambda;
 
     protected Producer(Class<?> classFromLambda)
@@ -41,10 +41,16 @@ public abstract class Producer<T> extends Filter {
 
     public OutputPipe<T> outputPipe()
     {
+        if (outputPipe == null) {
+            outputPipe = new OutputPipe<>(this);
+        }
         return outputPipe;
     }
     public ErrorPipe<T> errorPipe()
     {
+        if (errorPipe == null) {
+            errorPipe = new ErrorPipe<>(this);
+        }
         return errorPipe;
     }
 }

@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## \[5.3.0] - 2026-mm-dd
+## \[5.3.0] - 2026-04-29
 
 ### Added
+- **Compliance**: Updated SBOM generation to **CycloneDX Schema 1.6** for BSI TR-03183-2 compliance.
+
 * explicit method `streamWith` in `FlowGraphBuilder` to express 1:n relationship
 
 * `ExpiringRepository` to define a TTL on managed objects 

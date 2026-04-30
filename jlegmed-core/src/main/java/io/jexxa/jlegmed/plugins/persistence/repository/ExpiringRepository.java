@@ -62,6 +62,7 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         }
     }
 
+    @Override
     synchronized public K remove(K key) {
         var keyIdent = JSONManager.getJSONConverter().toJson(key);
         super.remove(key);

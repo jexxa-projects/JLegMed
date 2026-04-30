@@ -117,6 +117,10 @@ compile "org.slf4j:slf4j-simple:2.0.17"
 * Fully Maven-compatible
 * Optional integration with the [Jexxa Framework](https://www.jexxa.io)
 
+## 🔒 FLOSS Commitment
+This project is built and maintained using only **Free/Libre Open Source Software**.
+The build process (Maven), security analysis (CycloneDX), and signing (GPG)
+rely exclusively on open-source tools to ensure digital sovereignty.
 
 ## 🤝 Contributing
 

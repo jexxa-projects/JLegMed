@@ -45,11 +45,11 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         this.scheduler.scheduleAtFixedRate(this::purgeData, purgeInterval, purgeInterval, timeUnit);
     }
 
-    synchronized void expireIn(K key, Duration ttl){
+    public synchronized void expireIn(K key, Duration ttl){
         expireAt(key, Instant.now().plus(ttl));
     }
 
-    synchronized void expireAt(K key, Instant timestamp){
+    public synchronized void expireAt(K key, Instant timestamp){
         if (get(key).isEmpty()){
             throw new IllegalArgumentException("key is not managed in this repository");
         }

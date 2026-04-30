@@ -17,6 +17,7 @@ import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfig
 public class PersistentTimer {
     public static final String START_TIME = "start.time";
     public static final String LOOKBACK_PERIOD = "lookback.period";
+    public static final String WINDOW_MAX_SIZE = "window.max.size";
     public static void nextInterval(TimerID timerID, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe) {
         Instant startTime = initialStartTime(filterContext);
 
@@ -25,21 +26,35 @@ public class PersistentTimer {
                 outputPipe);
     }
 
-    public static void nextIntervalWithConfig(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe)
-    {
+
+    public static void nextIntervalWithConfig(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe) {
         var repository = getRepository(TimerState.class,
                 TimerState::timerID,
                 filterContext);
 
-        //1. Calculate a new TimerState.
-        TimerState timerState = repository
-                .get(timerConfig.timerID())
-                .map(state -> new TimerState(
-                        state.timerID(),
-                        new TimeInterval(state.timerInterval.end())))
-                .orElseGet(() -> new TimerState(timerConfig.timerID(), new TimeInterval(timerConfig.startTime(), Instant.now())));
 
-        //2. Forward timeInterval. Only in case of success, we store the new value
+        // 0. Configure max window size
+        Duration maxWindowSize = Duration.parse(
+                // Erwartet ISO-8601 Format wie "PT24H"filterContext.properties()
+                filterContext
+                        .properties()
+                        .getProperty(WINDOW_MAX_SIZE, "PT24H")
+                );
+
+        // 1. Calculate start time (either end of the last interval or startTime from config)
+        Instant start = repository
+                .get(timerConfig.timerID())
+                .map(state -> state.timerInterval.end())
+                .orElse(timerConfig.startTime());
+
+        // 2. Calculate the end of the interval
+        Instant requestedEnd = start.plus(maxWindowSize);
+        Instant now = Instant.now();
+        // Wir nehmen den früheren Zeitpunkt von (start + maxWindowSize) und (now)
+        Instant end = requestedEnd.isBefore(now) ? requestedEnd : now;
+        TimerState timerState = new TimerState(timerConfig.timerID(), new TimeInterval(start, end));
+
+        // 3. Forward timeInterval. Only in case of success, we store the new value
         try {
             outputPipe.forward(timerState.timerInterval);
         } catch (ProcessingException e) {
@@ -47,14 +62,10 @@ public class PersistentTimer {
             throw e;
         }
 
-        //3. Store the new TimeInterval in Repository
-        if (repository.get(timerConfig.timerID()).isPresent())
-        {
-            repository.update(timerState);
-        } else {
-            repository.add(timerState);
-        }
+        // 4. Store the new TimeInterval in Repository
+        repository.put(timerState);
     }
+
 
     private static Instant initialStartTime(FilterContext filterContext)
     {

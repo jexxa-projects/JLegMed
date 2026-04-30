@@ -10,11 +10,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.common.facade.utils.properties.PropertiesUtils.filterByPrefix;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfigOf;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerID.timerIdOf;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -180,6 +182,41 @@ class PersistentTimerIT {
         assertThrows(ProcessingException.class, () -> filter.process(timerConfig));
     }
 
+    @Test
+    void testMaxWindowSize() {
+        // Arrange
+        var jLegMed = new JLegMed(PersistentTimerIT.class)
+                .useTechnology(RepositoryPool.class);
+        List<TimeInterval> result = new ArrayList<>();
+
+        Instant legacyStart = Instant.now().minus(Duration.ofDays(10));
+        var timerConfig = timerConfigOf(timerIdOf("maxWindowSizeTest"), legacyStart);
+
+        var filter = processor(PersistentTimer::nextIntervalWithConfig);
+        filter.outputPipe().connectTo(result::add);
+        var properties = new Properties();
+        properties.put("max_window_size", "PT24H");
+
+        filter.useProperties(FilterProperties.filterPropertiesOf(
+                filter.defaultPropertiesName(),
+                properties));
+
+        filter.reachStarted();
+
+        // Act
+        filter.process(timerConfig);
+
+        // Assert
+        assertFalse(result.isEmpty());
+        TimeInterval firstInterval = result.getFirst();
+
+        // Prüfen, ob das Intervall auf genau 24 Stunden begrenzt wurde
+        Duration intervalDuration = Duration.between(firstInterval.begin(), firstInterval.end());
+
+        assertEquals(legacyStart, firstInterval.begin(), "Startpunkt muss dem konfigurierten legacyStart entsprechen");
+        assertEquals(Duration.ofHours(24), intervalDuration, "Das Zeitfenster sollte durch max_window_size auf 24h begrenzt sein");
+        assertTrue(firstInterval.end().isBefore(Instant.now()), "Das Ende darf nicht 'now' sein, da es gedeckelt wurde");
+    }
 
     static TimeInterval storedTimeInterval = null;
 

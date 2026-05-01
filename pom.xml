@@ -10,7 +10,7 @@
 
   <groupId>io.jexxa.jlegmed</groupId>
   <artifactId>jlegmed</artifactId>
-  <version>5.4.1-SNAPSHOT</version>
+  <version>5.3.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- Project Information -->

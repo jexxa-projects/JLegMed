@@ -185,8 +185,6 @@ class PersistentTimerIT {
     @Test
     void testMaxWindowSize() {
         // Arrange
-        var jLegMed = new JLegMed(PersistentTimerIT.class)
-                .useTechnology(RepositoryPool.class);
         List<TimeInterval> result = new ArrayList<>();
 
         Instant legacyStart = Instant.now().minus(Duration.ofDays(10));
@@ -195,7 +193,7 @@ class PersistentTimerIT {
         var filter = processor(PersistentTimer::nextIntervalWithConfig);
         filter.outputPipe().connectTo(result::add);
         var properties = new Properties();
-        properties.put("max_window_size", "PT24H");
+        properties.setProperty(PersistentTimer.WINDOW_MAX_SIZE, "PT24H");
 
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),

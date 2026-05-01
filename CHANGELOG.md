@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[5.4.0] - 2026-05-01
+### Changed
+- PersistentTimer now sends a TimerInterval at a maximum windows size. The default value is 24h. 
+
+### Fixed
+- ExpiringRepository methods are now public and no longer package protected 
+- Updated dependencies
 
 ## \[5.3.0] - 2026-04-29
 

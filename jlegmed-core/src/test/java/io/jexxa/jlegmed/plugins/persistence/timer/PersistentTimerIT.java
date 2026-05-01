@@ -15,6 +15,7 @@ import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.common.facade.utils.properties.PropertiesUtils.filterByPrefix;
+import static io.jexxa.jlegmed.core.filter.processor.Processor.managedStreamProcessor;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfigOf;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerID.timerIdOf;
@@ -123,11 +124,10 @@ class PersistentTimerIT {
 
         //Act
         filter.process(timerConfig);
-        filter.process(timerConfig);
 
         //Assert
         assertFalse(result.isEmpty());
-        assertEquals(2, result.size());
+        assertEquals(6, result.size()); // we should get 6 Timer Intervals, because we have 5 days of data compared to now
     }
 
     @Test
@@ -144,19 +144,18 @@ class PersistentTimerIT {
         filter.outputPipe().connectTo(result::add);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
-                filterByPrefix(jLegMed.getProperties(), "validlookback")));
+                filterByPrefix(jLegMed.getProperties(), "validlookback"))); //Lookback is 5 days
 
         filter.reachStarted();
 
         //Act
         Instant startTime = Instant.now().minus(Duration.ofDays(5));
         filter.process(timerConfig);
-        filter.process(timerConfig);
         Instant endTime = Instant.now();
 
         //Assert
         assertFalse(result.isEmpty());
-        assertEquals(2, result.size());
+        assertEquals(6, result.size()); // we should get 6 Timer Intervals, because we have 5 days of data compared to now
         assertTrue( startTime.compareTo(result.getFirst().begin()) <= 0);
         assertTrue( endTime.compareTo(result.getFirst().begin()) > 0);
     }
@@ -190,7 +189,7 @@ class PersistentTimerIT {
         Instant legacyStart = Instant.now().minus(Duration.ofDays(10));
         var timerConfig = timerConfigOf(timerIdOf("maxWindowSizeTest"), legacyStart);
 
-        var filter = processor(PersistentTimer::nextIntervalWithConfig);
+        var filter = managedStreamProcessor(PersistentTimer::nextIntervalWithConfig);
         filter.outputPipe().connectTo(result::add);
         var properties = new Properties();
         properties.setProperty(PersistentTimer.WINDOW_MAX_SIZE, "PT24H");
@@ -213,6 +212,7 @@ class PersistentTimerIT {
 
         assertEquals(legacyStart, firstInterval.begin(), "Startpunkt muss dem konfigurierten legacyStart entsprechen");
         assertEquals(Duration.ofHours(24), intervalDuration, "Das Zeitfenster sollte durch max_window_size auf 24h begrenzt sein");
+        assertTrue(result.size() >=10, "We should have at lest 10 intervals");
         assertTrue(firstInterval.end().isBefore(Instant.now()), "Das Ende darf nicht 'now' sein, da es gedeckelt wurde");
     }
 

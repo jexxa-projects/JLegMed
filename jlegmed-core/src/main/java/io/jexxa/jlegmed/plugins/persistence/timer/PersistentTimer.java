@@ -1,8 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.timer;
 
-import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.time.Duration;
@@ -26,46 +24,36 @@ public class PersistentTimer {
                 outputPipe);
     }
 
-
     public static void nextIntervalWithConfig(TimerConfig timerConfig, FilterContext filterContext, OutputPipe<TimeInterval> outputPipe) {
-        var repository = getRepository(TimerState.class,
-                TimerState::timerID,
-                filterContext);
+        var repository = getRepository(TimerState.class, TimerState::timerID, filterContext);
 
-
-        // 0. Configure max window size
-        Duration maxWindowSize = Duration.parse(
-                // Erwartet ISO-8601 Format wie "PT24H"filterContext.properties()
-                filterContext
-                        .properties()
-                        .getProperty(WINDOW_MAX_SIZE, "PT24H")
-                );
-
-        // 1. Calculate start time (either end of the last interval or startTime from config)
-        Instant start = repository
-                .get(timerConfig.timerID())
+        // 1. Configuration & Start point
+        Duration maxWindowSize = parsePeriod(
+                filterContext.properties().getProperty(WINDOW_MAX_SIZE, "PT24H")
+        );
+        Instant start = repository.get(timerConfig.timerID())
                 .map(state -> state.timerInterval.end())
                 .orElse(timerConfig.startTime());
 
-        // 2. Calculate the end of the interval
-        Instant requestedEnd = start.plus(maxWindowSize);
         Instant now = Instant.now();
-        // Wir nehmen den früheren Zeitpunkt von (start + maxWindowSize) und (now)
+        if (!start.isBefore(now)) {
+            return; // Up to date -> Nothing to do
+        }
+
+        // 2. Calculate the next interval
+        Instant requestedEnd = start.plus(maxWindowSize);
         Instant end = requestedEnd.isBefore(now) ? requestedEnd : now;
         TimerState timerState = new TimerState(timerConfig.timerID(), new TimeInterval(start, end));
 
-        // 3. Forward timeInterval. Only in case of success, we store the new value
-        try {
-            outputPipe.forward(timerState.timerInterval);
-        } catch (ProcessingException e) {
-            SLF4jLogger.getLogger(PersistentTimer.class).warn("Error on processing timerId {}, timeInterval {} -> Repeat interval with last start-time until success", timerState.timerID(), timerState.timerInterval);
-            throw e;
-        }
-
-        // 4. Store the new TimeInterval in Repository
+        // 3. Forward and store timerInterval
+        outputPipe.forward(timerState.timerInterval);
         repository.put(timerState);
-    }
 
+        // 4. If we are not completely caught up, process again
+        if (end.isBefore(now)) {
+            filterContext.processingState().processAgain();
+        }
+    }
 
     private static Instant initialStartTime(FilterContext filterContext)
     {
@@ -89,16 +77,33 @@ public class PersistentTimer {
     private static final Pattern PATTERN = Pattern.compile("(\\d+)([smhdw])");
 
     public static TemporalAmount lookBackPeriod(String input) {
-        Matcher m = PATTERN.matcher(input.trim().toLowerCase());
+        return parsePeriod(input);
+    }
+
+    private static Duration parsePeriod(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("Time string must not be null or empty");
+        }
+
+        String trimmedInput = input.trim();
+
+        // 1. ISO-8601 period starts always with 'P'
+        if (trimmedInput.toUpperCase().startsWith("P")) {
+            return parseIsoFormat(trimmedInput);
+        }
+
+        // 2. Custom Format (z.B. 5h, 10d)
+        return parseCustomFormat(trimmedInput);
+    }
+
+    private static Duration parseIsoFormat(String input) {
+        return Duration.parse(input);
+    }
+
+    private static Duration parseCustomFormat(String input) {
+        Matcher m = PATTERN.matcher(input.toLowerCase());
         if (!m.matches()) {
-            SLF4jLogger.getLogger(PersistentTimer.class).error("Invalid format: {}", input);
-            SLF4jLogger.getLogger(PersistentTimer.class).error("Valid format specification are 's', 'm', 'h', 'd', 'w'. Example:" );
-            SLF4jLogger.getLogger(PersistentTimer.class).error(" 5s -> 5 seconds" );
-            SLF4jLogger.getLogger(PersistentTimer.class).error(" 5m -> 5 minutes" );
-            SLF4jLogger.getLogger(PersistentTimer.class).error(" 5h -> 5 hours" );
-            SLF4jLogger.getLogger(PersistentTimer.class).error(" 5d -> 5 days" );
-            SLF4jLogger.getLogger(PersistentTimer.class).error(" 5w -> 5 weeks" );
-            throw new IllegalArgumentException("Invalid format: " + input );
+            throw new IllegalArgumentException("Invalid custom format: " + input);
         }
 
         int value = Integer.parseInt(m.group(1));
@@ -108,11 +113,12 @@ public class PersistentTimer {
             case "s" -> Duration.ofSeconds(value);
             case "m" -> Duration.ofMinutes(value);
             case "h" -> Duration.ofHours(value);
-            case "d" -> Duration.ofDays(value);   // Tage → Period
-            case "w" -> Duration.ofDays(value * 7L);  // Wochen → Period
-            default -> throw new IllegalArgumentException("Invalid timeunit: " + unit);
+            case "d" -> Duration.ofDays(value);
+            case "w" -> Duration.ofDays(value * 7L);
+            default -> throw new IllegalArgumentException("Unexpected unit: " + unit);
         };
     }
+
 
     private record TimerState(TimerID timerID, TimeInterval timerInterval){}
 }

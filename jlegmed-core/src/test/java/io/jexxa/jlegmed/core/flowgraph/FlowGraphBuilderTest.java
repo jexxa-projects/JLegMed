@@ -4,6 +4,7 @@ import io.jexxa.adapterapi.ConfigurationFailedException;
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -233,6 +235,29 @@ class FlowGraphBuilderTest {
         assertEquals(inputData, messageCollector.toArray()[0]);
     }
 
+
+    @Test
+    void testStreamDataStreamProcessor() {
+
+        //Arrange
+        var messageCollector = new Stack<String>();
+        var inputData = "Hello World";
+        var streamProcessor = streamProcessor(FlowGraphBuilderTest::streamData);
+
+        jlegmed.newFlowGraph("ChangeData")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> inputData)
+
+                .and().streamWith( streamProcessor )
+                .and().consumeWith( messageCollector::push );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(inputData, messageCollector.toArray()[0]);
+    }
+
     @Test
     void testManagedStreamData() {
         //Arrange
@@ -252,6 +277,28 @@ class FlowGraphBuilderTest {
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
         assertEquals(inputData, messageCollector.toArray()[0]);
     }
+
+    @Test
+    void testManagedStreamProcessor() {
+        //Arrange
+        var messageCollector = new Stack<String>();
+        var inputData = "Hello World";
+        var managedStreamProcessor = Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData );
+
+        jlegmed.newFlowGraph("ChangeData")
+                .every(10, MILLISECONDS)
+                .receive(String.class).from(() -> inputData)
+
+                .and().streamWith( managedStreamProcessor ).useProperties("flowgraphconfigurationtest")
+                .and().consumeWith( messageCollector::push );
+        //Act
+        jlegmed.start();
+
+        //Assert
+        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        assertEquals(inputData, messageCollector.toArray()[0]);
+    }
+
 
     private static void streamData(String inputData, OutputPipe<String> outputPipe) {
         ++streamDataCounter;

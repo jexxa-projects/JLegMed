@@ -1,5 +1,7 @@
 package io.jexxa.jlegmed.plugins.persistence.timer;
 
+import io.jexxa.common.drivenadapter.persistence.RepositoryFactory;
+import io.jexxa.common.drivenadapter.persistence.repository.imdb.IMDBRepository;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
@@ -62,17 +64,20 @@ class PersistentTimerIT {
     void nextIntervalFails() {
 
         //Arrange
+        RepositoryFactory.setDefaultRepository(IMDBRepository.class);
+
         var jLegMed = new JLegMed(PersistentTimerIT.class)
                 .useTechnology(RepositoryPool.class);
 
         List<TimeInterval> result = new ArrayList<>();
-        var timerConfig= timerIdOf(PersistentTimerIT.class.getSimpleName());
+        var timerConfig= timerIdOf("nextIntervalFails");
 
         var filter = processor(PersistentTimer::nextInterval);
         filter.outputPipe().connectTo( data -> validateStartTime(data, result));
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
                 filterByPrefix(jLegMed.getProperties(), filter.defaultPropertiesName())));
+        filter.filterProperties().properties().setProperty(START_TIME, now().toInstant().toString());
 
         filter.reachStarted();
 
@@ -89,6 +94,7 @@ class PersistentTimerIT {
     void flowgraphTest() {
 
         //Arrange
+        RepositoryFactory.setDefaultRepository(IMDBRepository.class);
         var jLegMed = new JLegMed(PersistentTimerIT.class)
                 .useTechnology(RepositoryPool.class);
         var result = new Stack<TimeInterval>();

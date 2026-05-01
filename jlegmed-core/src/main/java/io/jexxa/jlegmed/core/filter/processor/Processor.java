@@ -114,30 +114,24 @@ public abstract class Processor<T, R>  extends Filter {
         };
     }
 
-    public static  <T, R> Processor<T, R> managedStreamProcessor(PipedProcessor<T, R> pipedProcessor)
+    public static  <T, R> ManagedStreamProcessor<T, R> managedStreamProcessor(PipedProcessor<T, R> pipedProcessor)
     {
-        return new Processor<>(true,
-                filterNameFromLambda(pipedProcessor),
-                classNameFromLambda(pipedProcessor))
-        {
+        return new ManagedStreamProcessor<>(
+                classNameFromLambda(pipedProcessor)) {
             @Override
-            protected R doProcess(T data) {
+            protected void doVoidProcess(T data) {
                 pipedProcessor.processData(data, filterContext(), outputPipe());
-                return null;
             }
         };
     }
 
-    public static  <T, R> Processor<T, R> streamProcessor(SerializableBiConsumer<T, OutputPipe<R>> streamFunction)
+    public static  <T, R> StreamProcessor<T, R> streamProcessor(SerializableBiConsumer<T, OutputPipe<R>> streamFunction)
     {
-        return new Processor<>(false,
-                filterNameFromLambda(streamFunction),
-                classNameFromLambda(streamFunction))
-        {
+        return new StreamProcessor<>(
+                classNameFromLambda(streamFunction)) {
             @Override
-            protected R doProcess(T data) {
+            protected void doVoidProcess(T data) {
                 streamFunction.accept(data, outputPipe());
-                return null;
             }
         };
     }

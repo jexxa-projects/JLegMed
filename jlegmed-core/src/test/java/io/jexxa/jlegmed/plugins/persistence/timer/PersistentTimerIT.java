@@ -17,8 +17,10 @@ import java.util.concurrent.TimeUnit;
 import static io.jexxa.common.facade.utils.properties.PropertiesUtils.filterByPrefix;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.managedStreamProcessor;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static io.jexxa.jlegmed.plugins.persistence.timer.PersistentTimer.START_TIME;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerConfig.timerConfigOf;
 import static io.jexxa.jlegmed.plugins.persistence.timer.TimerID.timerIdOf;
+import static java.time.OffsetDateTime.now;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,13 +37,14 @@ class PersistentTimerIT {
                 .useTechnology(RepositoryPool.class);
 
         List<TimeInterval> result = new ArrayList<>();
-        var timerConfig= timerIdOf(PersistentTimerIT.class.getSimpleName());
+        var timerConfig= timerIdOf("nextInterval");
 
         var filter = processor(PersistentTimer::nextInterval);
         filter.outputPipe().connectTo(result::add);
         filter.useProperties(FilterProperties.filterPropertiesOf(
                 filter.defaultPropertiesName(),
                 filterByPrefix(jLegMed.getProperties(), filter.defaultPropertiesName())));
+        filter.filterProperties().properties().setProperty(START_TIME, now().toInstant().toString());
 
         filter.reachStarted();
 

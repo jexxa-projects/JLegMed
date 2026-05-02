@@ -32,7 +32,7 @@ class JMSPoolIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().consumeWith( JMSPoolIT::myQueue ).useProperties("invalid-factory-jms-connection");
+                .then().sinkTo( JMSPoolIT::myQueue ).useProperties("invalid-factory-jms-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, () -> jLegMed.start());

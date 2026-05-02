@@ -51,8 +51,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> message)
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -74,8 +74,8 @@ class FlowGraphBuilderTest {
                 .repeat(3)
                 .receive(String.class).from(() -> message)
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jlegmed.start();
@@ -99,9 +99,9 @@ class FlowGraphBuilderTest {
 
                 .receive(String.class).from(() -> message)
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jlegmed.start();
@@ -124,8 +124,8 @@ class FlowGraphBuilderTest {
                 .from(() -> scheduledProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -147,8 +147,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().processWith( data -> data + "-" + data )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith(data -> data + "-" + data )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -167,16 +167,16 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector1::push );
+                .then().processWith(GenericProcessors::idProcessor)
+                .then().sinkTo( messageCollector1::push );
 
 
         jlegmed.newFlowGraph("FlowGraph2")
                 .every(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector2::push );
+                .then().processWith(GenericProcessors::idProcessor)
+                .then().sinkTo( messageCollector2::push );
 
         //Act
         jlegmed.start();
@@ -196,16 +196,16 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector1::push );
+                .then().processWith(GenericProcessors::idProcessor)
+                .then().sinkTo( messageCollector1::push );
 
 
         jlegmed.newFlowGraph("Fail Fast flowgraph")
                 .every(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith( (data, _) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
-                .and().consumeWith( messageCollector2::push );
+                .then().processWith( (data, _) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
+                .then().sinkTo( messageCollector2::push );
 
         //Act / assert
         assertThrows(ConfigurationFailedException.class, () -> jlegmed.start());
@@ -225,8 +225,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().streamWith( FlowGraphBuilderTest::streamData )
-                .and().consumeWith( messageCollector::push );
+                .then().streamWith( FlowGraphBuilderTest::streamData )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -248,8 +248,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().streamWith( streamProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().streamWith( streamProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -268,8 +268,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().streamWith( FlowGraphBuilderTest::managedStreamData ).useProperties("flowgraphconfigurationtest")
-                .and().consumeWith( messageCollector::push );
+                .then().streamWith( FlowGraphBuilderTest::managedStreamData ).useProperties("flowgraphconfigurationtest")
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -289,8 +289,8 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .and().streamWith( managedStreamProcessor ).useProperties("flowgraphconfigurationtest")
-                .and().consumeWith( messageCollector::push );
+                .then().streamWith( managedStreamProcessor ).useProperties("flowgraphconfigurationtest")
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 

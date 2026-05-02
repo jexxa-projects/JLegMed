@@ -46,8 +46,8 @@ class FlowGraphConfigurationTest {
                 // ... that is injected by method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
-                .and().processWith( processor(GenericProcessors::idProcessor ))
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( processor(GenericProcessors::idProcessor ))
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -85,8 +85,8 @@ class FlowGraphConfigurationTest {
 
                 // The producer appends some properties-information such as name ...
                 .from( scheduledProducer(FlowGraphConfigurationTest::defaultProperties))
-                .and().processWith( processor(GenericProcessors::idProcessor ))
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( processor(GenericProcessors::idProcessor ))
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 

@@ -45,9 +45,9 @@ class RepositoryIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().processWith( StatefulFilter::add )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith(data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .then().processWith( StatefulFilter::add )
+                .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
 
@@ -66,7 +66,7 @@ class RepositoryIT {
         jLegMed.newFlowGraph("Read Data")
                 .repeat(1)
                 .receive(TextEntity.class).from(StatefulFilter::read)
-                .and().processWith( messageCollector::push );
+                .then().processWith( messageCollector::push );
 
         //Act
         jLegMed.start();
@@ -84,8 +84,8 @@ class RepositoryIT {
                 .repeat(numberOfData)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( StatefulFilter::add);
+                .then().processWith(data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .then().sinkTo( StatefulFilter::add);
     }
 
 

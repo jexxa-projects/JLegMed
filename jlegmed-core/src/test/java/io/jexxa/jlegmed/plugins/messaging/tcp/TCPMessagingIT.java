@@ -37,8 +37,8 @@ class TCPMessagingIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-receiver")
 
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( messageCollector::push );
 
 
         // Create a flow graph to send text messages via TCP connection
@@ -46,7 +46,7 @@ class TCPMessagingIT {
                 .every(500, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().consumeWith( TCPConnection::sendTextMessage ).useProperties("test-tcp-sender");
+                .then().sinkTo( TCPConnection::sendTextMessage ).useProperties("test-tcp-sender");
 
         //Act
         jLegMed.start();
@@ -64,16 +64,16 @@ class TCPMessagingIT {
                 .await(TestMessage.class)
                 .from( TCPReceiver::receiveJSON ).useProperties("test-tcp-receiver")
 
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( messageCollector::push );
 
         // Create a flow graph to send text messages via TCP connection
         jLegMed.newFlowGraph("testTCPSender")
                 .every(500, MILLISECONDS)
                 .receive(TestMessage.class).from(() -> testMessage(counter.getAndIncrement(),"Hello World"))
 
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( TCPConnection::sendJSONMessage ).useProperties("test-tcp-sender");
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( TCPConnection::sendJSONMessage ).useProperties("test-tcp-sender");
 
         //Act
         jLegMed.start();

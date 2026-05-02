@@ -42,9 +42,9 @@ class TransformDataTest {
 
                 .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
-                .and().processWith(TestFilter::transformToUpdatedContract)
-                .and().processWith(GenericProcessors::idProcessor)
-                .and().consumeWith( messageCollector::push );
+                .then().processWith(TestFilter::transformToUpdatedContract)
+                .then().processWith(GenericProcessors::idProcessor)
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -64,8 +64,8 @@ class TransformDataTest {
                 //TestFilter::newContract uses FilterContext to manage its state information
                 .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
 
-                .and().processWith( TestFilter::contextTransformer).withoutProperties()
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( TestFilter::contextTransformer).withoutProperties()
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -84,8 +84,8 @@ class TransformDataTest {
                 .from(GenericProducer::scheduledCounter)
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .and().processWith( TestFilter::skipEachSecondMessage ).withoutProperties()
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( TestFilter::skipEachSecondMessage ).withoutProperties()
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -106,8 +106,8 @@ class TransformDataTest {
                 .receive(String.class).from(() -> "HelloWorld")
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .and().processWith( GenericProcessors::duplicate ).withoutProperties()
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::duplicate ).withoutProperties()
+                .then().sinkTo( messageCollector::push );
 
         jlegmed.monitorPipes("DuplicateData", logFunctionStyle());
 

@@ -33,8 +33,8 @@ class RepositoryPoolIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( StatefulFilter::add ).useProperties("invalid-pw-jdbc-connection");
+                .then().processWith(data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .then().sinkTo( StatefulFilter::add ).useProperties("invalid-pw-jdbc-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);
@@ -47,8 +47,8 @@ class RepositoryPoolIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( StatefulFilter::add ).useProperties("invalid-pw-s3-connection");
+                .then().processWith(data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .then().sinkTo( StatefulFilter::add ).useProperties("invalid-pw-s3-connection");
 
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, jLegMed::start);
@@ -61,8 +61,8 @@ class RepositoryPoolIT {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> "Hello World")
 
-                .and().processWith( data -> new TextEntity(data, UUID.randomUUID().toString()) )
-                .and().consumeWith( StatefulFilter::add ).useProperties("explicit.imdb-repository");
+                .then().processWith(data -> new TextEntity(data, UUID.randomUUID().toString()) )
+                .then().sinkTo( StatefulFilter::add ).useProperties("explicit.imdb-repository");
 
         //Act/Assert
         assertDoesNotThrow(jLegMed::start);

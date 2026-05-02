@@ -43,8 +43,8 @@ class RepeatFlowGraphTest {
 
                 // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ")
-                .and().processWith( data -> data + "World")
-                .and().consumeWith( result::push );
+                .then().processWith(data -> data + "World")
+                .then().sinkTo( result::push );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

@@ -52,12 +52,12 @@ class SynchronizedMultiplexerTest {
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(atomicInteger::incrementAndGet).onError(errorCollector::push)
-                .and().consumeWith(muxer::firstInput);
+                .then().sinkTo(muxer::firstInput);
 
         //Arrange the multiplexing part
         jlegmed.newFlowGraph("Multiplexer flow graph ")
                 .await(Integer.class).from(muxer)
-                .and().consumeWith(messageCollector::push);
+                .then().sinkTo(messageCollector::push);
 
 
         jlegmed.start();
@@ -84,20 +84,20 @@ class SynchronizedMultiplexerTest {
         //Arrange the multiplexing part
         jlegmed.newFlowGraph("Multiplexer flow graph ")
                 .await(Integer.class).from(muxer)
-                .and().consumeWith(messageCollector::push);
+                .then().sinkTo(messageCollector::push);
 
         //Arrange the first part of the flow graph
         jlegmed.newFlowGraph("First flow graph")
                 .every(100, MILLISECONDS)
                 .receive(Integer.class).from(atomicInteger::incrementAndGet).onError(errorCollector::push)
-                .and().consumeWith(muxer::firstInput);
+                .then().sinkTo(muxer::firstInput);
 
 
         //Arrange the first part of the flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(100, MILLISECONDS)
                 .receive(Integer.class).from(atomicInteger::incrementAndGet).onError(errorCollector::push)
-                .and().consumeWith(muxer::secondInput);
+                .then().sinkTo(muxer::secondInput);
 
 
 

@@ -48,8 +48,8 @@ class JSONReaderTest {
                 // Here we configure a producer using a factory method telling us the configuration mode
                 .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, UNTIL_STOPPED))
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
@@ -70,8 +70,8 @@ class JSONReaderTest {
                 // Here we configure a producer using a factory method telling us the configuration mode
                 .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, ONLY_ONCE))
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 

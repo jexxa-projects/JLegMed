@@ -51,14 +51,14 @@ class MessagingTestIT {
         jLegMed.newFlowGraph("Send messages to queue")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(MyQueue::sendTo).useProperties("test-transactional-outbox-connection");
+                .then().sinkTo(MyQueue::sendTo).useProperties("test-transactional-outbox-connection");
 
 
         // Receive message via queue again
         jLegMed.newFlowGraph("Receive messages from queue")
                 .await(Integer.class).from( MyQueue::receiveAsJSON ).useProperties("test-transactional-outbox-connection")
 
-                .and().consumeWith( messageCollector::push );
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jLegMed.start();
@@ -80,12 +80,12 @@ class MessagingTestIT {
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
+                .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again
         jLegMed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveAsJSON ).useProperties("test-transactional-outbox-connection")
-                .and().consumeWith( messageCollector::push );
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jLegMed.start();
@@ -106,12 +106,12 @@ class MessagingTestIT {
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
+                .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again
         jLegMed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveJMSWithSelector ).useProperties("test-transactional-outbox-connection")
-                .and().consumeWith( messageCollector::push );
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jLegMed.start();
@@ -132,12 +132,12 @@ class MessagingTestIT {
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
+                .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again
         jLegMed.newFlowGraph("Async MessageReceiver")
                 .await(Integer.class).from( MyTopic::receiveJMSWithInvalidSelector ).useProperties("test-transactional-outbox-connection")
-                .and().consumeWith( messageCollector::push );
+                .then().sinkTo( messageCollector::push );
 
         //Act
         jLegMed.start();

@@ -40,12 +40,12 @@ class BootstrappingFlowGraphTest {
         jlegmed.bootstrapFlowGraph("Setup Contract").repeat(repeatCounter)
                 .receive(TestFilter.NewContract.class)
                 .from(() -> newContract(counter.getAndIncrement()))
-                .and().consumeWith(dataSource::push);
+                .then().sinkTo(dataSource::push);
 
         jlegmed.newFlowGraph("Process contracts")
                 .repeat(repeatCounter)
                 .receive(TestFilter.NewContract.class).from(dataSource::pop)
-                .and().consumeWith( dataSink::push );
+                .then().sinkTo( dataSink::push );
         //Act
         jlegmed.start();
 

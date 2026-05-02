@@ -42,9 +42,9 @@ class JDBCFlowGraphsIT {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith( data -> new DataToBeStored(data, "Hello World " + data))
-                .and().processWith( database::insert).useProperties("test-jdbc-connection")
-                .and().consumeWith( messageCollector::push );
+                .then().processWith(data -> new DataToBeStored(data, "Hello World " + data))
+                .then().processWith( database::insert).useProperties("test-jdbc-connection")
+                .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
 
@@ -69,16 +69,16 @@ class JDBCFlowGraphsIT {
                 .repeat(10)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith( data -> new DataToBeStored(data, "Hello World " + data) )
-                .and().processWith( objectUnderTest::insert ).useProperties("test-jdbc-connection")
-                .and().consumeWith( expectedData::push );
+                .then().processWith(data -> new DataToBeStored(data, "Hello World " + data) )
+                .then().processWith( objectUnderTest::insert ).useProperties("test-jdbc-connection")
+                .then().sinkTo( expectedData::push );
 
         // Read all data from the database with a delay of 10ms between reads
         jLegMed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(objectUnderTest::readWithPreparedStatement).useProperties("test-jdbc-connection")
 
-                .and().consumeWith( result::push );
+                .then().sinkTo( result::push );
 
         //Act
         jLegMed.start();
@@ -110,16 +110,16 @@ class JDBCFlowGraphsIT {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith( data -> new DataToBeStored(data, "Hello World " + data) )
-                .and().processWith( jdbc::insert ).useProperties("test-jdbc-connection")
-                .and().consumeWith( writerCollector::push );
+                .then().processWith(data -> new DataToBeStored(data, "Hello World " + data) )
+                .then().processWith( jdbc::insert ).useProperties("test-jdbc-connection")
+                .then().sinkTo( writerCollector::push );
 
         //read continuously from a database
         jLegMed.newFlowGraph("readFromDatabase using PreparedStatement")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(jdbc::readWithPreparedStatement).useProperties("test-jdbc-connection")
 
-                .and().consumeWith( readerCollector::push );
+                .then().sinkTo( readerCollector::push );
 
         //Act
         jLegMed.start();
@@ -153,15 +153,15 @@ class JDBCFlowGraphsIT {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .and().processWith(data -> new DataToBeStored(data, "Hello World " + data))
-                .and().processWith( jdbc::insert).useProperties("test-jdbc-connection")
-                .and().processWith(writerCollector::push );
+                .then().processWith(data -> new DataToBeStored(data, "Hello World " + data))
+                .then().processWith( jdbc::insert).useProperties("test-jdbc-connection")
+                .then().processWith(writerCollector::push );
 
         //read continuously from a database
         jLegMed.newFlowGraph("readFromDatabase using JDBCQueryBuilder")
                 .every(10, MILLISECONDS)
                 .receive(DataToBeStored.class).from(jdbc::readWithQueryBuilder).useProperties("test-jdbc-connection")
-                .and().processWith(readerCollector::push );
+                .then().processWith(readerCollector::push );
         //Act
         jLegMed.start();
 

@@ -41,8 +41,8 @@ class JDBCSessionPoolIT {
 
                 .await(DataToBeStored.class)
                 .from(() -> streamProducer(testData))
-                .and().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
-                .and().consumeWith(messageCollector::push);
+                .then().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
+                .then().sinkTo(messageCollector::push);
         //Act/Assert
         assertThrows(ConfigurationFailedException.class, () -> jLegMed.start());
         assertTrue(messageCollector.empty()); // Only to avoid warning that messageCollector is not used
@@ -61,8 +61,8 @@ class JDBCSessionPoolIT {
 
                 .await(DataToBeStored.class)
                 .from(() -> streamProducer(testData)).onError(processingError -> errorCollector.push(processingError.originalMessage()))
-                .and().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
-                .and().consumeWith(messageCollector::push);
+                .then().processWith(database::insert).useProperties("invalid-pw-jdbc-connection")
+                .then().sinkTo(messageCollector::push);
         //Act/Assert
         jLegMed.start();
         await().atMost(1, TimeUnit.SECONDS).until(() -> !errorCollector.isEmpty());

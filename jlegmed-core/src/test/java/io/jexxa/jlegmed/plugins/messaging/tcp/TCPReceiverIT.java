@@ -35,8 +35,8 @@ class TCPReceiverIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
         sendMessageMultipleTimes("Hello World\n", 3);
@@ -54,8 +54,8 @@ class TCPReceiverIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
-                .and().processWith( GenericProcessors::consoleLogger )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::consoleLogger )
+                .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
         for (int i = 0; i < 3; ++i) {

@@ -41,8 +41,8 @@ class AwaitFlowGraphTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .from( scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS) )
-                .and().processWith( AwaitFlowGraphTest::world)
-                .and().consumeWith( result::push );
+                .then().processWith( AwaitFlowGraphTest::world)
+                .then().sinkTo( result::push );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

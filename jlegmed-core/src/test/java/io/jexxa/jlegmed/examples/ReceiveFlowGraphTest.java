@@ -45,8 +45,8 @@ class ReceiveFlowGraphTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ")
-                .and().processWith( data -> data + "World")
-                .and().consumeWith( data -> result.add(data) );
+                .then().processWith(data -> data + "World")
+                .then().sinkTo(data -> result.add(data) );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -71,8 +71,8 @@ class ReceiveFlowGraphTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(Instant.class).from(() -> Instant.now())
-                .and().processWith( data -> suspend(data, Duration.of(1, ChronoUnit.SECONDS)))
-                .and().consumeWith( data -> result.add(data) );
+                .then().processWith(data -> suspend(data, Duration.of(1, ChronoUnit.SECONDS)))
+                .then().sinkTo(data -> result.add(data) );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

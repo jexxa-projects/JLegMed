@@ -45,18 +45,18 @@ class ThreadedMultiplexerTest {
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(muxer::firstInput);
+                .then().sinkTo(muxer::firstInput);
 
         //Arrange the second part of the flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
-                .and().consumeWith(muxer::secondInput);
+                .then().sinkTo(muxer::secondInput);
 
         //Arrange the multiplexing part
         jlegmed.newFlowGraph("Multiplexer flow graph ")
                 .await(Integer.class).from(muxer)
-                .and().consumeWith(messageCollector::push);
+                .then().sinkTo(messageCollector::push);
 
 
         jlegmed.start();

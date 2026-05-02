@@ -53,11 +53,11 @@ class ErrorHandlingTest {
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ").onError(ErrorHandlingTest::collectProcessingErrors)
 
-                .and().processWith( message-> message + "World")
+                .then().processWith(message-> message + "World")
 
-                .and().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
+                .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
 
-                .and().consumeWith( data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
+                .then().sinkTo(data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -84,15 +84,15 @@ class ErrorHandlingTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ").onError(errorHandler::notify)
-                .and().processWith( message-> message + "World")
-                .and().consumeWith(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
+                .then().processWith(message-> message + "World")
+                .then().sinkTo(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
 
 
         //Act - Define the flow graph for error handling
         jlegmed.newFlowGraph("Error handling flow graph")
                 .await(ErrorMessage.class).from(errorHandler)
-                .and().processWith(result::push)
-                .and().consumeWith(errorMessage ->
+                .then().processWith(result::push)
+                .then().sinkTo(errorMessage ->
                             getLogger(ErrorHandlingTest.class).warn("{} {}", errorMessage.data() , errorMessage.processingException().getMessage())
                 );
 
@@ -116,7 +116,7 @@ class ErrorHandlingTest {
 
                 // We start with "Hello ", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> throwRuntimeExceptionIfMessageHelloWorld("Hello World"))
-                .and().consumeWith(errorMessage -> getLogger(ErrorHandlingTest.class).warn(errorMessage));
+                .then().sinkTo(errorMessage -> getLogger(ErrorHandlingTest.class).warn(errorMessage));
 
         jlegmed.start();
 

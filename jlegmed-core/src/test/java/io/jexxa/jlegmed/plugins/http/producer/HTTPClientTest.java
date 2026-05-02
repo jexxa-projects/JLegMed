@@ -77,8 +77,8 @@ class HTTPClientTest {
                 .every(10, MILLISECONDS)
                 .receive(VersionInfo.class).from(httpClient()).useProperties("test-http-connection")
 
-                .and().processWith( GenericProcessors::idProcessor )
-                .and().consumeWith( messageCollector::push );
+                .then().processWith( GenericProcessors::idProcessor )
+                .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);

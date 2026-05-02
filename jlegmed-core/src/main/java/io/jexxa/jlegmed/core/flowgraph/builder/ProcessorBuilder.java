@@ -187,7 +187,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(streamProcessor, streamProcessor.errorPipe(), streamProcessor.outputPipe(), flowGraph);
     }
 
-    public Binding<T, Void> consumeWith(SerializableConsumer<T> successorFunction) {
+    public Binding<T, Void> sinkTo(SerializableConsumer<T> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 
@@ -195,7 +195,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.errorPipe(), null, flowGraph);
     }
 
-    public Binding<T, Void> consumeWith(SerializableBiConsumer<T, FilterContext> successorFunction) {
+    public Binding<T, Void> sinkTo(SerializableBiConsumer<T, FilterContext> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
 

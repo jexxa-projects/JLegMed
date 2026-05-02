@@ -67,6 +67,25 @@ public final class HelloJLegMed
 }
 ```
 
+
+### 🔤 DSL Overview
+
+Think of a JLegMed flow as a **pipeline of explicit steps**. Each step is **isolated**, **testable**, and **explicitly** defined:
+
+```
+receive → transform → expand → transform → sink
+```
+
+#### Processing Semantics
+
+| Method         | Description                      | Equivalent Concept |
+|----------------|----------------------------------|--------------------|
+| `processWith`  | 1:1 transformation               | `map`              |
+| `streamWith`   | 1:n expansion                    | `flatMap`          |
+| `sinkTo`       | terminal operation (side effect) | `sink` / `forEach` |
+
+
+
 ### Add Dependencies
 
 Maven:

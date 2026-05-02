@@ -39,9 +39,9 @@ class FlowGraphMonitorTest {
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
-                .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " JLegMed" )
-                .and().consumeWith(messageCollector::push);
+                .then().processWith(data -> data + " World" )
+                .then().processWith(data -> data + " JLegMed" )
+                .then().sinkTo(messageCollector::push);
 
         //Act - Monitor pipes produces the following output for each iteration
 
@@ -69,9 +69,9 @@ class FlowGraphMonitorTest {
                 .every(10, MILLISECONDS)
 
                 .receive(String.class).from( () -> "Hello" )
-                .and().processWith(data -> data + " World" )
-                .and().processWith(data -> data + " JLegMed" )
-                .and().consumeWith(messageCollector::push);
+                .then().processWith(data -> data + " World" )
+                .then().processWith(data -> data + " JLegMed" )
+                .then().sinkTo(messageCollector::push);
 
 
         //Act - Monitor pipes produces the following output for each iteration

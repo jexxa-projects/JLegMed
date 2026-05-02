@@ -103,8 +103,8 @@ class PersistentTimerIT {
                 .every(10, TimeUnit.MILLISECONDS)
 
                 .receive(TimerID.class).from(() -> timerIdOf("NameOfPersistentTimer"))
-                .and().streamWith(PersistentTimer::nextInterval)
-                .and().processWith(result::push);
+                .then().streamWith(PersistentTimer::nextInterval)
+                .then().processWith(result::push);
         //Act
         jLegMed.start();
 

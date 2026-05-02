@@ -48,7 +48,7 @@ public class Binding<T, U> {
         return this;
     }
 
-    public ProcessorBuilder<U> and() {
+    public ProcessorBuilder<U> then() {
         return new ProcessorBuilder<>(outputPipe, flowGraph);
     }
 

@@ -18,7 +18,7 @@ public class ErrorPipe<T> extends OutputPipe<ProcessingError<T>> {
     public BigInteger handledProcessingErrors() { return handledProcessingErrors; }
     public BigInteger unhandledProcessingErrors() { return unhandledProcessingErrors; }
 
-    public ErrorPipe(Filter filter)
+    public ErrorPipe(Filter<?> filter)
     {
         super(filter);
     }

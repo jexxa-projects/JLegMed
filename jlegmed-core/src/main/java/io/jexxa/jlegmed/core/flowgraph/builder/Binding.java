@@ -12,12 +12,12 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
 
 public class Binding<T, U> {
 
-    private final Filter filter;
+    private final Filter<?> filter;
     private final FlowGraph flowGraph;
     private final OutputPipe<U> outputPipe;
     private final OutputPipe<ProcessingError<T>> errorPipe;
 
-    public Binding(Filter filter, OutputPipe<ProcessingError<T>> errorPipe, OutputPipe<U> outputPipe, FlowGraph flowGraph) {
+    public Binding(Filter<?> filter, OutputPipe<ProcessingError<T>> errorPipe, OutputPipe<U> outputPipe, FlowGraph flowGraph) {
         this.filter = filter;
         this.flowGraph = flowGraph;
         this.errorPipe = errorPipe;

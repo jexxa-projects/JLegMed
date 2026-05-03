@@ -16,7 +16,7 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
 
-public abstract class Processor<T, R>  extends Filter {
+public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
     private OutputPipe<R> outputPipe = null;
     private ErrorPipe<T> errorPipe = null;
     private final boolean filterContextRequired;
@@ -27,6 +27,11 @@ public abstract class Processor<T, R>  extends Filter {
         this.filterContextRequired = filterContextRequired;
         this.name = name;
         this.classFromLambda = classFromLambda;
+    }
+
+    @Override
+    protected Processor<T, R> self() {
+        return this;
     }
 
     @Override

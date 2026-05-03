@@ -4,12 +4,17 @@ import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.pipes.ErrorPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-public abstract class Producer<T> extends Filter {
+public abstract class Producer<T> extends Filter<Producer<T>> {
 
     private Class<T> producingType;
     private OutputPipe<T> outputPipe = null;
     private ErrorPipe<T> errorPipe = null;
     private final Class<?> classFromLambda;
+
+    @Override
+    protected Producer<T> self() {
+        return this;
+    }
 
     protected Producer(Class<?> classFromLambda)
     {

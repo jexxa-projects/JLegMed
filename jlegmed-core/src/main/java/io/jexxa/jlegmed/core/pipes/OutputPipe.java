@@ -11,14 +11,14 @@ import static java.math.BigInteger.valueOf;
 public class OutputPipe<T> {
     private InputPipe<T> inputPipe;
     private BigInteger forwardedMessages = valueOf(0);
-    private final Filter filter;
+    private final Filter<?> filter;
 
-    public OutputPipe(Filter filter)
+    public OutputPipe(Filter<?> filter)
     {
         this.filter = filter;
     }
 
-    public Filter filter()
+    public Filter<?> filter()
     {
         return filter;
     }

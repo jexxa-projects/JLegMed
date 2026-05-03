@@ -10,7 +10,7 @@ import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromL
  * A filter is an object that can be used to produce or process the data
  */
 @SuppressWarnings("unused")
-public abstract class Filter {
+public abstract class Filter<T extends Filter<T>> {
     private boolean strictFailFast = false;
     private boolean withoutProperties = false;
 
@@ -22,6 +22,7 @@ public abstract class Filter {
     public void start()  { /* Empty default implementation */ }
     public void stop()   { /* Empty default implementation */ }
     public void deInit() { /* Empty default implementation */ }
+    protected abstract T self();
 
     public void reachStarted()
     {
@@ -35,16 +36,16 @@ public abstract class Filter {
         deInit();
     }
 
-    public Filter useProperties(FilterProperties filterProperties) {
+    public T useProperties(FilterProperties filterProperties) {
         this.withoutProperties = false;
         this.filterContext.filterProperties(filterProperties);
-        return this;
+        return self();
     }
 
-    public Filter noPropertiesRequired()
+    public T noPropertiesRequired()
     {
         this.withoutProperties = true;
-        return this;
+        return self();
     }
 
     public boolean isPropertiesRequired()

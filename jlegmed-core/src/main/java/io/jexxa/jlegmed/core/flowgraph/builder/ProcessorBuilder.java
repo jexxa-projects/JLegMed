@@ -58,6 +58,10 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 
+    public <R> Binding<T, R> processWith(Step<T,R> successorStep) {
+        return processWith(successorStep.processor());
+    }
+
     /**
      * Links the current processing step to a subsequent function.
      * <p>

@@ -20,8 +20,8 @@ class ManualFlowgraphTest {
 
         //Create a source and producers with the desired producing/processing functions
         FunctionalProducer<String> sourceFilter = producer( () -> "Hello " );
-        Processor<String, String> processorFilter = processor(data -> data + "World" );
-        Processor<String, String> sinkFilter = consumer( data -> result.add(data) );
+        Processor<String, String,?> processorFilter = processor(data -> data + "World" );
+        Processor<String, String,?> sinkFilter = consumer( data -> result.add(data) );
 
         //Connect all filters
         sourceFilter.outputPipe().connectTo(processorFilter.inputPipe());
@@ -48,8 +48,8 @@ class ManualFlowgraphTest {
 
         //Create a source and producers
         FunctionalProducer<String> sourceFilter = producer( () -> "Hello " );
-        Processor<String, String> processorFilter = processor(data -> data + "World" );
-        Processor<String, String> sinkFilter = consumer( data -> result.add(data) );
+        Processor<String, String,?> processorFilter = processor(data -> data + "World" );
+        Processor<String, String,?> sinkFilter = consumer( data -> result.add(data) );
 
         //Connect all filters
         flowGraph.connect(sourceFilter, processorFilter)

@@ -2,8 +2,8 @@ package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
-public class TestFilter {
-    public static NewContract newContract(FilterContext context) {
+public class ContractFilter {
+    public static NewContract generateContract(FilterContext context) {
         var stateID = "newContract";
         var currentCounter = context.state(stateID,Integer.class).orElse(1);
 

@@ -2,7 +2,7 @@ package io.jexxa.jlegmed.plugins.generic.producer;
 
 import com.google.gson.Gson;
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.examples.TestFilter;
+import io.jexxa.jlegmed.examples.ContractFilter;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.examples.TestFilter.NewContract.newContract;
+import static io.jexxa.jlegmed.examples.ContractFilter.NewContract.newContract;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStream;
@@ -38,7 +38,7 @@ class JSONReaderTest {
     @Test
     void testFactoryMethodUntilStopped() {
         //Arrange
-        var messageCollector = new Stack<TestFilter.NewContract>();
+        var messageCollector = new Stack<ContractFilter.NewContract>();
         var inputStream = new ByteArrayInputStream(new Gson().toJson(newContract(1)).getBytes());
 
         jlegmed.newFlowGraph("testFactoryMethodUntilStopped")
@@ -46,7 +46,7 @@ class JSONReaderTest {
                 .every(10, MILLISECONDS)
 
                 // Here we configure a producer using a factory method telling us the configuration mode
-                .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, UNTIL_STOPPED))
+                .receive(ContractFilter.NewContract.class).from(jsonStream(inputStream, UNTIL_STOPPED))
 
                 .then().processWith( GenericProcessors::idProcessor )
                 .then().sinkTo( messageCollector::push );
@@ -68,7 +68,7 @@ class JSONReaderTest {
 
                 .every(10, MILLISECONDS)
                 // Here we configure a producer using a factory method telling us the configuration mode
-                .receive(TestFilter.NewContract.class).from(jsonStream(inputStream, ONLY_ONCE))
+                .receive(ContractFilter.NewContract.class).from(jsonStream(inputStream, ONLY_ONCE))
 
                 .then().processWith( GenericProcessors::idProcessor )
                 .then().sinkTo( messageCollector::push );

@@ -58,7 +58,7 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 
-    public <R> Binding<T, R> processWith(Step<T,R> successorStep) {
+    public <R> Binding<T, R> processWith(ProcessorStep<T,R> successorStep) {
         return processWith(successorStep.processor());
     }
 
@@ -191,6 +191,13 @@ public class ProcessorBuilder<T> {
         return new Binding<>(streamProcessor, streamProcessor.errorPipe(), streamProcessor.outputPipe(), flowGraph);
     }
 
+    public Binding<T, Void> sinkTo(SinkStep<T> sinkStep) {
+        predecessorPipe.connectTo(sinkStep.processor().inputPipe());
+
+        flowGraph.addProcessor(sinkStep.processor());
+        return new Binding<>(sinkStep.processor(), sinkStep.processor().errorPipe(), null, flowGraph);
+    }
+
     public Binding<T, Void> sinkTo(SerializableConsumer<T> successorFunction) {
         var successor = consumer(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());
@@ -208,7 +215,7 @@ public class ProcessorBuilder<T> {
     }
 
 
-    public <R> Binding<T, R> processWith(Processor<T, R> successor) {
+    public <R> Binding<T, R> processWith(Processor<T, R, ?> successor) {
         predecessorPipe.connectTo(successor.inputPipe());
 
         flowGraph.addProcessor(successor);

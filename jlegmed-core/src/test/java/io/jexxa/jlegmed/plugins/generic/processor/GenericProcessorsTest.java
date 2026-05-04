@@ -16,7 +16,7 @@ class GenericProcessorsTest {
         var inputData = 1;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::idProcessor);
+        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::idProcessor);
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
@@ -36,7 +36,7 @@ class GenericProcessorsTest {
         var expectedResult = 2;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::incrementer);
+        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::incrementer);
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
@@ -55,7 +55,7 @@ class GenericProcessorsTest {
         var inputData = "Hello World!";
         var result = new ArrayList<String>();
 
-        Processor<String, String> objectUnderTest = processor(GenericProcessors::consoleLogger);
+        Processor<String, String,?> objectUnderTest = processor(GenericProcessors::consoleLogger);
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
@@ -75,7 +75,7 @@ class GenericProcessorsTest {
         var expectedSize = 2;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::duplicate);
+        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::duplicate);
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 
@@ -95,7 +95,7 @@ class GenericProcessorsTest {
         var inputData = 1;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer> objectUnderTest = processor(GenericProcessors::devNull);
+        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::devNull);
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 

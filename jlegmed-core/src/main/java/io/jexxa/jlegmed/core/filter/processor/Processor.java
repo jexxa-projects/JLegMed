@@ -16,7 +16,7 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
 
-public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
+public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Filter<S> {
     private OutputPipe<R> outputPipe = null;
     private ErrorPipe<T> errorPipe = null;
     private final boolean filterContextRequired;
@@ -30,8 +30,9 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
     }
 
     @Override
-    protected Processor<T, R> self() {
-        return this;
+    @SuppressWarnings("unchecked")
+    protected S self() {
+        return (S) this;
     }
 
     @Override
@@ -106,7 +107,7 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
                 && !isPropertiesRequired());
     }
 
-    public static  <T, R> Processor<T, R> processor(SerializableBiFunction<T, FilterContext, R> processFunction)
+    public static  <T, R, S extends Processor<T,R,S>> Processor<T, R, S> processor(SerializableBiFunction<T, FilterContext, R> processFunction)
     {
         return new Processor<>(true,
                 filterNameFromLambda(processFunction),
@@ -141,7 +142,7 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
         };
     }
 
-    public static  <T, R> Processor<T, R> processor(PipedProcessor<T, R> pipedProcessor)
+    public static  <T, R, S extends Processor<T, R, S>> Processor<T, R, S> processor(PipedProcessor<T, R> pipedProcessor)
     {
         return new Processor<>(true,
                 filterNameFromLambda(pipedProcessor),
@@ -155,7 +156,7 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
         };
     }
 
-    public static  <T, R> Processor<T, R> processor(SerializableFunction<T, R> processFunction)
+    public static  <T, R, S extends Processor<T, R, S>> Processor<T, R, S> processor(SerializableFunction<T, R> processFunction)
     {
         return new Processor<>(false,
                 filterNameFromLambda(processFunction),
@@ -168,7 +169,7 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
         };
     }
 
-    public static  <T> Processor<T, T> consumer(SerializableBiConsumer<T, FilterContext> processFunction)
+    public static  <T, S extends Processor<T, T, S>> Processor<T, T, S> consumer(SerializableBiConsumer<T, FilterContext> processFunction)
     {
         return new Processor<>(true,
                 filterNameFromLambda(processFunction),
@@ -183,7 +184,7 @@ public abstract class Processor<T, R>  extends Filter<Processor<T, R>> {
     }
 
 
-    public static  <T> Processor<T, T> consumer(SerializableConsumer<T> processFunction)
+    public static  <T, S extends Processor<T, T, S>> Processor<T, T, S> consumer(SerializableConsumer<T> processFunction)
     {
         return new Processor<>(false,
                 filterNameFromLambda(processFunction),

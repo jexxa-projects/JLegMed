@@ -1,11 +1,16 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
 @SuppressWarnings("unused")
-public abstract class StreamProcessor<T, R>  extends Processor<T,R> {
+public abstract class StreamProcessor<T, R>  extends Processor<T,R, StreamProcessor<T, R>> {
     protected StreamProcessor(Class<?> classFromLambda) {
         super(false, classFromLambda.getSimpleName(),  classFromLambda);
     }
 
+
+    @Override
+    protected StreamProcessor<T, R> self() {
+        return this;
+    }
     @Override
     protected R doProcess(T data) {
         doVoidProcess(data);

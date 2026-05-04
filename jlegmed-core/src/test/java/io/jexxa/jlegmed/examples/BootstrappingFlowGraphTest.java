@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static io.jexxa.jlegmed.examples.TestFilter.NewContract.newContract;
+import static io.jexxa.jlegmed.examples.ContractFilter.NewContract.newContract;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,20 +31,20 @@ class BootstrappingFlowGraphTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var dataSource = new Stack<TestFilter.NewContract>();
-        var dataSink = new Stack<TestFilter.NewContract>();
+        var dataSource = new Stack<ContractFilter.NewContract>();
+        var dataSink = new Stack<ContractFilter.NewContract>();
         var counter = new AtomicInteger(1);
         var repeatCounter = 10;
 
         //First, we have to initialize our data source before some other flow graph can start processing
         jlegmed.bootstrapFlowGraph("Setup Contract").repeat(repeatCounter)
-                .receive(TestFilter.NewContract.class)
+                .receive(ContractFilter.NewContract.class)
                 .from(() -> newContract(counter.getAndIncrement()))
                 .then().sinkTo(dataSource::push);
 
         jlegmed.newFlowGraph("Process contracts")
                 .repeat(repeatCounter)
-                .receive(TestFilter.NewContract.class).from(dataSource::pop)
+                .receive(ContractFilter.NewContract.class).from(dataSource::pop)
                 .then().sinkTo( dataSink::push );
         //Act
         jlegmed.start();

@@ -16,7 +16,7 @@ class ProcessorTest {
     {
         //Arrange
         var result = new ArrayList<String>();
-        Processor<String, String> objectUnderTest = processor(data -> data);
+        Processor<String, String,?> objectUnderTest = processor(data -> data);
 
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
@@ -36,7 +36,7 @@ class ProcessorTest {
         //Arrange
         var filterProperties = filterPropertiesOf("someProperties", new Properties());
         var result = new ArrayList<String>();
-        Processor<String, String> objectUnderTest = processor((data, context) -> data + context.propertiesName());
+        Processor<String, String,?> objectUnderTest = processor((data, context) -> data + context.propertiesName());
 
         objectUnderTest.useProperties(filterProperties);
         objectUnderTest.outputPipe().connectTo(result::add);
@@ -55,7 +55,7 @@ class ProcessorTest {
     {
         //Arrange - test a filter that needs multiple processing steps for single input data
         var result = new ArrayList<String>();
-        Processor<String, String> objectUnderTest = processor(
+        Processor<String, String,?> objectUnderTest = processor(
                 (data, processorContext) ->
                 {
                     // Here we tell the processor that we must be called again

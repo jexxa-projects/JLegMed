@@ -17,10 +17,10 @@ import static io.jexxa.adapterapi.invocation.InvocationManager.getRootIntercepto
 
 public class FlowGraph {
     private final Properties properties;
-    private Producer<?> producer;
+    private Producer<?,?> producer;
     private final String flowGraphID;
-    private final List<Filter> filterList = new ArrayList<>();
-    private final List<Processor<?,?>> processorList = new ArrayList<>();
+    private final List<Filter<?>> filterList = new ArrayList<>();
+    private final List<Processor<?,?,?>> processorList = new ArrayList<>();
 
     private final FlowGraphScheduler flowGraphScheduler = new FlowGraphScheduler();
     private boolean strictFailFast = false;
@@ -95,7 +95,7 @@ public class FlowGraph {
         filterList.forEach(Filter::deInit);
     }
 
-    public void setProducer(Producer<?> producer)
+    public void setProducer(Producer<?,?> producer)
     {
         this.producer = producer;
         this.producer.strictFailFast(strictFailFast());
@@ -118,7 +118,7 @@ public class FlowGraph {
         filterList.add(producer);
     }
 
-    public void addProcessor(Processor<?, ?> processor)
+    public void addProcessor(Processor<?, ?,?> processor)
     {
         processor.strictFailFast(strictFailFast());
         if (!processorList.contains(processor)) {
@@ -132,7 +132,7 @@ public class FlowGraph {
         return flowGraphScheduler;
     }
 
-    public <T, U> FlowGraph connect(Producer<T> producer, Processor<T,U> processor)
+    public <T, U> FlowGraph connect(Producer<T,?> producer, Processor<T,U, ?> processor)
     {
         producer.outputPipe().connectTo(processor.inputPipe());
 
@@ -142,7 +142,7 @@ public class FlowGraph {
         return this;
     }
 
-    public <T, U, V> FlowGraph connect(Processor<T, U> predecessor, Processor<U,V> processor)
+    public <T, U, V> FlowGraph connect(Processor<T, U,?> predecessor, Processor<U,V,?> processor)
     {
         predecessor.outputPipe().connectTo(processor.inputPipe());
         addProcessor(predecessor);

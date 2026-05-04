@@ -41,6 +41,11 @@ public class ProducerBuilder<T> {
         return setProducer(streamProducer(function));
     }
 
+    public Binding<T, T> from(SourceStep<T> sourceStep) {
+        return from(sourceStep.producer());
+    }
+
+
 
     public Binding<T, T> from(SerializableSupplier<T> supplier) {
         return setProducer(producer(supplier));

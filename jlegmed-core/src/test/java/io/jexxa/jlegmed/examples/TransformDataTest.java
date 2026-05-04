@@ -36,13 +36,13 @@ class TransformDataTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var messageCollector = new Stack<TestFilter.UpdatedContract>();
+        var messageCollector = new Stack<ContractFilter.UpdatedContract>();
         jlegmed.newFlowGraph("ChangeDataType")
                 .every(10, MILLISECONDS)
 
-                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
+                .receive(ContractFilter.NewContract.class).from(ContractFilter::generateContract)
 
-                .then().processWith(TestFilter::transformToUpdatedContract)
+                .then().processWith(ContractFilter::transformToUpdatedContract)
                 .then().processWith(GenericProcessors::idProcessor)
                 .then().sinkTo( messageCollector::push );
         //Act
@@ -57,14 +57,14 @@ class TransformDataTest {
     @Test
     void testTransformDataWithFilterState() {
         //Arrange
-        var messageCollector = new Stack<TestFilter.UpdatedContract>();
+        var messageCollector = new Stack<ContractFilter.UpdatedContract>();
 
         jlegmed.newFlowGraph("TransformDataWithFilterState")
                 .every(10, MILLISECONDS)
                 //TestFilter::newContract uses FilterContext to manage its state information
-                .receive(TestFilter.NewContract.class).from(TestFilter::newContract)
+                .receive(ContractFilter.NewContract.class).from(ContractFilter::generateContract)
 
-                .then().processWith( TestFilter::contextTransformer).withoutProperties()
+                .then().processWith( ContractFilter::contextTransformer).withoutProperties()
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
@@ -84,7 +84,7 @@ class TransformDataTest {
                 .from(GenericProducer::scheduledCounter)
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .then().processWith( TestFilter::skipEachSecondMessage ).withoutProperties()
+                .then().processWith( ContractFilter::skipEachSecondMessage ).withoutProperties()
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();

@@ -59,7 +59,7 @@
     <apache.commons.lang3>3.20.0</apache.commons.lang3>
     <activemq.artemis.client.version>2.53.0</activemq.artemis.client.version>
     <postgres.version>42.7.11</postgres.version>
-    <slf4j.simple.version>2.0.17</slf4j.simple.version>
+    <slf4j.simple.version>2.0.18</slf4j.simple.version>
     <javalin.version>7.2.0</javalin.version>
     <archunit.version>1.4.2</archunit.version>
 

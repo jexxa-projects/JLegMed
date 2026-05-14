@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[5.4.1] - 2026-05-14
+### Fixed
+- Updated dependencies
+
+
 ## \[5.4.0] - 2026-05-01
 ### Changed
 - PersistentTimer now sends a TimerInterval at a maximum windows size. The default value is 24h. 

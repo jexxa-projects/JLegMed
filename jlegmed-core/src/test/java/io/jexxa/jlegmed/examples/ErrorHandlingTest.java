@@ -48,13 +48,12 @@ class ErrorHandlingTest {
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
-                .every(500, MILLISECONDS)
+                .every(500, MILLISECONDS).receive(String.class)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
-                .receive(String.class).from(() -> "Hello ").onError(ErrorHandlingTest::collectProcessingErrors)
+                // We start with "Hello", extend it with "World" and store the result in a list
+                .from(() -> "Hello ").onError(ErrorHandlingTest::collectProcessingErrors)
 
                 .then().processWith(message-> message + "World")
-
                 .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
 
                 .then().sinkTo(data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
@@ -82,7 +81,7 @@ class ErrorHandlingTest {
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(500, MILLISECONDS)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
+                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ").onError(errorHandler::notify)
                 .then().processWith(message-> message + "World")
                 .then().sinkTo(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
@@ -114,7 +113,7 @@ class ErrorHandlingTest {
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(500, MILLISECONDS)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
+                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> throwRuntimeExceptionIfMessageHelloWorld("Hello World"))
                 .then().sinkTo(errorMessage -> getLogger(ErrorHandlingTest.class).warn(errorMessage));
 

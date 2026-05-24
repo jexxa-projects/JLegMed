@@ -43,7 +43,7 @@ class ReceiveFlowGraphTest {
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(500, MILLISECONDS)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
+                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(() -> "Hello ")
                 .then().processWith(data -> data + "World")
                 .then().sinkTo(data -> result.add(data) );
@@ -69,7 +69,7 @@ class ReceiveFlowGraphTest {
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(1, SECONDS)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
+                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(Instant.class).from(() -> Instant.now())
                 .then().processWith(data -> suspend(data, Duration.of(1, ChronoUnit.SECONDS)))
                 .then().sinkTo(data -> result.add(data) );

@@ -43,7 +43,7 @@ class FlowGraphConfigurationTest {
 
                 // The producer appends some properties-information such as name ...
                 .from( scheduledProducer(context -> "Hello World" + context.propertiesName()))
-                // ... that is injected by method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
+                // ... that is injected by the method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
                 .then().processWith( processor(GenericProcessors::idProcessor ))

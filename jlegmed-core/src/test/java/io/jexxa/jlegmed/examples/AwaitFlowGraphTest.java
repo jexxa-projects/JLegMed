@@ -33,14 +33,15 @@ class AwaitFlowGraphTest {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
         var result = new Stack<String>();
+        var scheduledProducer = scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS);
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
                 // Await enables the producer to decide when to start data processing
                 .await(String.class)
 
-                // We start with "Hello ", extend it with "World" and store the result in a list
-                .from( scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS) )
+                // We start with "Hello", extend it with "World" and store the result in a list
+                .from( scheduledProducer )
                 .then().processWith( AwaitFlowGraphTest::world)
                 .then().sinkTo( result::push );
 

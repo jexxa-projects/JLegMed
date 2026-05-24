@@ -21,8 +21,11 @@ public class ContractSteps {
     public static final ProcessorStep<ContractFilter.UpdatedContract, ContractFilter.UpdatedContract> validateContract =
             processorStep(GenericProcessors::idProcessor);
 
-    public static SinkStep<ContractFilter.UpdatedContract> storeContract(Stack<ContractFilter.UpdatedContract> stack) {
-        System.out.println("Store contract");
+    public static <T> SourceStep<T> readContract (Stack<T> stack) {
+         return sourceStep( stack::pop);
+    }
+
+    public static <T> SinkStep<T> storeContract(Stack<T> stack) {
         return sinkStep(stack::push);
     }
 }

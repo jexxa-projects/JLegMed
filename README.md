@@ -59,8 +59,8 @@ public final class HelloJLegMed
                 .every(1, TimeUnit.SECONDS)
 
                 .receive(String.class).from( () -> "Hello " )
-                .and().processWith(data -> data + "World" )
-                .and().consumeWith(System.out::println);
+                .then().processWith(data -> data + "World" )
+                .then().consumeWith(System.out::println);
 
         jLegMed.run();
     }

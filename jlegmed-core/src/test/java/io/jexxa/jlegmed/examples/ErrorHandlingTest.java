@@ -15,6 +15,7 @@ import java.util.Stack;
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.producer.OnErrorProducer.onErrorProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -45,7 +46,7 @@ class ErrorHandlingTest {
     void testCollectProcessingErrors() {
         //Arrange
         var flowGraphID = "ReceiveHelloWorld";
-        var result = new ArrayList<String>();
+        var result = new Stack<String>();
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
@@ -58,7 +59,7 @@ class ErrorHandlingTest {
 
                 .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
 
-                .then().sinkTo(data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
+                .then().sinkTo(storeMessage(result) ).onError(ErrorHandlingTest::collectProcessingErrors);
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());

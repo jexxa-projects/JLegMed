@@ -22,4 +22,10 @@ public class SourceStep<T> {
         return new SourceStep<>(FunctionalProducer.producer(supplier)
                 .noPropertiesRequired());
     }
+    public static <T> SourceStep<T> sourceStep(PassiveProducer<T> producer ) {
+        return new SourceStep<>(producer
+                .noPropertiesRequired());
+    }
+
+
 }

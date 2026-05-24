@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createDuplicator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,20 +15,20 @@ class GenericProcessorsTest {
     @Test
     void testIdProcessor() {
         //Arrange
-        var inputData = 1;
-        var result = new ArrayList<Integer>();
+        var inputData = "inputData";
+        var result = new ArrayList<String>();
 
-        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::idProcessor);
-        objectUnderTest.outputPipe().connectTo(result::add);
-        objectUnderTest.reachStarted();
+        var objectUnderTest = passthrough;
+        objectUnderTest.processor().outputPipe().connectTo(result::add);
+        objectUnderTest.processor().reachStarted();
 
         //Act
-        objectUnderTest.process(inputData);
+            objectUnderTest.processor().process("inputData");
 
         //Assert
         assertEquals(1, result.size());
         assertEquals(inputData, result.getFirst());
-        objectUnderTest.reachDeInit();
+        objectUnderTest.processor().reachDeInit();
     }
 
     @Test
@@ -75,7 +77,7 @@ class GenericProcessorsTest {
         var expectedSize = 2;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::duplicate);
+        Processor<Integer, Integer,?> objectUnderTest = createDuplicator();
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 

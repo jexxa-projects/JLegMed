@@ -16,5 +16,8 @@ public abstract class StreamProcessor<T, R>  extends Processor<T,R, StreamProces
         doVoidProcess(data);
         return null;
     }
+
+
+
     protected abstract void doVoidProcess(T data);
 }

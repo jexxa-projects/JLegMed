@@ -156,6 +156,13 @@ public class ProcessorBuilder<T> {
         return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
     }
 
+    public <R> Binding<T, R> streamWith(StreamStep<T, R> successor) {
+        predecessorPipe.connectTo(successor.processor().inputPipe());
+
+        flowGraph.addProcessor(successor.processor());
+        return new Binding<>(successor.processor(), successor.processor().errorPipe(), successor.processor().outputPipe(), flowGraph);
+    }
+
     /**
      * Links the current processing step to a subsequent function using 1:n semantics.
      * <p>

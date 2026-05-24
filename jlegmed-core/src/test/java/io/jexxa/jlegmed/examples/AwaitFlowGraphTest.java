@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -33,7 +35,7 @@ class AwaitFlowGraphTest {
         //Arrange
         var flowGraphID = "AwaitHelloWorld";
         var result = new Stack<String>();
-        var scheduledProducer = scheduledProducer(AwaitFlowGraphTest::hello).fixedRate(500, MILLISECONDS);
+        var scheduledProducer = scheduledProducer(() -> "Hello").fixedRate(500, MILLISECONDS);
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
@@ -42,8 +44,8 @@ class AwaitFlowGraphTest {
 
                 // We start with "Hello", extend it with "World" and store the result in a list
                 .from( scheduledProducer )
-                .then().processWith( AwaitFlowGraphTest::world)
-                .then().sinkTo( result::push );
+                .then().processWith( appendWorld )
+                .then().sinkTo( storeMessage( result ) );
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -56,9 +58,4 @@ class AwaitFlowGraphTest {
 
         jlegmed.stop();
     }
-
-    public static String hello() { return "Hello " ;}
-
-    public static String world(String input) { return input + "World" ;}
-
 }

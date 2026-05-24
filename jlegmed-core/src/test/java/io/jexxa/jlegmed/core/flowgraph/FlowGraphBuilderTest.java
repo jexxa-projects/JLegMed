@@ -12,9 +12,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -51,7 +53,7 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> message)
 
-                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith( passthrough )
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
@@ -74,7 +76,7 @@ class FlowGraphBuilderTest {
                 .repeat(3)
                 .receive(String.class).from(() -> message)
 
-                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith(passthrough)
                 .then().sinkTo( messageCollector::push );
 
         //Act
@@ -99,7 +101,7 @@ class FlowGraphBuilderTest {
 
                 .receive(String.class).from(() -> message)
 
-                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith( passthrough )
                 .then().processWith( GenericProcessors::consoleLogger )
                 .then().sinkTo( messageCollector::push );
 
@@ -124,7 +126,7 @@ class FlowGraphBuilderTest {
                 .from(() -> scheduledProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith( passthrough )
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
@@ -167,7 +169,6 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().processWith(GenericProcessors::idProcessor)
                 .then().sinkTo( messageCollector1::push );
 
 
@@ -175,7 +176,6 @@ class FlowGraphBuilderTest {
                 .every(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().processWith(GenericProcessors::idProcessor)
                 .then().sinkTo( messageCollector2::push );
 
         //Act
@@ -196,7 +196,6 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().processWith(GenericProcessors::idProcessor)
                 .then().sinkTo( messageCollector1::push );
 
 

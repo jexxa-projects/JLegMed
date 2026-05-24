@@ -2,14 +2,13 @@ package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -46,7 +45,7 @@ class FlowGraphConfigurationTest {
                 // ... that is injected by the method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
-                .then().processWith( processor(GenericProcessors::idProcessor ))
+                .then().processWith( passthrough )
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
@@ -85,7 +84,7 @@ class FlowGraphConfigurationTest {
 
                 // The producer appends some properties-information such as name ...
                 .from( scheduledProducer(FlowGraphConfigurationTest::defaultProperties))
-                .then().processWith( processor(GenericProcessors::idProcessor ))
+                .then().processWith( passthrough )
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();

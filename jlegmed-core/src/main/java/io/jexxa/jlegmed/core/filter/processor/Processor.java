@@ -131,6 +131,18 @@ public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Fil
         };
     }
 
+    public static  <T, R> ManagedStreamProcessor<T, R> managedStreamProcessor(SerializableBiConsumer<T, FilterContext> streamFunction)
+    {
+        return new ManagedStreamProcessor<>(
+                classNameFromLambda(streamFunction)) {
+            @Override
+            protected void doVoidProcess(T data) {
+                streamFunction.accept(data, filterContext());
+            }
+        };
+    }
+
+
     public static  <T, R> StreamProcessor<T, R> streamProcessor(SerializableBiConsumer<T, OutputPipe<R>> streamFunction)
     {
         return new StreamProcessor<>(
@@ -138,6 +150,18 @@ public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Fil
             @Override
             protected void doVoidProcess(T data) {
                 streamFunction.accept(data, outputPipe());
+            }
+        };
+    }
+
+    public static  <T, R> StreamProcessor<T, R> streamProcessor(SerializableBiFunction<T,FilterContext, R> streamFunction)
+    {
+        return new StreamProcessor<>(
+                classNameFromLambda(streamFunction)) {
+
+            @Override
+            protected void doVoidProcess(T data) {
+                outputPipe().forward( streamFunction.apply(data, filterContext()));
             }
         };
     }
@@ -216,12 +240,17 @@ public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Fil
 
     private void logErrorCause(RuntimeException e)
     {
-        if (e.getCause() != null)
-        {
-            SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getCause().getClass().getSimpleName(), e.getCause().getMessage());
-        } else {
-            SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {} ", name(), e.getClass().getSimpleName(), e.getMessage());
+        Throwable rootCause = e;
+
+        if (e.getCause() != null) {
+            rootCause = e.getCause();
         }
+
+        SLF4jLogger.getLogger(Processor.class).error("{}: Reason: {}: {}",
+                name(),
+                rootCause.getClass().getSimpleName(),
+                rootCause.getMessage()
+        );
     }
 
     private void handleProcessingException(RuntimeException e, T data)

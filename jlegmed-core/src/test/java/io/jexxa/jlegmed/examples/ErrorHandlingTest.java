@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Stack;
 
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
 import static io.jexxa.jlegmed.plugins.generic.producer.OnErrorProducer.onErrorProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -51,9 +53,9 @@ class ErrorHandlingTest {
                 .every(500, MILLISECONDS).receive(String.class)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .from(() -> "Hello ").onError(ErrorHandlingTest::collectProcessingErrors)
+                .from(generateHello).onError(ErrorHandlingTest::collectProcessingErrors)
+                .then().processWith(appendWorld)
 
-                .then().processWith(message-> message + "World")
                 .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
 
                 .then().sinkTo(data -> result.add(data) ).onError(ErrorHandlingTest::collectProcessingErrors);
@@ -82,8 +84,8 @@ class ErrorHandlingTest {
                 .every(500, MILLISECONDS)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .receive(String.class).from(() -> "Hello ").onError(errorHandler::notify)
-                .then().processWith(message-> message + "World")
+                .receive(String.class).from(generateHello).onError(errorHandler::notify)
+                .then().processWith(appendWorld)
                 .then().sinkTo(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
 
 

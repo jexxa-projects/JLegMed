@@ -2,13 +2,17 @@ package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.examples.ContractSteps.contractGenerator;
+import static io.jexxa.jlegmed.examples.ContractSteps.passthroughContract;
+import static io.jexxa.jlegmed.examples.ContractSteps.storeContract;
+import static io.jexxa.jlegmed.examples.ContractSteps.updateContract;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.duplicator;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -36,41 +40,40 @@ class TransformDataTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var messageCollector = new Stack<ContractFilter.UpdatedContract>();
+        var contractStore = new Stack<ContractFilter.UpdatedContract>();
         jlegmed.newFlowGraph("ChangeDataType")
                 .every(10, MILLISECONDS)
+                .receive(ContractFilter.NewContract.class)
 
-                .receive(ContractFilter.NewContract.class).from(ContractFilter::generateContract)
-
-                .then().processWith(ContractFilter::transformToUpdatedContract)
-                .then().processWith(GenericProcessors::idProcessor)
-                .then().sinkTo( messageCollector::push );
+                .from(contractGenerator)
+                .then().processWith(updateContract)
+                .then().processWith( passthroughContract )
+                .then().sinkTo( storeContract(contractStore));
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertFalse( messageCollector.isEmpty());
+        await().atMost(3, SECONDS).until(() -> contractStore.size() >= 3);
+        assertFalse( contractStore.isEmpty());
     }
 
 
     @Test
     void testTransformDataWithFilterState() {
         //Arrange
-        var messageCollector = new Stack<ContractFilter.UpdatedContract>();
+        var contractStorage = new Stack<ContractFilter.UpdatedContract>();
 
         jlegmed.newFlowGraph("TransformDataWithFilterState")
-                .every(10, MILLISECONDS)
-                //TestFilter::newContract uses FilterContext to manage its state information
-                .receive(ContractFilter.NewContract.class).from(ContractFilter::generateContract)
+                .every(10, MILLISECONDS).receive(ContractFilter.NewContract.class)
+                .from(contractGenerator)
 
-                .then().processWith( ContractFilter::contextTransformer).withoutProperties()
-                .then().sinkTo( messageCollector::push );
+                .then().processWith( updateContract)
+                .then().sinkTo( storeContract( contractStorage) );
         //Act
         jlegmed.start();
 
         //Assert
-        await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
+        await().atMost(3, SECONDS).until(() -> contractStorage.size() >= 3);
     }
 
 
@@ -101,12 +104,13 @@ class TransformDataTest {
         //Arrange
         var messageCollector = new Stack<String>();
 
+
         jlegmed.newFlowGraph("DuplicateData")
                 .repeat(2)
                 .receive(String.class).from(() -> "HelloWorld")
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .then().processWith( GenericProcessors::duplicate ).withoutProperties()
+                .then().streamWith( duplicator ).withoutProperties()
                 .then().sinkTo( messageCollector::push );
 
         jlegmed.monitorPipes("DuplicateData", logFunctionStyle());

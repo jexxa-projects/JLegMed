@@ -10,6 +10,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -44,8 +46,8 @@ class ReceiveFlowGraphTest {
                 .every(500, MILLISECONDS)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .receive(String.class).from(() -> "Hello ")
-                .then().processWith(data -> data + "World")
+                .receive(String.class).from(generateHello)
+                .then().processWith(appendWorld)
                 .then().sinkTo(data -> result.add(data) );
 
         // For better understanding, we log the data flow
@@ -69,7 +71,6 @@ class ReceiveFlowGraphTest {
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(1, SECONDS)
 
-                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(Instant.class).from(() -> Instant.now())
                 .then().processWith(data -> suspend(data, Duration.of(1, ChronoUnit.SECONDS)))
                 .then().sinkTo(data -> result.add(data) );

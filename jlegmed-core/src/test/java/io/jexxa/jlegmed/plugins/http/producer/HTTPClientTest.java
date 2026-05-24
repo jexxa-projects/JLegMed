@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.plugins.http.producer;
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
+import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.httpClient;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -72,12 +73,14 @@ class HTTPClientTest {
         var expectedResult = new VersionInfo("a","b", "s", "d" );
         var messageCollector = new Stack<VersionInfo>();
         JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
+        ProcessorStep<VersionInfo, VersionInfo> passthroughVersionInfo = createPassThroughProcessor();
 
         jLegMed.newFlowGraph("HTTPClientFlowGraph")
                 .every(10, MILLISECONDS)
-                .receive(VersionInfo.class).from(httpClient()).useProperties("test-http-connection")
+                .receive(VersionInfo.class)
+                .from(httpClient()).useProperties("test-http-connection")
 
-                .then().processWith( GenericProcessors::idProcessor )
+                .then().processWith( passthroughVersionInfo )
                 .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();

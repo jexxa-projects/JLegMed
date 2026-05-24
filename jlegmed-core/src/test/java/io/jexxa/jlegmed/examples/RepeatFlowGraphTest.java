@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -42,8 +44,8 @@ class RepeatFlowGraphTest {
                 .repeat(repeatCounter).atInterval(50, MILLISECONDS)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .receive(String.class).from(() -> "Hello ")
-                .then().processWith(data -> data + "World")
+                .receive(String.class).from(generateHello)
+                .then().processWith(appendWorld)
                 .then().sinkTo( result::push );
 
         // For better understanding, we log the data flow

@@ -17,8 +17,7 @@ public class StreamStep<T, R> {
     }
 
     StreamStep(StreamProcessor<T, R> processor) {
-        this.processor = processor;
-        this.propertiesName = "";
+        this(processor, "");
     }
 
     public Processor<T, R,?> processor() {
@@ -30,6 +29,9 @@ public class StreamStep<T, R> {
                 .noPropertiesRequired());
     }
 
-
+    public static <T, R> StreamStep<T, R> streamStep(StreamProcessor<T, R> streamProcessor) {
+        return new StreamStep<>( streamProcessor
+                .noPropertiesRequired());
+    }
 
 }

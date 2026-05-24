@@ -1,12 +1,16 @@
 package io.jexxa.jlegmed.plugins.generic.processor;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
-import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.core.filter.processor.StreamProcessor;
+import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
+
+import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
+import static io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep.processorStep;
 
 public class GenericProcessors {
 
-    public static <T> T idProcessor(T data) {
-        return data;
+    public static <T> ProcessorStep<T,T> createPassThroughProcessor() {
+        return processorStep(data -> data);
     }
 
     public static Integer incrementer(Integer counter) {
@@ -19,14 +23,18 @@ public class GenericProcessors {
         return data;
     }
 
-    public static <T> T duplicate(T data, FilterContext context)
+    public static <T> StreamProcessor<T,T> createDuplicator()
     {
-        var filterState = context.processingState();
+        return streamProcessor(
+                (data, processContext) ->
+        {
+            var filterState = processContext.processingState();
 
-        if (!filterState.isProcessingAgain()) {
-            filterState.processAgain();
-        }
-        return data;
+            if (!filterState.isProcessingAgain()) {
+                filterState.processAgain();
+            }
+            return data;
+        });
     }
 
     @SuppressWarnings("java:S1172")

@@ -3,7 +3,7 @@ package io.jexxa.jlegmed.plugins.http.producer;
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -10,6 +10,9 @@ import io.jexxa.jlegmed.core.filter.processor.PipedProcessor;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.filter.processor.StreamProcessor;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.SinkStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.StreamStep;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;

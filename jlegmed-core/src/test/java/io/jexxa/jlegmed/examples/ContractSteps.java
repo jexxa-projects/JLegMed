@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.examples;
 
-import io.jexxa.jlegmed.core.flowgraph.builder.PassiveSourceStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.SinkStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.PassiveSourceStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.SinkStep;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep.processorStep;
-import static io.jexxa.jlegmed.core.flowgraph.builder.SinkStep.sinkStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.SinkStep.sinkStep;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
 
 public class ContractSteps {

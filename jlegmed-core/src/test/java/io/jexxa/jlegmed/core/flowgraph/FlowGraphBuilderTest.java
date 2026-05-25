@@ -17,6 +17,7 @@ import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -54,7 +55,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> message)
 
                 .then().processWith( passthrough )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
 
@@ -77,7 +78,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> message)
 
                 .then().processWith(passthrough)
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
 
         //Act
         jlegmed.start();
@@ -103,7 +104,7 @@ class FlowGraphBuilderTest {
 
                 .then().processWith( passthrough )
                 .then().processWith( GenericProcessors::consoleLogger )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
 
         //Act
         jlegmed.start();
@@ -127,7 +128,7 @@ class FlowGraphBuilderTest {
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .then().processWith( passthrough )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
 
@@ -150,7 +151,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> inputData)
 
                 .then().processWith(data -> data + "-" + data )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
 
@@ -169,14 +170,14 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().sinkTo( messageCollector1::push );
+                .then().sinkTo( storeMessage(messageCollector1) );
 
 
         jlegmed.newFlowGraph("FlowGraph2")
                 .every(20, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().sinkTo( messageCollector2::push );
+                .then().sinkTo( storeMessage(messageCollector2) );
 
         //Act
         jlegmed.start();
@@ -196,7 +197,7 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(Integer.class).from(GenericProducer::counter)
 
-                .then().sinkTo( messageCollector1::push );
+                .then().sinkTo( storeMessage(messageCollector1) );
 
 
         jlegmed.newFlowGraph("Fail Fast flowgraph")
@@ -204,7 +205,7 @@ class FlowGraphBuilderTest {
                 .receive(Integer.class).from(GenericProducer::counter)
 
                 .then().processWith( (data, _) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
-                .then().sinkTo( messageCollector2::push );
+                .then().sinkTo( storeMessage(messageCollector2) );
 
         //Act / assert
         assertThrows(ConfigurationFailedException.class, () -> jlegmed.start());
@@ -225,7 +226,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> inputData)
 
                 .then().streamWith( FlowGraphBuilderTest::streamData )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
 
@@ -248,7 +249,7 @@ class FlowGraphBuilderTest {
                 .receive(String.class).from(() -> inputData)
 
                 .then().streamWith( streamProcessor )
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
 

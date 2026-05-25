@@ -1,9 +1,10 @@
-package io.jexxa.jlegmed.core.flowgraph.builder;
+package io.jexxa.jlegmed.core.flowgraph.steps;
 
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
-public class ActiveSourceStep<T> {
+public class ActiveSourceStep<T> extends Step<ActiveSourceStep<T>> {
     private final ActiveProducer<T> producer;
+
     private ActiveSourceStep(ActiveProducer<T> producer) {
         this.producer = producer;
     }
@@ -14,6 +15,8 @@ public class ActiveSourceStep<T> {
         return new ActiveSourceStep<>(producer
                 .noPropertiesRequired());
     }
+
+
 
 
 }

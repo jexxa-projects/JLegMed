@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.flowgraph.builder;
+package io.jexxa.jlegmed.core.flowgraph.steps;
 
 import io.jexxa.adapterapi.invocation.function.SerializableFunction;
 import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
@@ -6,7 +6,7 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 
-public class PassiveSourceStep<T> {
+public class PassiveSourceStep<T> extends Step<PassiveSourceStep<T>>{
     private final PassiveProducer<T> producer;
     private PassiveSourceStep(PassiveProducer<T> producer) {
         this.producer = producer;

@@ -2,6 +2,7 @@ package io.jexxa.jlegmed.core.flowgraph.builder;
 
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep;
 
 import java.util.function.Supplier;
 

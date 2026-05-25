@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.core.flowgraph.builder;
+package io.jexxa.jlegmed.core.flowgraph.steps;
 
 import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
@@ -7,17 +7,11 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 
-public class StreamStep<T, R> {
+public class StreamStep<T, R> extends Step<StreamStep<T, R>>{
     private final StreamProcessor<T, R> processor;
-    private final String propertiesName;
-
-    StreamStep(StreamProcessor<T, R> processor, String propertiesName) {
-        this.processor = processor;
-        this.propertiesName = propertiesName;
-    }
 
     StreamStep(StreamProcessor<T, R> processor) {
-        this(processor, "");
+        this.processor = processor;
     }
 
     public Processor<T, R,?> processor() {

@@ -25,6 +25,7 @@ public class Binding<T, U> {
         setDefaultProperties();
     }
 
+    @Deprecated
     public Binding<T, U> useProperties(String propertiesPrefix) {
         var properties = PropertiesUtils.filterByPrefix(flowGraph.properties(), propertiesPrefix);
         if (properties.isEmpty()) {
@@ -35,6 +36,7 @@ public class Binding<T, U> {
         return this;
     }
 
+    @Deprecated
     public Binding<T, U> withoutProperties() {
         filter.noPropertiesRequired();
 

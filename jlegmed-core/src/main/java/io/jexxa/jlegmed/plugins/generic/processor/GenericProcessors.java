@@ -2,10 +2,10 @@ package io.jexxa.jlegmed.plugins.generic.processor;
 
 import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.processor.StreamProcessor;
-import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
-import static io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep.processorStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
 
 public class GenericProcessors {
 

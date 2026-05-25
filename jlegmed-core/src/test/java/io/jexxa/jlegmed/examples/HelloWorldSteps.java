@@ -1,18 +1,18 @@
 package io.jexxa.jlegmed.examples;
 
-import io.jexxa.jlegmed.core.flowgraph.builder.ActiveSourceStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.PassiveSourceStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.SinkStep;
-import io.jexxa.jlegmed.core.flowgraph.builder.StreamStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.PassiveSourceStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.SinkStep;
+import io.jexxa.jlegmed.core.flowgraph.steps.StreamStep;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.core.flowgraph.builder.ActiveSourceStep.activeSourceStep;
-import static io.jexxa.jlegmed.core.flowgraph.builder.ProcessorStep.processorStep;
-import static io.jexxa.jlegmed.core.flowgraph.builder.SinkStep.sinkStep;
-import static io.jexxa.jlegmed.core.flowgraph.builder.StreamStep.streamStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep.activeSourceStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.SinkStep.sinkStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

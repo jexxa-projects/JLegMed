@@ -7,6 +7,7 @@ import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PipedProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraphScheduler;
+import io.jexxa.jlegmed.core.flowgraph.steps.PassiveSourceStep;
 
 import java.util.concurrent.TimeUnit;
 

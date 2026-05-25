@@ -79,6 +79,8 @@ public abstract class Filter<T extends Filter<T>> {
                 .name();
     }
 
+
+
     public String defaultPropertiesName()
     {
         return getClass().getSimpleName();

@@ -13,6 +13,10 @@ public class Step<S extends Step<S>> {
         return self();
     }
 
+    public boolean hasProperties() {
+        return !properties.isEmpty();
+    }
+
     public String properties() {
         return properties;
     }

@@ -163,6 +163,10 @@ public class ProcessorBuilder<T> {
         predecessorPipe.connectTo(successor.processor().inputPipe());
 
         flowGraph.addProcessor(successor.processor());
+        if (successor.hasProperties()) {
+            return new Binding<>(successor.processor(), successor.processor().errorPipe(), successor.processor().outputPipe(), flowGraph, successor.properties());
+        }
+
         return new Binding<>(successor.processor(), successor.processor().errorPipe(), successor.processor().outputPipe(), flowGraph);
     }
 

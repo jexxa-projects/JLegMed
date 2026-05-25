@@ -25,6 +25,18 @@ public class Binding<T, U> {
         setDefaultProperties();
     }
 
+    public Binding(Filter<?> filter,
+                   OutputPipe<ProcessingError<T>> errorPipe,
+                   OutputPipe<U> outputPipe,
+                   FlowGraph flowGraph, String propertiesPrefix) {
+        this.filter = filter;
+        this.flowGraph = flowGraph;
+        this.errorPipe = errorPipe;
+        this.outputPipe = outputPipe;
+        setPropertiesInternal(propertiesPrefix);
+    }
+
+
     @Deprecated
     public Binding<T, U> useProperties(String propertiesPrefix) {
         var properties = PropertiesUtils.filterByPrefix(flowGraph.properties(), propertiesPrefix);
@@ -65,4 +77,12 @@ public class Binding<T, U> {
         }
     }
 
+
+    private void setPropertiesInternal(String propertiesPrefix) {
+        var properties = PropertiesUtils.filterByPrefix(flowGraph.properties(), propertiesPrefix);
+        if (properties.isEmpty()) {
+            throw new IllegalArgumentException("Provided properties prefix " + propertiesPrefix + " is empty!");
+        }
+        filter.useProperties(new FilterProperties(propertiesPrefix, properties));
+    }
 }

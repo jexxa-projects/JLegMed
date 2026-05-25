@@ -5,6 +5,7 @@ import io.jexxa.common.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
+import io.jexxa.jlegmed.core.flowgraph.steps.StreamStep;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
@@ -16,6 +17,7 @@ import javax.swing.*;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
+import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
@@ -263,13 +265,17 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var inputData = "Hello World";
+        StreamStep<String, String> managedStreamData = streamStep(
+                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
+                .useProperties("flowgraphconfigurationtest");
+
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .then().streamWith( FlowGraphBuilderTest::managedStreamData ).useProperties("flowgraphconfigurationtest")
-                .then().sinkTo( messageCollector::push );
+                .then().streamWith( managedStreamData )
+                .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
 
@@ -283,14 +289,16 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var inputData = "Hello World";
-        var managedStreamProcessor = Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData );
+        StreamStep<String, String> managedStreamData = streamStep(
+                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
+                .useProperties("flowgraphconfigurationtest");
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(() -> inputData)
 
-                .then().streamWith( managedStreamProcessor ).useProperties("flowgraphconfigurationtest")
-                .then().sinkTo( messageCollector::push );
+                .then().streamWith( managedStreamData )
+                .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
 

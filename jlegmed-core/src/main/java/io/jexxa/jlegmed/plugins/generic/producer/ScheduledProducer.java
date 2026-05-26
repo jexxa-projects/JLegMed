@@ -10,10 +10,12 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
+import io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep;
 
 import java.util.concurrent.TimeUnit;
 
 import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.ScheduledSourceStep.scheduledSourceStep;
 
 public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     private final Scheduler scheduler = new Scheduler();
@@ -153,4 +155,32 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     {
         return new Schedule(fixedRate, timeUnit);
     }
+
+    public static <T> ScheduledSourceStep<T> generate(T message) {
+        return scheduledSourceStep(scheduledProducer(() -> message));
+    }
+
+    public static class ScheduledSourceStep<T> extends ActiveSourceStep<T> {
+        private final ScheduledProducer<T> producer;
+
+        protected ScheduledSourceStep(ScheduledProducer<T> producer) {
+            super(producer);
+            this.producer = producer;
+        }
+
+        public ScheduledSourceStep<T> every(int fixedRate, TimeUnit timeUnit) {
+            producer.fixedRate(fixedRate, timeUnit);
+            return this;
+        }
+
+        public static <T> ScheduledSourceStep<T> scheduledSourceStep(ScheduledProducer<T> producer ) {
+            producer.noPropertiesRequired();
+            return new ScheduledSourceStep<>(producer);
+        }
+
+
+
+
+    }
+
 }

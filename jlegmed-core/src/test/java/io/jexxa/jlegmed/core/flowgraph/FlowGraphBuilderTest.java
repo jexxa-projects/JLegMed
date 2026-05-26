@@ -15,13 +15,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
-import static io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep.activeSourceStep;
 import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
+import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.generate;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -51,11 +50,10 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var message = "Hello World";
-        var messageGenerator = emit(message);
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(messageGenerator)
+                .receive(String.class).from(emit(message))
 
                 .then().processWith( passthrough )
                 .then().sinkTo( storeMessage( messageCollector) );
@@ -64,10 +62,7 @@ class FlowGraphBuilderTest {
 
         //Assert - We expect at least three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-
-        assertEquals(message, messageCollector.toArray()[0]);
-        assertEquals(message, messageCollector.toArray()[1]);
-        assertEquals(message, messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
@@ -88,10 +83,7 @@ class FlowGraphBuilderTest {
 
         //Assert - We expect exactly three messages that must be the string in 'message'
         await().atMost(3, SECONDS).until(() -> messageCollector.size() == 3);
-
-        assertEquals(message, messageCollector.toArray()[0]);
-        assertEquals(message, messageCollector.toArray()[1]);
-        assertEquals(message, messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
@@ -121,13 +113,13 @@ class FlowGraphBuilderTest {
     void testAwaitHelloWorld() {
         //Arrange
         var messageCollector = new Stack<String>();
-        var messageGenerator = activeSourceStep(
-                scheduledProducer(() -> "HelloWorld").fixedRate(50, MILLISECONDS)
-        );
+        var message = "Hello World";
 
         jlegmed.newFlowGraph("AwaitHelloWorld")
                 .await(String.class)
-                .from(messageGenerator)
+                .from(generate(message)
+                        .every(50, MILLISECONDS)
+                )
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .then().processWith( passthrough )
@@ -137,9 +129,7 @@ class FlowGraphBuilderTest {
 
         //Assert - That each second message is skipped
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals("HelloWorld", messageCollector.toArray()[0]);
-        assertEquals("HelloWorld", messageCollector.toArray()[1]);
-        assertEquals("HelloWorld", messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
@@ -222,11 +212,11 @@ class FlowGraphBuilderTest {
     void testStreamData() {
         //Arrange
         var messageCollector = new Stack<String>();
-        var inputData = "Hello World";
+        var message = "Hello World";
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> inputData)
+                .receive(String.class).from(emit(message))
 
                 .then().streamWith( FlowGraphBuilderTest::streamData )
                 .then().sinkTo( storeMessage( messageCollector) );
@@ -235,7 +225,7 @@ class FlowGraphBuilderTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals(inputData, messageCollector.toArray()[0]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
 
@@ -244,12 +234,12 @@ class FlowGraphBuilderTest {
 
         //Arrange
         var messageCollector = new Stack<String>();
-        var inputData = "Hello World";
+        var message = "Hello World";
         var streamProcessor = streamProcessor(FlowGraphBuilderTest::streamData);
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> inputData)
+                .receive(String.class).from(emit(message))
 
                 .then().streamWith( streamProcessor )
                 .then().sinkTo( storeMessage(messageCollector) );
@@ -258,14 +248,14 @@ class FlowGraphBuilderTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals(inputData, messageCollector.toArray()[0]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
     void testManagedStreamData() {
         //Arrange
         var messageCollector = new Stack<String>();
-        var inputData = "Hello World";
+        var message = "Hello World";
         StreamStep<String, String> managedStreamData = streamStep(
                 Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
                 .useProperties("flowgraphconfigurationtest");
@@ -273,7 +263,7 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> inputData)
+                .receive(String.class).from(emit(message))
 
                 .then().streamWith( managedStreamData )
                 .then().sinkTo( storeMessage(messageCollector) );
@@ -282,21 +272,21 @@ class FlowGraphBuilderTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals(inputData, messageCollector.toArray()[0]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
     void testManagedStreamProcessor() {
         //Arrange
         var messageCollector = new Stack<String>();
-        var inputData = "Hello World";
+        var message = "Hello World";
         StreamStep<String, String> managedStreamData = streamStep(
                 Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
                 .useProperties("flowgraphconfigurationtest");
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> inputData)
+                .receive(String.class).from(emit(message))
 
                 .then().streamWith( managedStreamData )
                 .then().sinkTo( storeMessage(messageCollector) );
@@ -305,7 +295,7 @@ class FlowGraphBuilderTest {
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals(inputData, messageCollector.toArray()[0]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
 

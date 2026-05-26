@@ -5,7 +5,7 @@ import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 public class ActiveSourceStep<T> extends Step<ActiveSourceStep<T>> {
     private final ActiveProducer<T> producer;
 
-    private ActiveSourceStep(ActiveProducer<T> producer) {
+    protected ActiveSourceStep(ActiveProducer<T> producer) {
         this.producer = producer;
     }
 

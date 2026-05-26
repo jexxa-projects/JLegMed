@@ -9,5 +9,4 @@ public class GenericProducer {
         return PassiveSourceStep.passiveSourceStep(producer( () -> data));
     }
 
-
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createDuplicator;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.increment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,7 +39,7 @@ class GenericProcessorsTest {
         var expectedResult = 2;
         var result = new ArrayList<Integer>();
 
-        Processor<Integer, Integer,?> objectUnderTest = processor(GenericProcessors::incrementer);
+        Processor<Integer, Integer,?> objectUnderTest = increment().processor();
         objectUnderTest.outputPipe().connectTo(result::add);
         objectUnderTest.reachStarted();
 

@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -40,7 +40,7 @@ class JDBCFlowGraphsIT {
         jLegMed.newFlowGraph("HelloWorld")
 
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().processWith(data -> new DataToBeStored(data, "Hello World " + data))
                 .then().processWith( database::insert).useProperties("test-jdbc-connection")
@@ -67,7 +67,7 @@ class JDBCFlowGraphsIT {
         // Init some test data that should be read
         jLegMed.bootstrapFlowGraph("init test data")
                 .repeat(10)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().processWith(data -> new DataToBeStored(data, "Hello World " + data) )
                 .then().processWith( objectUnderTest::insert ).useProperties("test-jdbc-connection")
@@ -108,7 +108,7 @@ class JDBCFlowGraphsIT {
         //Write continuously data into database
         jLegMed.newFlowGraph("writeToDatabase")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().processWith(data -> new DataToBeStored(data, "Hello World " + data) )
                 .then().processWith( jdbc::insert ).useProperties("test-jdbc-connection")
@@ -151,7 +151,7 @@ class JDBCFlowGraphsIT {
         //Write continuously data into database
         jLegMed.newFlowGraph("writeToDatabase")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().processWith(data -> new DataToBeStored(data, "Hello World " + data))
                 .then().processWith( jdbc::insert).useProperties("test-jdbc-connection")

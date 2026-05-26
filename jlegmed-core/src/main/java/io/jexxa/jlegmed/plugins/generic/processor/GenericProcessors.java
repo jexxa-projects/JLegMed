@@ -9,9 +9,14 @@ import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
 
 public class GenericProcessors {
 
-    public static <T> ProcessorStep<T,T> createPassThroughProcessor() {
+    public static <T> ProcessorStep<T,T> passThrough() {
         return processorStep(data -> data);
     }
+
+    public static ProcessorStep<Integer,Integer> increment() {
+        return processorStep(counter -> ++counter);
+    }
+
 
     public static Integer incrementer(Integer counter) {
         return ++counter;

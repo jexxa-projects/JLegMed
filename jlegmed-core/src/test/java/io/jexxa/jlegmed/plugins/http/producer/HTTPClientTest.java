@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 import static io.jexxa.jlegmed.plugins.http.producer.HTTPClient.httpClient;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -73,7 +73,7 @@ class HTTPClientTest {
         var expectedResult = new VersionInfo("a","b", "s", "d" );
         var messageCollector = new Stack<VersionInfo>();
         JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
-        ProcessorStep<VersionInfo, VersionInfo> passthroughVersionInfo = createPassThroughProcessor();
+        ProcessorStep<VersionInfo, VersionInfo> passthroughVersionInfo = passThrough();
 
         jLegMed.newFlowGraph("HTTPClientFlowGraph")
                 .every(10, MILLISECONDS)

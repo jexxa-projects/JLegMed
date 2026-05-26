@@ -6,7 +6,6 @@ import io.jexxa.common.drivenadapter.outbox.TransactionalOutboxSender;
 import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.messaging.MessageDecoder;
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Stack;
 
 import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
+import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsQueue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSource;
@@ -50,7 +50,7 @@ class MessagingTestIT {
         // Send a simple counter via JMS message queue
         jLegMed.newFlowGraph("Send messages to queue")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo(MyQueue::sendTo).useProperties("test-transactional-outbox-connection");
 
 
@@ -79,7 +79,7 @@ class MessagingTestIT {
         // Send a simple counter via JMS topic
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again
@@ -105,7 +105,7 @@ class MessagingTestIT {
         // Send a simple counter via JMS topic
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again
@@ -131,7 +131,7 @@ class MessagingTestIT {
         // Send a simple counter via JMS topic
         jLegMed.newFlowGraph("MessageSender")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo( MyTopic::sendTo ).useProperties("test-transactional-outbox-connection");
 
         // Receive a message via JMS topic again

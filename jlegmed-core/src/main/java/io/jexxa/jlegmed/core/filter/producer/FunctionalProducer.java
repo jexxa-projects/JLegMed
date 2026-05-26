@@ -15,7 +15,7 @@ import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLa
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 
-    private final String name;
+    private String name;
     protected FunctionalProducer(String name, Class<?> classFromLambda) {
         super(classFromLambda);
         this.name = name;
@@ -29,6 +29,11 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
     @Override
     public String name() {
         return name;
+    }
+
+
+    public void name(String name) {
+        this.name = name;
     }
 
     @Override

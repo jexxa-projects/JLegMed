@@ -1,13 +1,14 @@
 package io.jexxa.jlegmed.plugins.generic.muxer;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static io.jexxa.jlegmed.plugins.generic.muxer.Multiplexer.threadedMultiplexer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -44,19 +45,19 @@ class ThreadedMultiplexerTest {
         //Arrange the first part of the flow graph
         jlegmed.newFlowGraph("First flow graph")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo(muxer::firstInput);
 
         //Arrange the second part of the flow graph
         jlegmed.newFlowGraph("Second flow graph")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
                 .then().sinkTo(muxer::secondInput);
 
         //Arrange the multiplexing part
         jlegmed.newFlowGraph("Multiplexer flow graph ")
                 .await(Integer.class).from(muxer)
-                .then().sinkTo(messageCollector::push);
+                .then().sinkTo(storeMessage(messageCollector));
 
 
         jlegmed.start();

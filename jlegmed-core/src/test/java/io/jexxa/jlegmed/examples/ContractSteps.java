@@ -8,7 +8,7 @@ import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
 import static io.jexxa.jlegmed.core.flowgraph.steps.SinkStep.sinkStep;
-import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 
 public class ContractSteps {
     public static final PassiveSourceStep<ContractFilter.NewContract> contractGenerator =
@@ -18,7 +18,7 @@ public class ContractSteps {
             processorStep(ContractFilter::transformToUpdatedContract);
 
     public static final ProcessorStep<ContractFilter.UpdatedContract, ContractFilter.UpdatedContract> validateContract =
-            createPassThroughProcessor();
+            passThrough();
 
     public static <T> PassiveSourceStep<T> readContract (Stack<T> stack) {
          return PassiveSourceStep.passiveSourceStep( stack::pop);
@@ -29,6 +29,6 @@ public class ContractSteps {
     }
 
     public static final ProcessorStep<ContractFilter.UpdatedContract, ContractFilter.UpdatedContract>
-            passthroughContract = createPassThroughProcessor();
+            passthroughContract = passThrough();
 
 }

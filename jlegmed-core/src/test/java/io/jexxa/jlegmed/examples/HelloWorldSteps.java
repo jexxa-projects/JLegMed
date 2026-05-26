@@ -13,19 +13,19 @@ import static io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep.activeSourc
 import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
 import static io.jexxa.jlegmed.core.flowgraph.steps.SinkStep.sinkStep;
 import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
-import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createPassThroughProcessor;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
+import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class HelloWorldSteps {
-    public static final PassiveSourceStep<String> generateHello =
-            PassiveSourceStep.passiveSourceStep(() -> "Hello");
+    public static final PassiveSourceStep<String> generateHello = emit("Hello");
 
     public static final ProcessorStep<String, String> appendWorld =
             processorStep((data) -> data + " World");
 
 
-    public static final ProcessorStep<String, String>  passthrough = createPassThroughProcessor();
+    public static final ProcessorStep<String, String>  passthrough = passThrough();
 
     public static final StreamStep<String, String> duplicator = streamStep(GenericProcessors.createDuplicator());
 

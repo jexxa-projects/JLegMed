@@ -7,20 +7,20 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.steps.StreamStep;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
-import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep.activeSourceStep;
 import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
-import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.schedule;
+import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
+import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -51,10 +51,11 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var message = "Hello World";
+        var messageGenerator = emit(message);
 
         jlegmed.newFlowGraph("HelloWorld")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> message)
+                .receive(String.class).from(messageGenerator)
 
                 .then().processWith( passthrough )
                 .then().sinkTo( storeMessage( messageCollector) );
@@ -77,7 +78,7 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("RepeatHelloWorld")
                 .repeat(3)
-                .receive(String.class).from(() -> message)
+                .receive(String.class).from(emit(message))
 
                 .then().processWith(passthrough)
                 .then().sinkTo( storeMessage( messageCollector) );
@@ -102,7 +103,7 @@ class FlowGraphBuilderTest {
         jlegmed.newFlowGraph("RepeatAtIntervalHelloWorld")
                 .repeat(3).atInterval(10, MILLISECONDS)
 
-                .receive(String.class).from(() -> message)
+                .receive(String.class).from(emit(message))
 
                 .then().processWith( passthrough )
                 .then().processWith( GenericProcessors::consoleLogger )
@@ -113,20 +114,20 @@ class FlowGraphBuilderTest {
 
         //Assert - We expect exactly three messages that must be the string in 'message'
         await().atMost(10, SECONDS).until(() -> messageCollector.size() == 3);
-
-        assertEquals(message, messageCollector.toArray()[0]);
-        assertEquals(message, messageCollector.toArray()[1]);
-        assertEquals(message, messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 
     @Test
     void testAwaitHelloWorld() {
         //Arrange
         var messageCollector = new Stack<String>();
+        var messageGenerator = activeSourceStep(
+                scheduledProducer(() -> "HelloWorld").fixedRate(50, MILLISECONDS)
+        );
 
         jlegmed.newFlowGraph("AwaitHelloWorld")
                 .await(String.class)
-                .from(() -> scheduledProducer(() -> "HelloWorld", schedule(50, MILLISECONDS)))
+                .from(messageGenerator)
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .then().processWith( passthrough )
@@ -150,7 +151,7 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
-                .receive(String.class).from(() -> inputData)
+                .receive(String.class).from(emit(inputData))
 
                 .then().processWith(data -> data + "-" + data )
                 .then().sinkTo( storeMessage( messageCollector) );
@@ -170,14 +171,14 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("FlowGraph1")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().sinkTo( storeMessage(messageCollector1) );
 
 
         jlegmed.newFlowGraph("FlowGraph2")
                 .every(20, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().sinkTo( storeMessage(messageCollector2) );
 
@@ -197,14 +198,14 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("FlowGraph1")
                 .every(10, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().sinkTo( storeMessage(messageCollector1) );
 
 
         jlegmed.newFlowGraph("Fail Fast flowgraph")
                 .every(20, MILLISECONDS)
-                .receive(Integer.class).from(GenericProducer::counter)
+                .receive(Integer.class).from(counter())
 
                 .then().processWith( (data, _) -> data ) // Here, the method call withoutProperties is missing which causes a fail fast
                 .then().sinkTo( storeMessage(messageCollector2) );

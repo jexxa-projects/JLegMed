@@ -20,8 +20,8 @@ public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Fil
     private OutputPipe<R> outputPipe = null;
     private ErrorPipe<T> errorPipe = null;
     private final boolean filterContextRequired;
-    private final String name;
     private final Class<?> classFromLambda;
+    private String name;
 
     protected Processor(boolean filterContextRequired, String name, Class<?> classFromLambda) {
         this.filterContextRequired = filterContextRequired;
@@ -33,6 +33,11 @@ public abstract class Processor<T, R, S extends Processor<T, R, S>>  extends Fil
     @SuppressWarnings("unchecked")
     protected S self() {
         return (S) this;
+    }
+
+    public void name(String name)
+    {
+        this.name = name;
     }
 
     @Override

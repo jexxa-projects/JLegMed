@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ProcessorTest {
 
     @Test
-    void testFunctionProcessor2()
+    void testFunctionProcessor()
     {
         //Arrange
         var result = new ArrayList<String>();
@@ -36,7 +36,9 @@ class ProcessorTest {
         //Arrange
         var filterProperties = filterPropertiesOf("someProperties", new Properties());
         var result = new ArrayList<String>();
-        Processor<String, String,?> objectUnderTest = processor((data, context) -> data + context.propertiesName());
+        Processor<String, String,?> objectUnderTest = processor(
+                (data, context) -> data + context.propertiesName()
+        );
 
         objectUnderTest.useProperties(filterProperties);
         objectUnderTest.outputPipe().connectTo(result::add);

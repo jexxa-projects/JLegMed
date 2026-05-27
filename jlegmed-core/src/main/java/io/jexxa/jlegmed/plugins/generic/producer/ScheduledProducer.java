@@ -177,10 +177,6 @@ public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
             producer.noPropertiesRequired();
             return new ScheduledSourceStep<>(producer);
         }
-
-
-
-
     }
 
 }

@@ -32,6 +32,10 @@ public class HelloWorldSteps {
         return sinkStep(stack::push);
     }
 
+    public static <T> ProcessorStep<T, T> cacheMessage(Stack<T> stack) {
+        return processorStep(stack::push);
+    }
+
     public static final ActiveSourceStep<String> generateHello = generate("Hello").every(500, MILLISECONDS);
 
 }

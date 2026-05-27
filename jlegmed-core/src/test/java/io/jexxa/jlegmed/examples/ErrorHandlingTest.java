@@ -13,9 +13,13 @@ import java.util.List;
 import java.util.Stack;
 
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ErrorStep.errorStep;
+import static io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep.processorStep;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.cacheMessage;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.emitHello;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
 import static io.jexxa.jlegmed.plugins.generic.producer.OnErrorProducer.onErrorProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -48,18 +52,21 @@ class ErrorHandlingTest {
         var flowGraphID = "ReceiveHelloWorld";
         var result = new Stack<String>();
 
+        var emitErrorHandler = errorStep(ErrorHandlingTest::collectProcessingErrors);
+        var storeErrorHandler = errorStep(ErrorHandlingTest::collectProcessingErrors);
+        var simulateRuntimeException = processorStep(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
+
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
                 //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(500, MILLISECONDS).receive(String.class)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .from(emitHello).onError(ErrorHandlingTest::collectProcessingErrors)
+                .from(emitHello).onError(emitErrorHandler)
+
                 .then().processWith(appendWorld)
-
-                .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
-
-                .then().sinkTo(storeMessage(result) ).onError(ErrorHandlingTest::collectProcessingErrors);
+                .then().processWith( simulateRuntimeException )
+                .then().sinkTo( storeMessage(result) ).onError(storeErrorHandler);
 
         // For better understanding, we log the data flow
         jlegmed.monitorPipes(flowGraphID, logFunctionStyle());
@@ -78,25 +85,22 @@ class ErrorHandlingTest {
         var flowGraphID = "ReceiveHelloWorld";
         var errorHandler = onErrorProducer(ErrorMessage::new);
         var result = new Stack<ErrorMessage>();
+        var simulateRuntimeException = processorStep(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
 
         // Define the flow graph:
         jlegmed.newFlowGraph(flowGraphID)
-                //Using 'every'-statement ensures that the producer is triggered at the specified rate
                 .every(500, MILLISECONDS)
 
-                // We start with "Hello", extend it with "World" and store the result in a list
                 .receive(String.class).from(emitHello).onError(errorHandler::notify)
                 .then().processWith(appendWorld)
-                .then().sinkTo(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
+                .then().processWith(simulateRuntimeException);
 
 
         //Act - Define the flow graph for error handling
         jlegmed.newFlowGraph("Error handling flow graph")
                 .await(ErrorMessage.class).from(errorHandler)
-                .then().processWith(result::push)
-                .then().sinkTo(errorMessage ->
-                            getLogger(ErrorHandlingTest.class).warn("{} {}", errorMessage.data() , errorMessage.processingException().getMessage())
-                );
+                .then().processWith(cacheMessage(result))
+                .then().processWith(logData());
 
 
         jlegmed.start();

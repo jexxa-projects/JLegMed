@@ -112,7 +112,7 @@ class TransformDataTest {
                 .receive(String.class).from(emit(message))
 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .then().streamWith( duplicator ).withoutProperties()
+                .then().streamWith( duplicator )
                 .then().sinkTo( storeMessage( messageCollector ) );
 
         jlegmed.monitorPipes("DuplicateData", logFunctionStyle());

@@ -6,6 +6,7 @@ import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
+import io.jexxa.jlegmed.core.flowgraph.steps.ErrorStep;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.consumer;
@@ -58,6 +59,13 @@ public class Binding<T, U> {
     public Binding<T, U> onError(SerializableConsumer<ProcessingError<T>> errorHandler)
     {
         var errorProcessor = consumer(errorHandler);
+        errorPipe.connectTo(errorProcessor.inputPipe());
+        return this;
+    }
+
+    public Binding<T, U> onError(ErrorStep<T> errorHandler)
+    {
+        var errorProcessor = errorHandler.processor();
         errorPipe.connectTo(errorProcessor.inputPipe());
         return this;
     }

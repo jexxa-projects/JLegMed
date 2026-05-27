@@ -1,7 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPMessagingIT.TestMessage.testMessage;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -37,7 +37,7 @@ class TCPMessagingIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-receiver")
 
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( logData())
                 .then().sinkTo( messageCollector::push );
 
 
@@ -64,7 +64,7 @@ class TCPMessagingIT {
                 .await(TestMessage.class)
                 .from( TCPReceiver::receiveJSON ).useProperties("test-tcp-receiver")
 
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( logData() )
                 .then().sinkTo( messageCollector::push );
 
         // Create a flow graph to send text messages via TCP connection
@@ -72,7 +72,7 @@ class TCPMessagingIT {
                 .every(500, MILLISECONDS)
                 .receive(TestMessage.class).from(() -> testMessage(counter.getAndIncrement(),"Hello World"))
 
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( logData() )
                 .then().sinkTo( TCPConnection::sendJSONMessage ).useProperties("test-tcp-sender");
 
         //Act

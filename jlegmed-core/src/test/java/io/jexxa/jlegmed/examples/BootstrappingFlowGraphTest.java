@@ -44,7 +44,8 @@ class BootstrappingFlowGraphTest {
 
         jlegmed.newFlowGraph("Process contracts")
                 .repeat(repeatCounter)
-                .receive(ContractFilter.NewContract.class).from(readContract(dataStorage))
+                .receive(ContractFilter.NewContract.class)
+                .from(readContract(dataStorage))
 
                 .then().sinkTo( storeContract(results) );
         //Act

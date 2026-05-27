@@ -14,7 +14,7 @@ import java.util.Stack;
 
 import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.emitHello;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.producer.OnErrorProducer.onErrorProducer;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
@@ -54,7 +54,7 @@ class ErrorHandlingTest {
                 .every(500, MILLISECONDS).receive(String.class)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .from(generateHello).onError(ErrorHandlingTest::collectProcessingErrors)
+                .from(emitHello).onError(ErrorHandlingTest::collectProcessingErrors)
                 .then().processWith(appendWorld)
 
                 .then().processWith( ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld)
@@ -85,7 +85,7 @@ class ErrorHandlingTest {
                 .every(500, MILLISECONDS)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .receive(String.class).from(generateHello).onError(errorHandler::notify)
+                .receive(String.class).from(emitHello).onError(errorHandler::notify)
                 .then().processWith(appendWorld)
                 .then().sinkTo(ErrorHandlingTest::throwRuntimeExceptionIfMessageHelloWorld);
 

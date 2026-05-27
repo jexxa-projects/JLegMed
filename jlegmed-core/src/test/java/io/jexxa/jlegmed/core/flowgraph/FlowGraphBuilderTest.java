@@ -7,7 +7,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
 import io.jexxa.jlegmed.core.flowgraph.steps.StreamStep;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,10 @@ import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.generate;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -55,7 +55,7 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(emit(message))
 
-                .then().processWith( passthrough )
+                .then().processWith( passThrough() )
                 .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
@@ -75,7 +75,7 @@ class FlowGraphBuilderTest {
                 .repeat(3)
                 .receive(String.class).from(emit(message))
 
-                .then().processWith(passthrough)
+                .then().processWith(passThrough())
                 .then().sinkTo( storeMessage( messageCollector) );
 
         //Act
@@ -94,11 +94,10 @@ class FlowGraphBuilderTest {
 
         jlegmed.newFlowGraph("RepeatAtIntervalHelloWorld")
                 .repeat(3).atInterval(10, MILLISECONDS)
-
                 .receive(String.class).from(emit(message))
 
-                .then().processWith( passthrough )
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( passThrough() )
+                .then().processWith( logData() )
                 .then().sinkTo( storeMessage( messageCollector) );
 
         //Act
@@ -122,7 +121,7 @@ class FlowGraphBuilderTest {
                 )
                 
                 //Here we configure a processor that uses FilterContext to skip the second message
-                .then().processWith( passthrough )
+                .then().processWith( passThrough() )
                 .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();

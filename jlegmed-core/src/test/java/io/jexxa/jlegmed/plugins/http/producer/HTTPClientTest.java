@@ -3,7 +3,6 @@ package io.jexxa.jlegmed.plugins.http.producer;
 import io.javalin.Javalin;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.VersionInfo;
-import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,14 +72,13 @@ class HTTPClientTest {
         var expectedResult = new VersionInfo("a","b", "s", "d" );
         var messageCollector = new Stack<VersionInfo>();
         JLegMed jLegMed = new JLegMed(HTTPClientTest.class);
-        ProcessorStep<VersionInfo, VersionInfo> passthroughVersionInfo = passThrough();
 
         jLegMed.newFlowGraph("HTTPClientFlowGraph")
                 .every(10, MILLISECONDS)
                 .receive(VersionInfo.class)
                 .from(httpClient()).useProperties("test-http-connection")
 
-                .then().processWith( passthroughVersionInfo )
+                .then().processWith( passThrough() )
                 .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();

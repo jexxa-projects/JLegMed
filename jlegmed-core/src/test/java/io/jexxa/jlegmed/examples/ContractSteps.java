@@ -28,7 +28,5 @@ public class ContractSteps {
         return sinkStep(stack::push);
     }
 
-    public static final ProcessorStep<ContractFilter.UpdatedContract, ContractFilter.UpdatedContract>
-            passthroughContract = passThrough();
 
 }

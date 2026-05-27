@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.appendWorld;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.scheduledHelloGenerator;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.generateHello;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -41,7 +41,7 @@ class AwaitFlowGraphTest {
                 .await(String.class)
 
                 // We start with "Hello", extend it with "World" and store the result in a list
-                .from( scheduledHelloGenerator )
+                .from(generateHello)
                 .then().processWith( appendWorld )
                 .then().sinkTo( storeMessage( result ) );
 

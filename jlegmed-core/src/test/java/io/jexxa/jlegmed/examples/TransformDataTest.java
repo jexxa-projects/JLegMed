@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.examples.ContractSteps.contractGenerator;
-import static io.jexxa.jlegmed.examples.ContractSteps.passthroughContract;
 import static io.jexxa.jlegmed.examples.ContractSteps.storeContract;
 import static io.jexxa.jlegmed.examples.ContractSteps.updateContract;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.duplicator;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
+import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -47,7 +49,7 @@ class TransformDataTest {
 
                 .from(contractGenerator)
                 .then().processWith(updateContract)
-                .then().processWith( passthroughContract )
+                .then().processWith( passThrough() )
                 .then().sinkTo( storeContract(contractStore));
         //Act
         jlegmed.start();
@@ -103,15 +105,15 @@ class TransformDataTest {
     void testDuplicateData() {
         //Arrange
         var messageCollector = new Stack<String>();
-
+        var message = "HelloWorld";
 
         jlegmed.newFlowGraph("DuplicateData")
                 .repeat(2)
-                .receive(String.class).from(() -> "HelloWorld")
+                .receive(String.class).from(emit(message))
 
                 //Here we configure a processor that uses FilterContext to skip the second message
                 .then().streamWith( duplicator ).withoutProperties()
-                .then().sinkTo( messageCollector::push );
+                .then().sinkTo( storeMessage( messageCollector ) );
 
         jlegmed.monitorPipes("DuplicateData", logFunctionStyle());
 
@@ -120,9 +122,6 @@ class TransformDataTest {
 
         //Assert - That each second message is skipped
         await().atMost(3, SECONDS).until(() -> messageCollector.size() == 4);
-        assertEquals("HelloWorld", messageCollector.toArray()[0]);
-        assertEquals("HelloWorld", messageCollector.toArray()[1]);
-        assertEquals("HelloWorld", messageCollector.toArray()[2]);
-        assertEquals("HelloWorld", messageCollector.toArray()[3]);
+        messageCollector.forEach(msg -> assertEquals(message, msg));
     }
 }

@@ -9,6 +9,7 @@ import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createDuplicator;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.increment;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,13 +54,13 @@ class GenericProcessorsTest {
     }
 
     @Test
-    void testConsoleLogger()
+    void testLogData()
     {
         var inputData = "Hello World!";
         var result = new ArrayList<String>();
 
-        Processor<String, String,?> objectUnderTest = processor(GenericProcessors::consoleLogger);
-        objectUnderTest.outputPipe().connectTo(result::add);
+        var objectUnderTest = logData().processor();
+        objectUnderTest.outputPipe().connectTo( data -> result.add(data.toString()));
         objectUnderTest.reachStarted();
 
         //Act

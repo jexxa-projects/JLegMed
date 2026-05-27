@@ -11,9 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.util.Stack;
 
 import static io.jexxa.jlegmed.examples.ContractFilter.NewContract.newContract;
-import static io.jexxa.jlegmed.examples.ContractSteps.passthroughContract;
 import static io.jexxa.jlegmed.examples.ContractSteps.storeContract;
 import static io.jexxa.jlegmed.examples.ContractSteps.updateContract;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.ONLY_ONCE;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.ProducerMode.UNTIL_STOPPED;
 import static io.jexxa.jlegmed.plugins.generic.producer.JSONReader.jsonStream;
@@ -52,7 +52,7 @@ class JSONReaderTest {
                 .from(jsonStream(inputStream, UNTIL_STOPPED))
                 .then().processWith(updateContract)
 
-                .then().processWith( passthroughContract )
+                .then().processWith( passThrough() )
                 .then().sinkTo( storeContract(contractStorage) );
         //Act
         jlegmed.start();
@@ -76,7 +76,7 @@ class JSONReaderTest {
                 .from(jsonStream(inputStream, ONLY_ONCE))
                 .then().processWith(updateContract)
 
-                .then().processWith( passthroughContract )
+                .then().processWith( passThrough() )
                 .then().sinkTo( storeContract(messageCollector) );
         //Act
         jlegmed.start();

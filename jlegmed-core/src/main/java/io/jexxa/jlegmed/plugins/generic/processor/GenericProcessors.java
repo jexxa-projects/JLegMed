@@ -17,15 +17,12 @@ public class GenericProcessors {
         return processorStep(counter -> ++counter);
     }
 
-
-    public static Integer incrementer(Integer counter) {
-        return ++counter;
-    }
-
-    public static <T> T consoleLogger(T data)
+    public static <T> ProcessorStep<T,T> logData()
     {
-        SLF4jLogger.getLogger(GenericProcessors.class).info( "Data : {}", data );
-        return data;
+        return processorStep(data -> {
+            SLF4jLogger.getLogger(GenericProcessors.class).info( "Data : {}", data );
+            return data;
+        });
     }
 
     public static <T> StreamProcessor<T,T> createDuplicator()

@@ -1,13 +1,13 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
 import io.jexxa.jlegmed.core.JLegMed;
-import io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
@@ -35,7 +35,7 @@ class TCPReceiverIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( logData() )
                 .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();
@@ -54,7 +54,7 @@ class TCPReceiverIT {
                 .await(String.class)
                 .from( TCPReceiver::receiveTextMessage).useProperties("test-tcp-sender")
 
-                .then().processWith( GenericProcessors::consoleLogger )
+                .then().processWith( logData() )
                 .then().sinkTo( messageCollector::push );
         //Act
         jLegMed.start();

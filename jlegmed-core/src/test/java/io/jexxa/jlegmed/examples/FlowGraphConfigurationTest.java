@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
+import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.ScheduledProducer.scheduledProducer;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -45,16 +46,14 @@ class FlowGraphConfigurationTest {
                 // ... that is injected by the method useProperties. The properties are read from resources/jlegmed-application.properties. (@see <a href="https://github.com/jexxa-projects/JLegMed/blob/main/jlegmed-core/src/test/resources/jlegmed-application.properties">here</a>)
                 .useProperties(propertiesPrefix)
 
-                .then().processWith( passthrough )
-                .then().sinkTo( messageCollector::push );
+                .then().processWith( passThrough() )
+                .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[0]);
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[1]);
-        assertEquals("Hello World" + propertiesPrefix, messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals("Hello World" + propertiesPrefix, msg));
     }
 
 
@@ -84,16 +83,14 @@ class FlowGraphConfigurationTest {
 
                 // The producer appends some properties-information such as name ...
                 .from( scheduledProducer(FlowGraphConfigurationTest::defaultProperties))
-                .then().processWith( passthrough )
+                .then().processWith( passThrough() )
                 .then().sinkTo( messageCollector::push );
         //Act
         jlegmed.start();
 
         //Assert
         await().atMost(3, SECONDS).until(() -> messageCollector.size() >= 3);
-        assertEquals(expectedResult, messageCollector.toArray()[0]);
-        assertEquals(expectedResult, messageCollector.toArray()[1]);
-        assertEquals(expectedResult, messageCollector.toArray()[2]);
+        messageCollector.forEach(msg -> assertEquals(expectedResult, msg));
 
     }
 

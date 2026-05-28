@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.passthrough;
+import static io.jexxa.jlegmed.examples.plugins.HelloWorldSteps.passthrough;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.createDuplicator;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.increment;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;

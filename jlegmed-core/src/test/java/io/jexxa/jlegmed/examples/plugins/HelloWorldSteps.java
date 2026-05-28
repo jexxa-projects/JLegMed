@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.examples;
+package io.jexxa.jlegmed.examples.plugins;
 
 import io.jexxa.jlegmed.core.flowgraph.steps.ActiveSourceStep;
 import io.jexxa.jlegmed.core.flowgraph.steps.PassiveSourceStep;

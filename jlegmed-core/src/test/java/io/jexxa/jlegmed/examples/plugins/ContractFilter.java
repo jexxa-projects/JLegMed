@@ -1,6 +1,8 @@
-package io.jexxa.jlegmed.examples;
+package io.jexxa.jlegmed.examples.plugins;
 
 import io.jexxa.jlegmed.core.filter.FilterContext;
+import io.jexxa.jlegmed.examples.contract.NewContract;
+import io.jexxa.jlegmed.examples.contract.UpdatedContract;
 
 public class ContractFilter {
     public static NewContract generateContract(FilterContext context) {
@@ -31,14 +33,4 @@ public class ContractFilter {
         return data;
     }
 
-    public record NewContract(int contractNumber)
-    {
-        public static NewContract newContract(int contractNumber)
-        {
-            return new NewContract(contractNumber);
-        }
-    }
-
-    public record UpdatedContract(int contract, String updateInformation) {
-    }
 }

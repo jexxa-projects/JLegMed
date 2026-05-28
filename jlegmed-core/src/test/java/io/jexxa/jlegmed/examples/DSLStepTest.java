@@ -1,16 +1,18 @@
 package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.examples.contract.NewContract;
+import io.jexxa.jlegmed.examples.contract.UpdatedContract;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.examples.ContractSteps.storeContract;
-import static io.jexxa.jlegmed.examples.ContractSteps.contractGenerator;
-import static io.jexxa.jlegmed.examples.ContractSteps.updateContract;
-import static io.jexxa.jlegmed.examples.ContractSteps.validateContract;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.storeContract;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.contractGenerator;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.updateContract;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.validateContract;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -38,11 +40,11 @@ class DSLStepTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var contractStorage = new Stack<ContractFilter.UpdatedContract>();
+        var contractStorage = new Stack<UpdatedContract>();
         jlegmed.newFlowGraph("DSLTest")
                 .every(10, MILLISECONDS)
 
-                .receive(ContractFilter.NewContract.class).from(contractGenerator)
+                .receive(NewContract.class).from(contractGenerator)
                 .then().processWith(updateContract)
                 .then().processWith(validateContract)
                 .then().sinkTo( storeContract( contractStorage) );

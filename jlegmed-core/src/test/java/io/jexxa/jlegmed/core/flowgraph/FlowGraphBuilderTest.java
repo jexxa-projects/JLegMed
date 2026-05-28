@@ -15,7 +15,7 @@ import java.util.Stack;
 
 import static io.jexxa.jlegmed.core.filter.processor.Processor.streamProcessor;
 import static io.jexxa.jlegmed.core.flowgraph.steps.StreamStep.streamStep;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.examples.plugins.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.logData;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;

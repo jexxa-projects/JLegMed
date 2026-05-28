@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.examples.plugins.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.GenericProducer.counter;
 import static io.jexxa.jlegmed.plugins.generic.muxer.Multiplexer.threadedMultiplexer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

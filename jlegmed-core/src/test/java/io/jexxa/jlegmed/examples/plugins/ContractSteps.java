@@ -1,8 +1,10 @@
-package io.jexxa.jlegmed.examples;
+package io.jexxa.jlegmed.examples.plugins;
 
 import io.jexxa.jlegmed.core.flowgraph.steps.PassiveSourceStep;
 import io.jexxa.jlegmed.core.flowgraph.steps.ProcessorStep;
 import io.jexxa.jlegmed.core.flowgraph.steps.SinkStep;
+import io.jexxa.jlegmed.examples.contract.NewContract;
+import io.jexxa.jlegmed.examples.contract.UpdatedContract;
 
 import java.util.Stack;
 
@@ -11,13 +13,13 @@ import static io.jexxa.jlegmed.core.flowgraph.steps.SinkStep.sinkStep;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 
 public class ContractSteps {
-    public static final PassiveSourceStep<ContractFilter.NewContract> contractGenerator =
+    public static final PassiveSourceStep<NewContract> contractGenerator =
             PassiveSourceStep.passiveSourceStep(ContractFilter::generateContract);
 
-    public static final ProcessorStep<ContractFilter.NewContract, ContractFilter.UpdatedContract> updateContract =
+    public static final ProcessorStep<NewContract, UpdatedContract> updateContract =
             processorStep(ContractFilter::transformToUpdatedContract);
 
-    public static final ProcessorStep<ContractFilter.UpdatedContract, ContractFilter.UpdatedContract> validateContract =
+    public static final ProcessorStep<UpdatedContract, UpdatedContract> validateContract =
             passThrough();
 
     public static <T> PassiveSourceStep<T> readContract (Stack<T> stack) {

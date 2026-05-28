@@ -1,6 +1,9 @@
 package io.jexxa.jlegmed.examples;
 
 import io.jexxa.jlegmed.core.JLegMed;
+import io.jexxa.jlegmed.examples.plugins.ContractFilter;
+import io.jexxa.jlegmed.examples.contract.NewContract;
+import io.jexxa.jlegmed.examples.contract.UpdatedContract;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static io.jexxa.jlegmed.examples.ContractSteps.contractGenerator;
-import static io.jexxa.jlegmed.examples.ContractSteps.storeContract;
-import static io.jexxa.jlegmed.examples.ContractSteps.updateContract;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.duplicator;
-import static io.jexxa.jlegmed.examples.HelloWorldSteps.storeMessage;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.contractGenerator;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.storeContract;
+import static io.jexxa.jlegmed.examples.plugins.ContractSteps.updateContract;
+import static io.jexxa.jlegmed.examples.plugins.HelloWorldSteps.duplicator;
+import static io.jexxa.jlegmed.examples.plugins.HelloWorldSteps.storeMessage;
 import static io.jexxa.jlegmed.plugins.generic.processor.GenericProcessors.passThrough;
 import static io.jexxa.jlegmed.plugins.generic.producer.GenericProducer.emit;
 import static io.jexxa.jlegmed.plugins.monitor.LogMonitor.logFunctionStyle;
@@ -42,10 +45,10 @@ class TransformDataTest {
     @Test
     void testChangeDataType() {
         //Arrange
-        var contractStore = new Stack<ContractFilter.UpdatedContract>();
+        var contractStore = new Stack<UpdatedContract>();
         jlegmed.newFlowGraph("ChangeDataType")
                 .every(10, MILLISECONDS)
-                .receive(ContractFilter.NewContract.class)
+                .receive(NewContract.class)
 
                 .from(contractGenerator)
                 .then().processWith(updateContract)
@@ -63,10 +66,10 @@ class TransformDataTest {
     @Test
     void testTransformDataWithFilterState() {
         //Arrange
-        var contractStorage = new Stack<ContractFilter.UpdatedContract>();
+        var contractStorage = new Stack<UpdatedContract>();
 
         jlegmed.newFlowGraph("TransformDataWithFilterState")
-                .every(10, MILLISECONDS).receive(ContractFilter.NewContract.class)
+                .every(10, MILLISECONDS).receive(NewContract.class)
                 .from(contractGenerator)
 
                 .then().processWith( updateContract)

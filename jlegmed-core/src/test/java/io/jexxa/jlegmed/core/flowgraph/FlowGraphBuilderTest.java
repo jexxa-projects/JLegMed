@@ -217,7 +217,7 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(emit(message))
 
-                .then().streamWith( FlowGraphBuilderTest::streamData )
+                .then().streamWith( FlowGraphBuilderTest::module2Filter)
                 .then().sinkTo( storeMessage( messageCollector) );
         //Act
         jlegmed.start();
@@ -234,7 +234,7 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var message = "Hello World";
-        var streamProcessor = streamProcessor(FlowGraphBuilderTest::streamData);
+        var streamProcessor = streamProcessor(FlowGraphBuilderTest::module2Filter);
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
@@ -255,8 +255,8 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var message = "Hello World";
-        StreamStep<String, String> managedStreamData = streamStep(
-                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
+        StreamStep<String, String> dropSecondMessage = streamStep(
+                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedModulo2Filter ))
                 .useProperties("flowgraphconfigurationtest");
 
 
@@ -264,7 +264,7 @@ class FlowGraphBuilderTest {
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(emit(message))
 
-                .then().streamWith( managedStreamData )
+                .then().streamWith( dropSecondMessage )
                 .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
@@ -279,15 +279,15 @@ class FlowGraphBuilderTest {
         //Arrange
         var messageCollector = new Stack<String>();
         var message = "Hello World";
-        StreamStep<String, String> managedStreamData = streamStep(
-                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedStreamData ))
+        StreamStep<String, String> dropSecondMessage = streamStep(
+                Processor.managedStreamProcessor(FlowGraphBuilderTest::managedModulo2Filter ))
                 .useProperties("flowgraphconfigurationtest");
 
         jlegmed.newFlowGraph("ChangeData")
                 .every(10, MILLISECONDS)
                 .receive(String.class).from(emit(message))
 
-                .then().streamWith( managedStreamData )
+                .then().streamWith( dropSecondMessage )
                 .then().sinkTo( storeMessage(messageCollector) );
         //Act
         jlegmed.start();
@@ -298,7 +298,7 @@ class FlowGraphBuilderTest {
     }
 
 
-    private static void streamData(String inputData, OutputPipe<String> outputPipe) {
+    private static void module2Filter(String inputData, OutputPipe<String> outputPipe) {
         ++streamDataCounter;
         if (streamDataCounter % 2 == 0) {
             outputPipe.forward(inputData);
@@ -308,7 +308,7 @@ class FlowGraphBuilderTest {
 
     }
 
-    private static void managedStreamData(String inputData, FilterContext filterContext, OutputPipe<String> outputPipe) {
+    private static void managedModulo2Filter(String inputData, FilterContext filterContext, OutputPipe<String> outputPipe) {
         ++streamDataCounter;
 
         if (streamDataCounter % 2 == 0) {

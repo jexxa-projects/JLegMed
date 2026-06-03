@@ -6,8 +6,6 @@ public abstract class ManagedStreamProcessor<T, R>  extends Processor<T,R, Manag
         super(true, classFromLambda.getSimpleName(),  classFromLambda);
     }
 
-
-
     @Override
     protected R doProcess(T data) {
         doVoidProcess(data);

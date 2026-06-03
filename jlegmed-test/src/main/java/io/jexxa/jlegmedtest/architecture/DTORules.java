@@ -5,11 +5,9 @@ import io.jexxa.jlegmed.annotation.ConsumedMessage;
 import io.jexxa.jlegmed.annotation.DomainEvent;
 import io.jexxa.jlegmed.annotation.EventPayload;
 import io.jexxa.jlegmed.annotation.FlowContract;
-import io.jexxa.jlegmed.annotation.FlowData;
 import io.jexxa.jlegmed.annotation.FlowError;
 import io.jexxa.jlegmed.annotation.MessagePayload;
 import io.jexxa.jlegmed.annotation.ProducedMessage;
-import io.jexxa.jlegmed.annotation.PublishedMessage;
 import io.jexxa.jlegmed.annotation.TelemetryData;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
@@ -17,10 +15,8 @@ import static io.jexxa.jlegmedtest.architecture.PackageName.CONSUMED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.DOMAIN_EVENT;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_CONTRACT;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_CONTRACT_ERROR;
-import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_DATA;
 import static io.jexxa.jlegmedtest.architecture.PackageName.FLOW_ERROR;
 import static io.jexxa.jlegmedtest.architecture.PackageName.PRODUCED_MESSAGE;
-import static io.jexxa.jlegmedtest.architecture.PackageName.PUBLISHED_MESSAGE;
 import static io.jexxa.jlegmedtest.architecture.PackageName.TELEMETRY_DATA;
 
 
@@ -36,13 +32,13 @@ public class DTORules extends ProjectContent {
 
     @Override
     public void validate() {
-        validateFlowData();
+        validateFlowContract();
         validateDomainEvent();
         validateFlowError();
         validateTelemetryData();
-        validatePublishedMessage();
         validateConsumedMessage();
         validateProducedMessage();
+        validateFlowContractError();
     }
 
     protected void validateDomainEvent()
@@ -72,18 +68,6 @@ public class DTORules extends ProjectContent {
         annotationRule.check(importedClasses());
     }
 
-    protected void validateFlowData()
-    {
-        var annotationRule = classes()
-                .that().resideInAnyPackage(FLOW_DATA)
-                .and().areNotAnonymousClasses()
-                .and().areNotNestedClasses()
-                .and().arePublic()
-                .should().beAnnotatedWith(FlowData.class)
-                .allowEmptyShould(true);
-
-        annotationRule.check(importedClasses());
-    }
 
     protected void validateFlowContract()
     {
@@ -124,18 +108,6 @@ public class DTORules extends ProjectContent {
         annotationRule.check(importedClasses());
     }
 
-    protected void validatePublishedMessage()
-    {
-        var annotationRule = classes()
-                .that().resideInAnyPackage(PUBLISHED_MESSAGE)
-                .and().areNotAnonymousClasses()
-                .and().areNotNestedClasses()
-                .and().arePublic()
-                .should().beAnnotatedWith(PublishedMessage.class)
-                .allowEmptyShould(true);
-
-        annotationRule.check(importedClasses());
-    }
     protected void validateProducedMessage()
     {
         var annotationRule = classes()

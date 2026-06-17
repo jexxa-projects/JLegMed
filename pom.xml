@@ -92,7 +92,7 @@
     <maven.build.helper.version>3.4.0</maven.build.helper.version>
     <maven.shade.plugin>3.6.2</maven.shade.plugin>
     <maven.templating.plugin>3.1.0</maven.templating.plugin>
-    <maven.central.publishing.plugin>0.10.0</maven.central.publishing.plugin>
+    <maven.central.publishing.plugin>0.11.0</maven.central.publishing.plugin>
     <maven.sonar.plugin>5.7.0.6970</maven.sonar.plugin>
     <cyclonedx.maven.plugin.version>2.9.1</cyclonedx.maven.plugin.version>
 

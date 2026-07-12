@@ -34,6 +34,7 @@ public class MicrometerMetricsCollector implements JLegMedService  {
 
     }
 
+    @Override
     public void start() {
         registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         initMetrics(registry, jlegMed);
@@ -45,7 +46,7 @@ public class MicrometerMetricsCollector implements JLegMedService  {
         SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Micrometer     : http://localhost:{}{}", prometheusPort, prometheusEndpoint);
     }
 
-
+    @Override
     public void stop() {
         javalin.stop();
     }

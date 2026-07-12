@@ -22,9 +22,12 @@ public class MicrometerMetricsCollector implements JLegMedService  {
     private final JLegMed jlegMed;
     private int prometheusPort;
     private Javalin javalin;
-    private PrometheusMeterRegistry registry;
 
-    public MicrometerMetricsCollector(JLegMed jLegMed) {
+    public static MicrometerMetricsCollector metricsCollector(JLegMed jLegMed) {
+        return new MicrometerMetricsCollector(jLegMed);
+    }
+
+    private MicrometerMetricsCollector(JLegMed jLegMed) {
         this.jlegMed = jLegMed;
         var endpoint = jLegMed.getProperties().getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_ENDPOINT, "/metrics");
         prometheusEndpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
@@ -32,7 +35,7 @@ public class MicrometerMetricsCollector implements JLegMedService  {
                 .getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_PORT, "8080");
         try {
             prometheusPort = Integer.parseInt(configuredPort);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             prometheusPort = 8080;
             SLF4jLogger.getLogger(JLegMed.class).warn(
                     "Invalid value '{}' for property '{}'. Falling back to default port {}.",
@@ -44,7 +47,7 @@ public class MicrometerMetricsCollector implements JLegMedService  {
 
     @Override
     public void start() {
-        registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        var registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         initMetrics(registry, jlegMed);
         JavalinLogger.startupInfo = false;
         javalin = Javalin

@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import static io.jexxa.jlegmed.micrometer.MicrometerMetricsCollector.metricsCollector;
 import static io.jexxa.jlegmed.micrometer.MicrometerProperties.JLEGMED_PROMETHEUS_ENDPOINT;
 import static io.jexxa.jlegmed.micrometer.MicrometerProperties.JLEGMED_PROMETHEUS_PORT;
 import static java.lang.Integer.parseInt;
@@ -25,8 +26,7 @@ class MicrometerMetricsCollectorTest {
         jlegmedProperties.setProperty(JLEGMED_PROMETHEUS_ENDPOINT, "/metrics");
 
         var jlegmed = new JLegMed(MicrometerMetricsCollectorTest.class, jlegmedProperties);
-        var objectUnderTest = new MicrometerMetricsCollector(jlegmed);
-        jlegmed.registerService(objectUnderTest);
+        jlegmed.registerService(metricsCollector(jlegmed));
 
         jlegmed.newFlowGraph("HelloWorld").every(5, TimeUnit.MILLISECONDS)
                 .receive(String.class)
@@ -69,7 +69,7 @@ class MicrometerMetricsCollectorTest {
                         // Wert nach der Klammer ausschneiden und trimmen (z.B. "6820.0")
                         String valueStr = line.substring(closingBracketIndex + 1).trim();
 
-                        // Das ".0" von Prometheus abschneiden, um es sicher in BigInteger zu wandeln
+                        // Das ".0" von Prometheus abschneiden, um es sicher in Integer zu wandeln
                         int dotIndex = valueStr.indexOf('.');
                         if (dotIndex != -1) {
                             valueStr = valueStr.substring(0, dotIndex);

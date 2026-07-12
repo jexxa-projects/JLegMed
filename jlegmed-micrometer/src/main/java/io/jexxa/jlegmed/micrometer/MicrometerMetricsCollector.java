@@ -29,8 +29,17 @@ public class MicrometerMetricsCollector implements JLegMedService  {
         this.jlegMed = jLegMed;
         var endpoint = jLegMed.getProperties().getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_ENDPOINT, "/metrics");
         prometheusEndpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
-        prometheusPort = Integer.parseInt(jLegMed.getProperties()
-                .getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_PORT, "8080"));
+        var configuredPort = jLegMed.getProperties().getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_PORT, "8080");
+        try {
+            prometheusPort = Integer.parseInt(configuredPort);
+        } catch (NumberFormatException e) {
+            prometheusPort = 8080;
+            SLF4jLogger.getLogger(JLegMed.class).warn(
+                    "Invalid value '{}' for property '{}'. Falling back to default port {}.",
+                    configuredPort,
+                    MicrometerProperties.JLEGMED_PROMETHEUS_PORT,
+                    prometheusPort);
+        }
 
     }
 

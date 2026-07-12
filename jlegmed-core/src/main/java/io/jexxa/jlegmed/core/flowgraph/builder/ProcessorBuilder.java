@@ -86,7 +86,7 @@ public class ProcessorBuilder<T> {
 
 
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public <R> Binding<T, R> processWith(PipedProcessor<T, R> successorFunction) {
         var successor = processor(successorFunction);
         predecessorPipe.connectTo(successor.inputPipe());

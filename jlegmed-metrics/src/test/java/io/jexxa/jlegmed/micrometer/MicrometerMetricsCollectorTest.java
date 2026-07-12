@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.jlegmed.micrometer.MicrometerMetricsCollector.metricsCollector;
 import static io.jexxa.jlegmed.micrometer.MicrometerProperties.JLEGMED_PROMETHEUS_ENDPOINT;
 import static io.jexxa.jlegmed.micrometer.MicrometerProperties.JLEGMED_PROMETHEUS_PORT;
 import static java.lang.Integer.parseInt;
@@ -25,8 +24,9 @@ class MicrometerMetricsCollectorTest {
         jlegmedProperties.setProperty(MicrometerProperties.JLEGMED_PROMETHEUS_PORT, "7070");
         jlegmedProperties.setProperty(JLEGMED_PROMETHEUS_ENDPOINT, "/metrics");
 
-        var jlegmed = new JLegMed(MicrometerMetricsCollectorTest.class, jlegmedProperties);
-        jlegmed.registerService(metricsCollector(jlegmed));
+        var jlegmed = new JLegMed(MicrometerMetricsCollectorTest.class, jlegmedProperties)
+                .registerService(MetricsCollector::micrometerCollector);
+
 
         jlegmed.newFlowGraph("HelloWorld").every(5, TimeUnit.MILLISECONDS)
                 .receive(String.class)

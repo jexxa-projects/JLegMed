@@ -765,7 +765,7 @@
 
   <modules>
     <module>jlegmed-core</module>
-    <module>jlegmed-micrometer</module>
+    <module>jlegmed-metrics</module>
     <module>jlegmed-test</module>
   </modules>
 </project>

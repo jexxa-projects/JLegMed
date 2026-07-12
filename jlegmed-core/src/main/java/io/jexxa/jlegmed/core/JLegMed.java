@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
@@ -77,6 +78,10 @@ public final class JLegMed
     public JLegMed registerService(JLegMedService service) {
         jLegMedServices.add(service);
         return this;
+    }
+
+    public JLegMed registerService(Function<JLegMed, JLegMedService> service) {
+        return registerService(service.apply(this));
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)

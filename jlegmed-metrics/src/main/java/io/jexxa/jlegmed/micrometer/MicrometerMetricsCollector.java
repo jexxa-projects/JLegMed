@@ -23,11 +23,8 @@ public class MicrometerMetricsCollector implements JLegMedService  {
     private int prometheusPort;
     private Javalin javalin;
 
-    public static MicrometerMetricsCollector metricsCollector(JLegMed jLegMed) {
-        return new MicrometerMetricsCollector(jLegMed);
-    }
 
-    private MicrometerMetricsCollector(JLegMed jLegMed) {
+    MicrometerMetricsCollector(JLegMed jLegMed) {
         this.jlegMed = jLegMed;
         var endpoint = jLegMed.getProperties().getProperty(MicrometerProperties.JLEGMED_PROMETHEUS_ENDPOINT, "/metrics");
         prometheusEndpoint = endpoint.startsWith("/") ? endpoint : "/" + endpoint;

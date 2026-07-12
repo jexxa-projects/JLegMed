@@ -51,6 +51,7 @@ public final class JLegMed
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;
+    private final List<JLegMedService> jLegMedServices = new ArrayList<>();
 
     private boolean enableBanner = true;
     private boolean strictFailFast = false;
@@ -71,6 +72,11 @@ public final class JLegMed
         this.application = application;
         enableStrictFailFast();
         setExceptionHandler();
+    }
+
+    public JLegMed registerService(JLegMedService service) {
+        jLegMedServices.add(service);
+        return this;
     }
 
     public FlowGraphBuilder newFlowGraph(String flowGraphID)
@@ -117,6 +123,8 @@ public final class JLegMed
                 throw new ConfigurationFailedException(e.getMessage(), e);
             }
         }
+
+        jLegMedServices.forEach(JLegMedService::start);
 
         showPreStartupBanner();
 
@@ -191,8 +199,10 @@ public final class JLegMed
         if (!isStopped) {
             isStopped = true;
             isRunning = false;
-
             flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
+
+            jLegMedServices.forEach(JLegMedService::stop);
+
             JexxaContext.cleanup();
             if (enableBanner) {
                 SLF4jLogger.getLogger(JLegMed.class).info("{} successfully stopped", application.getSimpleName());

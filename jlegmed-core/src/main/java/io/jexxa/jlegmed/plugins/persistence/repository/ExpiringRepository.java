@@ -96,7 +96,7 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
             if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
                 scheduler.shutdownNow(); // Erzwinge Abbruch, wenn es zu lange dauert
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             scheduler.shutdownNow();
             Thread.currentThread().interrupt(); // Status wiederherstellen
         }

@@ -85,7 +85,9 @@ public class ProcessorBuilder<T> {
     }
 
 
-
+    /**
+     *@deprecated for removal
+     */
     @Deprecated(forRemoval = true)
     public <R> Binding<T, R> processWith(PipedProcessor<T, R> successorFunction) {
         var successor = processor(successorFunction);

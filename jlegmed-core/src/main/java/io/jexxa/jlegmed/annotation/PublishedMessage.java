@@ -10,6 +10,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Represents a value that must be published e.g., to a legacy system, but no more
  * context is available to use @DomainEvent or @TelemetryData
+ *@deprecated for removal
  */
 @Target(TYPE)
 @Retention(RUNTIME)

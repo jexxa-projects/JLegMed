@@ -106,6 +106,9 @@ public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
         };
     }
 
+    /**
+     *@deprecated for removal
+     */
     @Deprecated(forRemoval = true)
     public static <T> FunctionalProducer<T> producer(PipedProducer<T> pipedProducer) {
         return new FunctionalProducer<>(

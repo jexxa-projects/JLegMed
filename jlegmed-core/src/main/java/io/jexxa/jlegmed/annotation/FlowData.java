@@ -9,6 +9,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Represents data transported in between Filters that is not published.
+ * @deprecated for removal
  */
 @Target(TYPE)
 @Retention(RUNTIME)

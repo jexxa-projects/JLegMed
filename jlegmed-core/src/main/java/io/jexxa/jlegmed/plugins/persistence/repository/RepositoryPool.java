@@ -114,13 +114,12 @@ public class RepositoryPool {
 
     private void initS3Sessions(Properties properties)
     {
-        if (properties.containsKey(repositoryStrategy()))
+        if ( properties.containsKey(repositoryStrategy()) &&
+            !properties.getProperty(repositoryStrategy()).equals(S3KeyValueRepository.class.getName()))
         {
-            if (!properties.getProperty(repositoryStrategy()).equals(S3KeyValueRepository.class.getName()))
-            {
-                return;
-            }
+            return;
         }
+
 
         try {
             if (properties.containsKey(s3Endpoint()))
@@ -135,13 +134,12 @@ public class RepositoryPool {
 
     private void initJDBCSessions(Properties properties)
     {
-        if (properties.containsKey(repositoryStrategy()))
+        if ( properties.containsKey(repositoryStrategy()) &&
+            !properties.getProperty(repositoryStrategy()).equals(JDBCKeyValueRepository.class.getName()))
         {
-            if (!properties.getProperty(repositoryStrategy()).equals(JDBCKeyValueRepository.class.getName()))
-            {
-                return;
-            }
+            return;
         }
+
 
         try {
             if (properties.containsKey(jdbcUrl()))

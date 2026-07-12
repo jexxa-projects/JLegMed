@@ -5,7 +5,6 @@ import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -68,8 +67,4 @@ class ExpiringRepositoryIT {
         await().atMost(4, SECONDS).until(() -> objectUnderTest.get().isEmpty());
     }
 
-
-    @Test
-    void expireAt() {
-    }
 }

@@ -63,7 +63,7 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
     }
 
     @Override
-    synchronized public K remove(K key) {
+    public synchronized K remove(K key) {
         var keyIdent = JSONManager.getJSONConverter().toJson(key);
         super.remove(key);
         if (ttlRepository.get(keyIdent).isPresent()) {
@@ -72,7 +72,7 @@ public class ExpiringRepository<T,K> extends Repository<T, K>{
         return key;
     }
 
-    synchronized public void purgeData() {
+    public synchronized void purgeData() {
         var expiredData = ttlRepository
                 .get()
                 .stream()

@@ -37,7 +37,7 @@ public class Repository<T, K> {
      * @param aggregate that should be updated
      * @pre Given aggregate must be added by using {@link #add(Object)}}
      */
-    synchronized public T update(T aggregate)
+    public synchronized T update(T aggregate)
     {
         iRepository.update(aggregate);
         return aggregate;
@@ -48,12 +48,12 @@ public class Repository<T, K> {
      * @param key to the aggregate to be removed
      * @pre Aggregate must be added by using {@link #add(Object)}}
      */
-    synchronized public K remove(K key) {
+    public synchronized K remove(K key) {
         iRepository.remove(key);
         return key;
     }
 
-    synchronized public void removeAll() {
+    public synchronized void removeAll() {
         iRepository.get().forEach(element -> remove(keyFunction.apply(element)));
     }
 
@@ -63,7 +63,7 @@ public class Repository<T, K> {
      * @param aggregate that should be added
      * @pre Aggregate must not be added before
      */
-    synchronized public T add(T aggregate) {
+    public synchronized T add(T aggregate) {
         iRepository.add(aggregate);
         return aggregate;
     }
@@ -72,7 +72,7 @@ public class Repository<T, K> {
      * Either updates an aggregate if exists, or adds an aggregate to this repository
      * @param aggregate that should be added or updated
      */
-    synchronized public T put(T aggregate) {
+    public synchronized T put(T aggregate) {
         if ( get(keyFunction.apply(aggregate)).isPresent()) {
             return update(aggregate);
         }
@@ -85,12 +85,12 @@ public class Repository<T, K> {
      * @param key that identifies the aggregate
      * @return Optional of aggregate. Optional is empty if given key finds no aggregate.
      */
-    synchronized public Optional<T> get(K key)
+    public synchronized Optional<T> get(K key)
     {
         return iRepository.get(key);
     }
 
-    synchronized public List<T> get()
+    public synchronized List<T> get()
     {
 
         return iRepository.get();

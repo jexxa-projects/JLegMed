@@ -41,6 +41,19 @@ low-effort and highly informative.
 
 - **Easy Integration**  
   Works well with JMS, JDBC, TCP, Kafka, S3, and similar technologies
+## 🔌 Enterprise-Grade & Field-Tested
+
+Modern enterprises rarely start with a blank slate. The ultimate architectural challenge is integrating reliable, long-running systems with modern, cloud-native environments. JLegMed was built specifically to solve this.
+
+### Connecting the Physical World to the Cloud
+JLegMed is field-tested and actively used to bridge technical generations. Its deployment spectrum ranges from **heavy process industries (handling high-stakes industrial automation data in steel production)** to **evaluation by leading modern tech platforms**.
+
+It serves as the architectural glue that allows "old" infrastructure and "new" technology to talk to each other seamlessly.
+
+### How JLegMed Bridges the Gap
+*   **Streamlined Data Routing:** JLegMed provides a lightweight, declarative way to define data pipelines. It safely ingests data from legacy industrial protocols or on-premise databases, processes it via clean domain logic, and routes it into modern cloud architectures or messaging systems.
+*   **Architecture-First Integration:** Instead of writing messy, high-maintenance integration scripts, JLegMed enforces a clean separation between data transport (infrastructure) and data transformation (domain).
+*   **Reliable and Lightweight:** Designed for environments where data gaps or system downtime cause severe real-world consequences, JLegMed operates with minimal footprint and maximum predictability.
 
 ## 📋 Requirements
 
@@ -89,8 +102,8 @@ Maven:
 Gradle:
 
 ```groovy
-compile "io.jexxa:jlegmed-core:5.5.0"
-compile "org.slf4j:slf4j-simple:2.0.18"
+implementation "io.jexxa:jlegmed-core:5.5.0"
+implementation "org.slf4j:slf4j-simple:2.0.18"
 ``` 
 ## 📚 Use Cases with Examples
 

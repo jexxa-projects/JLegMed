@@ -8,6 +8,9 @@ updates:
     # Check for updates once daily
     schedule:
       interval: "daily"
+    cooldown: ## we trust ourselves ;-)
+      exclude:
+        - "io.jexxa.*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

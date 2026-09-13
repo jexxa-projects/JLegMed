@@ -55,6 +55,14 @@ It serves as the architectural glue that allows "old" infrastructure and "new" t
 *   **Architecture-First Integration:** Instead of writing messy, high-maintenance integration scripts, JLegMed enforces a clean separation between data transport (infrastructure) and data transformation (domain).
 *   **Reliable and Lightweight:** Designed for environments where data gaps or system downtime cause severe real-world consequences, JLegMed operates with minimal footprint and maximum predictability.
 
+## 🌱 Open Source & Commercial Services
+
+**JLegMed is and will remain open source.** Commercial services are optional, and using the project does not require a commercial agreement.
+
+For organizations adopting JLegMed, [MCR Intelligence](https://mcr-intelligence.de) offers commercial consulting and implementation support for domain-centric / event-driven architecture and integration into existing system landscapes.
+
+The project is freely available to the community; professional services provide dedicated assistance for your organization's specific needs.
+
 ## 📋 Requirements
 
 - Java **25 or higher**

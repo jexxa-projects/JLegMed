@@ -6,8 +6,8 @@ We actively provide security updates for the following versions:
 
 | Version | Supported          |
 |---------| ------------------ |
-| 5.3.x   | :white_check_mark: |
-| < 5.3.0 | :x:                |
+| 5.5.x   | :white_check_mark: |
+| < 5.5.0 | :x:                |
 
 ## KRITIS Compliance & SBOM (BSI TR-03183)
 This project aims for compliance with the German BSI Technical Guideline **TR-03183** for Cyber Resilience.

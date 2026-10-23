@@ -62,7 +62,7 @@
     <slf4j.simple.version>2.0.20</slf4j.simple.version>
     <javalin.version>7.2.3</javalin.version>
     <archunit.version>1.5.1</archunit.version>
-    <micrometer.version>1.17.1</micrometer.version>
+    <micrometer.version>1.17.2</micrometer.version>
 
 
     <!-- server-name used in mavens settings.xml to find to your repository credentials -->

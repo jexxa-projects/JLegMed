@@ -32,8 +32,8 @@ jobs:
       minio:
         image: lazybit/minio
         ports:
-          - 8100:9000
-          - 8101:9001
+          - 8110:9000
+          - 8111:9001
         env:
           MINIO_ROOT_USER: minioadmin      # Admin Access Key
           MINIO_ROOT_PASSWORD: minioadmin

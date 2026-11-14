@@ -7,7 +7,9 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 public class StatefulFilter {
 
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext) {
-        return RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
+        RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
+        System.out.println(RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
+        return textEntity;
     }
 
     public static void read(FilterContext filterContext, OutputPipe<TextEntity> outputPipe) {

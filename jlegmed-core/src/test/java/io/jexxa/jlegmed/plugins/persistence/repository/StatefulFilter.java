@@ -21,7 +21,7 @@ public class StatefulFilter {
     public static void dropTable(FilterContext filterContext) {
         JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)
                 .tableCommand()
-                .dropTableIfExists(TextEntity.class.getSimpleName())
+                .dropTable(TextEntity.class.getSimpleName())
                 .asIgnore();
 
         System.out.println("Amount after drop table" + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().size());

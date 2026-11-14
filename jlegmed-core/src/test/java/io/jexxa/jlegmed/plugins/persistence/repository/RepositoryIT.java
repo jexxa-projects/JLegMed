@@ -1,5 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
+import io.jexxa.common.facade.jdbc.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ class RepositoryIT {
         jLegMed = new JLegMed(RepositoryIT.class)
                 .useTechnology(RepositoryPool.class)
                 .disableBanner();
+        JDBCConnectionPool.enableConnectionSharing();
     }
 
     @AfterEach

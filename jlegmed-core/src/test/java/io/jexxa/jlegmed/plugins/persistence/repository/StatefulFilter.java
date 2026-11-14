@@ -7,10 +7,10 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 public class StatefulFilter {
 
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext) {
-        System.out.println(RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
+        System.out.println("> " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
 
         RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
-        System.out.println(RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
+        System.out.println("< " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
         return textEntity;
     }
 
@@ -23,5 +23,8 @@ public class StatefulFilter {
                 .tableCommand()
                 .dropTableIfExists(TextEntity.class.getSimpleName())
                 .asIgnore();
+
+        System.out.println("Amount after drop table" + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().size());
+
     }
 }

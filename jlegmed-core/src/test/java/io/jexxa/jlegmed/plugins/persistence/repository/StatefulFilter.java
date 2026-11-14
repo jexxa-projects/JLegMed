@@ -10,10 +10,10 @@ import java.util.Locale;
 public class StatefulFilter {
 
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext) {
-        System.out.println("> " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
+        System.err.println("> " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
 
         RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
-        System.out.println("< " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
+        System.err.println("< " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
         return textEntity;
     }
 
@@ -22,7 +22,7 @@ public class StatefulFilter {
     }
 
     public static void dropTable(FilterContext filterContext) {
-        System.out.println(filterContext.properties());
+        System.err.println(filterContext.properties());
         try {
             JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)
                     .tableCommand()
@@ -48,7 +48,7 @@ public class StatefulFilter {
     } catch (IllegalArgumentException ex) {
             System.err.println(ex.getCause().getMessage());
         }
-        System.out.println("Amount after drop table" + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().size());
+        System.err.println("Amount after drop table" + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().size());
 
     }
 }

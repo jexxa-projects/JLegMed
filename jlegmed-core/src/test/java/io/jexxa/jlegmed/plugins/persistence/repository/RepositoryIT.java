@@ -43,7 +43,7 @@ class RepositoryIT {
         var messageCollector = new Stack<TextEntity>();
 
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(StatefulFilter::dropTable);
+                .execute(StatefulFilter::clearTable);
 
 
         jLegMed.newFlowGraph("HelloWorld")
@@ -83,7 +83,7 @@ class RepositoryIT {
 
     private void bootstrapTestData(JLegMed jLegMed, int numberOfData) {
         jLegMed.bootstrapFlowGraph("reset database")
-                .execute(StatefulFilter::dropTable);
+                .execute(StatefulFilter::clearTable);
 
         jLegMed.bootstrapFlowGraph("Init test data")
                 .repeat(numberOfData)

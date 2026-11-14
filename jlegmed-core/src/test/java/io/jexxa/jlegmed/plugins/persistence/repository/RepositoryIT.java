@@ -4,6 +4,8 @@ import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.Stack;
 import java.util.UUID;
@@ -13,6 +15,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Execution(ExecutionMode.SAME_THREAD)
 class RepositoryIT {
 
     private static JLegMed jLegMed;

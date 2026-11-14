@@ -22,6 +22,8 @@ public class StatefulFilter {
     }
 
     public static void dropTable(FilterContext filterContext) {
+        RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).removeAll();
+
         System.err.println(filterContext.properties());
         try {
             JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)

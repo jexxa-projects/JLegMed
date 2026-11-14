@@ -6,10 +6,7 @@ import io.jexxa.jlegmed.core.pipes.OutputPipe;
 public class StatefulFilter {
 
     public static TextEntity add(TextEntity textEntity, FilterContext filterContext) {
-        System.err.println("> " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
-
         RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).add(textEntity);
-        System.err.println("< " + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).repository().get().size());
         return textEntity;
     }
 

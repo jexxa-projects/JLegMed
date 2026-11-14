@@ -27,6 +27,16 @@ public class StatefulFilter {
                 .dropTable(TextEntity.class.getSimpleName().toLowerCase(Locale.ROOT))
                 .asIgnore();
 
+        JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)
+                .tableCommand()
+                .dropTable(TextEntity.class.getSimpleName().toUpperCase(Locale.ROOT))
+                .asIgnore();
+
+        JDBCConnectionPool.getJDBCConnection(filterContext.properties(), filterContext)
+                .tableCommand()
+                .dropTable(TextEntity.class.getSimpleName())
+                .asIgnore();
+
         System.out.println("Amount after drop table" + RepositoryPool.getRepository(TextEntity.class, TextEntity::key, filterContext).get().size());
 
     }

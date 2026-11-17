@@ -3,8 +3,9 @@ package io.jexxa.jlegmed.core.filter;
 import java.io.Serializable;
 import java.util.Properties;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.methodNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.methodNameFromLambda;
+
 
 /**
  * A filter is an object that can be used to produce or process the data

@@ -1,8 +1,8 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
-import io.jexxa.adapterapi.invocation.InvocationManager;
-import io.jexxa.common.facade.utils.function.ThrowingBiFunction;
-import io.jexxa.common.facade.utils.function.ThrowingFunction;
+import io.jexxa.adapters.api.invocation.InvocationManager;
+import io.jexxa.adapters.core.facade.utils.function.ThrowingBiFunction;
+import io.jexxa.adapters.core.facade.utils.function.ThrowingFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
@@ -16,9 +16,10 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
-import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
-import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.core.facade.json.JSONManager.getJSONConverter;
+import static io.jexxa.adapters.core.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.plugins.messaging.tcp.TCPProperties.TCP_PORT;
 
 public abstract class TCPReceiver<T> extends ActiveProducer<T> {

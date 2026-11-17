@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
+import io.jexxa.adapters.api.ConfigurationFailedException;
 import io.jexxa.jlegmed.core.JLegMed;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

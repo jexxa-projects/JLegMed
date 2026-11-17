@@ -1,9 +1,9 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableBiConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableFunction;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.processor.ManagedStreamProcessor;
 import io.jexxa.jlegmed.core.filter.processor.PipedProcessor;

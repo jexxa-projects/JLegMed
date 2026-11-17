@@ -1,11 +1,12 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
 
-import io.jexxa.adapterapi.drivingadapter.IDrivingAdapter;
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.common.drivingadapter.messaging.jms.JMSAdapter;
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
-import io.jexxa.common.drivingadapter.messaging.jms.listener.StringMessageListener;
+
+import io.jexxa.adapters.api.drivingadapter.IDrivingAdapter;
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.jms.drivingadapter.JMSAdapter;
+import io.jexxa.adapters.jms.drivingadapter.JMSConfiguration;
+import io.jexxa.adapters.jms.drivingadapter.listener.StringMessageListener;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;

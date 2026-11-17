@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.plugins.persistence.timer;
 
-import io.jexxa.common.drivenadapter.persistence.RepositoryFactory;
-import io.jexxa.common.drivenadapter.persistence.repository.imdb.IMDBRepository;
+
+import io.jexxa.adapters.core.drivenadapter.persistence.RepositoryFactory;
+import io.jexxa.adapters.core.drivenadapter.persistence.repository.imdb.IMDBRepository;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
@@ -16,7 +17,7 @@ import java.util.Properties;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.common.facade.utils.properties.PropertiesUtils.filterByPrefix;
+import static io.jexxa.adapters.core.facade.utils.properties.PropertiesUtils.filterByPrefix;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.managedStreamProcessor;
 import static io.jexxa.jlegmed.core.filter.processor.Processor.processor;
 import static io.jexxa.jlegmed.plugins.persistence.timer.PersistentTimer.START_TIME;

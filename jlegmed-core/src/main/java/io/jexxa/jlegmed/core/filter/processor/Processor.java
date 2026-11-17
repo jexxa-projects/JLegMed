@@ -1,11 +1,12 @@
 package io.jexxa.jlegmed.core.filter.processor;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.invocation.function.SerializableBiConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.invocation.function.SerializableBiConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableFunction;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
@@ -14,7 +15,8 @@ import io.jexxa.jlegmed.core.pipes.ErrorPipe;
 import io.jexxa.jlegmed.core.pipes.InputPipe;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
+
 
 public abstract class Processor<T, R>  extends Filter {
     private OutputPipe<R> outputPipe = null;

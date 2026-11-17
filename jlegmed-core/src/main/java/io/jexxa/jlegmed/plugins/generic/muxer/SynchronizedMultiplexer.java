@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.generic.muxer;
 
-import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 import io.jexxa.jlegmed.plugins.generic.producer.ThreadedProducer;

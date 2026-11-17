@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
+
+import io.jexxa.adapters.api.invocation.function.SerializableFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 import io.jexxa.jlegmed.core.filter.producer.PipedProducer;

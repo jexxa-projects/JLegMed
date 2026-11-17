@@ -1,17 +1,18 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.common.facade.jms.JMSProperties;
+
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.JexxaContext;
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.core.drivenadapter.messaging.MessageSender;
+import io.jexxa.adapters.jms.facade.JMSProperties;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
+import static io.jexxa.adapters.core.drivenadapter.messaging.MessageSenderFactory.createMessageSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.queue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSSource.topic;
 

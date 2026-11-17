@@ -1,14 +1,11 @@
 package io.jexxa.jlegmed.core;
 
-
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
-import io.jexxa.adapterapi.invocation.InvocationManager;
-import io.jexxa.adapterapi.invocation.SharedInvocationHandler;
-import io.jexxa.adapterapi.invocation.TransactionalInvocationHandler;
-import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.JexxaContext;
+import io.jexxa.adapters.api.interceptor.BeforeInterceptor;
+import io.jexxa.adapters.api.invocation.InvocationManager;
+import io.jexxa.adapters.api.invocation.SharedInvocationHandler;
+import io.jexxa.adapters.api.invocation.TransactionalInvocationHandler;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.builder.BootstrapBuilder;
@@ -30,8 +27,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
-import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+
+import static io.jexxa.adapters.core.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
+import static io.jexxa.adapters.core.facade.logger.SLF4jLogger.getLogger;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_BUILD_TIMESTAMP;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_NAME;
 import static io.jexxa.jlegmed.core.JLegMedProperties.JLEGMED_APPLICATION_PROPERTIES;
@@ -66,7 +64,7 @@ public final class JLegMed
     {
         JexxaContext.init();
         InvocationManager.setDefaultInvocationHandler(new SharedInvocationHandler());
-        setDefaultMessageSender(JMSSender.class);
+        //setDefaultMessageSender(JMSSender.class); //TODO
 
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);
@@ -210,7 +208,7 @@ public final class JLegMed
 
             JexxaContext.cleanup();
             if (enableBanner) {
-                SLF4jLogger.getLogger(JLegMed.class).info("{} successfully stopped", application.getSimpleName());
+                getLogger(JLegMed.class).info("{} successfully stopped", application.getSimpleName());
             }
         }
     }
@@ -304,10 +302,10 @@ public final class JLegMed
         if(enableBanner) {
             var propertiesFiles = Arrays.toString(propertiesLoader.getPropertiesFiles().toArray());
 
-            SLF4jLogger.getLogger(JLegMed.class).info("Start application      : {}", application.getSimpleName());
-            SLF4jLogger.getLogger(JLegMed.class).info("JLegMed Info           : {}", jlegmedInfo());
-            SLF4jLogger.getLogger(JLegMed.class).info("Application Info       : {}", applicationInfo());
-            SLF4jLogger.getLogger(JLegMed.class).info("Used Properties Files  : {}", propertiesFiles);
+            getLogger(JLegMed.class).info("Start application      : {}", application.getSimpleName());
+            getLogger(JLegMed.class).info("JLegMed Info           : {}", jlegmedInfo());
+            getLogger(JLegMed.class).info("Application Info       : {}", applicationInfo());
+            getLogger(JLegMed.class).info("Used Properties Files  : {}", propertiesFiles);
         }
     }
 
@@ -322,7 +320,7 @@ public final class JLegMed
     private void showPostStartupBanner()
     {
         if(enableBanner) {
-            SLF4jLogger.getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
+            getLogger(JLegMed.class).info("{} successfully started", application.getSimpleName());
         }
     }
 

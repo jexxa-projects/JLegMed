@@ -1,8 +1,9 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
-import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
-import io.jexxa.adapterapi.invocation.InvocationContext;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+
+import io.jexxa.adapters.api.interceptor.BeforeInterceptor;
+import io.jexxa.adapters.api.invocation.InvocationContext;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 
 import java.util.ArrayList;

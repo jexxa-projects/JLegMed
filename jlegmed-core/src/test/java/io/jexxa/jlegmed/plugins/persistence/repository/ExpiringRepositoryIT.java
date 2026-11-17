@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
-import io.jexxa.common.facade.jdbc.JDBCConnectionPool;
+import io.jexxa.adapters.jdbc.facade.JDBCConnectionPool;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;

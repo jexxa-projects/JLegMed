@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedDelay;
-import io.jexxa.common.drivingadapter.scheduler.Scheduler;
+
+import io.jexxa.adapters.core.drivingadapter.scheduler.ScheduledFixedDelay;
+import io.jexxa.adapters.core.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.producer.PassiveProducer;
 
 import java.util.concurrent.TimeUnit;

@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
 
 
 public abstract class OnErrorProducer<T,  R> extends ThreadedProducer<R> {

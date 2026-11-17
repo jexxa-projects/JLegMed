@@ -1,7 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.JexxaContext;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Map;

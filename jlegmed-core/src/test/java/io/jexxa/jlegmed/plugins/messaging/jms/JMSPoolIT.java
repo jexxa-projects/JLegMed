@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
+import io.jexxa.adapters.api.ConfigurationFailedException;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import org.junit.jupiter.api.AfterEach;

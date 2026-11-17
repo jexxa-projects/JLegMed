@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableConsumer;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.producer.FunctionalProducer;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;

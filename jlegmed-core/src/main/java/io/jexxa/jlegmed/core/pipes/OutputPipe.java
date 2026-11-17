@@ -4,8 +4,8 @@ import io.jexxa.jlegmed.core.filter.Filter;
 
 import java.math.BigInteger;
 
-import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
-import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.adapters.api.invocation.InvocationManager.getInvocationHandler;
+import static io.jexxa.adapters.core.facade.logger.SLF4jLogger.getLogger;
 import static java.math.BigInteger.valueOf;
 
 public class OutputPipe<T> {

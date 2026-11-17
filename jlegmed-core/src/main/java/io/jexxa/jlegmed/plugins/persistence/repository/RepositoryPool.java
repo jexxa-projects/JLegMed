@@ -1,20 +1,21 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.JexxaContext;
-import io.jexxa.common.drivenadapter.persistence.repository.jdbc.JDBCKeyValueRepository;
-import io.jexxa.common.drivenadapter.persistence.repository.s3.S3KeyValueRepository;
-import io.jexxa.common.facade.s3.S3Client;
+
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.JexxaContext;
+import io.jexxa.adapters.jdbc.repository.JDBCKeyValueRepository;
+import io.jexxa.adapters.s3.facade.S3Facade;
+import io.jexxa.adapters.s3.repository.S3KeyValueRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.function.Function;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.validateJDBCConnection;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.repositoryStrategy;
-import static io.jexxa.common.facade.s3.S3Properties.s3Endpoint;
+import static io.jexxa.adapters.core.drivenadapter.persistence.PersistenceProperties.repositoryStrategy;
+import static io.jexxa.adapters.jdbc.facade.JDBCConnectionPool.validateJDBCConnection;
+import static io.jexxa.adapters.jdbc.facade.JDBCProperties.jdbcUrl;
+import static io.jexxa.adapters.s3.facade.S3Properties.s3Endpoint;
 
 @SuppressWarnings("java:S6548")
 public class RepositoryPool {
@@ -124,7 +125,7 @@ public class RepositoryPool {
         try {
             if (properties.containsKey(s3Endpoint()))
             {
-                new S3Client(properties);
+                new S3Facade(properties);
             }
         } catch ( RuntimeException e) {
         throw new ConfigurationFailedException("Could not init S3 connection for filter properties "

@@ -1,10 +1,7 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
-import io.jexxa.common.facade.jdbc.JDBCConnection;
-import io.jexxa.common.facade.jdbc.JDBCQuery;
-import io.jexxa.common.facade.jdbc.builder.JDBCCommandBuilder;
-import io.jexxa.common.facade.jdbc.builder.JDBCQueryBuilder;
-import io.jexxa.common.facade.jdbc.builder.JDBCTableBuilder;
+
+import io.jexxa.adapters.jdbc.facade.*;
 
 import java.util.List;
 import java.util.Properties;

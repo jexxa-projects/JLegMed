@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.micrometer.MicrometerPlugin;
 import io.javalin.util.JavalinLogger;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.JLegMedService;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;

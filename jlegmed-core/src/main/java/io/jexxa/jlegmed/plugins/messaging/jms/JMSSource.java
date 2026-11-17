@@ -1,12 +1,13 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
 
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
+
+import io.jexxa.adapters.jms.drivingadapter.JMSConfiguration;
 
 import java.lang.annotation.Annotation;
 
-import static io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType.QUEUE;
-import static io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration.MessagingType.TOPIC;
+import static io.jexxa.adapters.jms.drivingadapter.JMSConfiguration.MessagingType.QUEUE;
+import static io.jexxa.adapters.jms.drivingadapter.JMSConfiguration.MessagingType.TOPIC;
 
 
 @SuppressWarnings("ClassExplicitlyAnnotation")

@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging;
 
-import io.jexxa.common.facade.json.JSONManager;
+
+import io.jexxa.adapters.core.facade.json.JSONManager;
 
 public class MessageDecoder {
     public static <T>  T fromJSON(String message, Class<T> typeInformation)

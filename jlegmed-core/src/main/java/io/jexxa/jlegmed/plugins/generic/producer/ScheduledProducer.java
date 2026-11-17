@@ -1,11 +1,11 @@
 package io.jexxa.jlegmed.plugins.generic.producer;
 
 
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
-import io.jexxa.common.drivingadapter.scheduler.ScheduledFixedRate;
-import io.jexxa.common.drivingadapter.scheduler.Scheduler;
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableSupplier;
+import io.jexxa.adapters.core.drivingadapter.scheduler.ScheduledFixedRate;
+import io.jexxa.adapters.core.drivingadapter.scheduler.Scheduler;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
@@ -13,7 +13,8 @@ import io.jexxa.jlegmed.core.filter.producer.ActiveProducer;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
+
 
 public abstract class ScheduledProducer<T> extends ActiveProducer<T>  {
     private final Scheduler scheduler = new Scheduler();

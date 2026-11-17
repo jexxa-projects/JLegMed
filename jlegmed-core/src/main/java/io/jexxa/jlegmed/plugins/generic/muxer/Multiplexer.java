@@ -1,10 +1,11 @@
 package io.jexxa.jlegmed.plugins.generic.muxer;
 
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
+
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
 
 import java.time.Duration;
 
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
 import static io.jexxa.jlegmed.core.filter.Filter.filterNameFromLambda;
 
 public class Multiplexer {

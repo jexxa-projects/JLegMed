@@ -1,7 +1,8 @@
 package io.jexxa.jlegmed.core.flowgraph.builder;
 
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
-import io.jexxa.common.facade.utils.properties.PropertiesUtils;
+
+import io.jexxa.adapters.api.invocation.function.SerializableConsumer;
+import io.jexxa.adapters.core.facade.utils.properties.PropertiesUtils;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.ProcessingError;

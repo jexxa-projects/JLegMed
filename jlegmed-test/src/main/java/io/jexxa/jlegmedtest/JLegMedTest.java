@@ -1,13 +1,13 @@
 package io.jexxa.jlegmedtest;
 
-import io.jexxa.common.facade.utils.annotation.CheckReturnValue;
-import io.jexxa.common.facade.utils.function.ThrowingConsumer;
+import io.jexxa.adapters.core.facade.utils.annotation.CheckReturnValue;
+import io.jexxa.adapters.core.facade.utils.function.ThrowingConsumer;
 import io.jexxa.jlegmed.core.JLegMed;
 
 import java.util.Optional;
 import java.util.Properties;
 
-import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.adapters.core.facade.logger.SLF4jLogger.getLogger;
 
 
 public class JLegMedTest

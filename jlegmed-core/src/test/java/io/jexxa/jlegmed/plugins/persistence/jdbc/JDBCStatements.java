@@ -1,9 +1,10 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
 
-import io.jexxa.common.facade.jdbc.JDBCQuery;
-import io.jexxa.common.facade.jdbc.builder.JDBCTableBuilder;
-import io.jexxa.common.facade.jdbc.builder.SQLDataType;
+
+import io.jexxa.adapters.jdbc.facade.JDBCQuery;
+import io.jexxa.adapters.jdbc.facade.JDBCTableBuilder;
+import io.jexxa.adapters.jdbc.facade.SQLDataType;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.pipes.OutputPipe;
 

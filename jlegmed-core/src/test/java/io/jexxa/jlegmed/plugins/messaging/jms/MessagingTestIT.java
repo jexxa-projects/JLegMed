@@ -1,9 +1,10 @@
 package io.jexxa.jlegmed.plugins.messaging.jms;
 
-import io.jexxa.common.drivenadapter.messaging.MessageSender;
-import io.jexxa.common.drivenadapter.messaging.jms.JMSSender;
-import io.jexxa.common.drivenadapter.outbox.TransactionalOutboxSender;
-import io.jexxa.common.drivingadapter.messaging.jms.JMSConfiguration;
+
+import io.jexxa.adapters.core.drivenadapter.messaging.MessageSender;
+import io.jexxa.adapters.jms.drivenadapter.JMSSender;
+import io.jexxa.adapters.jms.drivenadapter.TransactionalOutboxSender;
+import io.jexxa.adapters.jms.drivingadapter.JMSConfiguration;
 import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.plugins.generic.GenericProducer;
@@ -16,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Stack;
 
-import static io.jexxa.common.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
+import static io.jexxa.adapters.core.drivenadapter.messaging.MessageSenderFactory.setDefaultMessageSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsQueue;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSender;
 import static io.jexxa.jlegmed.plugins.messaging.jms.JMSPool.jmsSource;

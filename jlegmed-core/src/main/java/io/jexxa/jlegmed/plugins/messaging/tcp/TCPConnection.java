@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
-import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 
@@ -18,7 +18,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 import java.util.function.Function;
 
-import static io.jexxa.common.facade.json.JSONManager.getJSONConverter;
+import static io.jexxa.adapters.core.facade.json.JSONManager.getJSONConverter;
+
 
 @SuppressWarnings("unused")
 public class TCPConnection {

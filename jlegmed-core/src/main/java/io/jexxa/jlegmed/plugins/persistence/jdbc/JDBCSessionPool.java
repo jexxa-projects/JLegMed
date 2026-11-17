@@ -1,14 +1,14 @@
 package io.jexxa.jlegmed.plugins.persistence.jdbc;
 
-import io.jexxa.adapterapi.ConfigurationFailedException;
-import io.jexxa.adapterapi.JexxaContext;
+import io.jexxa.adapters.api.ConfigurationFailedException;
+import io.jexxa.adapters.api.JexxaContext;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.Properties;
 
-import static io.jexxa.common.facade.jdbc.JDBCConnectionPool.getJDBCConnection;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.repositoryStrategy;
+import static io.jexxa.adapters.core.drivenadapter.persistence.PersistenceProperties.repositoryStrategy;
+import static io.jexxa.adapters.jdbc.facade.JDBCConnectionPool.getJDBCConnection;
+import static io.jexxa.adapters.jdbc.facade.JDBCProperties.jdbcUrl;
 
 public class JDBCSessionPool {
     public static final JDBCSessionPool INSTANCE = new JDBCSessionPool();

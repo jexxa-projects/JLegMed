@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.core.flowgraph;
 
-import io.jexxa.adapterapi.interceptor.BeforeInterceptor;
+import io.jexxa.adapters.api.interceptor.BeforeInterceptor;
 import io.jexxa.jlegmed.core.filter.Filter;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.filter.processor.Processor;
@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import static io.jexxa.adapterapi.invocation.InvocationManager.getRootInterceptor;
+import static io.jexxa.adapters.api.invocation.InvocationManager.getRootInterceptor;
+
 
 public class FlowGraph {
     private final Properties properties;

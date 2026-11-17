@@ -1,13 +1,14 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
-import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
+
+import io.jexxa.adapters.core.drivenadapter.persistence.repository.IRepository;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.createRepository;
+import static io.jexxa.adapters.core.drivenadapter.persistence.RepositoryFactory.createRepository;
 
 
 public class Repository<T, K> {

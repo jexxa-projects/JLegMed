@@ -1,17 +1,18 @@
 package io.jexxa.jlegmed.core.filter.producer;
 
-import io.jexxa.adapterapi.invocation.function.SerializableBiFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableConsumer;
-import io.jexxa.adapterapi.invocation.function.SerializableFunction;
-import io.jexxa.adapterapi.invocation.function.SerializableSupplier;
+
+import io.jexxa.adapters.api.invocation.function.SerializableBiFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableConsumer;
+import io.jexxa.adapters.api.invocation.function.SerializableFunction;
+import io.jexxa.adapters.api.invocation.function.SerializableSupplier;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 import io.jexxa.jlegmed.core.filter.ProcessingError;
 import io.jexxa.jlegmed.core.filter.ProcessingException;
 
 import java.util.Objects;
 
-import static io.jexxa.adapterapi.invocation.InvocationManager.getInvocationHandler;
-import static io.jexxa.adapterapi.invocation.context.LambdaUtils.classNameFromLambda;
+import static io.jexxa.adapters.api.invocation.InvocationManager.getInvocationHandler;
+import static io.jexxa.adapters.api.invocation.context.LambdaUtils.classNameFromLambda;
 
 public abstract class FunctionalProducer<T> extends PassiveProducer<T> {
 

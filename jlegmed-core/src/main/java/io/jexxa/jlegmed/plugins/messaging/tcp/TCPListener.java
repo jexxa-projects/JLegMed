@@ -1,6 +1,7 @@
 package io.jexxa.jlegmed.plugins.messaging.tcp;
 
-import io.jexxa.common.facade.utils.function.ThrowingConsumer;
+
+import io.jexxa.adapters.core.facade.utils.function.ThrowingConsumer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +10,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.common.facade.logger.SLF4jLogger.getLogger;
+import static io.jexxa.adapters.core.facade.logger.SLF4jLogger.getLogger;
+
 
 class TCPListener {
     private final ExecutorService executorService = Executors.newCachedThreadPool();

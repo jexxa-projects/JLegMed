@@ -5,17 +5,9 @@ package io.jexxa.jlegmed.plugins.persistence.repository;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcAutocreateDatabase;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcAutocreateTable;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcDriver;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcPassword;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcTransactionIsolationLevel;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUrl;
-import static io.jexxa.common.facade.jdbc.JDBCProperties.jdbcUsername;
-import static io.jexxa.common.facade.s3.S3Properties.s3AccessKey;
-import static io.jexxa.common.facade.s3.S3Properties.s3Bucket;
-import static io.jexxa.common.facade.s3.S3Properties.s3Endpoint;
-import static io.jexxa.common.facade.s3.S3Properties.s3SecretKey;
+import static io.jexxa.adapters.jdbc.facade.JDBCProperties.*;
+import static io.jexxa.adapters.s3.facade.S3Properties.*;
+
 
 public class RepositoryConfig {
     public static final String REPOSITORY_CONFIG = "io.jexxa.jlegmed.plugins.persistence.repository.RepositoryConfig#repositoryConfig";

@@ -1,6 +1,6 @@
 package io.jexxa.jlegmed.plugins.monitor;
 
-import io.jexxa.common.facade.logger.SLF4jLogger;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.JLegMed;
 
 import java.util.concurrent.Executors;

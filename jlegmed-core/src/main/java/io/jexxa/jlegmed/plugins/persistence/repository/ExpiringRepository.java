@@ -1,8 +1,9 @@
 package io.jexxa.jlegmed.plugins.persistence.repository;
 
-import io.jexxa.common.drivenadapter.persistence.repository.IRepository;
-import io.jexxa.common.facade.json.JSONManager;
-import io.jexxa.common.facade.logger.SLF4jLogger;
+
+import io.jexxa.adapters.core.drivenadapter.persistence.repository.IRepository;
+import io.jexxa.adapters.core.facade.json.JSONManager;
+import io.jexxa.adapters.core.facade.logger.SLF4jLogger;
 import io.jexxa.jlegmed.core.filter.FilterContext;
 
 import java.time.Duration;
@@ -12,7 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static io.jexxa.common.drivenadapter.persistence.RepositoryFactory.createRepository;
+import static io.jexxa.adapters.core.drivenadapter.persistence.RepositoryFactory.createRepository;
+
 
 public class ExpiringRepository<T,K> extends Repository<T, K>{
     private final IRepository<ExpiringRecord, String> ttlRepository;

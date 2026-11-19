@@ -9,6 +9,7 @@ import io.jexxa.jlegmed.core.JLegMed;
 import io.jexxa.jlegmed.core.JLegMedService;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
@@ -59,13 +60,13 @@ public class MicrometerMetricsCollector implements JLegMedService  {
         javalin.stop();
     }
 
-    private void initMetrics(PrometheusMeterRegistry registry, JLegMed jLegMed) {
+    private void initMetrics(MeterRegistry registry, JLegMed jLegMed) {
         var flowGraphs = jLegMed.getFlowGraphs();
         flowGraphs.forEach( flowGraphId -> initFlowGraphMetrics(registry, jLegMed.getFlowGraph(flowGraphId)));
     }
 
 
-    private void initFlowGraphMetrics(PrometheusMeterRegistry registry, FlowGraph flowGraph) {
+    private void initFlowGraphMetrics(MeterRegistry registry, FlowGraph flowGraph) {
         FunctionCounter.builder(JLEGMED_FLOWGRAPH_MESSAGES_TOTAL, flowGraph, value -> value.processingStats().forwardedMessages().doubleValue())
                 .description("Total processed messages")
                 .tag(FLOW_GRAPH_TAG, flowGraph.flowGraphID())

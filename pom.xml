@@ -149,11 +149,6 @@
 
     <dependency>
       <groupId>io.jexxa.adapters</groupId>
-      <artifactId>adapter-jdbc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jexxa.adapters</groupId>
       <artifactId>adapter-s3</artifactId>
     </dependency>
 

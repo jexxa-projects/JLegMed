@@ -6,6 +6,7 @@ import io.jexxa.adapters.api.interceptor.BeforeInterceptor;
 import io.jexxa.adapters.api.invocation.InvocationManager;
 import io.jexxa.adapters.api.invocation.SharedInvocationHandler;
 import io.jexxa.adapters.api.invocation.TransactionalInvocationHandler;
+import io.jexxa.adapters.jms.drivenadapter.JMSSender;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
 import io.jexxa.jlegmed.core.flowgraph.builder.BootstrapBuilder;
@@ -64,7 +65,7 @@ public final class JLegMed
     {
         JexxaContext.init();
         InvocationManager.setDefaultInvocationHandler(new SharedInvocationHandler());
-        //setDefaultMessageSender(JMSSender.class); //TODO
+        setDefaultMessageSender(JMSSender.class);
 
         this.propertiesLoader = new PropertiesLoader(application);
         this.properties  = propertiesLoader.createProperties(properties);

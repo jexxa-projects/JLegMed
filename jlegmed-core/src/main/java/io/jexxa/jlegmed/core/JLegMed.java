@@ -6,6 +6,7 @@ import io.jexxa.adapters.api.interceptor.BeforeInterceptor;
 import io.jexxa.adapters.api.invocation.InvocationManager;
 import io.jexxa.adapters.api.invocation.SharedInvocationHandler;
 import io.jexxa.adapters.api.invocation.TransactionalInvocationHandler;
+import io.jexxa.adapters.api.service.ManagedService;
 import io.jexxa.adapters.jms.drivenadapter.JMSSender;
 import io.jexxa.jlegmed.core.filter.FilterProperties;
 import io.jexxa.jlegmed.core.flowgraph.FlowGraph;
@@ -51,7 +52,7 @@ public final class JLegMed
     private final Properties properties;
     private final Class<?> application;
     private final PropertiesLoader propertiesLoader;
-    private final List<JLegMedService> jLegMedServices = new ArrayList<>();
+    private final List<ManagedService> jLegMedServices = new ArrayList<>();
 
     private boolean enableBanner = true;
     private boolean strictFailFast = false;
@@ -74,12 +75,12 @@ public final class JLegMed
         setExceptionHandler();
     }
 
-    public JLegMed registerService(JLegMedService service) {
+    public JLegMed registerService(ManagedService service) {
         jLegMedServices.add(service);
         return this;
     }
 
-    public JLegMed registerService(Function<JLegMed, JLegMedService> service) {
+    public JLegMed registerService(Function<JLegMed, ManagedService> service) {
         return registerService(service.apply(this));
     }
 
@@ -128,7 +129,7 @@ public final class JLegMed
             }
         }
 
-        jLegMedServices.forEach(JLegMedService::start);
+        jLegMedServices.forEach(ManagedService::start);
 
         showPreStartupBanner();
 
@@ -205,7 +206,7 @@ public final class JLegMed
             isRunning = false;
             flowGraphs.forEach((flowgraphID, flowgraph) -> flowgraph.stop());
 
-            jLegMedServices.forEach(JLegMedService::stop);
+            jLegMedServices.forEach(ManagedService::stop);
 
             JexxaContext.cleanup();
             if (enableBanner) {

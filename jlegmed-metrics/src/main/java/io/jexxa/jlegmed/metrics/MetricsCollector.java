@@ -1,4 +1,4 @@
-package io.jexxa.jlegmed.micrometer;
+package io.jexxa.jlegmed.metrics;
 
 import io.jexxa.jlegmed.core.JLegMed;
 
@@ -7,7 +7,7 @@ public class MetricsCollector {
         /* This utility class should not be instantiated */
     }
 
-    public static MicrometerMetricsCollector micrometerCollector(JLegMed jLegMed) {
-        return new MicrometerMetricsCollector(jLegMed);
+    public static JLegMedMetricsCollector micrometerCollector(JLegMed jLegMed) {
+        return new JLegMedMetricsCollector(jLegMed);
     }
 }

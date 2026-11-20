@@ -10,9 +10,9 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static io.jexxa.adapter.prometheus.MicrometerProperties.PROMETHEUS_ENDPOINT;
-import static io.jexxa.adapter.prometheus.MicrometerProperties.PROMETHEUS_PORT;
 
+import static io.jexxa.adapter.prometheus.MicrometerProperties.prometheusEndpoint;
+import static io.jexxa.adapter.prometheus.MicrometerProperties.prometheusPort;
 import static java.lang.Integer.parseInt;
 import static org.awaitility.Awaitility.await;
 
@@ -22,8 +22,8 @@ class MicrometerMetricsCollectorTest {
     {
         //Arrange
         var jlegmedProperties = new Properties();
-        jlegmedProperties.setProperty(PROMETHEUS_PORT, "7070");
-        jlegmedProperties.setProperty(PROMETHEUS_ENDPOINT, "/metrics");
+        jlegmedProperties.setProperty(prometheusPort(), "7070");
+        jlegmedProperties.setProperty(prometheusEndpoint(), "/metrics");
 
         var jlegmed = new JLegMed(MicrometerMetricsCollectorTest.class, jlegmedProperties)
                 .registerService(MetricsCollector::micrometerCollector);
@@ -37,8 +37,8 @@ class MicrometerMetricsCollectorTest {
         jlegmed.start();
 
         var url = "http://localhost:"
-                + jlegmedProperties.getProperty(PROMETHEUS_PORT)
-                + jlegmedProperties.getProperty(PROMETHEUS_ENDPOINT);
+                + jlegmedProperties.getProperty(prometheusPort())
+                + jlegmedProperties.getProperty(prometheusEndpoint());
 
         //ACT / ASSERT
         await().atMost(Duration.ofSeconds(5)).until(() -> getProcessedMessages(url) > 0);

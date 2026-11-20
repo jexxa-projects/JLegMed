@@ -18,7 +18,7 @@ public class JLegMedMetricsCollector extends MicrometerMetricsCollector {
     JLegMedMetricsCollector(JLegMed jLegMed) {
         super(jLegMed.getProperties());
         this.jLegMed = jLegMed;
-        registerMetrics(this::initMetrics);
+        register(this::initMetrics);
     }
 
     private void initMetrics(MeterRegistry registry) {

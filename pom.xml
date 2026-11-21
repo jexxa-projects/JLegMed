@@ -63,6 +63,7 @@
     <archunit.version>1.5.1</archunit.version>
     <micrometer.version>1.17.2</micrometer.version>
     <jetty.version>12.1.14</jetty.version>
+    <swagger.core.version>3.0.0</swagger.core.version>
 
 
     <!-- server-name used in mavens settings.xml to find to your repository credentials -->
@@ -250,6 +251,36 @@
       <artifactId>javalin</artifactId>
       <version>${javalin.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty.ee10</groupId>
+          <artifactId>jetty-ee10-servlet</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty.ee10.websocket</groupId>
+          <artifactId>jetty-ee10-websocket-jetty-server</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty.ee10</groupId>
+      <artifactId>jetty-ee10-servlet</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-core</artifactId>
+      <version>${swagger.core.version}</version>
     </dependency>
 
     <dependency>

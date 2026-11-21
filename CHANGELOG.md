@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## \[6.0.0-RC1] - 2026-11-21
+
+**Changed**
+- Integrated the modular JexxaAdapters 5.0.0 dependency structure.
+- Simplified application setup through scenario-specific starters.
+- Enabled independent versioning of Jexxa and JexxaAdapters while maintaining compatible dependency combinations through the BOM.
+
+**Migration**
+- Only the application's infrastructure layer is affected; the application core remains unchanged.
+- To update, remove unresolved imports in the infrastructure code and re-import the corresponding classes from the new adapter packages.
+- Update existing adapter dependencies to the new modular artifacts.
+ 
 ## \[5.5.6] - 2026-11-14
 ### Fixed
 - Updated dependencies

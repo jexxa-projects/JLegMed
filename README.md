@@ -96,7 +96,7 @@ Maven:
     <dependency>
         <groupId>io.jexxa.jlegmed</groupId>
         <artifactId>jlegmed-core</artifactId>
-        <version>5.5.6</version>
+        <version>6.0.0-RC1</version>
     </dependency>
     
     <dependency>

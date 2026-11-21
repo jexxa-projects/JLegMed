@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jlegmed</artifactId>
         <groupId>io.jexxa.jlegmed</groupId>
-        <version>5.5.6-SNAPSHOT</version>
+        <version>5.5.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>jlegmed-metrics</artifactId>
@@ -27,25 +27,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.javalin</groupId>
-            <artifactId>javalin</artifactId>
-            <version>${javalin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.javalin</groupId>
-            <artifactId>javalin-micrometer</artifactId>
-            <version>${javalin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
-            <version>${micrometer.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>${micrometer.version}</version>
+            <groupId>io.jexxa.adapters</groupId>
+            <artifactId>adapter-micrometer</artifactId>
         </dependency>
 
         <dependency>

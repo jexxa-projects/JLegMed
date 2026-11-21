@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jlegmed</artifactId>
         <groupId>io.jexxa.jlegmed</groupId>
-        <version>5.5.7-SNAPSHOT</version>
+        <version>6.0.0-RC1</version>
     </parent>
 
     <artifactId>jlegmed-test</artifactId>

@@ -110,9 +110,78 @@ Maven:
 Gradle:
 
 ```groovy
-implementation "io.jexxa:jlegmed-core:5.5.6"
+implementation "io.jexxa:jlegmed-core:6.0.0-RC1"
 implementation "org.slf4j:slf4j-simple:2.0.20"
 ``` 
+
+
+
+#### Plugins: Select individual modules using the BOM
+
+   
+**Available plugins/adapters:** JLegMed utilizes components provided by 'jexxa-adapters' that can be seamlessly used. This provides optional adapters for REST, JDBC, JMS, S3, and other integrations. See [JexxaAdapters](https://github.com/jexxa-projects/JexxaAdapters) for the complete list of available modules and their documentation.
+
+<details>
+<summary><b>Maven</b></summary>
+
+```xml
+<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.jexxa.adapters</groupId>
+        <artifactId>jexxa-adapters-bom</artifactId>
+        <version>6.0.0-RC3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>io.jexxa.adapters</groupId>
+        <artifactId>adapter-rest</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>io.jexxa.adapters</groupId>
+        <artifactId>adapter-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>io.jexxa.addend</groupId>
+        <artifactId>Addend</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>2.0.20</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+</details>
+
+<details>
+<summary><b>Gradle (Groovy DSL)</b></summary>
+
+```groovy
+dependencies {
+    implementation platform('io.jexxa.adapters:jexxa-adapters-bom:10.0.0-RC3')
+
+    implementation 'io.jexxa:jexxa-core'
+    implementation 'io.jexxa.adapters:adapter-rest'
+    implementation 'io.jexxa.adapters:adapter-jdbc'
+    implementation 'io.jexxa.addend:Addend'
+
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.20'
+}
+```
+
+</details>
+
 ## 📚 Use Cases with Examples
 
 ### Basic Patterns

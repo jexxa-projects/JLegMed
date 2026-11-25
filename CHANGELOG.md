@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Integrated the modular JexxaAdapters 5.0.0 dependency structure.
 - Simplified application setup through scenario-specific starters.
 - Enabled independent versioning of Jexxa and JexxaAdapters while maintaining compatible dependency combinations through the BOM.
+- Added BOM for easier dependency management (see [README](README.md#add-dependencies)
 
 **Migration**
 - Only the application's infrastructure layer is affected; the application core remains unchanged.

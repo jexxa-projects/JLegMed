@@ -128,8 +128,8 @@ implementation "org.slf4j:slf4j-simple:2.0.20"
 <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.jexxa.adapters</groupId>
-        <artifactId>jexxa-adapters-bom</artifactId>
+        <groupId>io.jexxa.jlegmed</groupId>
+        <artifactId>jlegmed-bom</artifactId>
         <version>6.0.0-RC3</version>
         <type>pom</type>
         <scope>import</scope>
@@ -139,18 +139,21 @@ implementation "org.slf4j:slf4j-simple:2.0.20"
 
 <dependencies>
     <dependency>
+      <groupId>io.jexxa.jlegmed</groupId>
+      <artifactId>jlegmed-core</artifactId>
+    </dependency>
+    
+    <!--Add technology plugins --> 
+    <dependency>
         <groupId>io.jexxa.adapters</groupId>
         <artifactId>adapter-rest</artifactId>
     </dependency>
-
+    
+    <!-- ... -->
+    
     <dependency>
         <groupId>io.jexxa.adapters</groupId>
         <artifactId>adapter-jdbc</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>io.jexxa.addend</groupId>
-        <artifactId>Addend</artifactId>
     </dependency>
 
     <dependency>

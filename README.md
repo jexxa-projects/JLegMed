@@ -199,7 +199,7 @@ dependencies {
 ### Support for sending/receiving over:
 * [JMS (e.g., ActiveMQ)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/jms/MessagingTestIT.java)
 * [TCP Sockets](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/messaging/tcp/TCPMessagingIT.java)
-* Kafka ([sender](https://github.com/jexxa-projects/ESPAdapters/blob/main/esp-adapters-core/src/test/java/io/jexxa/esp/drivenadapter/kafka/KafkaSenderIT.java), [receiver](https://github.com/jexxa-projects/ESPAdapters/blob/main/esp-adapters-core/src/test/java/io/jexxa/esp/drivingadapter/KafkaAdapterIT.java))
+* Kafka ([sender](https://github.com/jexxa-projects/ESPAdapters/blob/main/esp-adapters-core/src/test/java/io/jexxa/esp/drivenadapter/kafka/KafkaSenderIT.java), [receiver](https://github.com/jexxa-projects/JexxaAdapters/blob/separate-adapters/adapter-esp/src/test/java/io/jexxa/adapters/esp/drivingadapter/KafkaAdapterIT.java))
 * [JDBC (e.g., PostgreSQL)](jlegmed-core/src/test/java/io/jexxa/jlegmed/plugins/persistence/jdbc/JDBCFlowGraphsIT.java)
 
 ## 🌐 Ecosystem

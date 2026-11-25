@@ -85,17 +85,6 @@ public class ProcessorBuilder<T> {
     }
 
 
-    /**
-     *@deprecated for removal
-     */
-    @Deprecated(forRemoval = true)
-    public <R> Binding<T, R> processWith(PipedProcessor<T, R> successorFunction) {
-        var successor = processor(successorFunction);
-        predecessorPipe.connectTo(successor.inputPipe());
-
-        flowGraph.addProcessor(successor);
-        return new Binding<>(successor, successor.errorPipe(), successor.outputPipe(), flowGraph);
-    }
 
     /**
      * Links the current processing step to a subsequent function using 1:n semantics.

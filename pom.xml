@@ -51,6 +51,7 @@
 
 
     <!-- version of test dependencies -->
+    <jexxa.adpaters.bom.version>5.0.0-RC3</jexxa.adpaters.bom.version>
     <netty.bom.version>4.2.19.Final</netty.bom.version>
     <junit.bom.version>6.1.3</junit.bom.version>
     <awaitility.version>4.3.0</awaitility.version>
@@ -812,5 +813,6 @@
     <module>jlegmed-core</module>
     <module>jlegmed-metrics</module>
     <module>jlegmed-test</module>
+    <module>jlegmed-bom</module>
   </modules>
 </project>
